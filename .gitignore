@@ -33,3 +33,6 @@
 
 #The final app
 gasket
+
+#pycache
+__pycache__/
