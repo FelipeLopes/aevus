@@ -31,8 +31,9 @@
 *.out
 *.app
 
-#The final app
-gasket
-
 #pycache
 __pycache__/
+
+#bazel symlinks
+bazel-*
+bazel-gasket-ifs/

@@ -31,6 +31,7 @@ struct Affine {
 struct Transform {
     virtual void print() = 0;
     virtual Point apply(Point p) = 0;
+    virtual ~Transform() {}
 };
 
 struct Spherical : public Transform {
