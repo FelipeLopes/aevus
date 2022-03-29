@@ -100,47 +100,6 @@ Transform* Mobius::decompose() {
     }
 }
 
-void Spherical::print() {
-    printf("spherical\n");
-    printf("pre\n");
-    printf("X: %lf %lf\n",pre.x.x,pre.x.y);
-    printf("Y: %lf %lf\n",pre.y.x,pre.y.y);
-    printf("O: %lf %lf\n",pre.o.x,pre.o.y);
-    printf("post\n");
-    printf("X: %lf %lf\n",post.x.x,post.x.y);
-    printf("Y: %lf %lf\n",post.y.x,post.y.y);
-    printf("O: %lf %lf\n",post.o.x,post.o.y);
-    printf("\n");
-}
-
-Point Spherical::apply(Point p) {
-    Point q = pre.apply(p);
-    double r2 = q.x*q.x + q.y*q.y;
-    return post.apply(Point(q.x/r2,q.y/r2));
-}
-
-void Linear::print() {
-    printf("linear\n");
-    printf("pre\n");
-    printf("X: %lf %lf\n",pre.x.x,pre.x.y);
-    printf("Y: %lf %lf\n",pre.y.x,pre.y.y);
-    printf("O: %lf %lf\n",pre.o.x,pre.o.y);
-    printf("post\n");
-    printf("X: 1.000000 0.000000\n");
-    printf("Y: 0.000000 1.000000\n");
-    printf("O: 0.000000 0.000000\n");
-    printf("\n");
-}
-
-Point Linear::apply(Point p) {
-    return pre.apply(p);
-}
-
-struct Gasket {
-    Mobius m[4];
-    Gasket(cx p, cx q, cx r);
-};
-
 Gasket::Gasket(cx p, cx q, cx r) {
     Mobius s = Mobius::fromPointsToPoints(-1, 1i, 1, -1, 0, 1);
     cx pa = s.apply(-1+2*1i);

@@ -1,0 +1,35 @@
+#pragma once
+
+#include <complex>
+
+typedef std::complex<double> cx;
+
+struct Point {
+    double x, y;
+    Point();
+    Point(double x_, double y_);
+    Point(cx z);
+};
+
+struct Affine {
+    Point o, x, y;
+    Point apply(Point p);
+};
+
+struct Transform {
+    virtual void print() = 0;
+    virtual Point apply(Point p) = 0;
+    virtual ~Transform() {}
+};
+
+struct Spherical : public Transform {
+    Affine pre, post;
+    void print();
+    Point apply(Point p);
+};
+
+struct Linear : public Transform {
+    Affine pre;
+    void print();
+    Point apply(Point p);
+};

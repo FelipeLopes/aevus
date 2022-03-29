@@ -1,7 +1,7 @@
 cc_library(
     name = "gasket-lib",
-    srcs = ["src/gasket.cpp"],
-    hdrs = ["src/gasket.h"],
+    srcs = glob(["src/*.cpp"]),
+    hdrs = glob(["src/*.h"]),
 )
 
 cc_binary(
