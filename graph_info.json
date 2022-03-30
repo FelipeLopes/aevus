@@ -1,0 +1,18 @@
+{
+ "options": [
+  [
+   "tinyxml2:fPIC",
+   "True"
+  ],
+  [
+   "tinyxml2:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": null,
+  "version": null,
+  "user": null,
+  "channel": null
+ }
+}
