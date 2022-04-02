@@ -40,3 +40,6 @@ bazel-gasket-ifs/
 
 #machine-specific conan
 dependencies.bzl
+
+#vim temporary files
+*~

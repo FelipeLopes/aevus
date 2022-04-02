@@ -137,6 +137,20 @@ Gasket::Gasket(cx p, cx q, cx r) {
         auto t = m[i].decompose();
         t->addTransformXML(flame);
     }
+
+    auto palette = xmlDoc.NewElement("palette");
+    palette->SetAttribute("count", "256");
+    palette->SetAttribute("format", "RGB");
+    // I'm setting the whitespace just as in Apophysis, to make sure it works
+    string whiteSpace(6, ' ');
+    string whiteChars(48, 'F');
+    string text = "\n";
+    for (int i=0; i<32; i++) {
+        text += (whiteSpace + whiteChars + "\n");
+    }
+    text += "    ";
+    palette->SetText(text.c_str());
+    root->InsertEndChild(palette);
 }
 
 void Gasket::writeXMLFile(string filename) {
