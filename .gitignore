@@ -38,8 +38,12 @@ __pycache__/
 bazel-*
 bazel-gasket-ifs/
 
-#machine specific conan file
+#machine specific conan files
 dependencies.bzl
+conan.lock
+conanbuild.conf
+conanbuildinfo.txt
+conaninfo.txt
 
 #vim temporary files
 *~
