@@ -58,6 +58,10 @@ Point Linear::apply(Point p) {
 }
 
 int main() {
-    printf("main is here\n");
+    tinyxml2::XMLDocument xmlDoc;
+    auto root = xmlDoc.NewElement("foo");
+    root->SetAttribute("Hello", "World");
+    xmlDoc.InsertFirstChild(root);
+    xmlDoc.SaveFile("hello.xml");
     return 0;
 }
