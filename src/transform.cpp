@@ -1,3 +1,5 @@
+#include <tinyxml2.h>
+
 #include "transform.h"
 
 Point::Point() {
@@ -53,4 +55,9 @@ void Linear::print() {
 
 Point Linear::apply(Point p) {
     return pre.apply(p);
+}
+
+int main() {
+    printf("main is here\n");
+    return 0;
 }

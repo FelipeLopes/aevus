@@ -114,7 +114,7 @@ Gasket::Gasket(cx p, cx q, cx r) {
     m[3] = Mobius::scaling(-1).conjugate(t);
 }
 
-int main(int argc, char* argv[]) {
+int oldmain(int argc, char* argv[]) {
     if (argc < 7) {
         printf("Usage: %s [px] [py] [qx] [qy] [rx] [ry]\n", argv[0]);
         return 1;

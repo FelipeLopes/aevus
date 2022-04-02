@@ -38,5 +38,5 @@ __pycache__/
 bazel-*
 bazel-gasket-ifs/
 
-#conan packages
-tinyxml2/
+#machine-specific conan
+dependencies.bzl
