@@ -1,5 +1,3 @@
-#include <tinyxml2.h>
-
 #include "transform.h"
 
 Point::Point() {
@@ -32,7 +30,7 @@ void Spherical::print() {
     printf("\n");
 }
 
-void Spherical::addTransformXML(tinyxml2::XMLElement* node) {
+void Spherical::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
 }
 
 Point Spherical::apply(Point p) {
@@ -54,7 +52,9 @@ void Linear::print() {
     printf("\n");
 }
 
-void Linear::addTransformXML(tinyxml2::XMLElement* node) {
+void Linear::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
+    auto xform = doc.NewElement("xform");
+    node->InsertEndChild(xform);
 }
 
 Point Linear::apply(Point p) {
