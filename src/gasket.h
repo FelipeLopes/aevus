@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <memory>
 
 #include <tinyxml2.h>
 
@@ -18,7 +19,7 @@ struct Mobius {
     Mobius inverse();
     Mobius compose(Mobius n);
     Mobius conjugate(Mobius s);
-    Transform* decompose();
+    std::shared_ptr<Transform> decompose();
 
     static Mobius scaling(cx a);
     static Mobius translation(cx b);

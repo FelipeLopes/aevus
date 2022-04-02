@@ -71,9 +71,9 @@ Mobius Mobius::conjugate(Mobius s) {
     return s.inverse().compose(*this).compose(s);
 }
 
-Transform* Mobius::decompose() {
+shared_ptr<Transform> Mobius::decompose() {
     if (fabs(c) > EPS) {
-        Spherical* t = new Spherical();
+        auto t = make_shared<Spherical>();
 
         Mobius preInv = Mobius::translation(d/c);
         cx preOri = conj(preInv.apply(0));
@@ -89,7 +89,7 @@ Transform* Mobius::decompose() {
 
         return t;
     } else {
-        Linear* t = new Linear();
+        auto t = make_shared<Linear>();
 
         cx ori = apply(0);
         t->pre.o = Point(ori);
@@ -123,9 +123,8 @@ Gasket::Gasket(cx p, cx q, cx r) {
     root->InsertEndChild(flame);
 
     for (int i = 0; i<4; i++) {
-        Transform* t = m[i].decompose();
+        auto t = m[i].decompose();
         t->addTransformXML(flame);
-        delete t;
     }
 }
 
@@ -145,12 +144,9 @@ int main(int argc, char* argv[]) {
 
     Gasket g(p, q, r);
 
-    Transform* t[4];
-
     for (int i = 0; i < 4; i++) {
-        t[i] = g.m[i].decompose();
-        t[i]->print();
-        delete t[i];
+        auto t = g.m[i].decompose();
+        t->print();
     }
 
     g.writeXMLFile("test.flame");
