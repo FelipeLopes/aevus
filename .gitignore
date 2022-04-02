@@ -39,11 +39,12 @@ bazel-*
 bazel-gasket-ifs/
 
 #machine specific conan files
-dependencies.bzl
-conan.lock
-conanbuild.conf
-conanbuildinfo.txt
-conaninfo.txt
+conandeps/dependencies.bzl
+conandeps/conan.lock
+conandeps/conanbuild.conf
+conandeps/conanbuildinfo.txt
+conandeps/conaninfo.txt
+conandeps/graph_info.json
 
 #vim temporary files
 *~
