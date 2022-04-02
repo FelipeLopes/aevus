@@ -120,6 +120,17 @@ Gasket::Gasket(cx p, cx q, cx r) {
     auto flame = xmlDoc.NewElement("flame");
     flame->SetAttribute("name", "Gasket");
     flame->SetAttribute("background", "0 0 0");
+    flame->SetAttribute("version", "Apophysis 2.09");
+    flame->SetAttribute("size", "600 600");
+    flame->SetAttribute("center", "0 0");
+    flame->SetAttribute("scale", "144");
+    flame->SetAttribute("oversample", "1");
+    flame->SetAttribute("filter", "0.2");
+    flame->SetAttribute("quality", "1");
+    flame->SetAttribute("background", "0 0 0");
+    flame->SetAttribute("brightness", "4");
+    flame->SetAttribute("gamma", "4");
+    flame->SetAttribute("gamma_threshold", "0.04");
     root->InsertEndChild(flame);
 
     for (int i = 0; i<4; i++) {
