@@ -1,3 +1,6 @@
+#include <iostream>
+#include <sstream>
+
 #include "transform.h"
 
 Point::Point() {
@@ -54,6 +57,12 @@ void Linear::print() {
 
 void Linear::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
     auto xform = doc.NewElement("xform");
+    xform->SetAttribute("weight", "0.5");
+    xform->SetAttribute("color", "0");
+    xform->SetAttribute("linear", "1");
+    std::stringstream buffer;
+    buffer<<pre.x.x<<" "<<pre.x.y<<" "<<pre.y.x<<" "<<pre.y.y<<" "<<pre.o.x<<" "<<pre.o.y;
+    xform->SetAttribute("coefs", buffer.str().c_str());
     node->InsertEndChild(xform);
 }
 
