@@ -112,9 +112,28 @@ Gasket::Gasket(cx p, cx q, cx r) {
     m[1] = Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb).conjugate(t);
     m[2] = Mobius::fromPointsToPoints(-1, 0, 1, pc, pb, 1).conjugate(t);
     m[3] = Mobius::scaling(-1).conjugate(t);
+
+    auto root = xmlDoc.NewElement("Flames");
+    root->SetAttribute("name", "gasket");
+    xmlDoc.InsertFirstChild(root);
+
+    auto flame = xmlDoc.NewElement("flame");
+    flame->SetAttribute("name", "Gasket");
+    flame->SetAttribute("background", "0 0 0");
+    root->InsertEndChild(flame);
+
+    for (int i = 0; i<4; i++) {
+        Transform* t = m[i].decompose();
+        t->addTransformXML(flame);
+        delete t;
+    }
 }
 
-int oldmain(int argc, char* argv[]) {
+void Gasket::writeXMLFile(string filename) {
+    xmlDoc.SaveFile(filename.c_str());
+}
+
+int main(int argc, char* argv[]) {
     if (argc < 7) {
         printf("Usage: %s [px] [py] [qx] [qy] [rx] [ry]\n", argv[0]);
         return 1;
@@ -133,6 +152,8 @@ int oldmain(int argc, char* argv[]) {
         t[i]->print();
         delete t[i];
     }
+
+    g.writeXMLFile("test.flame");
 
     return 0;
 }

@@ -19,8 +19,6 @@ Point Affine::apply(Point p) {
     return Point(o.x + p.x*x.x + p.y*y.x, o.y + p.x*x.y+p.y*y.y);
 }
 
-
-
 void Spherical::print() {
     printf("spherical\n");
     printf("pre\n");
@@ -32,6 +30,9 @@ void Spherical::print() {
     printf("Y: %lf %lf\n",post.y.x,post.y.y);
     printf("O: %lf %lf\n",post.o.x,post.o.y);
     printf("\n");
+}
+
+void Spherical::addTransformXML(tinyxml2::XMLElement* node) {
 }
 
 Point Spherical::apply(Point p) {
@@ -53,15 +54,9 @@ void Linear::print() {
     printf("\n");
 }
 
-Point Linear::apply(Point p) {
-    return pre.apply(p);
+void Linear::addTransformXML(tinyxml2::XMLElement* node) {
 }
 
-int main() {
-    tinyxml2::XMLDocument xmlDoc;
-    auto root = xmlDoc.NewElement("foo");
-    root->SetAttribute("Hello", "World");
-    xmlDoc.InsertFirstChild(root);
-    xmlDoc.SaveFile("hello.xml");
-    return 0;
+Point Linear::apply(Point p) {
+    return pre.apply(p);
 }

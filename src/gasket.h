@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <cmath>
 
+#include <tinyxml2.h>
+
 #include "transform.h"
 
 struct Mobius {
@@ -28,4 +30,6 @@ struct Mobius {
 struct Gasket {
     Mobius m[4];
     Gasket(cx p, cx q, cx r);
+    void writeXMLFile(std::string filename);
+    tinyxml2::XMLDocument xmlDoc;
 };
