@@ -106,15 +106,16 @@ Gasket::Gasket(cx p, cx q, cx r) {
     Mobius s = Mobius::fromPointsToPoints(-1, 1i, 1, -1, 0, 1);
     cx pa = s.apply(-1+2*1i);
     cx pb = s.apply(1+2*1i);
-    cx pc = s.applyInf();
 
     Mobius t = Mobius::fromPointsToPoints(p, q, r, -1, 0, 1);
     
-    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, -1, pa, pc).conjugate(t));
-    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb).conjugate(t));
-    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, pc, pb, 1).conjugate(t));
-    m.push_back(Mobius::scaling(-1).conjugate(t));
-
+    Mobius contract = Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb);
+    Mobius cycle = Mobius::fromPointsToPoints(-1, 0, 1, 1, -1, 0);
+    Mobius invert = Mobius::scaling(-1);
+    m.push_back(contract.conjugate(t));
+    m.push_back(cycle.compose(invert).compose(contract).conjugate(t));
+    m.push_back(cycle.inverse().compose(invert).compose(contract).conjugate(t));
+ 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
     xmlDoc.InsertFirstChild(root);
