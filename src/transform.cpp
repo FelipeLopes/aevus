@@ -20,6 +20,12 @@ Point Affine::apply(Point p) {
     return Point(o.x + p.x*x.x + p.y*y.x, o.y + p.x*x.y+p.y*y.y);
 }
 
+std::string Affine::coefString() {
+    std::stringstream buffer;
+    buffer<<x.x<<" "<<x.y<<" "<<y.x<<" "<<y.y<<" "<<o.x<<" "<<o.y;
+    return buffer.str();
+}
+
 void Spherical::print() {
     printf("spherical\n");
     printf("pre\n");
@@ -34,6 +40,13 @@ void Spherical::print() {
 }
 
 void Spherical::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
+    auto xform = doc.NewElement("xform");
+    xform->SetAttribute("weight", "0.5");
+    xform->SetAttribute("color", "0");
+    xform->SetAttribute("spherical", "1");
+    xform->SetAttribute("coefs", pre.coefString().c_str());
+    xform->SetAttribute("post", post.coefString().c_str());
+    node->InsertEndChild(xform);
 }
 
 Point Spherical::apply(Point p) {
@@ -60,9 +73,7 @@ void Linear::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* n
     xform->SetAttribute("weight", "0.5");
     xform->SetAttribute("color", "0");
     xform->SetAttribute("linear", "1");
-    std::stringstream buffer;
-    buffer<<pre.x.x<<" "<<pre.x.y<<" "<<pre.y.x<<" "<<pre.y.y<<" "<<pre.o.x<<" "<<pre.o.y;
-    xform->SetAttribute("coefs", buffer.str().c_str());
+    xform->SetAttribute("coefs", pre.coefString().c_str());
     node->InsertEndChild(xform);
 }
 

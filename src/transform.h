@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <complex>
 
 #include <tinyxml2.h>
@@ -16,6 +17,7 @@ struct Point {
 struct Affine {
     Point o, x, y;
     Point apply(Point p);
+    std::string coefString();
 };
 
 struct Transform {

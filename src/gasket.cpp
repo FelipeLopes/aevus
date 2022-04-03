@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "gasket.h"
 
 using namespace std;
@@ -155,6 +157,8 @@ void Gasket::writeXMLFile(string filename) {
 }
 
 int main(int argc, char* argv[]) {
+    ios::sync_with_stdio(false);
+
     if (argc < 7) {
         printf("Usage: %s [px] [py] [qx] [qy] [rx] [ry]\n", argv[0]);
         return 1;
