@@ -110,10 +110,10 @@ Gasket::Gasket(cx p, cx q, cx r) {
 
     Mobius t = Mobius::fromPointsToPoints(p, q, r, -1, 0, 1);
     
-    m[0] = Mobius::fromPointsToPoints(-1, 0, 1, -1, pa, pc).conjugate(t);
-    m[1] = Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb).conjugate(t);
-    m[2] = Mobius::fromPointsToPoints(-1, 0, 1, pc, pb, 1).conjugate(t);
-    m[3] = Mobius::scaling(-1).conjugate(t);
+    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, -1, pa, pc).conjugate(t));
+    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb).conjugate(t));
+    m.push_back(Mobius::fromPointsToPoints(-1, 0, 1, pc, pb, 1).conjugate(t));
+    m.push_back(Mobius::scaling(-1).conjugate(t));
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
@@ -135,8 +135,8 @@ Gasket::Gasket(cx p, cx q, cx r) {
     flame->SetAttribute("gamma_threshold", "0.04");
     root->InsertEndChild(flame);
 
-    for (int i = 0; i<4; i++) {
-        auto t = m[i].decompose();
+    for (auto& mob: m) {
+        auto t = mob.decompose();
         t->addTransformXML(xmlDoc, flame);
     }
 
@@ -169,11 +169,6 @@ int main(int argc, char* argv[]) {
     cx r = cx(stod(argv[5]), stod(argv[6]));
 
     Gasket g(p, q, r);
-
-    for (int i = 0; i < 4; i++) {
-        auto t = g.m[i].decompose();
-        t->print();
-    }
 
     g.writeXMLFile("test.flame");
 

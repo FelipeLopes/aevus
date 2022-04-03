@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include <memory>
+#include <vector>
 
 #include <tinyxml2.h>
 
@@ -29,7 +30,7 @@ struct Mobius {
 };
 
 struct Gasket {
-    Mobius m[4];
+    std::vector<Mobius> m;
     Gasket(cx p, cx q, cx r);
     void writeXMLFile(std::string filename);
     tinyxml2::XMLDocument xmlDoc;
