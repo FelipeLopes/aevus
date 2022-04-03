@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 
 #include "transform.h"
@@ -22,7 +23,7 @@ Point Affine::apply(Point p) {
 
 std::string Affine::coefString() {
     std::stringstream buffer;
-    buffer<<x.x<<" "<<x.y<<" "<<y.x<<" "<<y.y<<" "<<o.x<<" "<<o.y;
+    buffer<<std::fixed<<std::setprecision(6)<<x.x<<" "<<x.y<<" "<<y.x<<" "<<y.y<<" "<<o.x<<" "<<o.y;
     return buffer.str();
 }
 
