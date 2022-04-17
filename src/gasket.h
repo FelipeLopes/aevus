@@ -18,6 +18,7 @@ struct Mobius {
     cx apply(cx z);
     cx applyInf();
     Mobius inverse();
+    Mobius diagonalize();
     Mobius compose(Mobius n);
     Mobius conjugate(Mobius s);
     std::shared_ptr<Transform> decompose();

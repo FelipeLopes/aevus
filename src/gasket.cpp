@@ -73,6 +73,12 @@ Mobius Mobius::conjugate(Mobius s) {
     return s.inverse().compose(*this).compose(s);
 }
 
+Mobius Mobius::diagonalize() {
+    cx trace = a + d;
+    cx l = 0.5*(trace + sqrt(trace*trace-4.0));
+    return Mobius(b, l-d, trace-l-a, c);
+}
+
 shared_ptr<Transform> Mobius::decompose() {
     if (fabs(c) > EPS) {
         auto t = make_shared<Spherical>();
@@ -118,8 +124,9 @@ Gasket::Gasket(cx p, cx q, cx r) {
     auto c = invert.conjugate(t);
 
     m.push_back(a.compose(b));
-    m.push_back(c.compose(a));
- 
+    m.push_back(b.compose(c));
+    m.push_back(b.compose(a));
+
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
     xmlDoc.InsertFirstChild(root);
@@ -176,6 +183,10 @@ int main(int argc, char* argv[]) {
     Gasket g(p, q, r);
 
     g.writeXMLFile("test.flame");
+
+    auto k = g.m[0].diagonalize();
+
+    g.m[0].conjugate(k).print();
 
     return 0;
 }
