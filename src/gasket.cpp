@@ -119,13 +119,14 @@ Gasket::Gasket(cx p, cx q, cx r) {
     Mobius cycle = Mobius::fromPointsToPoints(-1, 0, 1, 0, -1, 1);
     Mobius invert = Mobius::scaling(-1);
 
-    auto a = contract.compose(invert).conjugate(t);
-    auto b = cycle.conjugate(t);
-    auto c = invert.conjugate(t);
+    auto a = contract.compose(invert);
+    auto b = cycle;
+    auto c = invert;
 
-    m.push_back(a.compose(b));
-    m.push_back(b.compose(c));
-    m.push_back(b.compose(a));
+    auto k = a.compose(b).diagonalize();
+
+    m.push_back(c.compose(a).conjugate(k));
+    m.push_back(b.compose(c).conjugate(k));
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
@@ -184,9 +185,9 @@ int main(int argc, char* argv[]) {
 
     g.writeXMLFile("test.flame");
 
-    auto k = g.m[0].diagonalize();
-
-    g.m[0].conjugate(k).print();
+    for (auto& mob: g.m){
+        mob.print();
+    }
 
     return 0;
 }
