@@ -130,9 +130,21 @@ Gasket::Gasket(cx p, cx q, cx r) {
     auto c = invert;
 
     auto k = a.compose(b).diagonalize();
+    cx l = a.compose(b).conjugate(k).apply(1);
+    auto lox = Mobius::scaling(l);
 
-    m.push_back(a.compose(b).conjugate(k));
-    m.push_back(b.compose(c).conjugate(k));
+    auto pts = b.compose(c).conjugate(k).fixedPoints();
+    cx fac = pts.second;
+    cx rat = pts.first/pts.second;
+    auto sc = Mobius::scaling(fac);
+
+    cx w = 0.5*(-1+sqrt(3)*1i);
+    auto ell = Mobius::scaling(w).conjugate(Mobius(rat,1,1,1).inverse());
+
+    auto comb = k.compose(sc).inverse().compose(t);
+    
+    m.push_back(lox.compose(ell).conjugate(comb));
+    m.push_back(ell.compose(lox.inverse()).conjugate(comb));
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
@@ -190,17 +202,6 @@ int main(int argc, char* argv[]) {
     Gasket g(p, q, r);
 
     g.writeXMLFile("test.flame");
-
-    for (auto& mob: g.m){
-        mob.print();
-    }
-
-    auto k = g.m[1].fixedPoints();
-    printCx(k.first);
-    printCx(k.second);
-
-    printCx(g.m[1].apply(k.first));
-    printCx(g.m[1].apply(k.second));
 
     return 0;
 }
