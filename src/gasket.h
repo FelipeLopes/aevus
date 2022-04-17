@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <cmath>
+#include <utility>
 #include <memory>
 #include <vector>
 
@@ -21,6 +22,7 @@ struct Mobius {
     Mobius diagonalize();
     Mobius compose(Mobius n);
     Mobius conjugate(Mobius s);
+    std::pair<cx,cx> fixedPoints();
     std::shared_ptr<Transform> decompose();
 
     static Mobius scaling(cx a);

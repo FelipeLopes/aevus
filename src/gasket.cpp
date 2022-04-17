@@ -79,6 +79,12 @@ Mobius Mobius::diagonalize() {
     return Mobius(b, l-d, trace-l-a, c);
 }
 
+pair<cx,cx> Mobius::fixedPoints() {
+    cx s = a - d;
+    cx e = sqrt((a-d)*(a-d)+4.0*b*c);
+    return make_pair((s+e)/(2.0*c),(s-e)/(2.0*c));
+}
+
 shared_ptr<Transform> Mobius::decompose() {
     if (fabs(c) > EPS) {
         auto t = make_shared<Spherical>();
@@ -125,7 +131,7 @@ Gasket::Gasket(cx p, cx q, cx r) {
 
     auto k = a.compose(b).diagonalize();
 
-    m.push_back(c.compose(a).conjugate(k));
+    m.push_back(a.compose(b).conjugate(k));
     m.push_back(b.compose(c).conjugate(k));
 
     auto root = xmlDoc.NewElement("Flames");
@@ -188,6 +194,13 @@ int main(int argc, char* argv[]) {
     for (auto& mob: g.m){
         mob.print();
     }
+
+    auto k = g.m[1].fixedPoints();
+    printCx(k.first);
+    printCx(k.second);
+
+    printCx(g.m[1].apply(k.first));
+    printCx(g.m[1].apply(k.second));
 
     return 0;
 }
