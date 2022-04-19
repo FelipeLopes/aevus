@@ -5,6 +5,7 @@
 using namespace std;
 
 const double EPS = 1e-10;
+const double PI = 2*acos(0);
 
 Mobius::Mobius() {
 }
@@ -114,37 +115,19 @@ shared_ptr<Transform> Mobius::decompose() {
     }
 }
 
-Gasket::Gasket(cx p, cx q, cx r) {
-    Mobius s = Mobius::fromPointsToPoints(-1, 1i, 1, -1, 0, 1);
-    cx pa = s.apply(-1+2*1i);
-    cx pb = s.apply(1+2*1i);
+Gasket::Gasket(double fu, double v, double fv) {
+    double u = sqrt(1+v*v);
+    cx ua = fu*2.0*PI*1i;
+    cx va = fv*2.0*PI*1i;
+    cx uc = u*exp(ua);
+    cx vc = v*exp(va);
 
-    Mobius t = Mobius::fromPointsToPoints(p, q, r, -1, 0, 1);
-    
-    Mobius contract = Mobius::fromPointsToPoints(-1, 0, 1, pa, 0, pb);
-    Mobius cycle = Mobius::fromPointsToPoints(-1, 0, 1, 0, -1, 1);
-    Mobius invert = Mobius::scaling(-1);
+    auto tr = Mobius::translation(2);
+    auto rot = Mobius::scaling(0.5*(-1+sqrt(3)*1i)).conjugate(Mobius(sqrt(3),-sqrt(3),1,1).inverse());
+    auto s = Mobius(0,1i,1,0).compose(Mobius(uc,vc,conj(vc),conj(uc)));
 
-    auto a = contract.compose(invert);
-    auto b = cycle;
-    auto c = invert;
-
-    auto k = a.compose(b).diagonalize();
-    cx l = a.compose(b).conjugate(k).apply(1);
-    auto lox = Mobius::scaling(l);
-
-    auto pts = b.compose(c).conjugate(k).fixedPoints();
-    cx fac = pts.second;
-    cx rat = pts.first/pts.second;
-    auto sc = Mobius::scaling(fac);
-
-    cx w = 0.5*(-1+sqrt(3)*1i);
-    auto ell = Mobius::scaling(w).conjugate(Mobius(rat,1,1,1).inverse());
-
-    auto comb = k.compose(sc).inverse().compose(t);
-    
-    m.push_back(lox.compose(ell).conjugate(comb));
-    m.push_back(ell.compose(lox.inverse()).conjugate(comb));
+    m.push_back(tr.conjugate(s));
+    m.push_back(rot.compose(tr.inverse()).conjugate(s));
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
@@ -199,7 +182,7 @@ int main(int argc, char* argv[]) {
     cx q = cx(stod(argv[3]), stod(argv[4]));
     cx r = cx(stod(argv[5]), stod(argv[6]));
 
-    Gasket g(p, q, r);
+    Gasket g(0.1, 0.3, 0.5);
 
     g.writeXMLFile("test.flame");
 

@@ -34,7 +34,7 @@ struct Mobius {
 
 struct Gasket {
     std::vector<Mobius> m;
-    Gasket(cx p, cx q, cx r);
+    Gasket(double fu, double v, double fv);
     void writeXMLFile(std::string filename);
     tinyxml2::XMLDocument xmlDoc;
 };

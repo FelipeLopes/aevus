@@ -1,7 +1,7 @@
 <Flames name="gasket">
     <flame name="Gasket" background="0 0 0" version="Apophysis 2.09" size="600 600" center="0 0" scale="144" oversample="1" filter="0.2" quality="1" brightness="4" gamma="4" gamma_threshold="0.04">
-        <xform weight="0.5" color="0" spherical="1" coefs="1.000000 0.000000 0.000000 -1.000000 0.000000 -0.333333" post="0.111111 -0.000000 0.000000 0.111111 0.000000 0.333333"/>
-        <xform weight="0.5" color="0" spherical="1" coefs="1.000000 0.000000 0.000000 -1.000000 -0.164706 0.141176" post="-0.016194 -0.104637 0.104637 -0.016194 0.129412 -0.317647"/>
+        <xform weight="0.5" color="0" spherical="1" coefs="1.000000 0.000000 0.000000 -1.000000 0.203795 -0.310650" post="-0.170233 -0.123682 0.123682 -0.170233 0.668734 -0.027148"/>
+        <xform weight="0.5" color="0" spherical="1" coefs="1.000000 0.000000 0.000000 -1.000000 -0.224419 0.066816" post="0.336535 -0.128567 0.128567 0.336535 -0.474742 -0.414526"/>
         <palette count="256" format="RGB">
 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
