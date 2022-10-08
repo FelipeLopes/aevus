@@ -36,7 +36,6 @@ __pycache__/
 
 #bazel symlinks
 bazel-*
-bazel-gasket-ifs/
 
 #machine specific conan files
 conandeps/dependencies.bzl

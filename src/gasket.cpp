@@ -126,6 +126,10 @@ Gasket::Gasket(double fu, double v, double fv) {
     auto rot = Mobius::scaling(0.5*(-1+sqrt(3)*1i)).conjugate(Mobius(sqrt(3),-sqrt(3),1,1).inverse());
     auto s = Mobius(0,1i,1,0).compose(Mobius(uc,vc,conj(vc),conj(uc)));
 
+    double r = 1/(2+sqrt(3));
+    auto kk = Mobius::fromPointsToPoints(1, -1, 0, r, r*0.5*(-1+sqrt(3)*1i), r*0.5*(-1-sqrt(3)*1i));
+    kk.print();
+
     m.push_back(tr.conjugate(s));
     m.push_back(rot.compose(tr.inverse()).conjugate(s));
 
@@ -170,7 +174,7 @@ void Gasket::writeXMLFile(string filename) {
     xmlDoc.SaveFile(filename.c_str());
 }
 
-int main(int argc, char* argv[]) {
+int genGasket(int argc, char* argv[]) {
     ios::sync_with_stdio(false);
 
     if (argc < 7) {
@@ -182,7 +186,7 @@ int main(int argc, char* argv[]) {
     cx q = cx(stod(argv[3]), stod(argv[4]));
     cx r = cx(stod(argv[5]), stod(argv[6]));
 
-    Gasket g(0.1, 0.3, 0.5);
+    Gasket g(0, 0, 0);
 
     g.writeXMLFile("test.flame");
 

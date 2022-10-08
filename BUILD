@@ -11,7 +11,6 @@ cc_library(
 cc_binary(
     name = "gasket",
     deps = [
-        "@tinyxml2//:tinyxml2",
         ":gasket-lib",
     ],
 )
