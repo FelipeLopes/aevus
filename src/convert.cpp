@@ -39,7 +39,7 @@ std::string hexstr(int x) {
     return c;
 }
 
-int main(int argc, char* argv[]) {
+int test(int argc, char* argv[]) {
     tinyxml2::XMLDocument xmlDoc;
     if (argc < 2) {
         return 1;
