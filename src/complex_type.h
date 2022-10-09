@@ -13,7 +13,7 @@ public:
     Complex<T> conj();
 };
 
-template<typename T>
+template <typename T>
 T Complex<T>::zero() {
     T u(0);
     return u;

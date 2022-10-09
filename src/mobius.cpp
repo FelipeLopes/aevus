@@ -3,7 +3,7 @@
 #include "complex_type.h"
 #include "mobius.h"
 
-template<typename T>
+template <typename T>
 Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_, 
     Complex<T> c_, Complex<T> d_): a(a_),b(b_),c(c_),d(d_) {
 
@@ -38,6 +38,21 @@ Mobius<mpq_class> su11(mpz_class m, mpz_class n, mpz_class p, mpz_class q) {
     Complex<mpq_class> u(a, b);
     Complex<mpq_class> v(c, d);
     return Mobius<mpq_class>(u,v,v.conj(),u.conj());
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::inverse() {
+    return Mobius<T>(d,-b,-c,a);
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::compose(Mobius<T> n) {
+    return Mobius<T>(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d); 
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::conjugate(Mobius<T> s) {
+    return s.compose(*this).compose(s.inverse());
 }
 
 template class Mobius<mpq_class>;
