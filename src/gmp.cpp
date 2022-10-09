@@ -17,17 +17,12 @@ void print(mpq_class k) {
 }
 
 int main() {
-    printf("Hello GMP\n");
-    mpq_class zero(0);
-    mpq_class one(1);
-    Complex<mpq_class> cOne(one, zero);
-    Complex<mpq_class> cI(zero, one);
-    mpq_class three(3);
-    mpq_class four(4);
-    Complex<mpq_class> k = three*cOne + four*cI;
-    print(cOne/k);
     try {
-        Mobius<mpq_class> m(k,k,k,k);
+        auto m = su11(1,4,2,3);
+        print(m.a);
+        print(m.b);
+        print(m.c);
+        print(m.d);
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
