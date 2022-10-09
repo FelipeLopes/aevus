@@ -187,15 +187,8 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
         Complex<T>(0), Complex<T>(1), Complex<T>(-1),
         Complex<T>(1), Complex<T>(-1), Complex<T>(0)).conjugate(m);
 
-    print(tr.a);
-    print(tr.b);
-    print(tr.c);
-    print(tr.d);
-    printf("\n");
-    print(rot.a);
-    print(rot.b);
-    print(rot.c);
-    print(rot.d);
+    tr.normalize();
+    rot.normalize();
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");

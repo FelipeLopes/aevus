@@ -13,6 +13,7 @@ public:
     Mobius<T> compose(Mobius<T> n);
     Mobius<T> conjugate(Mobius<T> s);
     Mobius<T> flip();
+    void normalize();
     static Mobius<T> fromPoints(Complex<T> p, Complex<T> q, Complex<T> r);
     static Mobius<T> fromPointsToPoints(Complex<T> p1, Complex<T> q1,
         Complex<T> r1, Complex<T> p2, Complex<T> q2, Complex<T> r2);

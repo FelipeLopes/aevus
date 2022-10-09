@@ -69,6 +69,15 @@ Mobius<T> Mobius<T>::flip() {
 }
 
 template <typename T>
+void Mobius<T>::normalize() {
+    Complex<T> sdet = squareRoot<Complex<T>>(a*d - b*c);
+    a = a / sdet;
+    b = b / sdet;
+    c = c / sdet;
+    d = d / sdet;
+}
+
+template <typename T>
 Mobius<T> Mobius<T>::compose(Mobius<T> n) {
     return Mobius<T>(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d); 
 }
