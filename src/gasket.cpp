@@ -127,7 +127,7 @@ void print(Complex<mpq_class> c) {
 }
 
 template <typename T>
-Gasket<T>::Gasket(T r1, T r2, Complex<T> f) {
+Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
 
     if (r2 > r1) {
         throw std::invalid_argument("First radius parameter should be greater than "
@@ -177,10 +177,25 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f) {
         Complex<T>(0),
         p1,p2,v3);
 
-    print(m.a);
-    print(m.b);
-    print(m.c);
-    print(m.d);
+    if (flip) {
+        m = m.flip();
+    }
+
+    tr = Mobius<T>(Complex<T>(1),Complex<T>(0),
+        Complex<T>(2)*ii,Complex<T>(1)).conjugate(m);
+    rot = Mobius<T>::fromPointsToPoints(
+        Complex<T>(0), Complex<T>(1), Complex<T>(-1),
+        Complex<T>(1), Complex<T>(-1), Complex<T>(0)).conjugate(m);
+
+    print(tr.a);
+    print(tr.b);
+    print(tr.c);
+    print(tr.d);
+    printf("\n");
+    print(rot.a);
+    print(rot.b);
+    print(rot.c);
+    print(rot.d);
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");

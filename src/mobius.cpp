@@ -4,6 +4,12 @@
 #include "mobius.h"
 
 template <typename T>
+Mobius<T>::Mobius(): a(Complex<T>(1)),b(Complex<T>(0)),
+    c(Complex<T>(0)),d(Complex<T>(1)) {
+
+}
+
+template <typename T>
 Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_, 
     Complex<T> c_, Complex<T> d_): a(a_),b(b_),c(c_),d(d_) {
 
@@ -11,6 +17,18 @@ Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_,
     if (det == Complex<T>(0)) {
         throw std::invalid_argument("Mobius matrix is singular.");
     }
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::fromPoints(Complex<T> p, Complex<T> q, Complex<T> r) {
+    return Mobius<T>(q-r,-p*(q-r),(q-p),-r*(q-p));
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::fromPointsToPoints(Complex<T> p1, Complex<T> q1,
+    Complex<T> r1, Complex<T> p2, Complex<T> q2, Complex<T> r2) {
+
+    return fromPoints(p2, q2, r2).inverse().compose(fromPoints(p1, q1, r1));
 }
 
 Mobius<mpq_class> su11(mpz_class m, mpz_class n, mpz_class p, mpz_class q) {
@@ -43,6 +61,11 @@ template <typename T>
 Mobius<T> Mobius<T>::inverse() {
     Complex<T> sc = Complex<T>(1)/(a*d-b*c);
     return Mobius<T>(sc*d,-sc*b,-sc*c,sc*a);
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::flip() {
+    return Mobius<T>(a.conj(),b.conj(),c.conj(),d.conj());
 }
 
 template <typename T>
