@@ -26,12 +26,13 @@ Complex<T> Complex<T>::conj() {
     return Complex<T>(real, -imag);
 }
 
-mpz_class integerSqrt(mpz_class s) {
+template <>
+mpz_class squareRoot<mpz_class>(mpz_class s) {
     if (s < 0) {
         throw std::invalid_argument("Square root of negative integer.");
     }
-    if (s == 0) {
-        return 0;
+    if (s == 0 || s == 1) {
+        return s;
     }
     mpz_class x0 = s / 2;
     mpz_class x1 = (x0 + s / x0) / 2;
@@ -45,20 +46,21 @@ mpz_class integerSqrt(mpz_class s) {
     return x0;
 }
 
-mpq_class rationalSqrt(mpq_class x) {
-    auto n = integerSqrt(x.get_num());
-    auto d = integerSqrt(x.get_den());
+template <>
+mpq_class squareRoot<mpq_class>(mpq_class x) {
+    x.canonicalize();
+    auto n = squareRoot<mpz_class>(x.get_num());
+    auto d = squareRoot<mpz_class>(x.get_den());
     return mpq_class(n.get_str()+"/"+d.get_str());
 }
 
-Complex<mpq_class> complexSqrt(Complex<mpq_class> z) {
+template<>
+Complex<mpq_class> squareRoot<Complex<mpq_class>>(Complex<mpq_class> z) {
     auto x = z.real;
     auto y = z.imag;
-    auto l = rationalSqrt(z.norm());
-    mpq_class var = (l+x)/2;
-    printf("%s\n", l.get_str().c_str());
-    auto u = rationalSqrt((l+x)/2);
-    auto v = rationalSqrt((l-x)/2);
+    auto l = squareRoot<mpq_class>(z.norm());
+    auto u = squareRoot<mpq_class>((l+x)/2);
+    auto v = squareRoot<mpq_class>((l-x)/2);
     if (y < 0) {
         v = -v;
     }

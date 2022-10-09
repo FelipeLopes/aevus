@@ -66,8 +66,14 @@ Complex<T> operator/(Complex<T> a, Complex<T> b) {
     return scale*(a*b.conj());
 }
 
-mpz_class integerSqrt(mpz_class s);
+template <typename T>
+T squareRoot(T x);
 
-mpq_class rationalSqrt(mpq_class x);
+template <>
+mpz_class squareRoot<mpz_class>(mpz_class s);
 
-Complex<mpq_class> complexSqrt(Complex<mpq_class> z);
+template <>
+mpq_class squareRoot<mpq_class>(mpq_class x);
+
+template<>
+Complex<mpq_class> squareRoot<Complex<mpq_class>>(Complex<mpq_class> z);

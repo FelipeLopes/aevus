@@ -1,4 +1,5 @@
 #include <gmpxx.h>
+#include "gasket.h"
 #include "complex_type.h"
 #include "mobius.h"
 
@@ -26,10 +27,8 @@ int main() {
             Complex<mpq_class>(-1),
             Complex<mpq_class>(0),
             p1,p2,p3);
-        print(m.a);
-        print(m.b);
-        print(m.c);
-        print(m.d);
+        mpq_class v(4,9);
+        Gasket<mpq_class> g(mpq_class(6,11), mpq_class(6,14));
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
