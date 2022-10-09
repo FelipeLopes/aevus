@@ -135,7 +135,7 @@ Gasket<T>::Gasket(T r1, T r2) {
     T s1 = a + b + c;
     T s2 = a*b + b*c + c*a;
 
-    auto d = s1 -2*squareRoot<T>(s2);
+    auto d = s1 - 2*squareRoot<T>(s2);
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
