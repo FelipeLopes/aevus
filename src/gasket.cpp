@@ -2,6 +2,7 @@
 #include <gmpxx.h>
 
 #include "complex_type.h"
+#include "mobius.h"
 #include "gasket.h"
 
 using namespace std;
@@ -117,8 +118,16 @@ shared_ptr<Transform> Mobius_::decompose() {
     }
 }
 
+void print(Complex<mpq_class> c) {
+    printf("(%s/%s)+(%s/%s)*i\n",
+        c.real.get_num().get_str().c_str(),
+        c.real.get_den().get_str().c_str(),
+        c.imag.get_num().get_str().c_str(),
+        c.imag.get_den().get_str().c_str());
+}
+
 template <typename T>
-Gasket<T>::Gasket(T r1, T r2) {
+Gasket<T>::Gasket(T r1, T r2, Complex<T> f) {
 
     if (r2 > r1) {
         throw std::invalid_argument("First radius parameter should be greater than "
@@ -129,13 +138,49 @@ Gasket<T>::Gasket(T r1, T r2) {
         throw std::invalid_argument("All radii should be positive.");
     }
 
+    if (f.norm() != 1) {
+        throw std::invalid_argument("Phase must have unit norm.");
+    }
+
     T a = -1;
     T b = 1/r1;
     T c = 1/r2;
     T s1 = a + b + c;
     T s2 = a*b + b*c + c*a;
 
-    auto d = s1 - 2*squareRoot<T>(s2);
+    T e = 2*squareRoot<T>(s2);
+    T d = s1 - e;
+    if (d <= 0) {
+        d =  s1 + e;
+    }
+    if (d < c) {
+        throw std::invalid_argument("Radii given are not the largest circles.");
+    }
+
+    T l1 = r1 + r2;
+    T l2 = 1 - r1;
+    T l3 = 1 - r2;
+    T cosx = (l2*l2+l3*l3-l1*l1)/(2*l2*l3);
+    T sinx = squareRoot<T>(1-cosx*cosx);
+
+    Complex<T> ii(T(0),T(1));
+    Complex<T> p1 = f;
+    Complex<T> p2 = p1*(Complex<T>(cosx)+Complex<T>(sinx)*ii);
+
+    Complex<T> v1 = (Complex<T>(1)-Complex<T>(r1))*p1;
+    Complex<T> v2 = (Complex<T>(1)-Complex<T>(r2))*p2;
+    Complex<T> v3 = (r2*v1+r1*v2)/Complex<T>(r1+r2);
+
+    auto m = Mobius<T>::fromPointsToPoints(
+        Complex<T>(1),
+        Complex<T>(-1),
+        Complex<T>(0),
+        p1,p2,v3);
+
+    print(m.a);
+    print(m.b);
+    print(m.c);
+    print(m.d);
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");

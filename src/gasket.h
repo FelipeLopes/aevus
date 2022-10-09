@@ -8,6 +8,7 @@
 
 #include <tinyxml2.h>
 
+#include "complex_type.h"
 #include "transform.h"
 
 struct Mobius_ {
@@ -35,7 +36,7 @@ struct Mobius_ {
 template <typename T>
 class Gasket {
 public:
-    Gasket(T r1, T r2);
+    Gasket(T r1, T r2, Complex<T> f);
     void writeXMLFile(std::string filename);
     tinyxml2::XMLDocument xmlDoc;
 };

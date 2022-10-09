@@ -3,14 +3,6 @@
 #include "complex_type.h"
 #include "mobius.h"
 
-void print(Complex<mpq_class> c) {
-    printf("(%s/%s)+(%s/%s)*i\n", 
-        c.real.get_num().get_str().c_str(),
-        c.real.get_den().get_str().c_str(),
-        c.imag.get_num().get_str().c_str(),
-        c.imag.get_den().get_str().c_str());
-}
-
 void print(mpq_class k) {
     printf("%s/%s\n",
         k.get_num().get_str().c_str(),
@@ -28,7 +20,7 @@ int main() {
             Complex<mpq_class>(0),
             p1,p2,p3);
         mpq_class v(4,9);
-        Gasket<mpq_class> g(mpq_class(6,11), mpq_class(6,14));
+        Gasket<mpq_class> g(mpq_class(6,11), mpq_class(6,14), Complex<mpq_class>(1));
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
