@@ -115,23 +115,8 @@ shared_ptr<Transform> Mobius::decompose() {
     }
 }
 
-Gasket::Gasket(double fu, double v, double fv) {
-    double u = sqrt(1+v*v);
-    cx ua = fu*2.0*PI*1i;
-    cx va = fv*2.0*PI*1i;
-    cx uc = u*exp(ua);
-    cx vc = v*exp(va);
-
-    auto tr = Mobius::translation(2);
-    auto rot = Mobius::scaling(0.5*(-1+sqrt(3)*1i)).conjugate(Mobius(sqrt(3),-sqrt(3),1,1).inverse());
-    auto s = Mobius(0,1i,1,0).compose(Mobius(uc,vc,conj(vc),conj(uc)));
-
-    double r = 1/(2+sqrt(3));
-    auto kk = Mobius::fromPointsToPoints(1, -1, 0, r, r*0.5*(-1+sqrt(3)*1i), r*0.5*(-1-sqrt(3)*1i));
-    kk.print();
-
-    m.push_back(tr.conjugate(s));
-    m.push_back(rot.compose(tr.inverse()).conjugate(s));
+template <typename T>
+Gasket<T>::Gasket(T r1, T r2) {
 
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
@@ -153,11 +138,6 @@ Gasket::Gasket(double fu, double v, double fv) {
     flame->SetAttribute("gamma_threshold", "0.04");
     root->InsertEndChild(flame);
 
-    for (auto& mob: m) {
-        auto t = mob.decompose();
-        t->addTransformXML(xmlDoc, flame);
-    }
-
     auto palette = xmlDoc.NewElement("palette");
     palette->SetAttribute("count", "256");
     palette->SetAttribute("format", "RGB");
@@ -170,7 +150,8 @@ Gasket::Gasket(double fu, double v, double fv) {
     flame->InsertEndChild(palette);
 }
 
-void Gasket::writeXMLFile(string filename) {
+template <typename T>
+void Gasket<T>::writeXMLFile(string filename) {
     xmlDoc.SaveFile(filename.c_str());
 }
 
@@ -185,10 +166,6 @@ int genGasket(int argc, char* argv[]) {
     cx p = cx(stod(argv[1]), stod(argv[2]));
     cx q = cx(stod(argv[3]), stod(argv[4]));
     cx r = cx(stod(argv[5]), stod(argv[6]));
-
-    Gasket g(0, 0, 0);
-
-    g.writeXMLFile("test.flame");
 
     return 0;
 }

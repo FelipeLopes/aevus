@@ -32,9 +32,9 @@ struct Mobius {
     static Mobius fromPointsToPoints(cx p1, cx q1, cx r1, cx p2, cx q2, cx r2);
 };
 
-struct Gasket {
-    std::vector<Mobius> m;
-    Gasket(double fu, double v, double fv);
+template <typename T>
+class Gasket {
+    Gasket(T r1, T r2);
     void writeXMLFile(std::string filename);
     tinyxml2::XMLDocument xmlDoc;
 };
