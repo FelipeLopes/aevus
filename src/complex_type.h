@@ -65,3 +65,9 @@ Complex<T> operator/(Complex<T> a, Complex<T> b) {
     T scale = (Complex<T>::unit())/b.norm();
     return scale*(a*b.conj());
 }
+
+mpz_class integerSqrt(mpz_class s);
+
+mpq_class rationalSqrt(mpq_class x);
+
+Complex<mpq_class> complexSqrt(Complex<mpq_class> z);

@@ -8,9 +8,8 @@ Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_,
     Complex<T> c_, Complex<T> d_): a(a_),b(b_),c(c_),d(d_) {
 
     auto det = a*d - b*c;
-    auto one = Complex<T>::unit();
-    if (det != Complex<T>(one)) {
-        throw std::invalid_argument("Mobius matrix does not have unit determinant.");
+    if (det == Complex<T>(0)) {
+        throw std::invalid_argument("Mobius matrix is singular.");
     }
 }
 
@@ -42,7 +41,8 @@ Mobius<mpq_class> su11(mpz_class m, mpz_class n, mpz_class p, mpz_class q) {
 
 template <typename T>
 Mobius<T> Mobius<T>::inverse() {
-    return Mobius<T>(d,-b,-c,a);
+    Complex<T> sc = Complex<T>(1)/(a*d-b*c);
+    return Mobius<T>(sc*d,-sc*b,-sc*c,sc*a);
 }
 
 template <typename T>
