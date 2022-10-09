@@ -81,3 +81,25 @@ void Linear::addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* n
 Point Linear::apply(Point p) {
     return pre.apply(p);
 }
+
+XForm::XForm() {
+    initParams();
+    coefs = {1, 0, 0, 1, 0, 0};
+    post = {1, 0, 0, 1, 0, 0};
+}
+
+
+XForm::XForm(std::string variation, std::array<double, 6> coefs_,
+    std::array<double, 6> post_) {
+
+    initParams();
+    coefs = coefs_;
+    post = post_;
+    variations[variation] = 1;
+}
+
+void XForm::initParams() {
+    weight = 0.5;
+    color = 0;
+    opacity = 1;
+}

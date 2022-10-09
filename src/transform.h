@@ -2,6 +2,9 @@
 
 #include <string>
 #include <complex>
+#include <array>
+#include <map>
+#include <vector>
 
 #include <tinyxml2.h>
 
@@ -39,4 +42,16 @@ struct Linear : public Transform {
     void print();
     Point apply(Point p);
     void addTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node);
+};
+
+class XForm {
+public:
+    XForm();
+    XForm(std::string variation, std::array<double, 6> coefs, std::array<double, 6> post);
+    double weight, color, opacity;
+    std::map<std::string, double> variations;
+    std::vector<double> chaos;
+    std::array<double, 6> coefs, post;
+private:
+    void initParams();
 };
