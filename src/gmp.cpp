@@ -6,6 +6,7 @@
 #include "gasket.h"
 #include "complex_type.h"
 #include "mobius.h"
+#include "sdf.h"
 
 int main() {
     try {
@@ -13,13 +14,14 @@ int main() {
         tinyxml2::XMLDocument xmlDoc;
         //auto node = g.toFlame().toXMLNode(xmlDoc);
         mpq_class prec(1);
-        for (int i=0; i<8; i++) {
+        for (int i=0; i<10; i++) {
             prec = prec / 10;
         }
         auto sc = exp<mpq_class>(mpq_class(1), prec);
         g.setScale(exp<mpq_class>(mpq_class(1), prec));
         g.selectZoomPoint(314159, 200);
         g.toFlame();
+        Sdf<mpq_class> sdf(1, 2, 3 , 4);
         //xmlDoc.InsertFirstChild(node);
         //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {
