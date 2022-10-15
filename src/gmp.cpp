@@ -21,7 +21,8 @@ int main() {
         g.setScale(exp<mpq_class>(mpq_class(1), prec));
         g.selectZoomPoint(314159, 200);
         g.toFlame();
-        Sdf<mpq_class> sdf(1, 2, 3 , 4);
+        Sdf<mpq_class> sdf = Sdf<mpq_class>::fromPoints(
+            Complex<mpq_class>(-1), Complex<mpq_class>(0,-1), Complex<mpq_class>(1));
         //xmlDoc.InsertFirstChild(node);
         //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {
