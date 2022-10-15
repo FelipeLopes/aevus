@@ -89,7 +89,6 @@ XForm::XForm() {
     post = {1, 0, 0, 1, 0, 0};
 }
 
-
 XForm::XForm(std::string variation, std::array<double, 6> coefs_,
     std::array<double, 6> post_) {
 

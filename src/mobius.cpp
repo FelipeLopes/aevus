@@ -11,7 +11,7 @@ Mobius<T>::Mobius(): a(Complex<T>(1)),b(Complex<T>(0)),
 }
 
 template <typename T>
-Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_, 
+Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_,
     Complex<T> c_, Complex<T> d_): a(a_),b(b_),c(c_),d(d_) {
 
     auto det = a*d - b*c;
@@ -23,6 +23,16 @@ Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_,
 template <typename T>
 Complex<T> Mobius<T>::apply(Complex<T> z) {
     return (a*z+b)/(c*z+d);
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::scaling(Complex<T> a) {
+    return Mobius<T>(a, Complex<T>(0), Complex<T>(0), Complex<T>(1));
+}
+
+template <typename T>
+Mobius<T> Mobius<T>::translation(Complex<T> b) {
+    return Mobius<T>(Complex<T>(1), b, Complex<T>(0), Complex<T>(1));
 }
 
 template <typename T>
@@ -85,7 +95,7 @@ void Mobius<T>::normalize() {
 
 template <typename T>
 Mobius<T> Mobius<T>::compose(Mobius<T> n) {
-    return Mobius<T>(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d); 
+    return Mobius<T>(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d);
 }
 
 template <typename T>
