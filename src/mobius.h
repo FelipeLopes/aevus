@@ -23,5 +23,3 @@ public:
     static Mobius<T> fromPointsToPoints(Complex<T> p1, Complex<T> q1,
         Complex<T> r1, Complex<T> p2, Complex<T> q2, Complex<T> r2);
 };
-
-Mobius<mpq_class> su11(mpz_class m, mpz_class n, mpz_class p, mpz_class q);
