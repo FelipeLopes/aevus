@@ -235,9 +235,9 @@ int genGasket(int argc, char* argv[]) {
         return 1;
     }
 
-    cx p = cx(stod(argv[1]), stod(argv[2]));
-    cx q = cx(stod(argv[3]), stod(argv[4]));
-    cx r = cx(stod(argv[5]), stod(argv[6]));
+    //cx p = cx(stod(argv[1]), stod(argv[2]));
+    //cx q = cx(stod(argv[3]), stod(argv[4]));
+    //cx r = cx(stod(argv[5]), stod(argv[6]));
 
     return 0;
 }

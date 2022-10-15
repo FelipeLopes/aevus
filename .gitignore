@@ -50,3 +50,6 @@ conandeps/graph_info.json
 
 #vim temporary files
 *~
+
+#clang compile commands
+compile_commands.json
