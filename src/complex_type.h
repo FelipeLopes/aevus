@@ -1,6 +1,9 @@
 #pragma once
 
+#include <complex>
 #include <gmpxx.h>
+
+typedef std::complex<double> cx;
 
 template <typename T>
 class Complex {
@@ -10,22 +13,9 @@ public:
     Complex(T a, T b);
     T real, imag;
     T norm();
-    static T zero();
-    static T unit();
     Complex<T> conj();
+    cx toCxDouble();
 };
-
-template <typename T>
-T Complex<T>::zero() {
-    T u(0);
-    return u;
-}
-
-template<typename T>
-T Complex<T>::unit() {
-    T u(1);
-    return u;
-}
 
 template<typename T>
 bool operator==(Complex<T> a, Complex<T> b) {
@@ -64,7 +54,7 @@ Complex<T> operator*(Complex<T> a, Complex<T> b) {
 
 template<typename T>
 Complex<T> operator/(Complex<T> a, Complex<T> b) {
-    T scale = (Complex<T>::unit())/b.norm();
+    T scale = T(1)/b.norm();
     return scale*(a*b.conj());
 }
 

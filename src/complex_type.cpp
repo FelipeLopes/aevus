@@ -2,12 +2,12 @@
 #include "complex_type.h"
 
 template <typename T>
-Complex<T>::Complex(): real(Complex<T>::zero()), imag(Complex<T>::zero()) {
+Complex<T>::Complex(): real(T(0)), imag(T(0)) {
 
 }
 
 template <typename T>
-Complex<T>::Complex(T a): real(a), imag(Complex<T>::zero()) {
+Complex<T>::Complex(T a): real(a), imag(T(0)) {
 
 }
 
@@ -24,6 +24,13 @@ T Complex<T>::norm() {
 template <typename T>
 Complex<T> Complex<T>::conj() {
     return Complex<T>(real, -imag);
+}
+
+template<>
+cx Complex<mpq_class>::toCxDouble() {
+    mpf_class a(real);
+    mpf_class b(imag);
+    return a.get_d() + 1i*b.get_d();
 }
 
 template <>

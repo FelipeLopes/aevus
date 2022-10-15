@@ -2,6 +2,7 @@
 #include <exception>
 #include "complex_type.h"
 #include "mobius.h"
+#include "transform.h"
 
 template <typename T>
 Mobius<T>::Mobius(): a(Complex<T>(1)),b(Complex<T>(0)),
@@ -85,6 +86,15 @@ Mobius<T> Mobius<T>::compose(Mobius<T> n) {
 template <typename T>
 Mobius<T> Mobius<T>::conjugate(Mobius<T> s) {
     return s.compose(*this).compose(s.inverse());
+}
+
+template <typename T>
+XForm Mobius<T>::toXForm() {
+    if (c == Complex<T>(0)) {
+        return XForm("linear", {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0});
+    } else {
+        return XForm("spherical", {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0});
+    }
 }
 
 template class Mobius<mpq_class>;
