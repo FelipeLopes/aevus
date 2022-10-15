@@ -47,11 +47,16 @@ struct Linear : public Transform {
 class XForm {
 public:
     XForm();
-    XForm(std::string variation, std::array<double, 6> coefs, std::array<double, 6> post);
+    XForm(std::string variation,
+        std::array<double, 6> coefs = {1, 0, 0, 1, 0, 0},
+        std::array<double, 6> post = {1, 0, 0, 1, 0, 0});
     double weight, color, opacity;
     std::map<std::string, double> variations;
     std::vector<double> chaos;
-    std::array<double, 6> coefs, post;
+    std::string coefsString();
+    std::string postString();
 private:
+    std::string arrayString(std::array<double, 6>);
+    std::array<double, 6> coefs, post;
     void initParams();
 };

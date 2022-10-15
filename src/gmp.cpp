@@ -21,6 +21,10 @@ int main() {
             p1,p2,p3);
         mpq_class v(4,9);
         Gasket<mpq_class> g(mpq_class(6,11), mpq_class(6,14), Complex<mpq_class>(1));
+        Mobius<mpq_class> lin(Complex<mpq_class>(2),
+            Complex<mpq_class>(3), Complex<mpq_class>(0), Complex<mpq_class>(1));
+        auto xForm = lin.toXForm();
+        printf("%s\n", xForm.coefsString().c_str());
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }

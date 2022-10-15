@@ -1,3 +1,4 @@
+#include <array>
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -102,4 +103,24 @@ void XForm::initParams() {
     weight = 0.5;
     color = 0;
     opacity = 1;
+}
+
+std::string XForm::coefsString() {
+    return arrayString(coefs);
+}
+
+std::string XForm::postString() {
+    return arrayString(post);
+}
+
+std::string XForm::arrayString(std::array<double, 6> arr) {
+    std::stringstream buffer;
+    buffer<<std::fixed<<std::setprecision(6);
+    for (int i=0; i<6; i++) {
+        buffer<<arr[i];
+        if (i < 5) {
+            buffer<<" ";
+        }
+    }
+    return buffer.str();
 }

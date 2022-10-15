@@ -10,6 +10,7 @@ public:
     Mobius();
     Mobius(Complex<T> a, Complex<T> b, Complex<T> c, Complex<T> d);
     Complex<T> a, b, c, d;
+    Complex<T> apply(Complex<T> z);
     Mobius<T> inverse();
     Mobius<T> compose(Mobius<T> n);
     Mobius<T> conjugate(Mobius<T> s);

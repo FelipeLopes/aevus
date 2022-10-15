@@ -21,6 +21,11 @@ Mobius<T>::Mobius(Complex<T> a_, Complex<T> b_,
 }
 
 template <typename T>
+Complex<T> Mobius<T>::apply(Complex<T> z) {
+    return (a*z+b)/(c*z+d);
+}
+
+template <typename T>
 Mobius<T> Mobius<T>::fromPoints(Complex<T> p, Complex<T> q, Complex<T> r) {
     return Mobius<T>(q-r,-p*(q-r),(q-p),-r*(q-p));
 }
@@ -91,7 +96,18 @@ Mobius<T> Mobius<T>::conjugate(Mobius<T> s) {
 template <typename T>
 XForm Mobius<T>::toXForm() {
     if (c == Complex<T>(0)) {
-        return XForm("linear", {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0});
+        auto o = apply(Complex<T>(0));
+        auto x = apply(Complex<T>(1))-o;
+        auto y = apply(Complex<T>(0,1))-o;
+
+        cx of = o.toCxDouble();
+        cx xf = x.toCxDouble();
+        cx yf = y.toCxDouble();
+
+        return XForm(
+            "linear",
+            {xf.real(), xf.imag(), yf.real(), yf.imag(), of.real(), of.imag()}
+        );
     } else {
         return XForm("spherical", {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0});
     }
