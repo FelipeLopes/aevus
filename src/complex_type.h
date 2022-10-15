@@ -1,5 +1,7 @@
 #pragma once
 
+#include <gmpxx.h>
+
 template <typename T>
 class Complex {
 public:
