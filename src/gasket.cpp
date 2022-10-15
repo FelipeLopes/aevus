@@ -48,7 +48,7 @@ Mobius_ Mobius_::translation(cx b) {
 
 Mobius_ Mobius_::invertAndReflect() {
     return Mobius_(0, 1, 1, 0);
-} 
+}
 
 // Takes point p -> 0, q -> 1, r -> infty
 Mobius_ Mobius_::fromPoints(cx p, cx q, cx r) {
@@ -64,7 +64,7 @@ Mobius_ Mobius_::inverse() {
 // returning the transformation given by applying n
 // before the transformation
 Mobius_ Mobius_::compose(Mobius_ n) {
-    return Mobius_(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d); 
+    return Mobius_(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d);
 }
 
 // Returns a transformation that takes points
@@ -116,14 +116,6 @@ shared_ptr<Transform> Mobius_::decompose() {
 
         return t;
     }
-}
-
-void print(Complex<mpq_class> c) {
-    printf("(%s/%s)+(%s/%s)*i\n",
-        c.real.get_num().get_str().c_str(),
-        c.real.get_den().get_str().c_str(),
-        c.imag.get_num().get_str().c_str(),
-        c.imag.get_den().get_str().c_str());
 }
 
 template <typename T>
