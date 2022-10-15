@@ -2,7 +2,7 @@
 
 #include <gmpxx.h>
 #include "complex_type.h"
-#include "transform.h"
+#include "xform.h"
 
 template <typename T>
 class Mobius {

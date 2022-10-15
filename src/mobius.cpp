@@ -2,7 +2,7 @@
 #include <exception>
 #include "complex_type.h"
 #include "mobius.h"
-#include "transform.h"
+#include "xform.h"
 
 template <typename T>
 Mobius<T>::Mobius(): a(Complex<T>(1)),b(Complex<T>(0)),
