@@ -92,3 +92,15 @@ std::string XForm::affineString(Affine aff) {
         aff.o.x<<" "<<aff.o.y;
     return buffer.str();
 }
+
+tinyxml2::XMLNode* XForm::toXMLNode(tinyxml2::XMLDocument &xmlDoc) {
+    auto xform = xmlDoc.NewElement("xform");
+    xform->SetAttribute("weight", weight);
+    xform->SetAttribute("color", color);
+    for (auto var: variations) {
+        xform->SetAttribute(var.first.c_str(), var.second);
+    }
+    xform->SetAttribute("coefs", coefsString().c_str());
+    xform->SetAttribute("post", postString().c_str());
+    return xform;
+}

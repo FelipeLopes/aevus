@@ -42,7 +42,7 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
     T cosx = (l2*l2+l3*l3-l1*l1)/(2*l2*l3);
     T sinx = squareRoot<T>(1-cosx*cosx);
 
-    Complex<T> ii(T(0),T(1));
+    Complex<T> ii(0,1);
     Complex<T> p1 = f;
     Complex<T> p2 = p1*(Complex<T>(cosx)+Complex<T>(sinx)*ii);
 
@@ -69,9 +69,24 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
     tr.normalize();
     rot.normalize();
 
+    center = Complex<T>(0);
+    scale = 1;
+}
+
+template <typename T>
+void Gasket<T>::setCenter(Complex<T> center_) {
+    center = center_;
+}
+
+template <typename T>
+void Gasket<T>::setScale(double scale_) {
+    scale = scale_;
+}
+
+template<typename T>
+tinyxml2::XMLNode* Gasket<T>::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
-    xmlDoc.InsertFirstChild(root);
 
     auto flame = xmlDoc.NewElement("flame");
     flame->SetAttribute("name", "Gasket");
@@ -89,21 +104,23 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
     flame->SetAttribute("gamma_threshold", "0.04");
     root->InsertEndChild(flame);
 
+    flame->InsertEndChild(tr.toXForm().toXMLNode(xmlDoc));
+    flame->InsertEndChild(rot.toXForm().toXMLNode(xmlDoc));
+
     auto palette = xmlDoc.NewElement("palette");
     palette->SetAttribute("count", "256");
     palette->SetAttribute("format", "RGB");
+    std::string whiteSpace(12, ' ');
     std::string whiteChars(48, 'F');
     std::string text = "\n";
     for (int i=0; i<32; i++) {
-        text += (whiteChars + "\n");
+        text += (whiteSpace + whiteChars + "\n");
     }
+    text += "        ";
     palette->SetText(text.c_str());
     flame->InsertEndChild(palette);
-}
 
-template <typename T>
-void Gasket<T>::writeXMLFile(std::string filename) {
-    xmlDoc.SaveFile(filename.c_str());
+    return root;
 }
 
 int genGasket(int argc, char* argv[]) {

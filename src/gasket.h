@@ -16,8 +16,11 @@ template <typename T>
 class Gasket {
 public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
-    void writeXMLFile(std::string filename);
-    tinyxml2::XMLDocument xmlDoc;
+    tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
+    void setCenter(Complex<T> center);
+    void setScale(double scale);
 private:
     Mobius<T> tr, rot;
+    Complex<T> center;
+    double scale;
 };
