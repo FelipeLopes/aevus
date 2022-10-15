@@ -18,6 +18,8 @@ struct Point {
 };
 
 struct Affine {
+    Affine();
+    Affine(double xx, double xy, double yx, double yy, double ox, double oy);
     Point o, x, y;
     Point apply(Point p);
     std::string coefString();
@@ -47,16 +49,14 @@ struct Linear : public Transform {
 class XForm {
 public:
     XForm();
-    XForm(std::string variation,
-        std::array<double, 6> coefs = {1, 0, 0, 1, 0, 0},
-        std::array<double, 6> post = {1, 0, 0, 1, 0, 0});
+    XForm(std::string variation, Affine pre, Affine post = Affine());
     double weight, color, opacity;
     std::map<std::string, double> variations;
     std::vector<double> chaos;
     std::string coefsString();
     std::string postString();
 private:
-    std::string arrayString(std::array<double, 6>);
-    std::array<double, 6> coefs, post;
+    Affine pre, post;
+    std::string affineString(Affine aff);
     void initParams();
 };

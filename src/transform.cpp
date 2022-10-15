@@ -6,6 +6,8 @@
 #include "transform.h"
 
 Point::Point() {
+    x = 0;
+    y = 0;
 }
 
 Point::Point(double x_, double y_) {
@@ -83,18 +85,24 @@ Point Linear::apply(Point p) {
     return pre.apply(p);
 }
 
-XForm::XForm() {
-    initParams();
-    coefs = {1, 0, 0, 1, 0, 0};
-    post = {1, 0, 0, 1, 0, 0};
+Affine::Affine() {
+    o = Point(0,0);
+    x = Point(1,0);
+    y = Point(0,1);
 }
 
-XForm::XForm(std::string variation, std::array<double, 6> coefs_,
-    std::array<double, 6> post_) {
+Affine::Affine(double xx, double xy, double yx, double yy, double ox, double oy) {
+    o = Point(ox,oy);
+    x = Point(xx,xy);
+    y = Point(yx,yy);
+}
 
+XForm::XForm() {
     initParams();
-    coefs = coefs_;
-    post = post_;
+}
+
+XForm::XForm(std::string variation, Affine pre_, Affine post_):pre(pre_),post(post_) {
+    initParams();
     variations[variation] = 1;
 }
 
@@ -105,21 +113,18 @@ void XForm::initParams() {
 }
 
 std::string XForm::coefsString() {
-    return arrayString(coefs);
+    return affineString(pre);
 }
 
 std::string XForm::postString() {
-    return arrayString(post);
+    return affineString(post);
 }
 
-std::string XForm::arrayString(std::array<double, 6> arr) {
+std::string XForm::affineString(Affine aff) {
     std::stringstream buffer;
-    buffer<<std::fixed<<std::setprecision(6);
-    for (int i=0; i<6; i++) {
-        buffer<<arr[i];
-        if (i < 5) {
-            buffer<<" ";
-        }
-    }
+    buffer<<std::fixed<<std::setprecision(6)<<
+        aff.x.x<<" "<<aff.x.y<<" "<<
+        aff.y.x<<" "<<aff.y.y<<" "<<
+        aff.o.x<<" "<<aff.o.y;
     return buffer.str();
 }

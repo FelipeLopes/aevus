@@ -11,19 +11,10 @@ void print(mpq_class k) {
 
 int main() {
     try {
-        Complex<mpq_class> p1(mpq_class(1));
-        Complex<mpq_class> p2(mpq_class(-4,5),mpq_class(3,5));
-        Complex<mpq_class> p3(mpq_class(-7,125),mpq_class(24,125));
-        auto m = Mobius<mpq_class>::fromPointsToPoints(
-            Complex<mpq_class>(1),
-            Complex<mpq_class>(-1),
-            Complex<mpq_class>(0),
-            p1,p2,p3);
-        mpq_class v(4,9);
         Gasket<mpq_class> g(mpq_class(6,11), mpq_class(3,7), Complex<mpq_class>(1));
-        auto lin = Mobius<mpq_class>::translation(Complex<mpq_class>(3,4));
-        auto xForm = lin.toXForm();
+        auto xForm = g.rot.toXForm();
         printf("%s\n", xForm.coefsString().c_str());
+        printf("%s\n", xForm.postString().c_str());
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }

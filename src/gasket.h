@@ -40,6 +40,6 @@ public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
     void writeXMLFile(std::string filename);
     tinyxml2::XMLDocument xmlDoc;
-private:
+//private:
     Mobius<T> tr, rot;
 };

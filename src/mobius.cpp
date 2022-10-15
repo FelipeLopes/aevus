@@ -116,10 +116,47 @@ XForm Mobius<T>::toXForm() {
 
         return XForm(
             "linear",
-            {xf.real(), xf.imag(), yf.real(), yf.imag(), of.real(), of.imag()}
+            Affine(
+                xf.real(), xf.imag(),
+                yf.real(), yf.imag(),
+                of.real(), of.imag()
+            )
         );
     } else {
-        return XForm("spherical", {0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0});
+        auto preInv = Mobius<T>::translation(d/c);
+
+        auto preO = preInv.apply(Complex<T>(0)).conj();
+        auto preX = preInv.apply(Complex<T>(1)).conj()-preO;
+        auto preY = preInv.apply(Complex<T>(0,1)).conj()-preO;
+
+        cx preOf = preO.toCxDouble();
+        cx preXf = preX.toCxDouble();
+        cx preYf = preY.toCxDouble();
+
+        auto pstInv = Mobius<T>::translation(a/c).compose(
+            Mobius<T>::scaling(-Complex<T>(1)/(c*c))
+        );
+
+        auto pstO = pstInv.apply(Complex<T>(0));
+        auto pstX = pstInv.apply(Complex<T>(1))-pstO;
+        auto pstY = pstInv.apply(Complex<T>(0,1))-pstO;
+
+        cx pstOf = pstO.toCxDouble();
+        cx pstXf = pstX.toCxDouble();
+        cx pstYf = pstY.toCxDouble();
+
+        return XForm("spherical",
+            Affine(
+                preXf.real(),preXf.imag(),
+                preYf.real(),preYf.imag(),
+                preOf.real(),preOf.imag()
+            ),
+            Affine(
+                pstXf.real(),pstXf.imag(),
+                pstYf.real(),pstYf.imag(),
+                pstOf.real(),pstOf.imag()
+            )
+        );
     }
 }
 

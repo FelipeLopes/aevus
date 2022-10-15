@@ -15,6 +15,7 @@ public:
     T norm();
     Complex<T> conj();
     cx toCxDouble();
+    void print();
 };
 
 template<typename T>

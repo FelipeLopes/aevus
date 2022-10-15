@@ -33,6 +33,11 @@ cx Complex<mpq_class>::toCxDouble() {
     return a.get_d() + 1i*b.get_d();
 }
 
+template<>
+void Complex<mpq_class>::print() {
+    printf("(%s)+i*(%s)\n",real.get_str().c_str(),imag.get_str().c_str());
+}
+
 template <>
 mpz_class squareRoot<mpz_class>(mpz_class s) {
     if (s < 0) {
