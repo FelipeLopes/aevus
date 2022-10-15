@@ -34,6 +34,7 @@ public:
     std::vector<double> chaos;
     std::string coefsString();
     std::string postString();
+    std::string chaosString();
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
 private:
     Affine pre, post;

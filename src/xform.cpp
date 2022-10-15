@@ -84,6 +84,15 @@ std::string XForm::postString() {
     return affineString(post);
 }
 
+std::string XForm::chaosString() {
+    std::stringstream buffer;
+    buffer<<std::fixed<<std::setprecision(6);
+    for (int i=0; i<chaos.size(); i++) {
+        buffer<<chaos[i]<<" ";
+    }
+    return buffer.str();
+}
+
 std::string XForm::affineString(Affine aff) {
     std::stringstream buffer;
     buffer<<std::fixed<<std::setprecision(6)<<
@@ -102,5 +111,6 @@ tinyxml2::XMLNode* XForm::toXMLNode(tinyxml2::XMLDocument &xmlDoc) {
     }
     xform->SetAttribute("coefs", coefsString().c_str());
     xform->SetAttribute("post", postString().c_str());
+    xform->SetAttribute("chaos", chaosString().c_str());
     return xform;
 }

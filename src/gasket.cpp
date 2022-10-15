@@ -84,43 +84,26 @@ void Gasket<T>::setScale(double scale_) {
 }
 
 template<typename T>
-tinyxml2::XMLNode* Gasket<T>::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
-    auto root = xmlDoc.NewElement("Flames");
-    root->SetAttribute("name", "gasket");
+Flame Gasket<T>::toFlame() {
+    Flame flame;
+    auto s = Mobius<T>::scaling(Complex<T>(scale)).compose(Mobius<T>::translation(-center));
+    flame.xforms.push_back(tr.conjugate(s).toXForm());
+    flame.xforms.push_back(tr.conjugate(rot).conjugate(s).toXForm());
+    flame.xforms.push_back(tr.conjugate(rot.inverse()).conjugate(s).toXForm());
+    flame.xforms.push_back(tr.inverse().conjugate(s).toXForm());
+    flame.xforms.push_back(tr.inverse().conjugate(rot).conjugate(s).toXForm());
+    flame.xforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s).toXForm());
 
-    auto flame = xmlDoc.NewElement("flame");
-    flame->SetAttribute("name", "Gasket");
-    flame->SetAttribute("background", "0 0 0");
-    flame->SetAttribute("version", "Apophysis 2.09");
-    flame->SetAttribute("size", "600 600");
-    flame->SetAttribute("center", "0 0");
-    flame->SetAttribute("scale", "144");
-    flame->SetAttribute("oversample", "1");
-    flame->SetAttribute("filter", "0.2");
-    flame->SetAttribute("quality", "1");
-    flame->SetAttribute("background", "0 0 0");
-    flame->SetAttribute("brightness", "4");
-    flame->SetAttribute("gamma", "4");
-    flame->SetAttribute("gamma_threshold", "0.04");
-    root->InsertEndChild(flame);
-
-    flame->InsertEndChild(tr.toXForm().toXMLNode(xmlDoc));
-    flame->InsertEndChild(rot.toXForm().toXMLNode(xmlDoc));
-
-    auto palette = xmlDoc.NewElement("palette");
-    palette->SetAttribute("count", "256");
-    palette->SetAttribute("format", "RGB");
-    std::string whiteSpace(12, ' ');
-    std::string whiteChars(48, 'F');
-    std::string text = "\n";
-    for (int i=0; i<32; i++) {
-        text += (whiteSpace + whiteChars + "\n");
+    for (int i = 0; i < 3; i++) {
+        flame.xforms[i].chaos = {1, 1, 1, 0, 0, 0};
+        flame.xforms[i+3].chaos = {0, 0, 0, 1, 1, 1};
     }
-    text += "        ";
-    palette->SetText(text.c_str());
-    flame->InsertEndChild(palette);
 
-    return root;
+    for (int i=0; i<6; i++) {
+        flame.xforms[i].chaos[i] = 3;
+    }
+
+    return flame;
 }
 
 int genGasket(int argc, char* argv[]) {
