@@ -62,11 +62,54 @@ Complex<T> operator/(Complex<T> a, Complex<T> b) {
 template <typename T>
 T squareRoot(T x);
 
+template <typename T>
+T maxPart(Complex<T> x);
+
+template <typename T>
+double toDouble(T x);
+
+template <typename T>
+T abs(T x);
+
+template <typename T>
+T exp(T x, T prec);
+
 template <>
 mpz_class squareRoot<mpz_class>(mpz_class s);
 
 template <>
 mpq_class squareRoot<mpq_class>(mpq_class x);
 
-template<>
+template <>
 Complex<mpq_class> squareRoot<Complex<mpq_class>>(Complex<mpq_class> z);
+
+template <>
+mpq_class maxPart<mpq_class>(Complex<mpq_class> z);
+
+template <>
+double toDouble<mpq_class>(mpq_class x);
+
+
+template <typename T>
+T abs(T x) {
+    return x > 0 ? x : -x;
+}
+
+template <typename T>
+T exp(T x, T prec) {
+    T ans = 1;
+    T num = 1;
+    T den = 1;
+    T term = num/den;
+    int i = 1;
+    while (abs<T>(term) > prec) {
+        num = num*x;
+        den = den*i;
+        i++;
+        term = num/den;
+        ans = ans + term;
+    }
+    return ans;
+}
+
+void printCx(cx z);

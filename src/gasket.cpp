@@ -1,4 +1,6 @@
 #include <iostream>
+#include <algorithm>
+#include <random>
 #include <gmpxx.h>
 
 #include "complex_type.h"
@@ -71,31 +73,49 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
 
     center = Complex<T>(0);
     scale = 1;
+
+    pa = m.apply(Complex<T>(-1));
+    pb = m.apply(Complex<T>(0));
+    pc = m.apply(Complex<T>(1));
 }
 
 template <typename T>
-void Gasket<T>::setCenter(Complex<T> center_) {
-    center = center_;
-}
-
-template <typename T>
-void Gasket<T>::setScale(double scale_) {
+void Gasket<T>::setScale(T scale_) {
     scale = scale_;
 }
 
 template <typename T>
-Complex<T> Gasket<T>::selectZoomPoint(unsigned seed) {
-    return Complex<T>(0);
+Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
+    std::mt19937 rng(seed);
+    std::uniform_int_distribution<std::mt19937::result_type> dist2(0,1);
+    std::uniform_int_distribution<std::mt19937::result_type> dist3(0,2);
+    Mobius<T> dive = tr;
+    if (dist2(rng) == 1) {
+        dive = tr.inverse();
+    }
+    auto arr = mobiusArray(dive, rot);
+    Mobius<T> acc;
+    vals.clear();
+    for (int i=0; i<depth; i++) {
+        int k = dist3(rng);
+        vals.push_back(k);
+        acc = acc.compose(arr[k]);
+    }
+    center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
+    return center;
 }
 
 template <typename T>
-Mobius<T> Gasket<T>::adapt(Complex<T> p1, Complex<T> p2, Complex<T> p3,
-    Mobius<T> dive, Mobius<T> rot) {
+Mobius<T> Gasket<T>::adapt(Mobius<T> dive, Mobius<T> rot) {
 
-    std::array<Mobius<T>, 3> arr = {dive, dive.conjugate(rot),
-        dive.conjugate(rot.inverse())};
+    auto arr = mobiusArray(dive, rot);
 
-    return Mobius<T>::scaling(Complex<T>(1));
+    return Mobius<T>();
+}
+
+template <typename T>
+std::array<Mobius<T>,3> Gasket<T>::mobiusArray(Mobius<T> dive, Mobius<T> rot) {
+    return {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
 }
 
 template<typename T>

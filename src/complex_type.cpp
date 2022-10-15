@@ -1,4 +1,5 @@
 #include <gmpxx.h>
+#include <iostream>
 #include "complex_type.h"
 
 template <typename T>
@@ -26,14 +27,20 @@ Complex<T> Complex<T>::conj() {
     return Complex<T>(real, -imag);
 }
 
-template<>
+template <>
 cx Complex<mpq_class>::toCxDouble() {
     mpf_class a(real);
     mpf_class b(imag);
     return a.get_d() + 1i*b.get_d();
 }
 
-template<>
+template <>
+double toDouble<mpq_class>(mpq_class x) {
+    mpf_class f(x);
+    return f.get_d();
+}
+
+template <>
 void Complex<mpq_class>::print() {
     printf("(%s)+i*(%s)\n",real.get_str().c_str(),imag.get_str().c_str());
 }
@@ -77,6 +84,17 @@ Complex<mpq_class> squareRoot<Complex<mpq_class>>(Complex<mpq_class> z) {
         v = -v;
     }
     return Complex<mpq_class>(u,v);
+}
+
+template <>
+mpq_class maxPart<mpq_class>(Complex<mpq_class> z) {
+    auto absReal = z.real > 0 ? z.real : -z.real;
+    auto absImag = z.imag > 0 ? z.imag : -z.imag;
+    return absReal > absImag ? absReal : absImag;
+}
+
+void printCx(cx z) {
+    std::cout<<"("<<z.real()<<")+i*("<<z.imag()<<")"<<std::endl;
 }
 
 template class Complex<mpq_class>;

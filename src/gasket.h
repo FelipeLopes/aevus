@@ -17,14 +17,15 @@ template <typename T>
 class Gasket {
 public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
-    void setCenter(Complex<T> center);
-    void setScale(double scale);
-    Complex<T> selectZoomPoint(unsigned seed);
+    void setScale(T scale);
+    Complex<T> selectZoomPoint(unsigned seed, int depth);
     Flame toFlame();
 private:
-    Mobius<T> adapt(Complex<T> p1, Complex<T> p2, Complex<T> p3,
-        Mobius<T> dive, Mobius<T> rot);
+    Mobius<T> adapt(Mobius<T> dive, Mobius<T> rot);
+    std::array<Mobius<T>, 3> mobiusArray(Mobius<T> dive, Mobius<T> rot);
+    std::vector<int> vals;
+    Complex<T> pa, pb, pc;
     Mobius<T> tr, rot;
     Complex<T> center;
-    double scale;
+    T scale;
 };
