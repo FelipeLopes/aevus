@@ -19,8 +19,11 @@ public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
     void setCenter(Complex<T> center);
     void setScale(double scale);
+    Complex<T> selectZoomPoint(unsigned seed);
     Flame toFlame();
 private:
+    Mobius<T> adapt(Complex<T> p1, Complex<T> p2, Complex<T> p3,
+        Mobius<T> dive, Mobius<T> rot);
     Mobius<T> tr, rot;
     Complex<T> center;
     double scale;

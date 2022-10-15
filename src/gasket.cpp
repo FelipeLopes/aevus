@@ -83,6 +83,21 @@ void Gasket<T>::setScale(double scale_) {
     scale = scale_;
 }
 
+template <typename T>
+Complex<T> Gasket<T>::selectZoomPoint(unsigned seed) {
+    return Complex<T>(0);
+}
+
+template <typename T>
+Mobius<T> Gasket<T>::adapt(Complex<T> p1, Complex<T> p2, Complex<T> p3,
+    Mobius<T> dive, Mobius<T> rot) {
+
+    std::array<Mobius<T>, 3> arr = {dive, dive.conjugate(rot),
+        dive.conjugate(rot.inverse())};
+
+    return Mobius<T>::scaling(Complex<T>(1));
+}
+
 template<typename T>
 Flame Gasket<T>::toFlame() {
     Flame flame;
