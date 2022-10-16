@@ -135,9 +135,9 @@ void Gasket<T>::adapt(T ar) {
             i++;
         }
     }
-    auto s = acc.compose(
-        Mobius<T>::scaling(Complex<T>(scale)).compose(Mobius<T>::translation(-center))
-    );
+    auto s = Mobius<T>::scaling(Complex<T>(scale))
+        .compose(Mobius<T>::translation(-center))
+        .compose(acc);
     if (doubleSided) {
         ifsTransforms.push_back(tr.conjugate(s));
         ifsTransforms.push_back(tr.conjugate(rot).conjugate(s));
@@ -166,8 +166,9 @@ Flame Gasket<T>::toFlame() {
     }
 
     for (int i = 0; i < 3; i++) {
-        flame.xforms[i].chaos = {1, 1, 1, 0, 0, 0};
+        flame.xforms[i].chaos = {1, 1, 1};
         if (doubleSided) {
+            flame.xforms[i].chaos.insert(flame.xforms[i].chaos.end(), {0, 0, 0});
             flame.xforms[i+3].chaos = {0, 0, 0, 1, 1, 1};
         }
     }
