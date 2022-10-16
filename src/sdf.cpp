@@ -21,6 +21,22 @@ bool Sdf<T>::inside(Complex<T> z) {
 }
 
 template <typename T>
+bool Sdf<T>::rectInside(Complex<T> p, T w, T h) {
+    Complex<T> ii(0,1);
+
+    Complex<T> ra = p - Complex<T>(w/2) - ii*Complex<T>(h/2);
+    Complex<T> rb = p + Complex<T>(w/2) - ii*Complex<T>(h/2);
+    Complex<T> rc = p - Complex<T>(w/2) + ii*Complex<T>(h/2);
+    Complex<T> rd = p + Complex<T>(w/2) + ii*Complex<T>(h/2);
+
+    if (a < 0) {
+        return false;
+    } else {
+        return inside(ra) && inside(rb) && inside(rc) && inside(rd);
+    }
+}
+
+template <typename T>
 Sdf<T> Sdf<T>::flip() {
     return Sdf(-a,-b,-c,-d);
 }

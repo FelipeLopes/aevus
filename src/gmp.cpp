@@ -23,6 +23,7 @@ int main() {
         g.toFlame();
         Sdf<mpq_class> sdf = Sdf<mpq_class>::fromPoints(
             Complex<mpq_class>(-1), Complex<mpq_class>(0,-1), Complex<mpq_class>(1));
+        printf("%d\n",sdf.rectInside(Complex<mpq_class>(0),mpq_class(8,5),mpq_class(11,10)));
         //xmlDoc.InsertFirstChild(node);
         //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {
