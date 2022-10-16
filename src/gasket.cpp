@@ -183,19 +183,4 @@ Flame Gasket<T>::toFlame() {
     return flame;
 }
 
-int genGasket(int argc, char* argv[]) {
-    std::ios::sync_with_stdio(false);
-
-    if (argc < 7) {
-        printf("Usage: %s [px] [py] [qx] [qy] [rx] [ry]\n", argv[0]);
-        return 1;
-    }
-
-    //cx p = cx(stod(argv[1]), stod(argv[2]));
-    //cx q = cx(stod(argv[3]), stod(argv[4]));
-    //cx r = cx(stod(argv[5]), stod(argv[6]));
-
-    return 0;
-}
-
 template class Gasket<mpq_class>;
