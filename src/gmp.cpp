@@ -20,8 +20,8 @@ int main() {
         auto sc = exp<mpq_class>(mpq_class(30), prec);
         g.setScale(sc);
         g.selectZoomPoint(314159, 200);
-        g.toFlame();
         g.adapt(mpq_class(16, 9));
+        g.toFlame();
         //xmlDoc.InsertFirstChild(node);
         //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {

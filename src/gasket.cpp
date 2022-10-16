@@ -114,15 +114,41 @@ void Gasket<T>::adapt(T ar) {
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
     T height = 2/scale;
     T width = height*ar;
-    printf("%d\n",shape.rectInside(center, width, height));
+    if (shape.rectInside(center, width, height) ||
+        shape.flip().rectInside(center, width, height)) {
+
+        doubleSided = false;
+    }
     Mobius<T> acc;
-    for (int i=0; i<200; i++) {
-        acc = acc.compose(arr[vals[i]]);
-        auto qa = acc.apply(pa);
-        auto qb = acc.apply(pb);
-        auto qc = acc.apply(pc);
-        shape = Sdf<T>::fromPoints(qa, qb, qc);
-        printf("%d\n",shape.rectInside(center, width, height));
+    if (!doubleSided) {
+        int i = 0;
+        while (true) {
+            auto aux = acc.compose(arr[vals[i]]);
+            auto qa = aux.apply(pa);
+            auto qb = aux.apply(pb);
+            auto qc = aux.apply(pc);
+            shape = Sdf<T>::fromPoints(qa, qb, qc);
+            if (!shape.rectInside(center, width, height)) {
+                break;
+            }
+            acc = aux;
+            i++;
+        }
+    }
+    auto s = acc.compose(
+        Mobius<T>::scaling(Complex<T>(scale)).compose(Mobius<T>::translation(-center))
+    );
+    if (doubleSided) {
+        ifsTransforms.push_back(tr.conjugate(s));
+        ifsTransforms.push_back(tr.conjugate(rot).conjugate(s));
+        ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s));
+        ifsTransforms.push_back(tr.inverse().conjugate(s));
+        ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s));
+        ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s));
+    } else {
+        ifsTransforms.push_back(dive.conjugate(s));
+        ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
+        ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
     }
 }
 
@@ -135,20 +161,22 @@ template<typename T>
 Flame Gasket<T>::toFlame() {
     Flame flame;
     auto s = Mobius<T>::scaling(Complex<T>(scale)).compose(Mobius<T>::translation(-center));
-    flame.xforms.push_back(tr.conjugate(s).toXForm());
-    flame.xforms.push_back(tr.conjugate(rot).conjugate(s).toXForm());
-    flame.xforms.push_back(tr.conjugate(rot.inverse()).conjugate(s).toXForm());
-    flame.xforms.push_back(tr.inverse().conjugate(s).toXForm());
-    flame.xforms.push_back(tr.inverse().conjugate(rot).conjugate(s).toXForm());
-    flame.xforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s).toXForm());
+    for (auto t: ifsTransforms) {
+        flame.xforms.push_back(t.toXForm());
+    }
 
     for (int i = 0; i < 3; i++) {
         flame.xforms[i].chaos = {1, 1, 1, 0, 0, 0};
-        flame.xforms[i+3].chaos = {0, 0, 0, 1, 1, 1};
+        if (doubleSided) {
+            flame.xforms[i+3].chaos = {0, 0, 0, 1, 1, 1};
+        }
     }
 
-    for (int i=0; i<6; i++) {
+    for (int i=0; i<3; i++) {
         flame.xforms[i].chaos[i] = 3;
+        if (doubleSided) {
+            flame.xforms[i+3].chaos[i+3] = 3;
+        }
     }
 
     return flame;

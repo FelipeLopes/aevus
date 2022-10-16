@@ -24,8 +24,10 @@ public:
 private:
     std::array<Mobius<T>, 3> mobiusArray();
     std::vector<int> vals;
+    std::vector<Mobius<T>> ifsTransforms;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;
+    bool doubleSided = true;
     Complex<T> center;
     T scale;
 };
