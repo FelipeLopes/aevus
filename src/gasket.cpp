@@ -2,10 +2,12 @@
 #include <algorithm>
 #include <random>
 #include <gmpxx.h>
+#include <tuple>
 
 #include "complex_type.h"
 #include "mobius.h"
 #include "gasket.h"
+#include "sdf.h"
 
 template <typename T>
 Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
@@ -75,8 +77,8 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
     scale = 1;
 
     pa = m.apply(Complex<T>(-1));
-    pb = m.apply(Complex<T>(0));
-    pc = m.apply(Complex<T>(1));
+    pb = m.apply(Complex<T>(1));
+    pc = m.apply(Complex<T>(0));
 }
 
 template <typename T>
@@ -89,11 +91,12 @@ Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
     std::mt19937 rng(seed);
     std::uniform_int_distribution<std::mt19937::result_type> dist2(0,1);
     std::uniform_int_distribution<std::mt19937::result_type> dist3(0,2);
-    Mobius<T> dive = tr;
+    dive = tr;
     if (dist2(rng) == 1) {
+        std::swap(pb, pc);
         dive = tr.inverse();
     }
-    auto arr = mobiusArray(dive, rot);
+    auto arr = mobiusArray();
     Mobius<T> acc;
     vals.clear();
     for (int i=0; i<depth; i++) {
@@ -106,15 +109,25 @@ Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
 }
 
 template <typename T>
-Mobius<T> Gasket<T>::adapt(Mobius<T> dive, Mobius<T> rot) {
-
-    auto arr = mobiusArray(dive, rot);
-
-    return Mobius<T>();
+void Gasket<T>::adapt(T ar) {
+    auto arr = mobiusArray();
+    Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
+    T height = 2/scale;
+    T width = height*ar;
+    printf("%d\n",shape.rectInside(center, width, height));
+    Mobius<T> acc;
+    for (int i=0; i<200; i++) {
+        acc = acc.compose(arr[vals[i]]);
+        auto qa = acc.apply(pa);
+        auto qb = acc.apply(pb);
+        auto qc = acc.apply(pc);
+        shape = Sdf<T>::fromPoints(qa, qb, qc);
+        printf("%d\n",shape.rectInside(center, width, height));
+    }
 }
 
 template <typename T>
-std::array<Mobius<T>,3> Gasket<T>::mobiusArray(Mobius<T> dive, Mobius<T> rot) {
+std::array<Mobius<T>,3> Gasket<T>::mobiusArray() {
     return {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
 }
 

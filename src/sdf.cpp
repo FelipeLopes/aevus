@@ -7,10 +7,6 @@ template <typename T>
 Sdf<T>::Sdf(T a_, T b_, T c_, T d_):
     a(a_),b(b_),c(c_),d(d_){
 
-    printf("%lf\n",toDouble(a));
-    printf("%lf\n",toDouble(b));
-    printf("%lf\n",toDouble(c));
-    printf("%lf\n",toDouble(d));
 }
 
 template <typename T>

@@ -20,12 +20,12 @@ public:
     void setScale(T scale);
     Complex<T> selectZoomPoint(unsigned seed, int depth);
     Flame toFlame();
+    void adapt(T ar);
 private:
-    Mobius<T> adapt(Mobius<T> dive, Mobius<T> rot);
-    std::array<Mobius<T>, 3> mobiusArray(Mobius<T> dive, Mobius<T> rot);
+    std::array<Mobius<T>, 3> mobiusArray();
     std::vector<int> vals;
     Complex<T> pa, pb, pc;
-    Mobius<T> tr, rot;
+    Mobius<T> tr, rot, dive;
     Complex<T> center;
     T scale;
 };
