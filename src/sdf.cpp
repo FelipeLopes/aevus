@@ -29,10 +29,31 @@ bool Sdf<T>::rectInside(Complex<T> p, T w, T h) {
     Complex<T> rc = p - Complex<T>(w/2) + ii*Complex<T>(h/2);
     Complex<T> rd = p + Complex<T>(w/2) + ii*Complex<T>(h/2);
 
-    if (a < 0) {
+    if (a < 0 && circRectCollision(p, w, h)) {
         return false;
     } else {
         return inside(ra) && inside(rb) && inside(rc) && inside(rd);
+    }
+}
+
+template <typename T>
+bool Sdf<T>::circRectCollision(Complex<T> p, T w, T h) {
+    T nb = b/a;
+    T nc = c/a;
+    T nd = d/a;
+    double xc = -toDouble(nb)/2;
+    double yc = -toDouble(nc)/2;
+    double r = sqrt(xc*xc+yc*yc-toDouble(nd));
+    double xp = toDouble(p.real);
+    double yp = toDouble(p.imag);
+    double dx = fabs(xc-xp);
+    double dy = fabs(yc-yp);
+    if ((dx > w/2 + r) || (dy > h/2 + r)) {
+        return false;
+    } else if ((dx < w/2) || (dy < h/2)) {
+        return true;
+    } else {
+        return (dx-w/2)*(dx-w/2)+(dy-h/2)*(dy-h/2) < r*r;
     }
 }
 
