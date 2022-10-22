@@ -21,7 +21,7 @@ public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
     void setScales(T iniLogscale, T step, int numSteps, T prec);
     Complex<T> selectZoomPoint(unsigned seed, int depth);
-    void adapt(T ar);
+    void initZoom(T ar);
 private:
     std::array<Mobius<T>, 3> mobiusArray();
     int searchScale(Sdf<T> shape, T ar);
@@ -33,5 +33,4 @@ private:
     Complex<T> center;
     T iniLogscale, step, prec;
     int numSteps;
-    T scale;
 };

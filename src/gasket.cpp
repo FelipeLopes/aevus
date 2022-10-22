@@ -75,7 +75,6 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
     rot.normalize();
 
     center = Complex<T>(0);
-    scale = 1;
 
     pa = m.apply(Complex<T>(-1));
     pb = m.apply(Complex<T>(1));
@@ -88,7 +87,6 @@ void Gasket<T>::setScales(T iniLogscale_, T step_, int numSteps_, T prec_) {
     numSteps = numSteps_;
     step = step_;
     prec = prec_;
-    scale = exp<T>(iniLogscale + step*numSteps, prec);
 }
 
 template <typename T>
@@ -132,7 +130,7 @@ int Gasket<T>::searchScale(Sdf<T> shape, T ar) {
 }
 
 template <typename T>
-void Gasket<T>::adapt(T ar) {
+void Gasket<T>::initZoom(T ar) {
     auto arr = mobiusArray();
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
     T iniScale = exp<T>(iniLogscale, prec);
@@ -142,7 +140,7 @@ void Gasket<T>::adapt(T ar) {
         KeyGasket<T> g;
         g.logscale = iniLogscale;
 
-        auto s = Mobius<T>::scaling(Complex<T>(scale))
+        auto s = Mobius<T>::scaling(exp<T>(g.logscale, prec))
             .compose(Mobius<T>::translation(-center));
 
         g.ifsTransforms.push_back(tr.conjugate(s));
@@ -168,7 +166,7 @@ void Gasket<T>::adapt(T ar) {
         }
         KeyGasket<T> g;
         g.logscale = iniLogscale + scaleVal*step;
-        auto s = Mobius<T>::scaling(Complex<T>(scale))
+        auto s = Mobius<T>::scaling(exp<T>(g.logscale, prec))
             .compose(Mobius<T>::translation(-center))
             .compose(acc);
 
