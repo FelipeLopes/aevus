@@ -135,12 +135,6 @@ template <typename T>
 void Gasket<T>::adapt(T ar) {
     auto arr = mobiusArray();
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
-    T height = 2/scale;
-    T width = height*ar;
-    if (shape.rectInside(center, width, height)) {
-        doubleSided = false;
-    }
-    Sdf<T> shape_ = Sdf<T>::fromPoints(pa, pb, pc);
     T iniScale = exp<T>(iniLogscale, prec);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
@@ -160,10 +154,10 @@ void Gasket<T>::adapt(T ar) {
 
         keyGaskets.push_back(g);
     }
-    Mobius<T> acc_;
+    Mobius<T> acc;
     int i = 0;
     while (true) {
-        auto aux = acc_.compose(arr[vals[i]]);
+        auto aux = acc.compose(arr[vals[i]]);
         auto qa = aux.apply(pa);
         auto qb = aux.apply(pb);
         auto qc = aux.apply(pc);
@@ -176,7 +170,7 @@ void Gasket<T>::adapt(T ar) {
         g.logscale = iniLogscale + scaleVal*step;
         auto s = Mobius<T>::scaling(Complex<T>(scale))
             .compose(Mobius<T>::translation(-center))
-            .compose(acc_);
+            .compose(acc);
 
         g.ifsTransforms.push_back(dive.conjugate(s));
         g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
@@ -184,74 +178,17 @@ void Gasket<T>::adapt(T ar) {
 
         keyGaskets.push_back(g);
 
-        acc_ = aux;
+        acc = aux;
         i++;
     }
     for (auto kg: keyGaskets) {
         std::cout<<kg.logscale<<std::endl;
-    }
-    Mobius<T> acc;
-    if (!doubleSided) {
-        int i = 0;
-        while (true) {
-            auto aux = acc.compose(arr[vals[i]]);
-            auto qa = aux.apply(pa);
-            auto qb = aux.apply(pb);
-            auto qc = aux.apply(pc);
-            shape = Sdf<T>::fromPoints(qa, qb, qc);
-            if (!shape.rectInside(center, width, height)) {
-                break;
-            }
-            acc = aux;
-            i++;
-        }
-    }
-    auto s = Mobius<T>::scaling(Complex<T>(scale))
-        .compose(Mobius<T>::translation(-center))
-        .compose(acc);
-    if (doubleSided) {
-        ifsTransforms.push_back(tr.conjugate(s));
-        ifsTransforms.push_back(tr.conjugate(rot).conjugate(s));
-        ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s));
-        ifsTransforms.push_back(tr.inverse().conjugate(s));
-        ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s));
-        ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s));
-    } else {
-        ifsTransforms.push_back(dive.conjugate(s));
-        ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
-        ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
     }
 }
 
 template <typename T>
 std::array<Mobius<T>,3> Gasket<T>::mobiusArray() {
     return {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
-}
-
-template<typename T>
-Flame Gasket<T>::toFlame() {
-    Flame flame;
-    auto s = Mobius<T>::scaling(Complex<T>(scale)).compose(Mobius<T>::translation(-center));
-    for (auto t: ifsTransforms) {
-        flame.xforms.push_back(t.toXForm());
-    }
-
-    for (int i = 0; i < 3; i++) {
-        flame.xforms[i].chaos = {1, 1, 1};
-        if (doubleSided) {
-            flame.xforms[i].chaos.insert(flame.xforms[i].chaos.end(), {0, 0, 0});
-            flame.xforms[i+3].chaos = {0, 0, 0, 1, 1, 1};
-        }
-    }
-
-    for (int i=0; i<3; i++) {
-        flame.xforms[i].chaos[i] = 3;
-        if (doubleSided) {
-            flame.xforms[i+3].chaos[i+3] = 3;
-        }
-    }
-
-    return flame;
 }
 
 template class Gasket<mpq_class>;

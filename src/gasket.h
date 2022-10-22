@@ -21,13 +21,11 @@ public:
     Gasket(T r1, T r2, Complex<T> f, bool flip = false);
     void setScales(T iniLogscale, T step, int numSteps, T prec);
     Complex<T> selectZoomPoint(unsigned seed, int depth);
-    Flame toFlame();
     void adapt(T ar);
 private:
     std::array<Mobius<T>, 3> mobiusArray();
     int searchScale(Sdf<T> shape, T ar);
     std::vector<int> vals;
-    std::vector<Mobius<T>> ifsTransforms;
     std::vector<KeyGasket<T>> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;

@@ -52,9 +52,9 @@ int main(int argc, char* argv[]) {
         g.setScales(mpq_class(-50,150), mpq_class(1,150), 22050, prec);
         g.selectZoomPoint(seed, depth); //314159, 200
         g.adapt(mpq_class(numAR, denAR)); //16, 9
-        auto node = g.toFlame().toXMLNode(xmlDoc);;
-        xmlDoc.InsertFirstChild(node);
-        xmlDoc.SaveFile(stdout);
+        //auto node = g.toFlame().toXMLNode(xmlDoc);;
+        //xmlDoc.InsertFirstChild(node);
+        //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
