@@ -140,6 +140,26 @@ void Gasket<T>::adapt(T ar) {
     if (shape.rectInside(center, width, height)) {
         doubleSided = false;
     }
+    Sdf<T> shape_ = Sdf<T>::fromPoints(pa, pb, pc);
+    T iniScale = exp<T>(iniLogscale, prec);
+    T iniHeight = 2/iniScale;
+    T iniWidth = iniHeight*ar;
+    if (!shape.rectInside(center, iniWidth, iniHeight)) {
+        KeyGasket<T> g;
+        g.logscale = iniLogscale;
+
+        auto s = Mobius<T>::scaling(Complex<T>(scale))
+            .compose(Mobius<T>::translation(-center));
+
+        g.ifsTransforms.push_back(tr.conjugate(s));
+        g.ifsTransforms.push_back(tr.conjugate(rot).conjugate(s));
+        g.ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s));
+        g.ifsTransforms.push_back(tr.inverse().conjugate(s));
+        g.ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s));
+        g.ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s));
+
+        keyGaskets.push_back(g);
+    }
     Mobius<T> acc_;
     int i = 0;
     while (true) {
@@ -152,9 +172,23 @@ void Gasket<T>::adapt(T ar) {
         if (scaleVal == numSteps) {
             break;
         }
-        printf("%d\n",scaleVal);
+        KeyGasket<T> g;
+        g.logscale = iniLogscale + scaleVal*step;
+        auto s = Mobius<T>::scaling(Complex<T>(scale))
+            .compose(Mobius<T>::translation(-center))
+            .compose(acc_);
+
+        g.ifsTransforms.push_back(dive.conjugate(s));
+        g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
+        g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
+
+        keyGaskets.push_back(g);
+
         acc_ = aux;
         i++;
+    }
+    for (auto kg: keyGaskets) {
+        std::cout<<kg.logscale<<std::endl;
     }
     Mobius<T> acc;
     if (!doubleSided) {
