@@ -1,4 +1,6 @@
+#include <bits/types/clock_t.h>
 #include <gmpxx.h>
+#include <ctime>
 #include <cmath>
 #include <iostream>
 #include <iomanip>
@@ -8,9 +10,18 @@
 #include "mobius.h"
 #include "sdf.h"
 
+void convertFlame(std::string source, std::string dest);
+
 int main(int argc, char* argv[]) {
     try {
         if (argc < 16) {
+            if (std::string(argv[1]) == "--convert") {
+                if (argc < 4) {
+                    return 1;
+                }
+                convertFlame(std::string(argv[2]),std::string(argv[3]));
+                return 0;
+            }
             return 1;
         }
         int numR1 = atoi(argv[1]);

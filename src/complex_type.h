@@ -97,19 +97,22 @@ T abs(T x) {
 
 template <typename T>
 T exp(T x, T prec) {
-    T ans = 1;
-    T num = 1;
-    T den = 1;
-    T term = num/den;
-    int i = 1;
-    while (abs<T>(term) > prec) {
-        num = num*x;
-        den = den*i;
-        i++;
-        term = num/den;
-        ans = ans + term;
+    T c = 1;
+    T d = 0;
+    T f = 1;
+    c = 2-x + (2*x)/c;
+    d = 1/(2-x+(2*x)*d);
+    T x2 = x*x;
+    T b = 6;
+    T nf = c*d*f;
+    while (abs<T>(nf-f) > prec) {
+        f = nf;
+        c = b + x2/c;
+        d = 1/(b+x2*d);
+        b = b + 4;
+        nf = c*d*f;
     }
-    return ans;
+    return nf;
 }
 
 void printCx(cx z);

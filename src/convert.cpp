@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <system_error>
 #include <tinyxml2.h>
 #include <regex>
 #include <string>
@@ -39,14 +40,11 @@ std::string hexstr(int x) {
     return c;
 }
 
-int test(int argc, char* argv[]) {
+void convertFlame(std::string source, std::string dest) {
     tinyxml2::XMLDocument xmlDoc;
-    if (argc < 2) {
-        return 1;
-    }
-    auto err = xmlDoc.LoadFile(argv[1]);
+    auto err = xmlDoc.LoadFile(source.c_str());
     if (err != tinyxml2::XML_SUCCESS) {
-        return 1;
+        throw std::system_error(std::error_code(),"Could not load XML file");
     }
     auto root = xmlDoc.FirstChild();
     auto outRoot = xmlDoc.NewElement("flames");
@@ -124,5 +122,4 @@ int test(int argc, char* argv[]) {
     outRoot->InsertEndChild(header);
     header->InsertEndChild(palette);
     xmlDoc.SaveFile("test.xml");
-    return 0;
 }
