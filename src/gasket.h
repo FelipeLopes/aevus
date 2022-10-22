@@ -10,6 +10,7 @@
 
 #include "complex_type.h"
 #include "flame.h"
+#include "key_gasket.h"
 #include "mobius.h"
 #include "xform.h"
 
@@ -25,6 +26,7 @@ private:
     std::array<Mobius<T>, 3> mobiusArray();
     std::vector<int> vals;
     std::vector<Mobius<T>> ifsTransforms;
+    std::vector<KeyGasket<T>> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;
     bool doubleSided = true;
