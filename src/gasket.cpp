@@ -83,8 +83,12 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
 }
 
 template <typename T>
-void Gasket<T>::setScale(T scale_) {
-    scale = scale_;
+void Gasket<T>::setScales(T iniLogscale_, T step_, int numSteps_, T prec_) {
+    iniLogscale = iniLogscale_;
+    numSteps = numSteps_;
+    step = step_;
+    prec = prec_;
+    scale = exp<T>(iniLogscale + step*numSteps, prec);
 }
 
 template <typename T>
@@ -110,14 +114,32 @@ Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
 }
 
 template <typename T>
+int Gasket<T>::searchScale(Sdf<T> shape, T ar) {
+    int lb = 0;
+    int ub = numSteps;
+    while (ub - lb > 1) {
+        int m = (lb + ub) / 2;
+        T scale = exp<T>(iniLogscale + m*step, prec);
+        T height = 2/scale;
+        T width = height*ar;
+        if (shape.rectInside(center, width, height)) {
+            ub = m;
+        } else {
+            lb = m;
+        }
+    }
+    return ub;
+}
+
+template <typename T>
 void Gasket<T>::adapt(T ar) {
     auto arr = mobiusArray();
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
     T height = 2/scale;
     T width = height*ar;
-    if (shape.rectInside(center, width, height) ||
-        shape.flip().rectInside(center, width, height)) {
-
+    T calc = iniLogscale + searchScale(shape, ar)*step;
+    std::cout<<calc<<std::endl;
+    if (shape.rectInside(center, width, height)) {
         doubleSided = false;
     }
     Mobius<T> acc;
