@@ -137,10 +137,24 @@ void Gasket<T>::adapt(T ar) {
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
     T height = 2/scale;
     T width = height*ar;
-    T calc = iniLogscale + searchScale(shape, ar)*step;
-    std::cout<<calc<<std::endl;
     if (shape.rectInside(center, width, height)) {
         doubleSided = false;
+    }
+    Mobius<T> acc_;
+    int i = 0;
+    while (true) {
+        auto aux = acc_.compose(arr[vals[i]]);
+        auto qa = aux.apply(pa);
+        auto qb = aux.apply(pb);
+        auto qc = aux.apply(pc);
+        shape = Sdf<T>::fromPoints(qa, qb, qc);
+        int scaleVal = searchScale(shape, ar);
+        if (scaleVal == numSteps) {
+            break;
+        }
+        printf("%d\n",scaleVal);
+        acc_ = aux;
+        i++;
     }
     Mobius<T> acc;
     if (!doubleSided) {
