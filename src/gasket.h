@@ -35,7 +35,7 @@ private:
     std::mutex initLock;
     int lastPickedUp;
     bool foundEnd;
-    std::vector<KeyGasket<T>> keyGaskets;
+    std::vector<KeyGasket> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;
     bool doubleSided = true;

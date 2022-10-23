@@ -149,15 +149,16 @@ void Gasket<T>::task(int i) {
     auto qc = acc.apply(pc);
     Sdf<T> shape = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(shape, ar);
-    KeyGasket<T> g;
-    g.logscale = iniLogscale + scaleVal*step;
+    KeyGasket g;
+    T logscale = iniLogscale + scaleVal*step;
+    g.logscale = toDouble(logscale);
     auto s = Mobius<T>::scaling(lookupExp(scaleVal))
         .compose(Mobius<T>::translation(-center))
         .compose(acc);
 
-    g.ifsTransforms.push_back(dive.conjugate(s));
-    g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
-    g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
+    g.ifsTransforms.push_back(dive.conjugate(s).toMobiusDouble());
+    g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s).toMobiusDouble());
+    g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
 
     initLock.lock();
     if (scaleVal < numSteps) {
@@ -190,18 +191,18 @@ void Gasket<T>::initZoom(T ar_) {
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
     if (!shape.rectInside(center, iniWidth, iniHeight)) {
-        KeyGasket<T> g;
-        g.logscale = iniLogscale;
+        KeyGasket g;
+        g.logscale = toDouble(iniLogscale);
 
         auto s = Mobius<T>::scaling(lookupExp(0))
             .compose(Mobius<T>::translation(-center));
 
-        g.ifsTransforms.push_back(tr.conjugate(s));
-        g.ifsTransforms.push_back(tr.conjugate(rot).conjugate(s));
-        g.ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s));
-        g.ifsTransforms.push_back(tr.inverse().conjugate(s));
-        g.ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s));
-        g.ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s));
+        g.ifsTransforms.push_back(tr.conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(tr.conjugate(rot).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(tr.inverse().conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
 
         keyGaskets.push_back(g);
     }

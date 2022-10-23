@@ -4,10 +4,9 @@
 #include "mobius.h"
 #include <vector>
 
-template <typename T>
 class KeyGasket {
 public:
-    std::vector<Mobius<T>> ifsTransforms;
-    T logscale;
+    std::vector<Mobius<double>> ifsTransforms;
+    double logscale;
     Flame toFlame();
 };

@@ -1,8 +1,7 @@
 #include <gmpxx.h>
 #include "key_gasket.h"
 
-template<typename T>
-Flame KeyGasket<T>::toFlame() {
+Flame KeyGasket::toFlame() {
     Flame flame;
     for (auto t: ifsTransforms) {
         flame.xforms.push_back(t.toXForm());
@@ -25,5 +24,3 @@ Flame KeyGasket<T>::toFlame() {
 
     return flame;
 }
-
-template class KeyGasket<mpq_class>;
