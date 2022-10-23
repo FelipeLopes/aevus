@@ -5,6 +5,7 @@ cc_library(
     deps = [
         "@tinyxml2//:tinyxml2",
         "@gmp//:gmp",
+        "@boost//:boost",
     ],
 )
 

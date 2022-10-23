@@ -1,6 +1,7 @@
 [requires]
 gmp/6.2.1
 tinyxml2/9.0.0
+boost/1.80.0
 
 [generators]
 BazelToolchain
