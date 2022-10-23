@@ -122,13 +122,6 @@ Complex<double> squareRoot<Complex<double>>(Complex<double> z) {
     return Complex<double>(u.real(), u.imag());
 }
 
-template <>
-mpq_class maxPart<mpq_class>(Complex<mpq_class> z) {
-    auto absReal = z.real > 0 ? z.real : -z.real;
-    auto absImag = z.imag > 0 ? z.imag : -z.imag;
-    return absReal > absImag ? absReal : absImag;
-}
-
 void printCx(cx z) {
     std::cout<<"("<<z.real()<<")+i*("<<z.imag()<<")"<<std::endl;
 }

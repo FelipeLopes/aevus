@@ -64,9 +64,6 @@ template <typename T>
 T squareRoot(T x);
 
 template <typename T>
-T maxPart(Complex<T> x);
-
-template <typename T>
 double toDouble(T x);
 
 template <typename T>
@@ -83,9 +80,6 @@ mpq_class squareRoot<mpq_class>(mpq_class x);
 
 template <>
 Complex<mpq_class> squareRoot<Complex<mpq_class>>(Complex<mpq_class> z);
-
-template <>
-mpq_class maxPart<mpq_class>(Complex<mpq_class> z);
 
 template <>
 double toDouble<mpq_class>(mpq_class x);
