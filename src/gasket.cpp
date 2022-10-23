@@ -216,4 +216,19 @@ void Gasket<T>::initZoom(T ar_) {
     pool.join();
 }
 
+template<typename T>
+Flame Gasket<T>::getFlame(double logscale) {
+    int lb = 0;
+    int ub = keyGaskets.size();
+    while (ub - lb > 1) {
+        int m = (lb + ub) / 2;
+        if (keyGaskets[m].logscale < logscale) {
+            lb = m;
+        } else {
+            ub = m;
+        }
+    }
+    return keyGaskets[lb].toFlame(logscale-keyGaskets[lb].logscale);
+}
+
 template class Gasket<mpq_class>;

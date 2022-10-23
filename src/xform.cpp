@@ -30,25 +30,6 @@ std::string Affine::coefString() {
     return buffer.str();
 }
 
-void addSphericalTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
-    auto xform = doc.NewElement("xform");
-    xform->SetAttribute("weight", "0.5");
-    xform->SetAttribute("color", "0");
-    xform->SetAttribute("spherical", "1");
-    //xform->SetAttribute("coefs", pre.coefString().c_str());
-    //xform->SetAttribute("post", post.coefString().c_str());
-    node->InsertEndChild(xform);
-}
-
-void addLinearTransformXML(tinyxml2::XMLDocument& doc, tinyxml2::XMLElement* node) {
-    auto xform = doc.NewElement("xform");
-    xform->SetAttribute("weight", "0.5");
-    xform->SetAttribute("color", "0");
-    xform->SetAttribute("linear", "1");
-    //xform->SetAttribute("coefs", pre.coefString().c_str());
-    node->InsertEndChild(xform);
-}
-
 Affine::Affine() {
     o = Point(0,0);
     x = Point(1,0);

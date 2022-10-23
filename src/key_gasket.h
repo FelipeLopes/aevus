@@ -8,5 +8,5 @@ class KeyGasket {
 public:
     std::vector<Mobius<double>> ifsTransforms;
     double logscale;
-    Flame toFlame();
+    Flame toFlame(double logscale = 0);
 };

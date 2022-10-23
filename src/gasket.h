@@ -24,6 +24,7 @@ public:
     void setScales(T iniLogscale, T step, int numSteps, T prec);
     Complex<T> selectZoomPoint(unsigned seed, int depth);
     void initZoom(T ar);
+    Flame getFlame(double logscale);
 private:
     void task(int i);
     int searchScale(Sdf<T> shape, T ar);

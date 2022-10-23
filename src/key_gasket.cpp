@@ -1,10 +1,14 @@
 #include <gmpxx.h>
 #include "key_gasket.h"
+#include "mobius.h"
 
-Flame KeyGasket::toFlame() {
+Flame KeyGasket::toFlame(double logscale) {
     Flame flame;
+
+    Mobius<double> s = Mobius<double>::scaling(exp(logscale));
+
     for (auto t: ifsTransforms) {
-        flame.xforms.push_back(t.toXForm());
+        flame.xforms.push_back(t.conjugate(s).toXForm());
     }
 
     for (int i = 0; i < 3; i++) {
