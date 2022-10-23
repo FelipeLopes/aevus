@@ -26,6 +26,9 @@ private:
     std::array<Mobius<T>, 3> mobiusArray();
     int searchScale(Sdf<T> shape, T ar);
     std::vector<int> vals;
+    std::vector<T> lookup;
+    T base;
+    T lookupExp(int n);
     std::vector<KeyGasket<T>> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;

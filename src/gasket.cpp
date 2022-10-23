@@ -117,7 +117,7 @@ int Gasket<T>::searchScale(Sdf<T> shape, T ar) {
     int ub = numSteps;
     while (ub - lb > 1) {
         int m = (lb + ub) / 2;
-        T scale = exp<T>(iniLogscale + m*step, prec);
+        T scale = lookupExp(m);
         T height = 2/scale;
         T width = height*ar;
         if (shape.rectInside(center, width, height)) {
@@ -130,17 +130,33 @@ int Gasket<T>::searchScale(Sdf<T> shape, T ar) {
 }
 
 template <typename T>
+T Gasket<T>::lookupExp(int n) {
+    T ans = base;
+    while (n > 0) {
+        int bits = (n & -n);
+        ans = ans * lookup[__builtin_ctz(bits)];
+        n -= bits;
+    }
+    return ans;
+}
+
+template <typename T>
 void Gasket<T>::initZoom(T ar) {
     auto arr = mobiusArray();
+    base = exp<T>(iniLogscale, prec);
+    lookup.resize(32-__builtin_clz(numSteps));
+    for (int i=0; i<lookup.size(); i++) {
+        lookup[i] = exp<T>((1<<i)*step, prec);
+    }
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
-    T iniScale = exp<T>(iniLogscale, prec);
+    T iniScale = lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
     if (!shape.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket<T> g;
         g.logscale = iniLogscale;
 
-        auto s = Mobius<T>::scaling(exp<T>(g.logscale, prec))
+        auto s = Mobius<T>::scaling(lookupExp(0))
             .compose(Mobius<T>::translation(-center));
 
         g.ifsTransforms.push_back(tr.conjugate(s));
@@ -166,7 +182,7 @@ void Gasket<T>::initZoom(T ar) {
         }
         KeyGasket<T> g;
         g.logscale = iniLogscale + scaleVal*step;
-        auto s = Mobius<T>::scaling(exp<T>(g.logscale, prec))
+        auto s = Mobius<T>::scaling(lookupExp(scaleVal))
             .compose(Mobius<T>::translation(-center))
             .compose(acc);
 
@@ -176,11 +192,10 @@ void Gasket<T>::initZoom(T ar) {
 
         keyGaskets.push_back(g);
 
+        std::cout<<i<<" "<<g.logscale<<std::endl;
+
         acc = aux;
         i++;
-    }
-    for (auto kg: keyGaskets) {
-        std::cout<<kg.logscale<<std::endl;
     }
 }
 
