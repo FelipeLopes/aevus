@@ -2,6 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <boost/asio/post.hpp>
 #include <gmpxx.h>
 #include <tuple>
 
@@ -11,7 +12,7 @@
 #include "sdf.h"
 
 template <typename T>
-Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip) {
+Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip): pool(4) {
 
     if (r2 > r1) {
         throw std::invalid_argument("First radius parameter should be greater than "
@@ -140,9 +141,51 @@ T Gasket<T>::lookupExp(int n) {
     return ans;
 }
 
-template <typename T>
-void Gasket<T>::initZoom(T ar) {
+template<typename T>
+void Gasket<T>::task(int i) {
     auto arr = mobiusArray();
+    Mobius<T> acc;
+    for (int j=0; j<i+1; j++) {
+        acc = acc.compose(arr[vals[j]]);
+    }
+    auto qa = acc.apply(pa);
+    auto qb = acc.apply(pb);
+    auto qc = acc.apply(pc);
+    Sdf<T> shape = Sdf<T>::fromPoints(qa, qb, qc);
+    int scaleVal = searchScale(shape, ar);
+    KeyGasket<T> g;
+    g.logscale = iniLogscale + scaleVal*step;
+    auto s = Mobius<T>::scaling(lookupExp(scaleVal))
+        .compose(Mobius<T>::translation(-center))
+        .compose(acc);
+
+    g.ifsTransforms.push_back(dive.conjugate(s));
+    g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
+    g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
+
+    initLock.lock();
+    if (scaleVal < numSteps) {
+        if (keyGaskets.size() < i+2) {
+            keyGaskets.resize(i+2);
+        }
+        keyGaskets[i+1] = g;
+    } else {
+        foundEnd = true;
+    }
+    if (!foundEnd) {
+        lastPickedUp++;
+        boost::asio::post(pool, [=] {
+            task(lastPickedUp);
+        });
+    }
+    initLock.unlock();
+    std::cout<<i<<" "<<g.logscale<<std::endl;
+}
+
+template <typename T>
+void Gasket<T>::initZoom(T ar_) {
+    auto arr = mobiusArray();
+    ar = ar_;
     base = exp<T>(iniLogscale, prec);
     lookup.resize(32-__builtin_clz(numSteps));
     for (int i=0; i<lookup.size(); i++) {
@@ -168,6 +211,15 @@ void Gasket<T>::initZoom(T ar) {
 
         keyGaskets.push_back(g);
     }
+    lastPickedUp = 3;
+    foundEnd = false;
+    for (int i=0; i<4; i++) {
+        boost::asio::post(pool, [=] {
+            task(i);
+        });
+    }
+    pool.join();
+    /*
     Mobius<T> acc;
     int i = 0;
     while (true) {
@@ -196,7 +248,7 @@ void Gasket<T>::initZoom(T ar) {
 
         acc = aux;
         i++;
-    }
+    }*/
 }
 
 template <typename T>

@@ -2,10 +2,12 @@
 
 #include <cstdio>
 #include <cmath>
+#include <mutex>
 #include <utility>
 #include <memory>
 #include <vector>
 
+#include <boost/asio/thread_pool.hpp>
 #include <tinyxml2.h>
 
 #include "complex_type.h"
@@ -24,11 +26,16 @@ public:
     void initZoom(T ar);
 private:
     std::array<Mobius<T>, 3> mobiusArray();
+    void task(int i);
     int searchScale(Sdf<T> shape, T ar);
     std::vector<int> vals;
     std::vector<T> lookup;
-    T base;
+    T base, ar;
     T lookupExp(int n);
+    boost::asio::thread_pool pool;
+    std::mutex initLock;
+    int lastPickedUp;
+    bool foundEnd;
     std::vector<KeyGasket<T>> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;
