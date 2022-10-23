@@ -134,4 +134,16 @@ XForm Mobius<T>::toXForm() {
     }
 }
 
+template <>
+Mobius<double> Mobius<double>::toMobiusDouble() {
+    return *this;
+}
+
+template <typename T>
+Mobius<double> Mobius<T>::toMobiusDouble() {
+    return Mobius<double>(a.toComplexDouble(),b.toComplexDouble(),
+        c.toComplexDouble(),d.toComplexDouble());
+}
+
 template class Mobius<mpq_class>;
+template class Mobius<double>;

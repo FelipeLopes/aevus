@@ -15,6 +15,7 @@ public:
     T norm();
     Complex<T> conj();
     cx toCxDouble();
+    Complex<double> toComplexDouble();
     void print();
 };
 

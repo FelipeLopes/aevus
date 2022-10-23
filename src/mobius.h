@@ -15,6 +15,7 @@ public:
     Mobius<T> compose(Mobius<T> n);
     Mobius<T> conjugate(Mobius<T> s);
     Mobius<T> flip();
+    Mobius<double> toMobiusDouble();
     void normalize();
     XForm toXForm();
     static Mobius<T> scaling(Complex<T> a);
