@@ -100,14 +100,12 @@ Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
         std::swap(pb, pc);
         dive = tr.inverse();
     }
-    auto arr = mobiusArray();
+    std::array<Mobius<T>,3> arr =
+        {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
     Mobius<T> acc;
-    vals.clear();
     zoomTransforms.clear();
     for (int i=0; i<depth; i++) {
-        int k = dist3(rng);
-        vals.push_back(k);
-        acc = acc.compose(arr[k]);
+        acc = acc.compose(arr[dist3(rng)]);
         zoomTransforms.push_back(acc);
     }
     center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
@@ -145,7 +143,6 @@ T Gasket<T>::lookupExp(int n) {
 
 template<typename T>
 void Gasket<T>::task(int i) {
-    auto arr = mobiusArray();
     Mobius<T> acc = zoomTransforms[i];
     auto qa = acc.apply(pa);
     auto qb = acc.apply(pb);
@@ -182,7 +179,6 @@ void Gasket<T>::task(int i) {
 
 template <typename T>
 void Gasket<T>::initZoom(T ar_) {
-    auto arr = mobiusArray();
     ar = ar_;
     base = exp<T>(iniLogscale, prec);
     lookup.resize(32-__builtin_clz(numSteps));
@@ -217,41 +213,6 @@ void Gasket<T>::initZoom(T ar_) {
         });
     }
     pool.join();
-    /*
-    Mobius<T> acc;
-    int i = 0;
-    while (true) {
-        auto aux = acc.compose(arr[vals[i]]);
-        auto qa = aux.apply(pa);
-        auto qb = aux.apply(pb);
-        auto qc = aux.apply(pc);
-        shape = Sdf<T>::fromPoints(qa, qb, qc);
-        int scaleVal = searchScale(shape, ar);
-        if (scaleVal == numSteps) {
-            break;
-        }
-        KeyGasket<T> g;
-        g.logscale = iniLogscale + scaleVal*step;
-        auto s = Mobius<T>::scaling(lookupExp(scaleVal))
-            .compose(Mobius<T>::translation(-center))
-            .compose(acc);
-
-        g.ifsTransforms.push_back(dive.conjugate(s));
-        g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s));
-        g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s));
-
-        keyGaskets.push_back(g);
-
-        std::cout<<i<<" "<<g.logscale<<std::endl;
-
-        acc = aux;
-        i++;
-    }*/
-}
-
-template <typename T>
-std::array<Mobius<T>,3> Gasket<T>::mobiusArray() {
-    return {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
 }
 
 template class Gasket<mpq_class>;
