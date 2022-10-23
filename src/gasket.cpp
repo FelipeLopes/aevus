@@ -103,10 +103,12 @@ Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
     auto arr = mobiusArray();
     Mobius<T> acc;
     vals.clear();
+    zoomTransforms.clear();
     for (int i=0; i<depth; i++) {
         int k = dist3(rng);
         vals.push_back(k);
         acc = acc.compose(arr[k]);
+        zoomTransforms.push_back(acc);
     }
     center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
     return center;
@@ -144,10 +146,7 @@ T Gasket<T>::lookupExp(int n) {
 template<typename T>
 void Gasket<T>::task(int i) {
     auto arr = mobiusArray();
-    Mobius<T> acc;
-    for (int j=0; j<i+1; j++) {
-        acc = acc.compose(arr[vals[j]]);
-    }
+    Mobius<T> acc = zoomTransforms[i];
     auto qa = acc.apply(pa);
     auto qb = acc.apply(pb);
     auto qc = acc.apply(pc);
@@ -179,7 +178,6 @@ void Gasket<T>::task(int i) {
         });
     }
     initLock.unlock();
-    std::cout<<i<<" "<<g.logscale<<std::endl;
 }
 
 template <typename T>

@@ -29,6 +29,7 @@ private:
     void task(int i);
     int searchScale(Sdf<T> shape, T ar);
     std::vector<int> vals;
+    std::vector<Mobius<T>> zoomTransforms;
     std::vector<T> lookup;
     T base, ar;
     T lookupExp(int n);
