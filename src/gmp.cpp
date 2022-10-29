@@ -1,18 +1,24 @@
 #include <bits/types/clock_t.h>
+#include <cstddef>
 #include <gmpxx.h>
 #include <ctime>
+#include <memory>
 #include <cmath>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <boost/gil.hpp>
 #include <tinyxml2.h>
 #include "gasket.h"
 #include "complex_type.h"
 #include "mobius.h"
+#include "palette.h"
 #include "sdf.h"
 
 void convertFlame(std::string source, std::string dest);
 
 int main(int argc, char* argv[]) {
+    Palette palette;
     try {
         /*if (argc < 16) {
             if (std::string(argv[1]) == "--convert") {
@@ -27,7 +33,6 @@ int main(int argc, char* argv[]) {
         Gasket<mpq_class> g(mpq_class(6,11),
             mpq_class(3,7),
             Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
-        tinyxml2::XMLDocument xmlDoc;
         mpq_class prec(1);
         for (int i=0; i<10; i++) {
             prec = prec / 10;
@@ -38,9 +43,6 @@ int main(int argc, char* argv[]) {
         g.selectZoomPoint(314159, 200);
         g.initZoom(mpq_class(16, 9));
 
-        //auto node = g.toFlame().toXMLNode(xmlDoc);;
-        //xmlDoc.InsertFirstChild(node);
-        //xmlDoc.SaveFile(stdout);
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
