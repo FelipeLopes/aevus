@@ -7,12 +7,19 @@ Diver<T>::Diver(int depth_):depth(depth_) {
 }
 
 template <typename T>
-RandomDiver<T>::RandomDiver(int depth, int seed): Diver<T>(depth) {
+RandomDiver<T>::RandomDiver(int depth, int seed): Diver<T>(depth), rng(seed),
+    dist2(0,1), dist3(0,2) {
 
 }
 
 template <typename T>
-int RandomDiver<T>::chooseDive(Mobius<T> accumulator) {
+int RandomDiver<T>::chooseDive(Mobius<T> acc) {
+    if (acc.a == Complex<T>(1) && acc.b == Complex<T>(0) &&
+        acc.c == Complex<T>(0) && acc.d == Complex<T>(1)) {
+
+        int k = dist2(rng);
+        return k*3 + dist3(rng);
+    }
     return 0;
 }
 

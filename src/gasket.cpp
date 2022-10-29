@@ -86,6 +86,10 @@ Gasket<T>::Gasket(shared_ptr<Diver<T>> diver_, T r1, T r2, Complex<T> f, bool fl
     pa = m.apply(Complex<T>(-1));
     pb = m.apply(Complex<T>(1));
     pc = m.apply(Complex<T>(0));
+
+    Mobius<T> acc;
+    int k = diver->chooseDive(acc);
+    printf("Diver chose %d\n", k);
 }
 
 template <typename T>
