@@ -40,13 +40,9 @@ __pycache__/
 #bazel symlinks
 bazel-*
 
-#machine specific conan files
-conandeps/dependencies.bzl
-conandeps/conan.lock
-conandeps/conanbuild.conf
-conandeps/conanbuildinfo.txt
-conandeps/conaninfo.txt
-conandeps/graph_info.json
+#conan stuff except requirements
+conandeps/*
+!conandeps/conanfile.txt
 
 #vim temporary files
 *~
