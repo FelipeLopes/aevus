@@ -11,6 +11,7 @@
 #include <tinyxml2.h>
 
 #include "complex_type.hpp"
+#include "diver.hpp"
 #include "flame.hpp"
 #include "key_gasket.hpp"
 #include "mobius.hpp"
@@ -20,7 +21,7 @@
 template <typename T>
 class Gasket {
 public:
-    Gasket(T r1, T r2, Complex<T> f, bool flip = false);
+    Gasket(std::shared_ptr<Diver<T>> diver, T r1, T r2, Complex<T> f, bool flip = false);
     void setScales(T iniLogscale, T step, int numSteps, T prec);
     Complex<T> selectZoomPoint(unsigned seed, int depth);
     void initZoom(T ar);
@@ -33,6 +34,7 @@ private:
     T base, ar;
     T lookupExp(int n);
     boost::asio::thread_pool pool;
+    std::shared_ptr<Diver<T>> diver;
     std::mutex initLock;
     int lastPickedUp;
     bool foundEnd;
