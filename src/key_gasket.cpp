@@ -1,9 +1,12 @@
 #include <gmpxx.h>
+#include <memory>
 #include "key_gasket.h"
 #include "mobius.h"
 
-Flame KeyGasket::toFlame(double logscale) {
-    Flame flame;
+using std::shared_ptr;
+
+Flame KeyGasket::toFlame(double logscale, shared_ptr<Palette> palette) {
+    Flame flame(palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));
 

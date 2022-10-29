@@ -1,9 +1,11 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
+#include <memory>
 #include <random>
 #include <boost/asio/post.hpp>
 #include <gmpxx.h>
+#include <stdexcept>
 #include <tuple>
 
 #include "complex_type.h"
@@ -11,20 +13,23 @@
 #include "gasket.h"
 #include "sdf.h"
 
+using std::invalid_argument;
+using std::shared_ptr;
+
 template <typename T>
 Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip): pool(4) {
 
     if (r2 > r1) {
-        throw std::invalid_argument("First radius parameter should be greater than "
+        throw invalid_argument("First radius parameter should be greater than "
             "or equal to the second.");
     } else if (r1 + r2 > 1) {
-        throw std::invalid_argument("Radii sum cannot be larger than 1.");
+        throw invalid_argument("Radii sum cannot be larger than 1.");
     } else if (r1 < 0 || r2 < 0) {
-        throw std::invalid_argument("All radii should be positive.");
+        throw invalid_argument("All radii should be positive.");
     }
 
     if (f.norm() != 1) {
-        throw std::invalid_argument("Phase must have unit norm.");
+        throw invalid_argument("Phase must have unit norm.");
     }
 
     T a = -1;
@@ -39,7 +44,7 @@ Gasket<T>::Gasket(T r1, T r2, Complex<T> f, bool flip): pool(4) {
         d =  s1 + e;
     }
     if (d < c) {
-        throw std::invalid_argument("Radii given are not the largest circles.");
+        throw invalid_argument("Radii given are not the largest circles.");
     }
 
     T l1 = r1 + r2;
@@ -217,7 +222,7 @@ void Gasket<T>::initZoom(T ar_) {
 }
 
 template<typename T>
-Flame Gasket<T>::getFlame(double logscale) {
+Flame Gasket<T>::getFlame(double logscale, shared_ptr<Palette> palette) {
     int lb = 0;
     int ub = keyGaskets.size();
     while (ub - lb > 1) {
@@ -228,7 +233,7 @@ Flame Gasket<T>::getFlame(double logscale) {
             ub = m;
         }
     }
-    return keyGaskets[lb].toFlame(logscale-keyGaskets[lb].logscale);
+    return keyGaskets[lb].toFlame(logscale-keyGaskets[lb].logscale, palette);
 }
 
 template class Gasket<mpq_class>;
