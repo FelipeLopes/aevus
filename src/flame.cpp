@@ -1,9 +1,14 @@
 #include "flame.h"
+#include <memory>
 
+using std::make_shared;
+using std::shared_ptr;
 using std::string;
 
-Flame::Flame() {
-
+Flame::Flame(shared_ptr<Palette> palette_): palette(palette_) {
+    if (palette == nullptr) {
+        palette = make_shared<Palette>();
+    }
 }
 
 tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
@@ -38,7 +43,7 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     for (int i=0; i<32; i++) {
         string paletteChars = "";
         for (int j=0; j<8; j++) {
-            paletteChars += palette.hexAt(i*8+j);
+            paletteChars += palette->hexAt(i*8+j);
         }
         text += (whiteSpace + paletteChars + "\n");
     }
