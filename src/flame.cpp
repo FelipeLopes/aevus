@@ -1,5 +1,7 @@
 #include "flame.h"
 
+using std::string;
+
 Flame::Flame() {
 
 }
@@ -28,18 +30,21 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
         flame->InsertEndChild(xf.toXMLNode(xmlDoc));
     }
 
-    auto palette = xmlDoc.NewElement("palette");
-    palette->SetAttribute("count", "256");
-    palette->SetAttribute("format", "RGB");
-    std::string whiteSpace(12, ' ');
-    std::string whiteChars(48, 'F');
-    std::string text = "\n";
+    auto paletteElement = xmlDoc.NewElement("palette");
+    paletteElement->SetAttribute("count", "256");
+    paletteElement->SetAttribute("format", "RGB");
+    string whiteSpace(12, ' ');
+    string text = "\n";
     for (int i=0; i<32; i++) {
-        text += (whiteSpace + whiteChars + "\n");
+        string paletteChars = "";
+        for (int j=0; j<8; j++) {
+            paletteChars += palette.hexAt(i*8+j);
+        }
+        text += (whiteSpace + paletteChars + "\n");
     }
     text += "        ";
-    palette->SetText(text.c_str());
-    flame->InsertEndChild(palette);
+    paletteElement->SetText(text.c_str());
+    flame->InsertEndChild(paletteElement);
 
     return root;
 }

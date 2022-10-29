@@ -1,5 +1,6 @@
 #include "palette.h"
 #include <memory>
+#include <tuple>
 
 using std::make_unique;
 using boost::gil::get_color;
@@ -8,6 +9,22 @@ using boost::gil::green_t;
 using boost::gil::blue_t;
 using boost::gil::interleaved_view;
 using boost::gil::rgb8_pixel_t;
+
+std::string Palette::hexAt(int pos) {
+    char s[7];
+    rgb8_pixel_t pix = paletteView(pos, 0);
+    byte r = get_color(pix, red_t());
+    byte g = get_color(pix, green_t());
+    byte b = get_color(pix, blue_t());
+    s[0] = r/16 > 9 ? (r/16)+'A'-10 : (r/16)+'0';
+    s[1] = r%16 > 9 ? (r%16)+'A'-10 : (r%16)+'0';
+    s[2] = g/16 > 9 ? (g/16)+'A'-10 : (g/16)+'0';
+    s[3] = g%16 > 9 ? (g%16)+'A'-10 : (g%16)+'0';
+    s[4] = b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
+    s[5] = b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
+    s[6] = '\0';
+    return std::string(s);
+}
 
 Palette::Palette() {
     init();

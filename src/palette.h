@@ -7,6 +7,7 @@ class Palette {
 public:
     Palette();
     Palette(boost::gil::rgb8_pixel_t color1, boost::gil::rgb8_pixel_t color2);
+    std::string hexAt(int pos);
 private:
     void init();
     typedef unsigned char byte;

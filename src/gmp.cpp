@@ -44,6 +44,11 @@ int main(int argc, char* argv[]) {
         g.selectZoomPoint(314159, 200);
         g.initZoom(mpq_class(16, 9));
 
+        tinyxml2::XMLDocument xmlDoc;
+        auto node = g.getFlame(10).toXMLNode(xmlDoc);
+        xmlDoc.InsertFirstChild(node);
+        xmlDoc.SaveFile(stdout);
+
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
