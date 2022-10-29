@@ -18,7 +18,8 @@
 void convertFlame(std::string source, std::string dest);
 
 int main(int argc, char* argv[]) {
-    Palette palette;
+    Palette palette(boost::gil::rgb8_pixel_t(255,255,255),
+        boost::gil::rgb8_pixel_t(255,0,0));
     try {
         /*if (argc < 16) {
             if (std::string(argv[1]) == "--convert") {
