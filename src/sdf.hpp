@@ -1,7 +1,7 @@
 #pragma once
 
 #include <array>
-#include "complex_type.h"
+#include "complex_type.hpp"
 
 template <typename T>
 class Sdf {

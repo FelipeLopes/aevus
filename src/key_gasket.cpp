@@ -1,7 +1,7 @@
 #include <gmpxx.h>
 #include <memory>
-#include "key_gasket.h"
-#include "mobius.h"
+#include "key_gasket.hpp"
+#include "mobius.hpp"
 
 using std::shared_ptr;
 

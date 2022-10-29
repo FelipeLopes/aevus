@@ -1,7 +1,7 @@
 #pragma once
 
-#include "flame.h"
-#include "mobius.h"
+#include "flame.hpp"
+#include "mobius.hpp"
 #include <memory>
 #include <vector>
 

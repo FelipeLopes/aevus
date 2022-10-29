@@ -1,4 +1,4 @@
-#include "palette.h"
+#include "palette.hpp"
 #include <memory>
 #include <tuple>
 

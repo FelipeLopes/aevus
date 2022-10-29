@@ -1,4 +1,4 @@
-#include "flame.h"
+#include "flame.hpp"
 #include <memory>
 
 using std::make_shared;

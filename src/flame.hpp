@@ -1,7 +1,7 @@
 #pragma once
 
-#include "palette.h"
-#include "xform.h"
+#include "palette.hpp"
+#include "xform.hpp"
 #include <memory>
 
 class Flame {

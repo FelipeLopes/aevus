@@ -10,12 +10,12 @@
 #include <boost/asio/thread_pool.hpp>
 #include <tinyxml2.h>
 
-#include "complex_type.h"
-#include "flame.h"
-#include "key_gasket.h"
-#include "mobius.h"
-#include "sdf.h"
-#include "xform.h"
+#include "complex_type.hpp"
+#include "flame.hpp"
+#include "key_gasket.hpp"
+#include "mobius.hpp"
+#include "sdf.hpp"
+#include "xform.hpp"
 
 template <typename T>
 class Gasket {

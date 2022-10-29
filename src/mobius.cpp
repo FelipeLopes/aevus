@@ -1,8 +1,8 @@
 #include <gmpxx.h>
 #include <exception>
-#include "complex_type.h"
-#include "mobius.h"
-#include "xform.h"
+#include "complex_type.hpp"
+#include "mobius.hpp"
+#include "xform.hpp"
 
 template <typename T>
 Mobius<T>::Mobius(): a(Complex<T>(1)),b(Complex<T>(0)),

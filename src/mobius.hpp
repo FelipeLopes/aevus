@@ -1,8 +1,8 @@
 #pragma once
 
 #include <gmpxx.h>
-#include "complex_type.h"
-#include "xform.h"
+#include "complex_type.hpp"
+#include "xform.hpp"
 
 template <typename T>
 class Mobius {

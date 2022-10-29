@@ -1,7 +1,7 @@
 #include <complex>
 #include <gmpxx.h>
-#include "complex_type.h"
-#include "sdf.h"
+#include "complex_type.hpp"
+#include "sdf.hpp"
 
 template <typename T>
 Sdf<T>::Sdf(T a_, T b_, T c_, T d_):

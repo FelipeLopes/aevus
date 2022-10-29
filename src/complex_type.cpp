@@ -1,6 +1,6 @@
 #include <gmpxx.h>
 #include <iostream>
-#include "complex_type.h"
+#include "complex_type.hpp"
 
 template <typename T>
 Complex<T>::Complex(): real(T(0)), imag(T(0)) {

@@ -8,10 +8,10 @@
 #include <stdexcept>
 #include <tuple>
 
-#include "complex_type.h"
-#include "mobius.h"
-#include "gasket.h"
-#include "sdf.h"
+#include "complex_type.hpp"
+#include "mobius.hpp"
+#include "gasket.hpp"
+#include "sdf.hpp"
 
 using std::invalid_argument;
 using std::shared_ptr;

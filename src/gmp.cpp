@@ -9,11 +9,11 @@
 #include <sstream>
 #include <boost/gil.hpp>
 #include <tinyxml2.h>
-#include "gasket.h"
-#include "complex_type.h"
-#include "mobius.h"
-#include "palette.h"
-#include "sdf.h"
+#include "gasket.hpp"
+#include "complex_type.hpp"
+#include "mobius.hpp"
+#include "palette.hpp"
+#include "sdf.hpp"
 
 void convertFlame(std::string source, std::string dest);
 
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
         g.initZoom(mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;
-        auto node = g.getFlame(10).toXMLNode(xmlDoc);
+        auto node = g.getFlame(10, palette).toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
