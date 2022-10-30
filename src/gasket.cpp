@@ -19,7 +19,7 @@ using std::shared_ptr;
 template <typename T>
 Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_):
-    pool(4), shape(shape_), diver(diver_), scaler(scaler_) {
+    pool(4), shape(shape_), diver(diver_), scaler(scaler_), searcher(scaler_) {
 
     auto m = shape->conjugacyTransform;
 
