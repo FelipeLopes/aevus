@@ -17,6 +17,8 @@ public:
         const std::vector<Mobius<T>>& input,
         std::vector<KeyGasket>& output,
         T ar, int numThreads = 4);
+    void start();
+    void block();
 private:
     void task(int i);
     int searchScale(Sdf<T> sdf);
@@ -24,6 +26,7 @@ private:
     Complex<T> center;
     std::array<Mobius<T>, 3> transforms;
     T ar;
+    int numThreads;
     std::shared_ptr<Scaler<T>> scaler;
     boost::asio::thread_pool threadPool;
     const std::vector<Mobius<T>>& input;

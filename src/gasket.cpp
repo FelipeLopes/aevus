@@ -19,7 +19,7 @@ using std::shared_ptr;
 template <typename T>
 Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_):
-    pool(4), shape(shape_), diver(diver_), scaler(scaler_) {
+    shape(shape_), diver(diver_), scaler(scaler_) {
 
     auto m = shape->conjugacyTransform;
 
@@ -64,61 +64,6 @@ void Gasket<T>::selectZoomPoint() {
 }
 
 template <typename T>
-int Gasket<T>::searchScale(Sdf<T> sdf, T ar) {
-    int lb = 0;
-    int ub = scaler->numSteps;
-    while (ub - lb > 1) {
-        int m = (lb + ub) / 2;
-        T scale = scaler->lookupExp(m);
-        T height = 2/scale;
-        T width = height*ar;
-        if (sdf.rectInside(center, width, height)) {
-            ub = m;
-        } else {
-            lb = m;
-        }
-    }
-    return ub;
-}
-
-template<typename T>
-void Gasket<T>::task(int i) {
-    Mobius<T> acc = zoomTransforms[i];
-    auto qa = acc.apply(pa);
-    auto qb = acc.apply(pb);
-    auto qc = acc.apply(pc);
-    Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
-    int scaleVal = searchScale(sdf, ar);
-    KeyGasket g;
-    T logscale = scaler->iniLogscale + scaleVal*scaler->step;
-    g.logscale = toDouble(logscale);
-    auto s = Mobius<T>::scaling(scaler->lookupExp(scaleVal))
-        .compose(Mobius<T>::translation(-center))
-        .compose(acc);
-
-    g.ifsTransforms.push_back(dive.conjugate(s).toMobiusDouble());
-    g.ifsTransforms.push_back(dive.conjugate(rot).conjugate(s).toMobiusDouble());
-    g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
-
-    initLock.lock();
-    if (scaleVal < scaler->numSteps) {
-        if (keyGaskets.size() < i+2) {
-            keyGaskets.resize(i+2);
-        }
-        keyGaskets[i+1] = g;
-    } else {
-        foundEnd = true;
-    }
-    if (!foundEnd) {
-        lastPickedUp++;
-        boost::asio::post(pool, [=] {
-            task(lastPickedUp);
-        });
-    }
-    initLock.unlock();
-}
-
-template <typename T>
 void Gasket<T>::initZoom(T ar_) {
     ar = ar_;
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
@@ -141,14 +86,8 @@ void Gasket<T>::initZoom(T ar_) {
 
         keyGaskets.push_back(g);
     }
-    lastPickedUp = 3;
-    foundEnd = false;
-    for (int i=0; i<4; i++) {
-        boost::asio::post(pool, [=] {
-            task(i);
-        });
-    }
-    pool.join();
+    searcher->start();
+    searcher->block();
 }
 
 template<typename T>

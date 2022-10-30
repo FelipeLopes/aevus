@@ -10,17 +10,34 @@ using std::shared_ptr;
 using std::array;
 using std::vector;
 
-template<typename T>
+template <typename T>
 Searcher<T>::Searcher(shared_ptr<Scaler<T>> scaler_,
     Complex<T> pa_, Complex<T> pb_, Complex<T> pc_,
     Complex<T> center_,
     array<Mobius<T>, 3> transforms_,
     const vector<Mobius<T>>& input_,
     vector<KeyGasket>& output_,
-    T ar_, int numThreads):
+    T ar_, int numThreads_):
     pa(pa_), pb(pb_), pc(pc_), center(center_), transforms(transforms_), ar(ar_),
-    scaler(scaler_), threadPool(numThreads), input(input_), output(output_) {
+    numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
+    input(input_), output(output_) {
 
+}
+
+template <typename T>
+void Searcher<T>::start() {
+    lastPickedUp = numThreads - 1;
+    foundEnd = false;
+    for (int i=0; i<numThreads; i++) {
+        boost::asio::post(threadPool, [=] {
+            task(i);
+        });
+    }
+}
+
+template <typename T>
+void Searcher<T>::block() {
+    threadPool.join();
 }
 
 template <typename T>
