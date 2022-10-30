@@ -17,8 +17,8 @@ using std::invalid_argument;
 using std::shared_ptr;
 
 template <typename T>
-Gasket<T>::Gasket(shared_ptr<Diver<T>> diver_, T r1, T r2, Complex<T> f, bool flip):
-    pool(4), diver(diver_) {
+Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_, T r1, T r2, Complex<T> f, bool flip):
+    pool(4), shape(shape_), diver(diver_) {
 
     if (r2 > r1) {
         throw invalid_argument("First radius parameter should be greater than "

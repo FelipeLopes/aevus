@@ -16,12 +16,14 @@
 #include "key_gasket.hpp"
 #include "mobius.hpp"
 #include "sdf.hpp"
+#include "shape.hpp"
 #include "xform.hpp"
 
 template <typename T>
 class Gasket {
 public:
-    Gasket(std::shared_ptr<Diver<T>> diver, T r1, T r2, Complex<T> f, bool flip = false);
+    Gasket(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
+        T r1, T r2, Complex<T> f, bool flip = false);
     void setScales(T iniLogscale, T step, int numSteps, T prec);
     void initZoom(T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
@@ -34,6 +36,7 @@ private:
     T base, ar;
     T lookupExp(int n);
     boost::asio::thread_pool pool;
+    std::shared_ptr<Shape<T>> shape;
     std::shared_ptr<Diver<T>> diver;
     std::mutex initLock;
     int lastPickedUp;
