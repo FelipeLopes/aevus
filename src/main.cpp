@@ -48,7 +48,6 @@ int main(int argc, char* argv[]) {
         std::shared_ptr<Scaler<mpq_class>> scaler =
             std::make_shared<Scaler<mpq_class>>(iniLogscale, step, 22050, prec);
         Gasket<mpq_class> g(shape, diver, scaler);
-        g.setScales(iniLogscale, step, 22050, prec);
         g.initZoom(mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;

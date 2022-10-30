@@ -3,7 +3,9 @@
 #include "scaler.hpp"
 
 template <typename T>
-Scaler<T>::Scaler(T iniLogscale, T step, int numSteps, T prec) {
+Scaler<T>::Scaler(T iniLogscale_, T step_, int numSteps_, T prec):
+    iniLogscale(iniLogscale_), step(step_), numSteps(numSteps_) {
+
     base = exp<T>(iniLogscale, prec);
     lookup.resize(32-__builtin_clz(numSteps));
     for (int i=0; i<lookup.size(); i++) {

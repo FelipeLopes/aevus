@@ -37,14 +37,6 @@ Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
 }
 
 template <typename T>
-void Gasket<T>::setScales(T iniLogscale_, T step_, int numSteps_, T prec_) {
-    iniLogscale = iniLogscale_;
-    numSteps = numSteps_;
-    step = step_;
-    prec = prec_;
-}
-
-template <typename T>
 void Gasket<T>::selectZoomPoint() {
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
@@ -68,10 +60,10 @@ void Gasket<T>::selectZoomPoint() {
 template <typename T>
 int Gasket<T>::searchScale(Sdf<T> sdf, T ar) {
     int lb = 0;
-    int ub = numSteps;
+    int ub = scaler->numSteps;
     while (ub - lb > 1) {
         int m = (lb + ub) / 2;
-        T scale = lookupExp(m);
+        T scale = scaler->lookupExp(m);
         T height = 2/scale;
         T width = height*ar;
         if (sdf.rectInside(center, width, height)) {
@@ -83,17 +75,6 @@ int Gasket<T>::searchScale(Sdf<T> sdf, T ar) {
     return ub;
 }
 
-template <typename T>
-T Gasket<T>::lookupExp(int n) {
-    T ans = base;
-    while (n > 0) {
-        int bits = (n & -n);
-        ans = ans * lookup[__builtin_ctz(bits)];
-        n -= bits;
-    }
-    return ans;
-}
-
 template<typename T>
 void Gasket<T>::task(int i) {
     Mobius<T> acc = zoomTransforms[i];
@@ -103,9 +84,9 @@ void Gasket<T>::task(int i) {
     Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(sdf, ar);
     KeyGasket g;
-    T logscale = iniLogscale + scaleVal*step;
+    T logscale = scaler->iniLogscale + scaleVal*scaler->step;
     g.logscale = toDouble(logscale);
-    auto s = Mobius<T>::scaling(lookupExp(scaleVal))
+    auto s = Mobius<T>::scaling(scaler->lookupExp(scaleVal))
         .compose(Mobius<T>::translation(-center))
         .compose(acc);
 
@@ -114,7 +95,7 @@ void Gasket<T>::task(int i) {
     g.ifsTransforms.push_back(dive.conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
 
     initLock.lock();
-    if (scaleVal < numSteps) {
+    if (scaleVal < scaler->numSteps) {
         if (keyGaskets.size() < i+2) {
             keyGaskets.resize(i+2);
         }
@@ -134,20 +115,15 @@ void Gasket<T>::task(int i) {
 template <typename T>
 void Gasket<T>::initZoom(T ar_) {
     ar = ar_;
-    base = exp<T>(iniLogscale, prec);
-    lookup.resize(32-__builtin_clz(numSteps));
-    for (int i=0; i<lookup.size(); i++) {
-        lookup[i] = exp<T>((1<<i)*step, prec);
-    }
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
-    T iniScale = lookupExp(0);
+    T iniScale = scaler->lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
     if (!shape.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket g;
-        g.logscale = toDouble(iniLogscale);
+        g.logscale = toDouble(scaler->iniLogscale);
 
-        auto s = Mobius<T>::scaling(lookupExp(0))
+        auto s = Mobius<T>::scaling(scaler->lookupExp(0))
             .compose(Mobius<T>::translation(-center));
 
         g.ifsTransforms.push_back(tr.conjugate(s).toMobiusDouble());

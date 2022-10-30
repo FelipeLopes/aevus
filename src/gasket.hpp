@@ -33,9 +33,7 @@ private:
     void selectZoomPoint();
     int searchScale(Sdf<T> sdf, T ar);
     std::vector<Mobius<T>> zoomTransforms;
-    std::vector<T> lookup;
-    T base, ar;
-    T lookupExp(int n);
+    T ar;
     boost::asio::thread_pool pool;
     std::shared_ptr<Shape<T>> shape;
     std::shared_ptr<Diver<T>> diver;
@@ -48,6 +46,4 @@ private:
     Mobius<T> tr, rot, dive;
     bool doubleSided = true;
     Complex<T> center;
-    T iniLogscale, step, prec;
-    int numSteps;
 };
