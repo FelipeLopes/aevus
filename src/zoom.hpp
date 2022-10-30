@@ -22,9 +22,9 @@
 #include "xform.hpp"
 
 template <typename T>
-class Gasket {
+class Zoom {
 public:
-    Gasket(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
+    Zoom(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
         std::shared_ptr<Scaler<T>> scaler, T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:

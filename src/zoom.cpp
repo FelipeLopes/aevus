@@ -10,14 +10,14 @@
 
 #include "complex_type.hpp"
 #include "mobius.hpp"
-#include "gasket.hpp"
+#include "zoom.hpp"
 #include "sdf.hpp"
 
 using std::invalid_argument;
 using std::shared_ptr;
 
 template <typename T>
-Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
+Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_, T ar_):
     ar(ar_), shape(shape_), diver(diver_), scaler(scaler_) {
 
@@ -45,7 +45,7 @@ Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
 }
 
 template <typename T>
-void Gasket<T>::selectZoomPoint() {
+void Zoom<T>::selectZoomPoint() {
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
     dive = tr;
@@ -66,12 +66,12 @@ void Gasket<T>::selectZoomPoint() {
 }
 
 template <typename T>
-void Gasket<T>::initZoom() {
-    Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
+void Zoom<T>::initZoom() {
+    Sdf<T> sdf = Sdf<T>::fromPoints(pa, pb, pc);
     T iniScale = scaler->lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
-    if (!shape.rectInside(center, iniWidth, iniHeight)) {
+    if (!sdf.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket g;
         g.logscale = toDouble(scaler->iniLogscale);
 
@@ -92,7 +92,7 @@ void Gasket<T>::initZoom() {
 }
 
 template<typename T>
-Flame Gasket<T>::getFlame(double logscale, shared_ptr<Palette> palette) {
+Flame Zoom<T>::getFlame(double logscale, shared_ptr<Palette> palette) {
     int lb = 0;
     int ub = keyGaskets.size();
     while (ub - lb > 1) {
@@ -106,4 +106,4 @@ Flame Gasket<T>::getFlame(double logscale, shared_ptr<Palette> palette) {
     return keyGaskets[lb].toFlame(logscale-keyGaskets[lb].logscale, palette);
 }
 
-template class Gasket<mpq_class>;
+template class Zoom<mpq_class>;

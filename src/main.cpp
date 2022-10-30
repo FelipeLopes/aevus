@@ -9,7 +9,7 @@
 #include <sstream>
 #include <boost/gil.hpp>
 #include <tinyxml2.h>
-#include "gasket.hpp"
+#include "zoom.hpp"
 #include "complex_type.hpp"
 #include "mobius.hpp"
 #include "palette.hpp"
@@ -47,10 +47,10 @@ int main(int argc, char* argv[]) {
         mpq_class step = mpq_class(1,150);
         std::shared_ptr<Scaler<mpq_class>> scaler =
             std::make_shared<Scaler<mpq_class>>(iniLogscale, step, 22050, prec);
-        Gasket<mpq_class> g(shape, diver, scaler, mpq_class(16, 9));
+        Zoom<mpq_class> gz(shape, diver, scaler, mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;
-        auto node = g.getFlame(10, palette).toXMLNode(xmlDoc);
+        auto node = gz.getFlame(10, palette).toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
