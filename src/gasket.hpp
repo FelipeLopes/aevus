@@ -38,7 +38,7 @@ private:
     std::shared_ptr<Shape<T>> shape;
     std::shared_ptr<Diver<T>> diver;
     std::shared_ptr<Scaler<T>> scaler;
-    Searcher<T> searcher;
+    std::shared_ptr<Searcher<T>> searcher;
     std::mutex initLock;
     int lastPickedUp;
     bool foundEnd;

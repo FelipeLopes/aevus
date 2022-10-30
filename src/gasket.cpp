@@ -19,7 +19,7 @@ using std::shared_ptr;
 template <typename T>
 Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_):
-    pool(4), shape(shape_), diver(diver_), scaler(scaler_), searcher(scaler_) {
+    pool(4), shape(shape_), diver(diver_), scaler(scaler_) {
 
     auto m = shape->conjugacyTransform;
 
@@ -34,6 +34,12 @@ Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     pc = m.apply(Complex<T>(0));
 
     selectZoomPoint();
+
+    std::array<Mobius<T>, 3> arr =
+        {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
+
+    searcher = std::make_shared<Searcher<T>>(scaler, pa, pb, pc, center,
+        arr, zoomTransforms, keyGaskets, ar);
 }
 
 template <typename T>
