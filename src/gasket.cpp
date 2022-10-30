@@ -18,8 +18,8 @@ using std::shared_ptr;
 
 template <typename T>
 Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
-    shared_ptr<Scaler<T>> scaler_):
-    shape(shape_), diver(diver_), scaler(scaler_) {
+    shared_ptr<Scaler<T>> scaler_, T ar_):
+    ar(ar_), shape(shape_), diver(diver_), scaler(scaler_) {
 
     auto m = shape->conjugacyTransform;
 
@@ -40,6 +40,8 @@ Gasket<T>::Gasket(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
 
     searcher = std::make_shared<Searcher<T>>(scaler, pa, pb, pc, center,
         arr, zoomTransforms, keyGaskets, ar);
+
+    initZoom();
 }
 
 template <typename T>
@@ -64,8 +66,7 @@ void Gasket<T>::selectZoomPoint() {
 }
 
 template <typename T>
-void Gasket<T>::initZoom(T ar_) {
-    ar = ar_;
+void Gasket<T>::initZoom() {
     Sdf<T> shape = Sdf<T>::fromPoints(pa, pb, pc);
     T iniScale = scaler->lookupExp(0);
     T iniHeight = 2/iniScale;

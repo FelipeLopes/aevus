@@ -25,11 +25,11 @@ template <typename T>
 class Gasket {
 public:
     Gasket(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
-        std::shared_ptr<Scaler<T>> scaler);
-    void initZoom(T ar);
+        std::shared_ptr<Scaler<T>> scaler, T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:
     void selectZoomPoint();
+    void initZoom();
     std::vector<Mobius<T>> zoomTransforms;
     T ar;
     std::shared_ptr<Shape<T>> shape;

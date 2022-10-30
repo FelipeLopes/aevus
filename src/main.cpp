@@ -47,8 +47,7 @@ int main(int argc, char* argv[]) {
         mpq_class step = mpq_class(1,150);
         std::shared_ptr<Scaler<mpq_class>> scaler =
             std::make_shared<Scaler<mpq_class>>(iniLogscale, step, 22050, prec);
-        Gasket<mpq_class> g(shape, diver, scaler);
-        g.initZoom(mpq_class(16, 9));
+        Gasket<mpq_class> g(shape, diver, scaler, mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;
         auto node = g.getFlame(10, palette).toXMLNode(xmlDoc);
