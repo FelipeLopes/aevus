@@ -44,7 +44,6 @@ int main(int argc, char* argv[]) {
         mpq_class iniLogscale = mpq_class(-50,150);
         mpq_class step = mpq_class(1,150);
         g.setScales(iniLogscale, step, 22050, prec);
-        g.selectZoomPoint(314159, 200);
         g.initZoom(mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;

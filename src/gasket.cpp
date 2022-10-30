@@ -87,9 +87,7 @@ Gasket<T>::Gasket(shared_ptr<Diver<T>> diver_, T r1, T r2, Complex<T> f, bool fl
     pb = m.apply(Complex<T>(1));
     pc = m.apply(Complex<T>(0));
 
-    Mobius<T> acc;
-    int k = diver->chooseDive(acc);
-    printf("Diver chose %d\n", k);
+    selectZoomPoint();
 }
 
 template <typename T>
@@ -101,25 +99,24 @@ void Gasket<T>::setScales(T iniLogscale_, T step_, int numSteps_, T prec_) {
 }
 
 template <typename T>
-Complex<T> Gasket<T>::selectZoomPoint(unsigned seed, int depth) {
-    std::mt19937 rng(seed);
-    std::uniform_int_distribution<std::mt19937::result_type> dist2(0,1);
-    std::uniform_int_distribution<std::mt19937::result_type> dist3(0,2);
+void Gasket<T>::selectZoomPoint() {
+    Mobius<T> acc;
+    int k = diver->chooseDive(acc);
     dive = tr;
-    if (dist2(rng) == 1) {
+    if (k >= 3) {
         std::swap(pb, pc);
         dive = tr.inverse();
     }
     std::array<Mobius<T>,3> arr =
         {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
-    Mobius<T> acc;
-    zoomTransforms.clear();
-    for (int i=0; i<depth; i++) {
-        acc = acc.compose(arr[dist3(rng)]);
+    acc = acc.compose(arr[k%3]);
+    zoomTransforms.push_back(acc);
+    for (int i=0; i<diver->depth-1; i++) {
+        int k = diver->chooseDive(acc);
+        acc = acc.compose(arr[k]);
         zoomTransforms.push_back(acc);
     }
     center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
-    return center;
 }
 
 template <typename T>

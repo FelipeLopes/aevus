@@ -23,11 +23,11 @@ class Gasket {
 public:
     Gasket(std::shared_ptr<Diver<T>> diver, T r1, T r2, Complex<T> f, bool flip = false);
     void setScales(T iniLogscale, T step, int numSteps, T prec);
-    Complex<T> selectZoomPoint(unsigned seed, int depth);
     void initZoom(T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:
     void task(int i);
+    void selectZoomPoint();
     int searchScale(Sdf<T> shape, T ar);
     std::vector<Mobius<T>> zoomTransforms;
     std::vector<T> lookup;

@@ -20,7 +20,7 @@ int RandomDiver<T>::chooseDive(Mobius<T> acc) {
         int k = dist2(rng);
         return k*3 + dist3(rng);
     }
-    return 0;
+    return dist3(rng);
 }
 
 template class Diver<mpq_class>;
