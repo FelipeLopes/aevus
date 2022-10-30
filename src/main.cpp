@@ -13,6 +13,7 @@
 #include "complex_type.hpp"
 #include "mobius.hpp"
 #include "palette.hpp"
+#include "scaler.hpp"
 #include "sdf.hpp"
 #include "diver.hpp"
 
@@ -38,13 +39,15 @@ int main(int argc, char* argv[]) {
             Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
         std::shared_ptr<Diver<mpq_class>> diver =
             std::make_shared<RandomDiver<mpq_class>>(200, 314159);
-        Gasket<mpq_class> g(shape, diver);
         mpq_class prec(1);
         for (int i=0; i<10; i++) {
             prec = prec / 10;
         }
         mpq_class iniLogscale = mpq_class(-50,150);
         mpq_class step = mpq_class(1,150);
+        std::shared_ptr<Scaler<mpq_class>> scaler =
+            std::make_shared<Scaler<mpq_class>>(iniLogscale, step, 22050, prec);
+        Gasket<mpq_class> g(shape, diver, scaler);
         g.setScales(iniLogscale, step, 22050, prec);
         g.initZoom(mpq_class(16, 9));
 
