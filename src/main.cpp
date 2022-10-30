@@ -38,9 +38,7 @@ int main(int argc, char* argv[]) {
             Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
         std::shared_ptr<Diver<mpq_class>> diver =
             std::make_shared<RandomDiver<mpq_class>>(200, 314159);
-        Gasket<mpq_class> g(shape, diver, mpq_class(6,11),
-            mpq_class(3,7),
-            Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
+        Gasket<mpq_class> g(shape, diver);
         mpq_class prec(1);
         for (int i=0; i<10; i++) {
             prec = prec / 10;
