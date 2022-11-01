@@ -23,16 +23,6 @@ int main(int argc, char* argv[]) {
     auto palette = std::make_shared<Palette>(boost::gil::rgb8_pixel_t(255,255,255),
         boost::gil::rgb8_pixel_t(255,0,0));
     try {
-        /*if (argc < 16) {
-            if (std::string(argv[1]) == "--convert") {
-                if (argc < 4) {
-                    return 1;
-                }
-                convertFlame(std::string(argv[2]),std::string(argv[3]));
-                return 0;
-            }
-            return 1;
-        }*/
         std::shared_ptr<Shape<mpq_class>> shape =
             std::make_shared<Shape<mpq_class>>(mpq_class(6,11),
             mpq_class(3,7),
