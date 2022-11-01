@@ -34,9 +34,6 @@
 #pycache
 __pycache__/
 
-#vscode
-.vscode/
-
 #bazel symlinks
 bazel-*
 
