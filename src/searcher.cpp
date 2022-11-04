@@ -15,12 +15,12 @@ Searcher<T>::Searcher(shared_ptr<Shape<T>> shape_,
     shared_ptr<Scaler<T>> scaler_,
     Complex<T> center_,
     bool inverseDive_,
-    const vector<Mobius<T>>& input_,
-    vector<KeyGasket>& output_,
+    const vector<Mobius<T>>& zoomTransforms_,
+    vector<KeyGasket>& keyGaskets_,
     T ar_, int numThreads_):
     shape(shape_), center(center_), inverseDive(inverseDive_),
     ar(ar_), numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
-    input(input_), output(output_), lastPickedUp(numThreads_-1) {
+    zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), lastPickedUp(numThreads_-1) {
 
     pts = shape->startingPoints(inverseDive);
     transforms = shape->diveArray(inverseDive);
@@ -35,18 +35,9 @@ void Searcher<T>::start() {
     if (!sdf.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket g;
         g.logscale = toDouble(scaler->iniLogscale);
-
-        auto s = Mobius<T>::scaling(scaler->lookupExp(0))
-            .compose(Mobius<T>::translation(-center));
-
-        g.ifsTransforms.push_back(shape->tr.conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
-
-        output.push_back(g);
+        auto transforms = shape->doubleSidedTransforms(scaler->lookupExp(0), center);
+        g.ifsTransforms.insert(g.ifsTransforms.end(), transforms.begin(), transforms.end());
+        keyGaskets.push_back(g);
     }
     for (int i=0; i<numThreads; i++) {
         boost::asio::post(threadPool, [=] {
@@ -80,7 +71,7 @@ int Searcher<T>::searchScale(Sdf<T> sdf) {
 
 template<typename T>
 void Searcher<T>::task(int i) {
-    Mobius<T> acc = input[i];
+    Mobius<T> acc = zoomTransforms[i];
     auto qa = acc.apply(pts[0]);
     auto qb = acc.apply(pts[1]);
     auto qc = acc.apply(pts[2]);
@@ -99,10 +90,10 @@ void Searcher<T>::task(int i) {
 
     lock.lock();
     if (scaleVal < scaler->numSteps) {
-        if (output.size() < i+2) {
-            output.resize(i+2);
+        if (keyGaskets.size() < i+2) {
+            keyGaskets.resize(i+2);
         }
-        output[i+1] = g;
+        keyGaskets[i+1] = g;
     } else {
         foundEnd = true;
     }

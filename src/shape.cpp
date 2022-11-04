@@ -89,4 +89,18 @@ array<Mobius<T>, 3> Shape<T>::diveArray(bool inverseDive) {
     }
 }
 
+template <typename T>
+array<Mobius<double>, 6> Shape<T>::doubleSidedTransforms(T scale, Complex<T> center) {
+    auto s = Mobius<T>::scaling(scale)
+            .compose(Mobius<T>::translation(-center));
+    array<Mobius<double>, 6> ans;
+    ans[0] = tr.conjugate(s).toMobiusDouble();
+    ans[1] = tr.conjugate(rot).conjugate(s).toMobiusDouble();
+    ans[2] = tr.conjugate(rot.inverse()).conjugate(s).toMobiusDouble();
+    ans[3] = tr.inverse().conjugate(s).toMobiusDouble();
+    ans[4] = tr.inverse().conjugate(rot).conjugate(s).toMobiusDouble();
+    ans[5] = tr.inverse().conjugate(rot.inverse()).conjugate(s).toMobiusDouble();
+    return ans;
+}
+
 template class Shape<mpq_class>;

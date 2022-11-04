@@ -15,8 +15,8 @@ public:
         std::shared_ptr<Scaler<T>> scaler,
         Complex<T> center,
         bool inverseDive,
-        const std::vector<Mobius<T>>& input,
-        std::vector<KeyGasket>& output,
+        const std::vector<Mobius<T>>& zoomTransforms,
+        std::vector<KeyGasket>& keyGaskets,
         T ar, int numThreads = 4);
     void start();
     void block();
@@ -32,8 +32,8 @@ private:
     int numThreads;
     std::shared_ptr<Scaler<T>> scaler;
     boost::asio::thread_pool threadPool;
-    const std::vector<Mobius<T>>& input;
-    std::vector<KeyGasket>& output;
+    const std::vector<Mobius<T>>& zoomTransforms;
+    std::vector<KeyGasket>& keyGaskets;
     std::mutex lock;
     int lastPickedUp;
     bool foundEnd = false;
