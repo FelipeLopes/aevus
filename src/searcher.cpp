@@ -11,14 +11,13 @@ using std::array;
 using std::vector;
 
 template <typename T>
-Searcher<T>::Searcher(shared_ptr<Scaler<T>> scaler_,
-    Complex<T> pa_, Complex<T> pb_, Complex<T> pc_,
-    Complex<T> center_,
+Searcher<T>::Searcher(shared_ptr<Shape<T>> shape_,
+    shared_ptr<Scaler<T>> scaler_,
     array<Mobius<T>, 3> transforms_,
     const vector<Mobius<T>>& input_,
     vector<KeyGasket>& output_,
     T ar_, int numThreads_):
-    pa(pa_), pb(pb_), pc(pc_), center(center_), transforms(transforms_), ar(ar_),
+    shape(shape_), transforms(transforms_), ar(ar_),
     numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
     input(input_), output(output_) {
 
@@ -49,7 +48,7 @@ int Searcher<T>::searchScale(Sdf<T> sdf) {
         T scale = scaler->lookupExp(m);
         T height = 2/scale;
         T width = height*ar;
-        if (sdf.rectInside(center, width, height)) {
+        if (sdf.rectInside(shape->center, width, height)) {
             ub = m;
         } else {
             lb = m;
@@ -61,16 +60,16 @@ int Searcher<T>::searchScale(Sdf<T> sdf) {
 template<typename T>
 void Searcher<T>::task(int i) {
     Mobius<T> acc = input[i];
-    auto qa = acc.apply(pa);
-    auto qb = acc.apply(pb);
-    auto qc = acc.apply(pc);
+    auto qa = acc.apply(shape->pa);
+    auto qb = acc.apply(shape->pb);
+    auto qc = acc.apply(shape->pc);
     Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(sdf);
     KeyGasket g;
     T logscale = scaler->iniLogscale + scaleVal*scaler->step;
     g.logscale = toDouble(logscale);
     auto s = Mobius<T>::scaling(scaler->lookupExp(scaleVal))
-        .compose(Mobius<T>::translation(-center))
+        .compose(Mobius<T>::translation(-shape->center))
         .compose(acc);
 
     for (int i=0; i<3; i++) {

@@ -3,6 +3,7 @@
 #include "key_gasket.hpp"
 #include "scaler.hpp"
 #include "sdf.hpp"
+#include "shape.hpp"
 #include <array>
 #include <boost/asio/thread_pool.hpp>
 #include <memory>
@@ -10,9 +11,8 @@
 template <typename T>
 class Searcher {
 public:
-    Searcher(std::shared_ptr<Scaler<T>> scaler,
-        Complex<T> pa, Complex<T> pb, Complex<T> pc,
-        Complex<T> center,
+    Searcher(std::shared_ptr<Shape<T>> shape,
+        std::shared_ptr<Scaler<T>> scaler,
         std::array<Mobius<T>, 3> transforms,
         const std::vector<Mobius<T>>& input,
         std::vector<KeyGasket>& output,
@@ -22,8 +22,7 @@ public:
 private:
     void task(int i);
     int searchScale(Sdf<T> sdf);
-    Complex<T> pa, pb, pc;
-    Complex<T> center;
+    std::shared_ptr<Shape<T>> shape;
     std::array<Mobius<T>, 3> transforms;
     T ar;
     int numThreads;

@@ -25,8 +25,8 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     std::array<Mobius<T>, 3> arr =
         {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
 
-    searcher = std::make_shared<Searcher<T>>(scaler, shape->pa, shape->pb, shape->pc, 
-        shape->center, arr, zoomTransforms, keyGaskets, ar);
+    searcher = std::make_shared<Searcher<T>>(scaler, shape, 
+        arr, zoomTransforms, keyGaskets, ar);
 
     initZoom();
 }
