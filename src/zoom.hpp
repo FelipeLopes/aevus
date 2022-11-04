@@ -39,8 +39,6 @@ private:
     std::shared_ptr<Searcher<T>> searcher;
     std::shared_ptr<Colorer> colorer;
     std::vector<KeyGasket> keyGaskets;
-    Complex<T> pa, pb, pc;
-    Mobius<T> tr, rot, dive;
+    Mobius<T> dive;
     bool doubleSided = true;
-    Complex<T> center;
 };

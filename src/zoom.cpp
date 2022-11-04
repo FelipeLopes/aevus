@@ -20,25 +20,13 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_, shared_ptr<Colorer> colorer_, T ar_):
     ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
 
-    auto m = shape->conjugacyTransform;
-
-    tr = Mobius<T>(Complex<T>(1),Complex<T>(0),
-        Complex<T>(0,2),Complex<T>(1)).conjugate(m);
-    rot = Mobius<T>::fromPointsToPoints(
-        Complex<T>(0), Complex<T>(1), Complex<T>(-1),
-        Complex<T>(1), Complex<T>(-1), Complex<T>(0)).conjugate(m);
-
-    pa = m.apply(Complex<T>(-1));
-    pb = m.apply(Complex<T>(1));
-    pc = m.apply(Complex<T>(0));
-
     selectZoomPoint();
 
     std::array<Mobius<T>, 3> arr =
-        {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
+        {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
 
-    searcher = std::make_shared<Searcher<T>>(scaler, pa, pb, pc, center,
-        arr, zoomTransforms, keyGaskets, ar);
+    searcher = std::make_shared<Searcher<T>>(scaler, shape->pa, shape->pb, shape->pc, 
+        shape->center, arr, zoomTransforms, keyGaskets, ar);
 
     initZoom();
 }
@@ -47,13 +35,13 @@ template <typename T>
 void Zoom<T>::selectZoomPoint() {
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
-    dive = tr;
+    dive = shape->tr;
     if (k >= 3) {
-        std::swap(pb, pc);
-        dive = tr.inverse();
+        std::swap(shape->pb, shape->pc);
+        dive = shape->tr.inverse();
     }
     std::array<Mobius<T>,3> arr =
-        {dive, dive.conjugate(rot), dive.conjugate(rot.inverse())};
+        {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
     acc = acc.compose(arr[k%3]);
     zoomTransforms.push_back(acc);
     for (int i=0; i<diver->depth-1; i++) {
@@ -61,28 +49,29 @@ void Zoom<T>::selectZoomPoint() {
         acc = acc.compose(arr[k]);
         zoomTransforms.push_back(acc);
     }
-    center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
+    shape->center = (acc.apply(shape->pa)+acc.apply(shape->pb)+
+        acc.apply(shape->pc))/Complex<T>(3);
 }
 
 template <typename T>
 void Zoom<T>::initZoom() {
-    Sdf<T> sdf = Sdf<T>::fromPoints(pa, pb, pc);
+    Sdf<T> sdf = Sdf<T>::fromPoints(shape->pa, shape->pb, shape->pc);
     T iniScale = scaler->lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
-    if (!sdf.rectInside(center, iniWidth, iniHeight)) {
+    if (!sdf.rectInside(shape->center, iniWidth, iniHeight)) {
         KeyGasket g;
         g.logscale = toDouble(scaler->iniLogscale);
 
         auto s = Mobius<T>::scaling(scaler->lookupExp(0))
-            .compose(Mobius<T>::translation(-center));
+            .compose(Mobius<T>::translation(-shape->center));
 
-        g.ifsTransforms.push_back(tr.conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(tr.conjugate(rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(tr.conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(tr.inverse().conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(tr.inverse().conjugate(rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(tr.inverse().conjugate(rot.inverse()).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot).conjugate(s).toMobiusDouble());
+        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
 
         keyGaskets.push_back(g);
     }

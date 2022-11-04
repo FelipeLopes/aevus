@@ -55,10 +55,18 @@ Shape<T>::Shape(T r1, T r2, Complex<T> f, bool flip) {
         p1,p2,v3);
 
     if (flip) {
-        conjugacyTransform = m.flip();
-    } else {
-        conjugacyTransform = m;
+        m = m.flip();
     }
+
+    tr = Mobius<T>(Complex<T>(1),Complex<T>(0),
+        Complex<T>(0,2),Complex<T>(1)).conjugate(m);
+    rot = Mobius<T>::fromPointsToPoints(
+        Complex<T>(0), Complex<T>(1), Complex<T>(-1),
+        Complex<T>(1), Complex<T>(-1), Complex<T>(0)).conjugate(m);
+
+    pa = m.apply(Complex<T>(-1));
+    pb = m.apply(Complex<T>(1));
+    pc = m.apply(Complex<T>(0));
 }
 
 template class Shape<mpq_class>;
