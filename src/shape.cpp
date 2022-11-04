@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "shape.hpp"
 
+using std::array;
 using std::invalid_argument;
 
 template <typename T>
@@ -67,6 +68,25 @@ Shape<T>::Shape(T r1, T r2, Complex<T> f, bool flip) {
     pa = m.apply(Complex<T>(-1));
     pb = m.apply(Complex<T>(1));
     pc = m.apply(Complex<T>(0));
+}
+
+template <typename T>
+array<Complex<T>, 3> Shape<T>::startingPoints(bool inverseDive) {
+    if (inverseDive) {
+        return {pa, pc, pb};
+    } else {
+        return {pa, pb, pc};
+    }
+}
+
+template <typename T>
+array<Mobius<T>, 3> Shape<T>::diveArray(bool inverseDive) {
+    if (inverseDive) {
+        return {tr.inverse(), tr.inverse().conjugate(rot),
+            tr.inverse().conjugate(rot.inverse())};
+    } else {
+        return {tr, tr.conjugate(rot), tr.conjugate(rot.inverse())};
+    }
 }
 
 template class Shape<mpq_class>;

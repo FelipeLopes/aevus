@@ -22,18 +22,9 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
 
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
-    bool inverseDive = false;
-    pa = shape->pa;
-    pb = shape->pb;
-    pc = shape->pc;
-    dive = shape->tr;
-    if (k >= 3) {
-        inverseDive = true;
-        std::swap(pb, pc);
-        dive = shape->tr.inverse();
-    }
-    std::array<Mobius<T>,3> arr =
-        {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
+    bool inverseDive = (k>=3);
+    auto pts = shape->startingPoints(inverseDive);
+    auto arr = shape->diveArray(inverseDive);
     acc = acc.compose(arr[k%3]);
     zoomTransforms.push_back(acc);
     for (int i=0; i<diver->depth-1; i++) {
@@ -41,36 +32,11 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
         acc = acc.compose(arr[k]);
         zoomTransforms.push_back(acc);
     }
-    center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
+    auto center = (acc.apply(pts[0])+acc.apply(pts[1])+acc.apply(pts[2]))/Complex<T>(3);
 
     searcher = std::make_shared<Searcher<T>>(shape, scaler, center, inverseDive,
         zoomTransforms, keyGaskets, ar);
 
-    initZoom();
-}
-
-template <typename T>
-void Zoom<T>::initZoom() {
-    Sdf<T> sdf = Sdf<T>::fromPoints(pa, pb, pc);
-    T iniScale = scaler->lookupExp(0);
-    T iniHeight = 2/iniScale;
-    T iniWidth = iniHeight*ar;
-    if (!sdf.rectInside(center, iniWidth, iniHeight)) {
-        KeyGasket g;
-        g.logscale = toDouble(scaler->iniLogscale);
-
-        auto s = Mobius<T>::scaling(scaler->lookupExp(0))
-            .compose(Mobius<T>::translation(-center));
-
-        g.ifsTransforms.push_back(shape->tr.conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot).conjugate(s).toMobiusDouble());
-        g.ifsTransforms.push_back(shape->tr.inverse().conjugate(shape->rot.inverse()).conjugate(s).toMobiusDouble());
-
-        keyGaskets.push_back(g);
-    }
     searcher->start();
     searcher->block();
 }

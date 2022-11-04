@@ -24,7 +24,7 @@ private:
     void task(int i);
     int searchScale(Sdf<T> sdf);
     std::shared_ptr<Shape<T>> shape;
-    Complex<T> pa, pb, pc;
+    std::array<Complex<T>, 3> pts;
     Complex<T> center;
     bool inverseDive;
     std::array<Mobius<T>, 3> transforms;
@@ -36,5 +36,5 @@ private:
     std::vector<KeyGasket>& output;
     std::mutex lock;
     int lastPickedUp;
-    bool foundEnd;
+    bool foundEnd = false;
 };

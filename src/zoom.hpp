@@ -29,7 +29,6 @@ public:
         std::shared_ptr<Scaler<T>> scaler, std::shared_ptr<Colorer> colorer, T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:
-    void initZoom();
     std::vector<Mobius<T>> zoomTransforms;
     T ar;
     std::shared_ptr<Shape<T>> shape;
@@ -38,7 +37,4 @@ private:
     std::shared_ptr<Searcher<T>> searcher;
     std::shared_ptr<Colorer> colorer;
     std::vector<KeyGasket> keyGaskets;
-    Mobius<T> dive;
-    Complex<T> pa, pb, pc;
-    Complex<T> center;
 };
