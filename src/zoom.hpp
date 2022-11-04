@@ -40,5 +40,7 @@ private:
     std::shared_ptr<Colorer> colorer;
     std::vector<KeyGasket> keyGaskets;
     Mobius<T> dive;
-    bool doubleSided = true;
+    Complex<T> pa, pb, pc;
+    Complex<T> center;
+    bool inverseDive = false;
 };

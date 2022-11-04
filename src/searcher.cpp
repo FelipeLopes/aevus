@@ -13,14 +13,26 @@ using std::vector;
 template <typename T>
 Searcher<T>::Searcher(shared_ptr<Shape<T>> shape_,
     shared_ptr<Scaler<T>> scaler_,
-    array<Mobius<T>, 3> transforms_,
+    Complex<T> center_,
+    bool inverseDive_,
     const vector<Mobius<T>>& input_,
     vector<KeyGasket>& output_,
     T ar_, int numThreads_):
-    shape(shape_), transforms(transforms_), ar(ar_),
-    numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
+    shape(shape_), center(center_), inverseDive(inverseDive_),
+    ar(ar_), numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
     input(input_), output(output_) {
 
+    auto dive = shape->tr;
+    pa = shape->pa;
+    pb = shape->pb;
+    pc = shape->pc;
+
+    if (inverseDive) {
+        std::swap(pb, pc);
+        dive = shape->tr.inverse();
+    }
+
+    transforms = {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
 }
 
 template <typename T>
@@ -48,7 +60,7 @@ int Searcher<T>::searchScale(Sdf<T> sdf) {
         T scale = scaler->lookupExp(m);
         T height = 2/scale;
         T width = height*ar;
-        if (sdf.rectInside(shape->center, width, height)) {
+        if (sdf.rectInside(center, width, height)) {
             ub = m;
         } else {
             lb = m;
@@ -60,16 +72,16 @@ int Searcher<T>::searchScale(Sdf<T> sdf) {
 template<typename T>
 void Searcher<T>::task(int i) {
     Mobius<T> acc = input[i];
-    auto qa = acc.apply(shape->pa);
-    auto qb = acc.apply(shape->pb);
-    auto qc = acc.apply(shape->pc);
+    auto qa = acc.apply(pa);
+    auto qb = acc.apply(pb);
+    auto qc = acc.apply(pc);
     Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(sdf);
     KeyGasket g;
     T logscale = scaler->iniLogscale + scaleVal*scaler->step;
     g.logscale = toDouble(logscale);
     auto s = Mobius<T>::scaling(scaler->lookupExp(scaleVal))
-        .compose(Mobius<T>::translation(-shape->center))
+        .compose(Mobius<T>::translation(-center))
         .compose(acc);
 
     for (int i=0; i<3; i++) {

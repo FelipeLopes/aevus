@@ -22,11 +22,8 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
 
     selectZoomPoint();
 
-    std::array<Mobius<T>, 3> arr =
-        {dive, dive.conjugate(shape->rot), dive.conjugate(shape->rot.inverse())};
-
-    searcher = std::make_shared<Searcher<T>>(scaler, shape, 
-        arr, zoomTransforms, keyGaskets, ar);
+    searcher = std::make_shared<Searcher<T>>(shape, scaler, center, inverseDive,
+        zoomTransforms, keyGaskets, ar);
 
     initZoom();
 }
@@ -35,9 +32,13 @@ template <typename T>
 void Zoom<T>::selectZoomPoint() {
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
+    pa = shape->pa;
+    pb = shape->pb;
+    pc = shape->pc;
     dive = shape->tr;
     if (k >= 3) {
-        std::swap(shape->pb, shape->pc);
+        inverseDive = true;
+        std::swap(pb, pc);
         dive = shape->tr.inverse();
     }
     std::array<Mobius<T>,3> arr =
@@ -49,22 +50,21 @@ void Zoom<T>::selectZoomPoint() {
         acc = acc.compose(arr[k]);
         zoomTransforms.push_back(acc);
     }
-    shape->center = (acc.apply(shape->pa)+acc.apply(shape->pb)+
-        acc.apply(shape->pc))/Complex<T>(3);
+    center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
 }
 
 template <typename T>
 void Zoom<T>::initZoom() {
-    Sdf<T> sdf = Sdf<T>::fromPoints(shape->pa, shape->pb, shape->pc);
+    Sdf<T> sdf = Sdf<T>::fromPoints(pa, pb, pc);
     T iniScale = scaler->lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
-    if (!sdf.rectInside(shape->center, iniWidth, iniHeight)) {
+    if (!sdf.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket g;
         g.logscale = toDouble(scaler->iniLogscale);
 
         auto s = Mobius<T>::scaling(scaler->lookupExp(0))
-            .compose(Mobius<T>::translation(-shape->center));
+            .compose(Mobius<T>::translation(-center));
 
         g.ifsTransforms.push_back(shape->tr.conjugate(s).toMobiusDouble());
         g.ifsTransforms.push_back(shape->tr.conjugate(shape->rot).conjugate(s).toMobiusDouble());

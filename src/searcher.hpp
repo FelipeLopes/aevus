@@ -13,7 +13,8 @@ class Searcher {
 public:
     Searcher(std::shared_ptr<Shape<T>> shape,
         std::shared_ptr<Scaler<T>> scaler,
-        std::array<Mobius<T>, 3> transforms,
+        Complex<T> center,
+        bool inverseDive,
         const std::vector<Mobius<T>>& input,
         std::vector<KeyGasket>& output,
         T ar, int numThreads = 4);
@@ -23,6 +24,9 @@ private:
     void task(int i);
     int searchScale(Sdf<T> sdf);
     std::shared_ptr<Shape<T>> shape;
+    Complex<T> pa, pb, pc;
+    Complex<T> center;
+    bool inverseDive;
     std::array<Mobius<T>, 3> transforms;
     T ar;
     int numThreads;
