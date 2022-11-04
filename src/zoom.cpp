@@ -20,18 +20,9 @@ Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
     shared_ptr<Scaler<T>> scaler_, shared_ptr<Colorer> colorer_, T ar_):
     ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
 
-    selectZoomPoint();
-
-    searcher = std::make_shared<Searcher<T>>(shape, scaler, center, inverseDive,
-        zoomTransforms, keyGaskets, ar);
-
-    initZoom();
-}
-
-template <typename T>
-void Zoom<T>::selectZoomPoint() {
     Mobius<T> acc;
     int k = diver->chooseDive(acc);
+    bool inverseDive = false;
     pa = shape->pa;
     pb = shape->pb;
     pc = shape->pc;
@@ -51,6 +42,11 @@ void Zoom<T>::selectZoomPoint() {
         zoomTransforms.push_back(acc);
     }
     center = (acc.apply(pa)+acc.apply(pb)+acc.apply(pc))/Complex<T>(3);
+
+    searcher = std::make_shared<Searcher<T>>(shape, scaler, center, inverseDive,
+        zoomTransforms, keyGaskets, ar);
+
+    initZoom();
 }
 
 template <typename T>
