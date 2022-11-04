@@ -13,13 +13,12 @@
 #include "zoom.hpp"
 #include "sdf.hpp"
 
-using std::invalid_argument;
 using std::shared_ptr;
 
 template <typename T>
 Zoom<T>::Zoom(shared_ptr<Shape<T>> shape_, shared_ptr<Diver<T>> diver_,
-    shared_ptr<Scaler<T>> scaler_, T ar_):
-    ar(ar_), shape(shape_), diver(diver_), scaler(scaler_) {
+    shared_ptr<Scaler<T>> scaler_, shared_ptr<Colorer> colorer_, T ar_):
+    ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
 
     auto m = shape->conjugacyTransform;
 

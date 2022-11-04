@@ -10,6 +10,7 @@
 #include <boost/asio/thread_pool.hpp>
 #include <tinyxml2.h>
 
+#include "colorer.hpp"
 #include "complex_type.hpp"
 #include "diver.hpp"
 #include "flame.hpp"
@@ -25,7 +26,7 @@ template <typename T>
 class Zoom {
 public:
     Zoom(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
-        std::shared_ptr<Scaler<T>> scaler, T ar);
+        std::shared_ptr<Scaler<T>> scaler, std::shared_ptr<Colorer> colorer, T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:
     void selectZoomPoint();
@@ -36,6 +37,7 @@ private:
     std::shared_ptr<Diver<T>> diver;
     std::shared_ptr<Scaler<T>> scaler;
     std::shared_ptr<Searcher<T>> searcher;
+    std::shared_ptr<Colorer> colorer;
     std::vector<KeyGasket> keyGaskets;
     Complex<T> pa, pb, pc;
     Mobius<T> tr, rot, dive;
