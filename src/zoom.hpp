@@ -35,4 +35,5 @@ private:
     const Scaler<T>& scaler;
     const ColorerT& colorer;
     std::vector<KeyGasket> keyGaskets;
+    std::vector<int> diveIndices;
 };

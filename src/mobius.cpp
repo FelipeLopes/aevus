@@ -78,7 +78,7 @@ Mobius<T> Mobius<T>::conjugate(Mobius<T> s) const {
 }
 
 template <typename T>
-XForm Mobius<T>::toXForm() {
+XForm Mobius<T>::toXForm(double colorValue) {
     if (c == Complex<T>(0)) {
         auto o = apply(Complex<T>(0));
         auto x = apply(Complex<T>(1))-o;
@@ -94,7 +94,9 @@ XForm Mobius<T>::toXForm() {
                 xf.real(), xf.imag(),
                 yf.real(), yf.imag(),
                 of.real(), of.imag()
-            )
+            ),
+            Affine(),
+            colorValue
         );
     } else {
         auto preInv = Mobius<T>::translation(d/c);
@@ -129,7 +131,8 @@ XForm Mobius<T>::toXForm() {
                 pstXf.real(),pstXf.imag(),
                 pstYf.real(),pstYf.imag(),
                 pstOf.real(),pstOf.imag()
-            )
+            ),
+            colorValue
         );
     }
 }

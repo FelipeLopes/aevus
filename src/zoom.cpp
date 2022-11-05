@@ -24,6 +24,7 @@ Zoom<T, DiverT, ColorerT>::Zoom(const Shape<T>& shape_, DiverT& diver_,
     Mobius<T> acc;
     int k = diver.chooseDive(acc);
     bool inverseDive = (k>=3);
+    diveIndices.push_back(k);
     auto pts = shape.startingPoints(inverseDive);
     auto arr = shape.diveArray(inverseDive);
     acc = acc.compose(arr[k%3]);
@@ -31,6 +32,7 @@ Zoom<T, DiverT, ColorerT>::Zoom(const Shape<T>& shape_, DiverT& diver_,
     zoomTransforms.push_back(acc);
     for (int i=0; i<diver.depth-1; i++) {
         int k = diver.chooseDive(acc);
+        diveIndices.push_back(k);
         acc = acc.compose(arr[k]);
         zoomTransforms.push_back(acc);
     }

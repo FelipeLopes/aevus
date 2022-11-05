@@ -4,14 +4,26 @@
 #include "mobius.hpp"
 
 using std::shared_ptr;
+using std::vector;
+
+KeyGasket::KeyGasket() {
+
+}
+
+KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, int diveIndex_):
+    ifsTransforms(ifsTransforms_), diveIndex(diveIndex_) {
+
+}
 
 Flame KeyGasket::toFlame(double logscale, shared_ptr<Palette> palette) {
     Flame flame(palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));
 
-    for (auto t: ifsTransforms) {
-        flame.xforms.push_back(t.conjugate(s).toXForm());
+    for (int i = 0; i<ifsTransforms.size(); i++) {
+        auto t = ifsTransforms[i];
+        double colorVal = (i == diveIndex) ? 1 : 0;
+        flame.xforms.push_back(t.conjugate(s).toXForm(colorVal));
     }
 
     for (int i = 0; i < 3; i++) {

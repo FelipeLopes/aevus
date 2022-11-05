@@ -32,10 +32,11 @@ void Searcher<T>::start() {
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
     if (!sdf.rectInside(center, iniWidth, iniHeight)) {
-        KeyGasket g;
-        g.logscale = toDouble(scaler.iniLogscale);
+        vector<Mobius<double>> gasketTransforms;
         auto transforms = shape.doubleSidedTransforms(scaler.lookupExp(0), center);
-        g.ifsTransforms.insert(g.ifsTransforms.end(), transforms.begin(), transforms.end());
+        gasketTransforms.insert(gasketTransforms.end(), transforms.begin(), transforms.end());
+        KeyGasket g(gasketTransforms, 0);
+        g.logscale = toDouble(scaler.iniLogscale);
         keyGaskets.push_back(g);
     }
     for (int i=0; i<numThreads; i++) {
@@ -76,16 +77,18 @@ void Searcher<T>::task(int i) {
     auto qc = acc.apply(pts[2]);
     Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(sdf);
-    KeyGasket g;
+
     T logscale = scaler.iniLogscale + scaleVal*scaler.step;
-    g.logscale = toDouble(logscale);
     auto s = Mobius<T>::scaling(scaler.lookupExp(scaleVal))
         .compose(Mobius<T>::translation(-center))
         .compose(acc);
 
+    vector<Mobius<double>> gasketTransforms;
     for (int i=0; i<3; i++) {
-        g.ifsTransforms.push_back(transforms[i].conjugate(s).toMobiusDouble());
+        gasketTransforms.push_back(transforms[i].conjugate(s).toMobiusDouble());
     }
+    KeyGasket g(gasketTransforms, 0);
+    g.logscale = toDouble(logscale);
 
     lock.lock();
     if (scaleVal < scaler.numSteps) {

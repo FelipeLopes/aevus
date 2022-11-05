@@ -7,7 +7,11 @@
 
 class KeyGasket {
 public:
-    std::vector<Mobius<double>> ifsTransforms;
+    KeyGasket();
+    KeyGasket(std::vector<Mobius<double>> ifsTransforms, int diveIndex);
     double logscale;
     Flame toFlame(double logscale = 0, std::shared_ptr<Palette> palette = nullptr);
+private:
+    std::vector<Mobius<double>> ifsTransforms;
+    int diveIndex = 0;
 };

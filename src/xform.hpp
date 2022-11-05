@@ -28,7 +28,7 @@ struct Affine {
 class XForm {
 public:
     XForm();
-    XForm(std::string variation, Affine pre, Affine post = Affine());
+    XForm(std::string variation, Affine pre, Affine post = Affine(), double color = 0);
     double weight, color, opacity;
     std::map<std::string, double> variations;
     std::vector<double> chaos;

@@ -17,7 +17,7 @@ public:
     Mobius<T> flip();
     Mobius<double> toMobiusDouble();
     void normalize();
-    XForm toXForm();
+    XForm toXForm(double colorValue);
     static Mobius<T> scaling(Complex<T> a);
     static Mobius<T> translation(Complex<T> b);
     static Mobius<T> fromPoints(Complex<T> p, Complex<T> q, Complex<T> r);

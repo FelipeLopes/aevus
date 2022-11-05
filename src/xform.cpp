@@ -46,8 +46,11 @@ XForm::XForm() {
     initParams();
 }
 
-XForm::XForm(std::string variation, Affine pre_, Affine post_):pre(pre_),post(post_) {
-    initParams();
+XForm::XForm(std::string variation, Affine pre_, Affine post_, double color_):
+    color(color_), pre(pre_), post(post_) {
+
+    weight = 0.5;
+    opacity = 1;
     variations[variation] = 1;
 }
 
