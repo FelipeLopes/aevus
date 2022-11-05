@@ -1,19 +1,8 @@
 #include <gmpxx.h>
-#include <iostream>
 #include "complex_type.hpp"
-
-template <typename T>
-Complex<T>::Complex(): real(T(0)), imag(T(0)) {
-
-}
 
 template <>
 Complex<double>::Complex(): real(0), imag(0) {
-
-}
-
-template <typename T>
-Complex<T>::Complex(T a): real(a), imag(T(0)) {
 
 }
 
@@ -22,29 +11,14 @@ Complex<double>::Complex(double a): real(a), imag(0) {
 
 }
 
-template <typename T>
-Complex<T>::Complex(T a, T b): real(a), imag(b) {
-
-}
-
 template <>
 Complex<double>::Complex(double a, double b): real(a), imag(b) {
 
 }
 
-template <typename T>
-T Complex<T>::norm() {
-    return real*real + imag*imag;
-}
-
 template <>
-double Complex<double>::norm() {
+double Complex<double>::norm() const {
     return real*real + imag*imag;
-}
-
-template <typename T>
-Complex<T> Complex<T>::conj() const {
-    return Complex<T>(real, -imag);
 }
 
 template <>
@@ -53,14 +27,14 @@ Complex<double> Complex<double>::conj() const {
 }
 
 template <>
-cx Complex<mpq_class>::toCxDouble() {
+cx Complex<mpq_class>::toCxDouble() const {
     mpf_class a(real);
     mpf_class b(imag);
     return a.get_d() + 1i*b.get_d();
 }
 
 template <>
-cx Complex<double>::toCxDouble() {
+cx Complex<double>::toCxDouble() const {
     return cx(real, imag);
 }
 
@@ -68,11 +42,6 @@ template <>
 double toDouble<mpq_class>(mpq_class x) {
     mpf_class f(x);
     return f.get_d();
-}
-
-template <>
-void Complex<mpq_class>::print() {
-    printf("(%s)+i*(%s)\n",real.get_str().c_str(),imag.get_str().c_str());
 }
 
 template <>
@@ -122,18 +91,7 @@ Complex<double> squareRoot<Complex<double>>(Complex<double> z) {
     return Complex<double>(u.real(), u.imag());
 }
 
-void printCx(cx z) {
-    std::cout<<"("<<z.real()<<")+i*("<<z.imag()<<")"<<std::endl;
-}
-
 template <>
 Complex<double> Complex<double>::toComplexDouble() const {
     return *this;
 }
-
-template <typename T>
-Complex<double> Complex<T>::toComplexDouble() const {
-    return Complex<double>(toDouble(real), toDouble(imag));
-}
-
-template class Complex<mpq_class>;

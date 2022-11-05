@@ -8,15 +8,20 @@ typedef std::complex<double> cx;
 template <typename T>
 class Complex {
 public:
-    Complex();
-    Complex(T a);
-    Complex(T a, T b);
+    Complex(): real(T(0)), imag(T(0)) { }
+    Complex(T a): real(a), imag(T(0)) { }
+    Complex(T a, T b): real(a), imag(b) { }
     T real, imag;
-    T norm();
-    Complex<T> conj() const;
-    cx toCxDouble();
-    Complex<double> toComplexDouble() const;
-    void print();
+    T norm() const {
+        return real*real + imag*imag;
+    }
+    Complex<T> conj() const {
+        return Complex<T>(real, -imag);
+    }
+    cx toCxDouble() const;
+    Complex<double> toComplexDouble() const {
+        return Complex<double>(toDouble(real), toDouble(imag));
+    }
 };
 
 template<typename T>
