@@ -43,12 +43,12 @@ double Complex<double>::norm() {
 }
 
 template <typename T>
-Complex<T> Complex<T>::conj() {
+Complex<T> Complex<T>::conj() const {
     return Complex<T>(real, -imag);
 }
 
 template <>
-Complex<double> Complex<double>::conj() {
+Complex<double> Complex<double>::conj() const {
     return Complex<double>(real, -imag);
 }
 
@@ -127,12 +127,12 @@ void printCx(cx z) {
 }
 
 template <>
-Complex<double> Complex<double>::toComplexDouble() {
+Complex<double> Complex<double>::toComplexDouble() const {
     return *this;
 }
 
 template <typename T>
-Complex<double> Complex<T>::toComplexDouble() {
+Complex<double> Complex<T>::toComplexDouble() const {
     return Complex<double>(toDouble(real), toDouble(imag));
 }
 

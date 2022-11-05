@@ -13,9 +13,9 @@ public:
     Complex(T a, T b);
     T real, imag;
     T norm();
-    Complex<T> conj();
+    Complex<T> conj() const;
     cx toCxDouble();
-    Complex<double> toComplexDouble();
+    Complex<double> toComplexDouble() const;
     void print();
 };
 
