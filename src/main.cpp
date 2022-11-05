@@ -77,18 +77,11 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
-        Shape<mpq_class> shape(mpq_class(6,11),
-            mpq_class(3,7),
+        Shape<mpq_class> shape(mpq_class(6,11),mpq_class(3,7),
             Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
         DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
-        mpq_class prec(1);
-        for (int i=0; i<10; i++) {
-            prec = prec / 10;
-        }
-        mpq_class iniLogscale = mpq_class(-50,150);
-        mpq_class step = mpq_class(1,150);
-        Scaler<mpq_class> scaler(iniLogscale, step, 22050, prec);
+        Scaler<mpq_class> scaler(mpq_class(-50,150), mpq_class(1,150), 22050, 10);
         typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         GasketZoom gz(shape, diver, scaler, colorer, mpq_class(16, 9));
 

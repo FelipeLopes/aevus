@@ -7,9 +7,13 @@
 template <typename T>
 class Scaler {
 public:
-    Scaler(T iniLogscale_, T step_, int numSteps_, T prec):
+    Scaler(T iniLogscale_, T step_, int numSteps_, int precDigits):
         iniLogscale(iniLogscale_), step(step_), numSteps(numSteps_) {
 
+        mpq_class prec(1);
+        for (int i=0; i<precDigits; i++) {
+            prec = prec / 10;
+        }
         base = exp<T>(iniLogscale, prec);
         lookup.resize(32-__builtin_clz(numSteps));
         for (int i=0; i<lookup.size(); i++) {
