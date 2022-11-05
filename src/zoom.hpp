@@ -31,28 +31,37 @@ using ColorParams = Colorer::ColorParams;
 public:
     class Builder {
     public:
-        Builder();
-        Builder& withShape();
-        Builder& withDiver();
-        Builder& withScaler();
-        Builder& withColorer();
-        Builder& withAspectRatio();
-        Zoom build();
+        Builder(DiverT& diver_, ColorerT& colorer_): diver(diver_), colorer(colorer_) { }
+        Builder& withShape(T r1_, T r2_, Complex<T> f_, bool flip_ = false) {
+            initShape = true;
+            r1 = r1_;
+            r2 = r2_;
+            flip = flip_;
+        }
+        Builder& withScales(T iniLogscale_, T step_, int numSteps_, int precDigits_) {
+            initScales = true;
+            iniLogscale = iniLogscale_;
+            step = step_;
+            numSteps = numSteps_;
+            precDigits = precDigits_;
+        }
+        Builder& withAspectRatio(T aspectRatio_) {
+            initAspectRatio = true;
+            aspectRatio = aspectRatio_;
+        }
+        const Zoom build();
     private:
+        DiverT& diver;
+        ColorerT& colorer;
+
         bool initShape = false;
         T r1, r2;
         Complex<T> f;
         bool flip;
 
-        bool initDiver = false;
-        DiverT diver;
-
-        bool initScaler = false;
+        bool initScales = false;
         T iniLogscale, step;
-        int numSteps, prec;
-
-        bool initColorer = false;
-        ColorerT colorer;
+        int numSteps, precDigits;
 
         bool initAspectRatio = false;
         T aspectRatio;
