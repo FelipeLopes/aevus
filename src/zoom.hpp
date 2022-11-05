@@ -27,7 +27,7 @@ class Zoom {
 public:
     Zoom(const Shape<T>& shape, DiverT& diver,
         const Scaler<T>& scaler, const ColorerT& colorer, T ar);
-    Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
+    Flame getFlame(double logscale);
 private:
     T ar;
     const Shape<T>& shape;

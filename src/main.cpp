@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         GasketZoom gz(shape, diver, scaler, colorer, mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;
-        auto node = gz.getFlame(10, palette).toXMLNode(xmlDoc);
+        auto node = gz.getFlame(10).toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 

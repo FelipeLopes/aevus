@@ -7,6 +7,7 @@ class Colorer {
 public:
     Colorer();
     Flame color(KeyGasket keyGasket, int zoomTransform);
+    Palette palette;
 private:
     static const boost::gil::rgb8_pixel_t RED, WHITE;
 };

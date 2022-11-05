@@ -3,19 +3,18 @@
 #include "key_gasket.hpp"
 #include "mobius.hpp"
 
-using std::shared_ptr;
 using std::vector;
 
 KeyGasket::KeyGasket() {
 
 }
 
-KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, int diveIndex_):
-    ifsTransforms(ifsTransforms_), diveIndex(diveIndex_) {
+KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_, int diveIndex_):
+    logscale(logscale_), ifsTransforms(ifsTransforms_), diveIndex(diveIndex_) {
 
 }
 
-Flame KeyGasket::toFlame(double logscale, shared_ptr<Palette> palette) {
+Flame KeyGasket::toFlame(Palette palette, double logscale) {
     Flame flame(palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));

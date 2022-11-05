@@ -35,8 +35,7 @@ void Searcher<T>::start() {
         vector<Mobius<double>> gasketTransforms;
         auto transforms = shape.doubleSidedTransforms(scaler.lookupExp(0), center);
         gasketTransforms.insert(gasketTransforms.end(), transforms.begin(), transforms.end());
-        KeyGasket g(gasketTransforms, 0);
-        g.logscale = toDouble(scaler.iniLogscale);
+        KeyGasket g(gasketTransforms, toDouble(scaler.iniLogscale), 0);
         keyGaskets.push_back(g);
     }
     for (int i=0; i<numThreads; i++) {
@@ -87,8 +86,7 @@ void Searcher<T>::task(int i) {
     for (int i=0; i<3; i++) {
         gasketTransforms.push_back(transforms[i].conjugate(s).toMobiusDouble());
     }
-    KeyGasket g(gasketTransforms, 0);
-    g.logscale = toDouble(logscale);
+    KeyGasket g(gasketTransforms, toDouble(logscale), 0);
 
     lock.lock();
     if (scaleVal < scaler.numSteps) {

@@ -8,9 +8,9 @@
 class KeyGasket {
 public:
     KeyGasket();
-    KeyGasket(std::vector<Mobius<double>> ifsTransforms, int diveIndex);
-    double logscale;
-    Flame toFlame(double logscale = 0, std::shared_ptr<Palette> palette = nullptr);
+    KeyGasket(std::vector<Mobius<double>> ifsTransforms, double logscale, int diveIndex);
+    double logscale = 0;
+    Flame toFlame(Palette palette, double logscale = 0);
 private:
     std::vector<Mobius<double>> ifsTransforms;
     int diveIndex = 0;

@@ -14,8 +14,6 @@
 #include "zoom.hpp"
 #include "sdf.hpp"
 
-using std::shared_ptr;
-
 template <typename T, typename DiverT, typename ColorerT>
 Zoom<T, DiverT, ColorerT>::Zoom(const Shape<T>& shape_, DiverT& diver_,
     const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):
@@ -45,7 +43,7 @@ Zoom<T, DiverT, ColorerT>::Zoom(const Shape<T>& shape_, DiverT& diver_,
 }
 
 template<typename T, typename DiverT, typename ColorerT>
-Flame Zoom<T, DiverT, ColorerT>::getFlame(double logscale, shared_ptr<Palette> palette) {
+Flame Zoom<T, DiverT, ColorerT>::getFlame(double logscale) {
     int lb = 0;
     int ub = keyGaskets.size();
     while (ub - lb > 1) {
@@ -56,7 +54,7 @@ Flame Zoom<T, DiverT, ColorerT>::getFlame(double logscale, shared_ptr<Palette> p
             ub = m;
         }
     }
-    return keyGaskets[lb].toFlame(logscale-keyGaskets[lb].logscale, palette);
+    return keyGaskets[lb].toFlame(colorer.palette, logscale-keyGaskets[lb].logscale);
 }
 
 template class Zoom<mpq_class, Diver<mpq_class>, Colorer>;
