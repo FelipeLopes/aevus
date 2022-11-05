@@ -28,7 +28,7 @@ public:
         dist2(0,1), dist3(0,2) {
 
     }
-    int chooseDive(Mobius<T> acc) {
+    int chooseDive(Mobius<T> acc) const {
         if (acc.a == Complex<T>(1) && acc.b == Complex<T>(0) &&
             acc.c == Complex<T>(0) && acc.d == Complex<T>(1)) {
 
@@ -42,8 +42,8 @@ public:
     }
 private:
     int depth;
-    std::mt19937 rng;
-    std::uniform_int_distribution<std::mt19937::result_type> dist2, dist3;
+    mutable std::mt19937 rng;
+    mutable std::uniform_int_distribution<std::mt19937::result_type> dist2, dist3;
 };
 
 class ColorerImpl: public Colorer {
@@ -77,13 +77,15 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
-        Shape<mpq_class> shape(mpq_class(6,11),mpq_class(3,7),
-            Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
         DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
-        Scaler<mpq_class> scaler(mpq_class(-50,150), mpq_class(1,150), 22050, 10);
         typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
-        GasketZoom gz(shape, diver, scaler, colorer, mpq_class(16, 9));
+        GasketZoom::Builder zoomBuilder(diver, colorer);
+        const GasketZoom gz = zoomBuilder.withShape(mpq_class(6,11),mpq_class(3,7),
+            Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)))
+            .withScales(mpq_class(-50,150), mpq_class(1,150), 22050, 10)
+            .withAspectRatio(mpq_class(16, 9))
+            .build();
 
         tinyxml2::XMLDocument xmlDoc;
         auto node = gz.getFlame(10).toXMLNode(xmlDoc);

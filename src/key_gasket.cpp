@@ -15,11 +15,11 @@ KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale
 
 }
 
-int KeyGasket::numTransforms() {
+int KeyGasket::numTransforms() const {
     return ifsTransforms.size();
 }
 
-Flame KeyGasket::toFlame(ColorParams colorParams, double logscale) {
+Flame KeyGasket::toFlame(ColorParams colorParams, double logscale) const {
     Flame flame(colorParams.palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));

@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include <mutex>
+#include <stdexcept>
 #include <type_traits>
 #include <utility>
 #include <memory>
@@ -31,12 +32,14 @@ using ColorParams = Colorer::ColorParams;
 public:
     class Builder {
     public:
-        Builder(DiverT& diver_, ColorerT& colorer_): diver(diver_), colorer(colorer_) { }
+        Builder(const DiverT& diver_, const ColorerT& colorer_): diver(diver_), colorer(colorer_) { }
         Builder& withShape(T r1_, T r2_, Complex<T> f_, bool flip_ = false) {
             initShape = true;
             r1 = r1_;
             r2 = r2_;
+            f = f_;
             flip = flip_;
+            return *this;
         }
         Builder& withScales(T iniLogscale_, T step_, int numSteps_, int precDigits_) {
             initScales = true;
@@ -44,15 +47,30 @@ public:
             step = step_;
             numSteps = numSteps_;
             precDigits = precDigits_;
+            return *this;
         }
         Builder& withAspectRatio(T aspectRatio_) {
             initAspectRatio = true;
             aspectRatio = aspectRatio_;
+            return *this;
         }
-        const Zoom build();
+        Zoom build() {
+            if (!initShape) {
+                throw std::invalid_argument("Shape not initialized");
+            }
+            if (!initScales) {
+                throw std::invalid_argument("Scales not initialized");
+            }
+            if (!initAspectRatio) {
+                throw std::invalid_argument("Aspect ratio not initialized");
+            }
+            Shape<T> shape(r1, r2, f, flip);
+            Scaler<T> scaler(iniLogscale, step, numSteps, precDigits);
+            return Zoom(shape, diver, scaler, colorer, aspectRatio);
+        }
     private:
-        DiverT& diver;
-        ColorerT& colorer;
+        const DiverT& diver;
+        const ColorerT& colorer;
 
         bool initShape = false;
         T r1, r2;
@@ -67,7 +85,24 @@ public:
         T aspectRatio;
     };
 
-    Zoom(const Shape<T>& shape_, DiverT& diver_,
+    Flame getFlame(double logscale) const {
+        int lb = 0;
+        int ub = keyGaskets.size();
+        while (ub - lb > 1) {
+            int m = (lb + ub) / 2;
+            if (keyGaskets[m].logscale < logscale) {
+                lb = m;
+            } else {
+                ub = m;
+            }
+        }
+        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), 0,
+            logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
+        return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
+    }
+
+private:
+    Zoom(const Shape<T>& shape_, const DiverT& diver_,
         const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):
         ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
 
@@ -99,26 +134,9 @@ public:
         searcher.block();
     }
 
-    Flame getFlame(double logscale) {
-        int lb = 0;
-        int ub = keyGaskets.size();
-        while (ub - lb > 1) {
-            int m = (lb + ub) / 2;
-            if (keyGaskets[m].logscale < logscale) {
-                lb = m;
-            } else {
-                ub = m;
-            }
-        }
-        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), 0,
-            logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
-        return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
-    }
-
-private:
     T ar;
     const Shape<T>& shape;
-    DiverT& diver;
+    const DiverT& diver;
     const Scaler<T>& scaler;
     const ColorerT& colorer;
     std::vector<KeyGasket> keyGaskets;
