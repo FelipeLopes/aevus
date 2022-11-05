@@ -46,7 +46,7 @@ private:
     std::uniform_int_distribution<std::mt19937::result_type> dist2, dist3;
 };
 
-class ColorerImpl {
+class ColorerImpl: public Colorer {
 public:
     ColorerImpl(): palette(WHITE, RED) {
 

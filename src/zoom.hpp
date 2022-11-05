@@ -64,6 +64,8 @@ public:
 
         static_assert(std::is_base_of<Diver<T>, DiverT>::value,
             "DiverT must implement Diver<T> interface");
+        static_assert(std::is_base_of<Colorer, ColorerT>::value,
+            "ColorerT must implement Colorer interface");
 
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
