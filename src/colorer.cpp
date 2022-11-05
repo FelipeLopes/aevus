@@ -14,9 +14,10 @@ Colorer::Colorer(): palette(WHITE, RED) {
 }
 
 ColorParams Colorer::color(int numTransforms, int diveTransform, double logscale,
-    double iniKeyLogscale, double endKeyLogscale) {
+    double iniKeyLogscale, double endKeyLogscale) const {
 
     ColorParams params;
+    params.palette = palette;
     double f = (logscale-iniKeyLogscale)/(endKeyLogscale-iniKeyLogscale);
     double diveVal = min(1.0, 2*f);
     double nonDiveVal = max(0.0, 2*f-1);

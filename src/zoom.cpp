@@ -54,7 +54,9 @@ Flame Zoom<T, DiverT, ColorerT>::getFlame(double logscale) {
             ub = m;
         }
     }
-    return keyGaskets[lb].toFlame(colorer.palette, logscale-keyGaskets[lb].logscale);
+    ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), 0,
+        logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
+    return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
 }
 
 template class Zoom<mpq_class, Diver<mpq_class>, Colorer>;

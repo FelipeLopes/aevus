@@ -9,19 +9,23 @@ KeyGasket::KeyGasket() {
 
 }
 
-KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_, int diveIndex_):
-    logscale(logscale_), ifsTransforms(ifsTransforms_), diveIndex(diveIndex_) {
+KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_):
+    logscale(logscale_), ifsTransforms(ifsTransforms_) {
 
 }
 
-Flame KeyGasket::toFlame(Palette palette, double logscale) {
-    Flame flame(palette);
+int KeyGasket::numTransforms() {
+    return ifsTransforms.size();
+}
+
+Flame KeyGasket::toFlame(ColorParams colorParams, double logscale) {
+    Flame flame(colorParams.palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));
 
     for (int i = 0; i<ifsTransforms.size(); i++) {
         auto t = ifsTransforms[i];
-        double colorVal = (i == diveIndex) ? 1 : 0;
+        double colorVal = colorParams.colorValues[i];
         flame.xforms.push_back(t.conjugate(s).toXForm(colorVal));
     }
 
