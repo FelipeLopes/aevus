@@ -17,6 +17,8 @@
 #include "sdf.hpp"
 #include "diver.hpp"
 
+using boost::gil::rgb8_pixel_t;
+
 void convertFlame(std::string source, std::string dest);
 
 template<typename T>
@@ -44,15 +46,42 @@ private:
     std::uniform_int_distribution<std::mt19937::result_type> dist2, dist3;
 };
 
+class ColorerImpl {
+public:
+    ColorerImpl(): palette(WHITE, RED) {
+
+    }
+    Colorer::ColorParams color(int numTransforms, int diveTransform, double logscale,
+        double iniKeyLogscale, double endKeyLogscale) const {
+
+        Colorer::ColorParams params;
+        params.palette = palette;
+        double f = (logscale-iniKeyLogscale)/(endKeyLogscale-iniKeyLogscale);
+        double diveVal = std::min(1.0, 2*f);
+        double nonDiveVal = std::max(0.0, 2*f-1);
+
+        for (int i=0; i<numTransforms; i++) {
+            double val = (i == diveTransform) ? diveVal : nonDiveVal;
+            params.colorValues.push_back(val);
+        }
+
+        return params;
+    }
+private:
+    Palette palette;
+    static const boost::gil::rgb8_pixel_t RED, WHITE;
+};
+
+const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
+const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
+
 int main(int argc, char* argv[]) {
-    auto palette = std::make_shared<Palette>(boost::gil::rgb8_pixel_t(255,255,255),
-        boost::gil::rgb8_pixel_t(255,0,0));
     try {
         Shape<mpq_class> shape(mpq_class(6,11),
             mpq_class(3,7),
             Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)));
         DiverImpl<mpq_class> diver(200, 314159);
-        Colorer colorer;
+        ColorerImpl colorer;
         mpq_class prec(1);
         for (int i=0; i<10; i++) {
             prec = prec / 10;
@@ -60,7 +89,7 @@ int main(int argc, char* argv[]) {
         mpq_class iniLogscale = mpq_class(-50,150);
         mpq_class step = mpq_class(1,150);
         Scaler<mpq_class> scaler(iniLogscale, step, 22050, prec);
-        typedef Zoom<mpq_class, DiverImpl<mpq_class>, Colorer> GasketZoom;
+        typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         GasketZoom gz(shape, diver, scaler, colorer, mpq_class(16, 9));
 
         tinyxml2::XMLDocument xmlDoc;
