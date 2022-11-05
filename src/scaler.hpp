@@ -6,9 +6,9 @@ template <typename T>
 class Scaler {
 public:
     Scaler(T iniLogscale, T step, int numSteps, T prec);
-    T lookupExp(int n);
-    T iniLogscale, step;
-    int numSteps;
+    T lookupExp(int n) const;
+    const T iniLogscale, step;
+    const int numSteps;
 private:
     T base;
     std::vector<T> lookup;

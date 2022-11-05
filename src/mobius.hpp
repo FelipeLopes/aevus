@@ -11,9 +11,9 @@ public:
     Mobius(Complex<T> a, Complex<T> b, Complex<T> c, Complex<T> d);
     Complex<T> a, b, c, d;
     Complex<T> apply(Complex<T> z);
-    Mobius<T> inverse();
-    Mobius<T> compose(Mobius<T> n);
-    Mobius<T> conjugate(Mobius<T> s);
+    Mobius<T> inverse() const;
+    Mobius<T> compose(Mobius<T> n) const;
+    Mobius<T> conjugate(Mobius<T> s) const;
     Mobius<T> flip();
     Mobius<double> toMobiusDouble();
     void normalize();

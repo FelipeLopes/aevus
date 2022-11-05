@@ -48,7 +48,7 @@ Mobius<T> Mobius<T>::fromPointsToPoints(Complex<T> p1, Complex<T> q1,
 }
 
 template <typename T>
-Mobius<T> Mobius<T>::inverse() {
+Mobius<T> Mobius<T>::inverse() const {
     Complex<T> sc = Complex<T>(1)/(a*d-b*c);
     return Mobius<T>(sc*d,-sc*b,-sc*c,sc*a);
 }
@@ -68,12 +68,12 @@ void Mobius<T>::normalize() {
 }
 
 template <typename T>
-Mobius<T> Mobius<T>::compose(Mobius<T> n) {
+Mobius<T> Mobius<T>::compose(Mobius<T> n) const {
     return Mobius<T>(a*n.a + b*n.c, a*n.b + b*n.d, c*n.a + d*n.c, c*n.b + d*n.d);
 }
 
 template <typename T>
-Mobius<T> Mobius<T>::conjugate(Mobius<T> s) {
+Mobius<T> Mobius<T>::conjugate(Mobius<T> s) const {
     return s.compose(*this).compose(s.inverse());
 }
 

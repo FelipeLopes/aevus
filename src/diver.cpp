@@ -2,18 +2,13 @@
 #include "diver.hpp"
 
 template <typename T>
-Diver<T>::Diver(int depth_):depth(depth_) {
-
-}
-
-template <typename T>
-RandomDiver<T>::RandomDiver(int depth, int seed): Diver<T>(depth), rng(seed),
+Diver<T>::Diver(int depth_, int seed): depth(depth_), rng(seed),
     dist2(0,1), dist3(0,2) {
 
 }
 
 template <typename T>
-int RandomDiver<T>::chooseDive(Mobius<T> acc) {
+int Diver<T>::chooseDive(Mobius<T> acc) {
     if (acc.a == Complex<T>(1) && acc.b == Complex<T>(0) &&
         acc.c == Complex<T>(0) && acc.d == Complex<T>(1)) {
 
@@ -24,4 +19,3 @@ int RandomDiver<T>::chooseDive(Mobius<T> acc) {
 }
 
 template class Diver<mpq_class>;
-template class RandomDiver<mpq_class>;

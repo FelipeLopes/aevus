@@ -71,7 +71,7 @@ Shape<T>::Shape(T r1, T r2, Complex<T> f, bool flip) {
 }
 
 template <typename T>
-array<Complex<T>, 3> Shape<T>::startingPoints(bool inverseDive) {
+array<Complex<T>, 3> Shape<T>::startingPoints(bool inverseDive) const {
     if (inverseDive) {
         return {pa, pc, pb};
     } else {
@@ -80,7 +80,7 @@ array<Complex<T>, 3> Shape<T>::startingPoints(bool inverseDive) {
 }
 
 template <typename T>
-array<Mobius<T>, 3> Shape<T>::diveArray(bool inverseDive) {
+array<Mobius<T>, 3> Shape<T>::diveArray(bool inverseDive) const {
     if (inverseDive) {
         return {tr.inverse(), tr.inverse().conjugate(rot),
             tr.inverse().conjugate(rot.inverse())};
@@ -90,7 +90,7 @@ array<Mobius<T>, 3> Shape<T>::diveArray(bool inverseDive) {
 }
 
 template <typename T>
-array<Mobius<double>, 6> Shape<T>::doubleSidedTransforms(T scale, Complex<T> center) {
+array<Mobius<double>, 6> Shape<T>::doubleSidedTransforms(T scale, Complex<T> center) const {
     auto s = Mobius<T>::scaling(scale)
             .compose(Mobius<T>::translation(-center));
     array<Mobius<double>, 6> ans;

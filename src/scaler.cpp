@@ -14,7 +14,7 @@ Scaler<T>::Scaler(T iniLogscale_, T step_, int numSteps_, T prec):
 }
 
 template <typename T>
-T Scaler<T>::lookupExp(int n) {
+T Scaler<T>::lookupExp(int n) const {
     T ans = base;
     while (n > 0) {
         int bits = (n & -n);

@@ -22,19 +22,17 @@
 #include "shape.hpp"
 #include "xform.hpp"
 
-template <typename T>
+template <typename T, typename DiverT, typename ColorerT>
 class Zoom {
 public:
-    Zoom(std::shared_ptr<Shape<T>> shape, std::shared_ptr<Diver<T>> diver,
-        std::shared_ptr<Scaler<T>> scaler, std::shared_ptr<Colorer> colorer, T ar);
+    Zoom(const Shape<T>& shape, DiverT& diver,
+        const Scaler<T>& scaler, const ColorerT& colorer, T ar);
     Flame getFlame(double logscale, std::shared_ptr<Palette> palette = nullptr);
 private:
-    std::vector<Mobius<T>> zoomTransforms;
     T ar;
-    std::shared_ptr<Shape<T>> shape;
-    std::shared_ptr<Diver<T>> diver;
-    std::shared_ptr<Scaler<T>> scaler;
-    std::shared_ptr<Searcher<T>> searcher;
-    std::shared_ptr<Colorer> colorer;
+    const Shape<T>& shape;
+    DiverT& diver;
+    const Scaler<T>& scaler;
+    const ColorerT& colorer;
     std::vector<KeyGasket> keyGaskets;
 };

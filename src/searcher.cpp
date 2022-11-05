@@ -6,13 +6,12 @@
 #include <gmpxx.h>
 #include <memory>
 
-using std::shared_ptr;
 using std::array;
 using std::vector;
 
 template <typename T>
-Searcher<T>::Searcher(shared_ptr<Shape<T>> shape_,
-    shared_ptr<Scaler<T>> scaler_,
+Searcher<T>::Searcher(const Shape<T>& shape_,
+    const Scaler<T>& scaler_,
     Complex<T> center_,
     bool inverseDive_,
     const vector<Mobius<T>>& zoomTransforms_,
@@ -22,20 +21,20 @@ Searcher<T>::Searcher(shared_ptr<Shape<T>> shape_,
     ar(ar_), numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
     zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), lastPickedUp(numThreads_-1) {
 
-    pts = shape->startingPoints(inverseDive);
-    transforms = shape->diveArray(inverseDive);
+    pts = shape.startingPoints(inverseDive);
+    transforms = shape.diveArray(inverseDive);
 }
 
 template <typename T>
 void Searcher<T>::start() {
     Sdf<T> sdf = Sdf<T>::fromPoints(pts[0], pts[1], pts[2]);
-    T iniScale = scaler->lookupExp(0);
+    T iniScale = scaler.lookupExp(0);
     T iniHeight = 2/iniScale;
     T iniWidth = iniHeight*ar;
     if (!sdf.rectInside(center, iniWidth, iniHeight)) {
         KeyGasket g;
-        g.logscale = toDouble(scaler->iniLogscale);
-        auto transforms = shape->doubleSidedTransforms(scaler->lookupExp(0), center);
+        g.logscale = toDouble(scaler.iniLogscale);
+        auto transforms = shape.doubleSidedTransforms(scaler.lookupExp(0), center);
         g.ifsTransforms.insert(g.ifsTransforms.end(), transforms.begin(), transforms.end());
         keyGaskets.push_back(g);
     }
@@ -54,10 +53,10 @@ void Searcher<T>::block() {
 template <typename T>
 int Searcher<T>::searchScale(Sdf<T> sdf) {
     int lb = 0;
-    int ub = scaler->numSteps;
+    int ub = scaler.numSteps;
     while (ub - lb > 1) {
         int m = (lb + ub) / 2;
-        T scale = scaler->lookupExp(m);
+        T scale = scaler.lookupExp(m);
         T height = 2/scale;
         T width = height*ar;
         if (sdf.rectInside(center, width, height)) {
@@ -78,9 +77,9 @@ void Searcher<T>::task(int i) {
     Sdf<T> sdf = Sdf<T>::fromPoints(qa, qb, qc);
     int scaleVal = searchScale(sdf);
     KeyGasket g;
-    T logscale = scaler->iniLogscale + scaleVal*scaler->step;
+    T logscale = scaler.iniLogscale + scaleVal*scaler.step;
     g.logscale = toDouble(logscale);
-    auto s = Mobius<T>::scaling(scaler->lookupExp(scaleVal))
+    auto s = Mobius<T>::scaling(scaler.lookupExp(scaleVal))
         .compose(Mobius<T>::translation(-center))
         .compose(acc);
 
@@ -89,7 +88,7 @@ void Searcher<T>::task(int i) {
     }
 
     lock.lock();
-    if (scaleVal < scaler->numSteps) {
+    if (scaleVal < scaler.numSteps) {
         if (keyGaskets.size() < i+2) {
             keyGaskets.resize(i+2);
         }
