@@ -14,6 +14,8 @@
 #include "zoom.hpp"
 #include "sdf.hpp"
 
+using ColorParams = Colorer::ColorParams;
+
 template <typename T, typename DiverT, typename ColorerT>
 Zoom<T, DiverT, ColorerT>::Zoom(const Shape<T>& shape_, DiverT& diver_,
     const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):

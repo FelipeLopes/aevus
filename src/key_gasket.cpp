@@ -4,6 +4,7 @@
 #include "mobius.hpp"
 
 using std::vector;
+using ColorParams = Colorer::ColorParams;
 
 KeyGasket::KeyGasket() {
 

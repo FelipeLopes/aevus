@@ -11,7 +11,7 @@ public:
     KeyGasket();
     KeyGasket(std::vector<Mobius<double>> ifsTransforms, double logscale);
     double logscale = 0;
-    Flame toFlame(ColorParams colorParams, double logscale = 0);
+    Flame toFlame(Colorer::ColorParams colorParams, double logscale = 0);
     int numTransforms();
 private:
     std::vector<Mobius<double>> ifsTransforms;

@@ -25,6 +25,34 @@
 template <typename T, typename DiverT, typename ColorerT>
 class Zoom {
 public:
+    class Builder {
+    public:
+        Builder();
+        Builder& withShape();
+        Builder& withDiver();
+        Builder& withScaler();
+        Builder& withColorer();
+        Builder& withAspectRatio();
+        Zoom build();
+    private:
+        bool initShape = false;
+        T r1, r2;
+        Complex<T> f;
+        bool flip;
+
+        bool initDiver = false;
+        DiverT diver;
+
+        bool initScaler = false;
+        T iniLogscale, step;
+        int numSteps, prec;
+
+        bool initColorer = false;
+        ColorerT colorer;
+
+        bool initAspectRatio = false;
+        T aspectRatio;
+    };
     Zoom(const Shape<T>& shape, DiverT& diver,
         const Scaler<T>& scaler, const ColorerT& colorer, T ar);
     Flame getFlame(double logscale);

@@ -3,14 +3,13 @@
 #include "palette.hpp"
 #include <boost/gil.hpp>
 
-struct ColorParams {
-    Palette palette;
-    std::vector<double> colorValues;
-};
-
 class Colorer {
 public:
     Colorer();
+    struct ColorParams {
+        Palette palette;
+        std::vector<double> colorValues;
+    };
     ColorParams color(int numTransforms, int diveTransform, double logscale,
         double iniKeyLogscale, double endKeyLogscale) const;
     Palette palette;
