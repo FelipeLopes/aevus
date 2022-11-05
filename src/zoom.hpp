@@ -24,6 +24,9 @@
 
 template <typename T, typename DiverT, typename ColorerT>
 class Zoom {
+
+using ColorParams = Colorer::ColorParams;
+
 public:
     class Builder {
     public:
@@ -53,9 +56,50 @@ public:
         bool initAspectRatio = false;
         T aspectRatio;
     };
-    Zoom(const Shape<T>& shape, DiverT& diver,
-        const Scaler<T>& scaler, const ColorerT& colorer, T ar);
-    Flame getFlame(double logscale);
+
+    Zoom(const Shape<T>& shape_, DiverT& diver_,
+        const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):
+        ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
+
+        Mobius<T> acc;
+        int k = diver.chooseDive(acc);
+        bool inverseDive = (k>=3);
+        diveIndices.push_back(k);
+        auto pts = shape.startingPoints(inverseDive);
+        auto arr = shape.diveArray(inverseDive);
+        acc = acc.compose(arr[k%3]);
+        std::vector<Mobius<T>> zoomTransforms;
+        zoomTransforms.push_back(acc);
+        for (int i=0; i<diver.depth-1; i++) {
+            int k = diver.chooseDive(acc);
+            diveIndices.push_back(k);
+            acc = acc.compose(arr[k]);
+            zoomTransforms.push_back(acc);
+        }
+        auto center = (acc.apply(pts[0])+acc.apply(pts[1])+acc.apply(pts[2]))/Complex<T>(3);
+
+        Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets, ar);
+
+        searcher.start();
+        searcher.block();
+    }
+
+    Flame getFlame(double logscale) {
+        int lb = 0;
+        int ub = keyGaskets.size();
+        while (ub - lb > 1) {
+            int m = (lb + ub) / 2;
+            if (keyGaskets[m].logscale < logscale) {
+                lb = m;
+            } else {
+                ub = m;
+            }
+        }
+        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), 0,
+            logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
+        return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
+    }
+
 private:
     T ar;
     const Shape<T>& shape;
