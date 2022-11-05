@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cmath>
 #include <mutex>
+#include <type_traits>
 #include <utility>
 #include <memory>
 #include <vector>
@@ -61,6 +62,9 @@ public:
         const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):
         ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
 
+        static_assert(std::is_base_of<Diver<T>, DiverT>::value,
+            "DiverT must implement Diver<T> interface");
+
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
         bool inverseDive = (k>=3);
@@ -70,7 +74,7 @@ public:
         acc = acc.compose(arr[k%3]);
         std::vector<Mobius<T>> zoomTransforms;
         zoomTransforms.push_back(acc);
-        for (int i=0; i<diver.depth-1; i++) {
+        for (int i=0; i<diver.getDepth()-1; i++) {
             int k = diver.chooseDive(acc);
             diveIndices.push_back(k);
             acc = acc.compose(arr[k]);
