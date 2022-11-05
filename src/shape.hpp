@@ -85,8 +85,7 @@ public:
         }
     }
     std::array<Mobius<double>, 6> doubleSidedTransforms(T scale, Complex<T> center) const {
-        auto s = Mobius<T>::scaling(scale)
-                .compose(Mobius<T>::translation(-center));
+        auto s = Mobius<T>::scaling(scale).compose(Mobius<T>::translation(-center));
         std::array<Mobius<double>, 6> ans;
         ans[0] = tr.conjugate(s).toMobiusDouble();
         ans[1] = tr.conjugate(rot).conjugate(s).toMobiusDouble();
