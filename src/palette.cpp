@@ -9,24 +9,18 @@ using boost::gil::blue_t;
 using boost::gil::interleaved_view;
 using boost::gil::rgb8_pixel_t;
 
-std::string Palette::hexAt(int pos) const {
-    char s[7];
-    rgb8_pixel_t pix = paletteView(pos, 0);
-    byte r = get_color(pix, red_t());
-    byte g = get_color(pix, green_t());
-    byte b = get_color(pix, blue_t());
-    s[0] = r/16 > 9 ? (r/16)+'A'-10 : (r/16)+'0';
-    s[1] = r%16 > 9 ? (r%16)+'A'-10 : (r%16)+'0';
-    s[2] = g/16 > 9 ? (g/16)+'A'-10 : (g/16)+'0';
-    s[3] = g%16 > 9 ? (g%16)+'A'-10 : (g%16)+'0';
-    s[4] = b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
-    s[5] = b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
-    s[6] = '\0';
-    return std::string(s);
+Palette::Palette(): Palette(rgb8_pixel_t(255,255,255)) {
+
+}
+
+Palette::Palette(rgb8_pixel_t color): Palette(color, color) {
+
 }
 
 Palette::Palette(rgb8_pixel_t color1, rgb8_pixel_t color2) {
-    init();
+    paletteData.resize(PALETTE_WIDTH);
+    paletteView = interleaved_view(PALETTE_WIDTH, 1,
+        (rgb8_pixel_t*)(&paletteData[0]), PALETTE_WIDTH*sizeof(rgb8_pixel_t));
 
     double r1 = get_color(color1, red_t());
     double g1 = get_color(color1, green_t());
@@ -45,8 +39,18 @@ Palette::Palette(rgb8_pixel_t color1, rgb8_pixel_t color2) {
     }
 }
 
-void Palette::init() {
-    paletteData.resize(PALETTE_WIDTH);
-    paletteView = interleaved_view(PALETTE_WIDTH, 1,
-        (rgb8_pixel_t*)(&paletteData[0]), PALETTE_WIDTH*sizeof(rgb8_pixel_t));
+std::string Palette::hexAt(int pos) const {
+    char s[7];
+    rgb8_pixel_t pix = paletteView(pos, 0);
+    byte r = get_color(pix, red_t());
+    byte g = get_color(pix, green_t());
+    byte b = get_color(pix, blue_t());
+    s[0] = r/16 > 9 ? (r/16)+'A'-10 : (r/16)+'0';
+    s[1] = r%16 > 9 ? (r%16)+'A'-10 : (r%16)+'0';
+    s[2] = g/16 > 9 ? (g/16)+'A'-10 : (g/16)+'0';
+    s[3] = g%16 > 9 ? (g%16)+'A'-10 : (g%16)+'0';
+    s[4] = b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
+    s[5] = b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
+    s[6] = '\0';
+    return std::string(s);
 }
