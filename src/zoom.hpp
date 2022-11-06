@@ -71,19 +71,11 @@ public:
     };
 
     Flame getFlame(double logscale) const {
-        int lb = 0;
-        int ub = keyGaskets.size();
-        while (ub - lb > 1) {
-            int m = (lb + ub) / 2;
-            if (keyGaskets[m].logscale < logscale) {
-                lb = m;
-            } else {
-                ub = m;
-            }
-        }
-        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), diveIndices[lb],
-            logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
-        return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
+        auto it = std::prev(keyGasketMap.lower_bound(logscale));
+        ColorParams params = colorer.color(it->second.numTransforms(),
+            diveIndicesMap.find(it->second.logscale)->second, logscale,
+            it->second.logscale, std::next(it)->second.logscale);
+        return it->second.toFlame(params, logscale-it->second.logscale);
     }
 
 private:
@@ -99,6 +91,7 @@ private:
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
         bool inverseDive = (k>=3);
+        std::vector<int> diveIndices;
         diveIndices.push_back(k);
         auto pts = shape.startingPoints(inverseDive);
         auto arr = shape.diveArray(inverseDive);
@@ -118,6 +111,10 @@ private:
 
         searcher.start();
         searcher.block();
+
+        for (auto g: keyGasketMap) {
+            diveIndicesMap[g.first] = diveIndices[g.second.level+1];
+        }
     }
 
     T ar;
@@ -127,5 +124,5 @@ private:
     const ColorerT& colorer;
     std::vector<KeyGasket> keyGaskets;
     std::map<double, KeyGasket> keyGasketMap;
-    std::vector<int> diveIndices;
+    std::map<double, int> diveIndicesMap;
 };
