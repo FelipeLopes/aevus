@@ -77,8 +77,7 @@ public:
 
     Flame getFlame(double logscale) const {
         auto it = std::prev(keyGaskets.lower_bound(logscale));
-        ColorParams params = colorer.color(keyGaskets, logscale,
-            diveIndicesMap.find(it->first)->second);
+        ColorParams params = colorer.color(logscale, diveIndicesMap.find(it->first)->second);
         return it->second.toFlame(params, logscale-it->first);
     }
 
@@ -108,6 +107,8 @@ private:
 
         searcher.start();
         searcher.block();
+
+        colorer.keyGaskets(keyGaskets);
 
         for (auto g: keyGaskets) {
             diveIndicesMap[g.first] = diveIndices[g.second.level+1];

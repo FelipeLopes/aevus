@@ -12,6 +12,5 @@ public:
 private:
     typedef unsigned char byte;
     static const unsigned PALETTE_WIDTH = 256;
-    std::vector<boost::gil::rgb8_pixel_t> paletteData;
-    boost::gil::rgb8_view_t paletteView;
+    std::vector<byte> paletteData;
 };

@@ -9,7 +9,7 @@ class Colorer {
 
 public:
     Colorer() { }
-    virtual ColorParams color(const std::map<double, KeyGasket>& keyGaskets,
-        double logscale, int diveTransform) const = 0;
+    virtual void keyGaskets(const std::map<double, KeyGasket>& keyGaskets) = 0;
+    virtual ColorParams color(double logscale, int diveTransform) const = 0;
     virtual ~Colorer() { }
 };

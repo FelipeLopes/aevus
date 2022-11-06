@@ -49,15 +49,19 @@ private:
 
 class ColorerImpl: public Colorer {
 public:
-    ColorerImpl(): palette(WHITE, RED) {
-
+    ColorerImpl() { }
+    void keyGaskets(const map<double, KeyGasket>& keyGaskets) {
+        keyGasketsMap = &keyGaskets;
+        int idx = 0;
+        for (auto kg: keyGaskets) {
+            scaleIndex[kg.first] = idx++;
+        }
     }
-    ColorParams color(const map<double, KeyGasket>& keyGaskets,
-        double logscale, int diveTransform) const {
-
+    ColorParams color(double logscale, int diveTransform) const {
         ColorParams params;
-        params.palette = palette;
-        auto it = std::prev(keyGaskets.lower_bound(logscale));
+        auto it = std::prev(keyGasketsMap->lower_bound(logscale));
+        int idx = scaleIndex.find(it->first)->second;
+        params.palette = (idx % 2 == 1) ? Palette(RED, WHITE) : Palette(WHITE, RED);
         int numTransforms = it->second.numTransforms();
         double iniKeyLogscale = it->first;
         double endKeyLogscale = std::next(it)->first;
@@ -73,7 +77,8 @@ public:
         return params;
     }
 private:
-    Palette palette;
+    const map<double, KeyGasket>* keyGasketsMap = nullptr;
+    map<double, int> scaleIndex;
     static const boost::gil::rgb8_pixel_t RED, WHITE;
 };
 
@@ -90,14 +95,13 @@ int main(int argc, char* argv[]) {
             .withAspectRatio(mpq_class(16, 9))
             .build();
 
-        for (int i=0; i<1; i++) {
+        for (int i=0; i<900; i++) {
             tinyxml2::XMLDocument xmlDoc;
-            auto node = gz.getFlame(10+i*1./150).toXMLNode(xmlDoc);
+            auto node = gz.getFlame(20+i*1./150).toXMLNode(xmlDoc);
             xmlDoc.InsertFirstChild(node);
-            //std::ostringstream ss;
-            //ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
-            //xmlDoc.SaveFile(ss.str().c_str());
-            xmlDoc.SaveFile(stdout);
+            std::ostringstream ss;
+            ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
+            xmlDoc.SaveFile(ss.str().c_str());
         }
 
     } catch (std::exception& e) {
