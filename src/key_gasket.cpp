@@ -4,7 +4,6 @@
 #include "mobius.hpp"
 
 using std::vector;
-using ColorParams = Colorer::ColorParams;
 
 KeyGasket::KeyGasket(vector<Mobius<double>> ifsTransforms_, int level_):
     level(level_), ifsTransforms(ifsTransforms_) {

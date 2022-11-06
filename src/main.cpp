@@ -9,6 +9,7 @@
 #include <sstream>
 #include <boost/gil.hpp>
 #include <tinyxml2.h>
+#include "key_gasket.hpp"
 #include "zoom.hpp"
 #include "complex_type.hpp"
 #include "mobius.hpp"
@@ -18,6 +19,7 @@
 #include "diver.hpp"
 
 using boost::gil::rgb8_pixel_t;
+using std::map;
 
 void convertFlame(std::string source, std::string dest);
 
@@ -51,11 +53,15 @@ public:
     ColorerImpl(): palette(WHITE, RED) {
 
     }
-    Colorer::ColorParams color(int numTransforms, int diveTransform, double logscale,
-        double iniKeyLogscale, double endKeyLogscale) const {
+    ColorParams color(const map<double, KeyGasket>& keyGaskets,
+        double logscale, int diveTransform) const {
 
-        Colorer::ColorParams params;
+        ColorParams params;
         params.palette = palette;
+        auto it = std::prev(keyGaskets.lower_bound(logscale));
+        int numTransforms = it->second.numTransforms();
+        double iniKeyLogscale = it->first;
+        double endKeyLogscale = std::next(it)->first;
         double f = (logscale-iniKeyLogscale)/(endKeyLogscale-iniKeyLogscale);
         double diveVal = std::min(1.0, 2*f);
         double nonDiveVal = std::max(0.0, 2*f-1);

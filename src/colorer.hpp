@@ -1,6 +1,7 @@
 #pragma once
 
-#include "palette.hpp"
+#include "color_params.hpp"
+#include "key_gasket.hpp"
 #include <algorithm>
 #include <boost/gil.hpp>
 
@@ -8,11 +9,7 @@ class Colorer {
 
 public:
     Colorer() { }
-    struct ColorParams {
-        Palette palette;
-        std::vector<double> colorValues;
-    };
-    virtual ColorParams color(int numTransforms, int diveTransform, double logscale,
-        double iniKeyLogscale, double endKeyLogscale) const = 0;
+    virtual ColorParams color(const std::map<double, KeyGasket>& keyGaskets,
+        double logscale, int diveTransform) const = 0;
     virtual ~Colorer() { }
 };

@@ -12,8 +12,6 @@
 template <typename T, typename DiverT, typename ColorerT>
 class Zoom {
 
-using ColorParams = Colorer::ColorParams;
-
 public:
     class Builder {
     public:
@@ -72,9 +70,8 @@ public:
 
     Flame getFlame(double logscale) const {
         auto it = std::prev(keyGaskets.lower_bound(logscale));
-        ColorParams params = colorer.color(it->second.numTransforms(),
-            diveIndicesMap.find(it->first)->second, logscale,
-            it->first, std::next(it)->first);
+        ColorParams params = colorer.color(keyGaskets, logscale,
+            diveIndicesMap.find(it->first)->second);
         return it->second.toFlame(params, logscale-it->first);
     }
 
