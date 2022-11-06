@@ -7,6 +7,7 @@
 #include <array>
 #include <boost/asio/post.hpp>
 #include <boost/asio/thread_pool.hpp>
+#include <map>
 #include <memory>
 
 template <typename T>
@@ -18,10 +19,12 @@ public:
         bool inverseDive_,
         const std::vector<Mobius<T>>& zoomTransforms_,
         std::vector<KeyGasket>& keyGaskets_,
+        std::map<double, KeyGasket>& keyGasketMap_,
         T ar_, int numThreads_ = 4):
         shape(shape_), center(center_), inverseDive(inverseDive_),
         ar(ar_), numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
-        zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), lastPickedUp(numThreads_-1) {
+        zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), keyGasketMap(keyGasketMap_),
+        lastPickedUp(numThreads_-1) {
 
         pts = shape.startingPoints(inverseDive);
         transforms = shape.diveArray(inverseDive);
@@ -67,9 +70,14 @@ private:
         for (int i=0; i<3; i++) {
             gasketTransforms.push_back(transforms[i].conjugate(s).toMobiusDouble());
         }
-        KeyGasket g(gasketTransforms, toDouble(logscale));
+        double logScaleDouble = toDouble(logscale);
+        KeyGasket g(gasketTransforms, logScaleDouble, i);
 
         lock.lock();
+        auto it = keyGasketMap.find(logScaleDouble);
+        if (it == keyGasketMap.end() || i > it->second.level) {
+            keyGasketMap[logScaleDouble] = g;
+        }
         if (scaleVal < scaler.numSteps) {
             if (keyGaskets.size() < i+2) {
                 keyGaskets.resize(i+2);
@@ -115,6 +123,7 @@ private:
     boost::asio::thread_pool threadPool;
     const std::vector<Mobius<T>>& zoomTransforms;
     std::vector<KeyGasket>& keyGaskets;
+    std::map<double, KeyGasket>& keyGasketMap;
     std::mutex lock;
     int lastPickedUp;
     bool foundEnd = false;

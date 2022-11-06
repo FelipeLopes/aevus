@@ -81,16 +81,21 @@ int main(int argc, char* argv[]) {
         ColorerImpl colorer;
         typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         GasketZoom::Builder zoomBuilder(diver, colorer);
-        const GasketZoom gz = zoomBuilder.withShape(mpq_class(6,11),mpq_class(3,7),
-            Complex<mpq_class>(mpq_class(1,1),mpq_class(0,1)))
-            .withScales(mpq_class(-50,150), mpq_class(1,150), 22050, 10)
+        const GasketZoom gz = zoomBuilder
+            .withShape(mpq_class(6,11),mpq_class(3,7),Complex<mpq_class>(1))
+            .withScales(mpq_class(-50,150), mpq_class(1,150), 22050)
             .withAspectRatio(mpq_class(16, 9))
             .build();
 
-        tinyxml2::XMLDocument xmlDoc;
-        auto node = gz.getFlame(10).toXMLNode(xmlDoc);
-        xmlDoc.InsertFirstChild(node);
-        xmlDoc.SaveFile(stdout);
+        for (int i=0; i<1; i++) {
+            tinyxml2::XMLDocument xmlDoc;
+            auto node = gz.getFlame(10+i*1./150).toXMLNode(xmlDoc);
+            xmlDoc.InsertFirstChild(node);
+            //std::ostringstream ss;
+            //ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
+            //xmlDoc.SaveFile(ss.str().c_str());
+            xmlDoc.SaveFile(stdout);
+        }
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

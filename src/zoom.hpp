@@ -1,28 +1,13 @@
 #pragma once
 
-#include <cstdio>
-#include <cmath>
-#include <mutex>
-#include <stdexcept>
-#include <type_traits>
-#include <utility>
-#include <memory>
-#include <vector>
-
-#include <boost/asio/thread_pool.hpp>
-#include <tinyxml2.h>
-
 #include "colorer.hpp"
 #include "complex_type.hpp"
 #include "diver.hpp"
 #include "flame.hpp"
 #include "key_gasket.hpp"
-#include "mobius.hpp"
 #include "scaler.hpp"
-#include "sdf.hpp"
 #include "searcher.hpp"
 #include "shape.hpp"
-#include "xform.hpp"
 
 template <typename T, typename DiverT, typename ColorerT>
 class Zoom {
@@ -41,7 +26,7 @@ public:
             flip = flip_;
             return *this;
         }
-        Builder& withScales(T iniLogscale_, T step_, int numSteps_, int precDigits_) {
+        Builder& withScales(T iniLogscale_, T step_, int numSteps_, int precDigits_ = 10) {
             initScales = true;
             iniLogscale = iniLogscale_;
             step = step_;
@@ -96,7 +81,7 @@ public:
                 ub = m;
             }
         }
-        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), 0,
+        ColorParams params = colorer.color(keyGaskets[lb].numTransforms(), diveIndices[lb],
             logscale, keyGaskets[lb].logscale, keyGaskets[lb+1].logscale);
         return keyGaskets[lb].toFlame(params, logscale-keyGaskets[lb].logscale);
     }
@@ -128,7 +113,8 @@ private:
         }
         auto center = (acc.apply(pts[0])+acc.apply(pts[1])+acc.apply(pts[2]))/Complex<T>(3);
 
-        Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets, ar);
+        Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets,
+            keyGasketMap, ar);
 
         searcher.start();
         searcher.block();
@@ -140,5 +126,6 @@ private:
     const Scaler<T>& scaler;
     const ColorerT& colorer;
     std::vector<KeyGasket> keyGaskets;
+    std::map<double, KeyGasket> keyGasketMap;
     std::vector<int> diveIndices;
 };

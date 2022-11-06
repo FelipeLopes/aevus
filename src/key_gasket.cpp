@@ -10,8 +10,8 @@ KeyGasket::KeyGasket() {
 
 }
 
-KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_):
-    logscale(logscale_), ifsTransforms(ifsTransforms_) {
+KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_, int level_):
+    logscale(logscale_), level(level_), ifsTransforms(ifsTransforms_) {
 
 }
 
