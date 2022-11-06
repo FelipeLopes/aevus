@@ -6,12 +6,8 @@
 using std::vector;
 using ColorParams = Colorer::ColorParams;
 
-KeyGasket::KeyGasket() {
-
-}
-
-KeyGasket::KeyGasket(std::vector<Mobius<double>> ifsTransforms_, double logscale_, int level_):
-    logscale(logscale_), level(level_), ifsTransforms(ifsTransforms_) {
+KeyGasket::KeyGasket(vector<Mobius<double>> ifsTransforms_, int level_):
+    level(level_), ifsTransforms(ifsTransforms_) {
 
 }
 

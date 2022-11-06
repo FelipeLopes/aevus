@@ -71,11 +71,11 @@ public:
     };
 
     Flame getFlame(double logscale) const {
-        auto it = std::prev(keyGasketMap.lower_bound(logscale));
+        auto it = std::prev(keyGaskets.lower_bound(logscale));
         ColorParams params = colorer.color(it->second.numTransforms(),
-            diveIndicesMap.find(it->second.logscale)->second, logscale,
-            it->second.logscale, std::next(it)->second.logscale);
-        return it->second.toFlame(params, logscale-it->second.logscale);
+            diveIndicesMap.find(it->first)->second, logscale,
+            it->first, std::next(it)->first);
+        return it->second.toFlame(params, logscale-it->first);
     }
 
 private:
@@ -106,13 +106,12 @@ private:
         }
         auto center = (acc.apply(pts[0])+acc.apply(pts[1])+acc.apply(pts[2]))/Complex<T>(3);
 
-        Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets,
-            keyGasketMap, ar);
+        Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets, ar);
 
         searcher.start();
         searcher.block();
 
-        for (auto g: keyGasketMap) {
+        for (auto g: keyGaskets) {
             diveIndicesMap[g.first] = diveIndices[g.second.level+1];
         }
     }
@@ -122,7 +121,6 @@ private:
     const DiverT& diver;
     const Scaler<T>& scaler;
     const ColorerT& colorer;
-    std::vector<KeyGasket> keyGaskets;
-    std::map<double, KeyGasket> keyGasketMap;
+    std::map<double, KeyGasket> keyGaskets;
     std::map<double, int> diveIndicesMap;
 };

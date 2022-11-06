@@ -8,9 +8,7 @@
 
 class KeyGasket {
 public:
-    KeyGasket();
-    KeyGasket(std::vector<Mobius<double>> ifsTransforms, double logscale, int level = 0);
-    double logscale = 0;
+    KeyGasket(std::vector<Mobius<double>> ifsTransforms, int level);
     int level = 0;
     Flame toFlame(Colorer::ColorParams colorParams, double logscale = 0) const;
     int numTransforms() const;

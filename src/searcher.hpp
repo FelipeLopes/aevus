@@ -18,13 +18,11 @@ public:
         Complex<T> center_,
         bool inverseDive_,
         const std::vector<Mobius<T>>& zoomTransforms_,
-        std::vector<KeyGasket>& keyGaskets_,
-        std::map<double, KeyGasket>& keyGasketMap_,
+        std::map<double, KeyGasket>& keyGaskets_,
         T ar_, int numThreads_ = 4):
         shape(shape_), center(center_), inverseDive(inverseDive_),
         ar(ar_), numThreads(numThreads_), scaler(scaler_), threadPool(numThreads_),
-        zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), keyGasketMap(keyGasketMap_),
-        lastPickedUp(numThreads_-1) {
+        zoomTransforms(zoomTransforms_), keyGaskets(keyGaskets_), lastPickedUp(numThreads_-1) {
 
         pts = shape.startingPoints(inverseDive);
         transforms = shape.diveArray(inverseDive);
@@ -39,8 +37,9 @@ public:
             std::vector<Mobius<double>> gasketTransforms;
             auto transforms = shape.doubleSidedTransforms(scaler.lookupExp(0), center);
             gasketTransforms.insert(gasketTransforms.end(), transforms.begin(), transforms.end());
-            KeyGasket g(gasketTransforms, toDouble(scaler.iniLogscale));
-            keyGaskets.push_back(g);
+            double iniLogscaleDouble = toDouble(scaler.iniLogscale);
+            KeyGasket g(gasketTransforms, iniLogscaleDouble);
+            keyGaskets.insert(std::pair<double, KeyGasket>(iniLogscaleDouble, g));
         }
         for (int i=0; i<numThreads; i++) {
             boost::asio::post(threadPool, [=] {
@@ -70,20 +69,15 @@ private:
         for (int i=0; i<3; i++) {
             gasketTransforms.push_back(transforms[i].conjugate(s).toMobiusDouble());
         }
-        double logScaleDouble = toDouble(logscale);
-        KeyGasket g(gasketTransforms, logScaleDouble, i);
+        double logscaleDouble = toDouble(logscale);
+        KeyGasket g(gasketTransforms, i);
 
         lock.lock();
-        auto it = keyGasketMap.find(logScaleDouble);
-        if (it == keyGasketMap.end() || i > it->second.level) {
-            keyGasketMap[logScaleDouble] = g;
+        auto it = keyGaskets.find(logscaleDouble);
+        if (it == keyGaskets.end() || i > it->second.level) {
+            keyGaskets.insert(std::pair<double, KeyGasket>(logscaleDouble, g));
         }
-        if (scaleVal < scaler.numSteps) {
-            if (keyGaskets.size() < i+2) {
-                keyGaskets.resize(i+2);
-            }
-            keyGaskets[i+1] = g;
-        } else {
+        if (scaleVal >= scaler.numSteps) {
             foundEnd = true;
         }
         if (!foundEnd) {
@@ -122,8 +116,7 @@ private:
     const Scaler<T>& scaler;
     boost::asio::thread_pool threadPool;
     const std::vector<Mobius<T>>& zoomTransforms;
-    std::vector<KeyGasket>& keyGaskets;
-    std::map<double, KeyGasket>& keyGasketMap;
+    std::map<double, KeyGasket>& keyGaskets;
     std::mutex lock;
     int lastPickedUp;
     bool foundEnd = false;
