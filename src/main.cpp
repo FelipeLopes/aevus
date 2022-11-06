@@ -26,8 +26,7 @@ void convertFlame(std::string source, std::string dest);
 template<typename T>
 class DiverImpl : public Diver<T> {
 public:
-    DiverImpl(int depth_, int seed): depth(depth_), rng(seed),
-        dist2(0,1), dist3(0,2) {
+    DiverImpl(): depth(200), rng(314159), dist2(0,1), dist3(0,2) {
 
     }
     int chooseDive(Mobius<T> acc) const {
@@ -83,11 +82,9 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
-        DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
         typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
-        GasketZoom::Builder zoomBuilder(diver, colorer);
-        const GasketZoom gz = zoomBuilder
+        const GasketZoom gz = GasketZoom::Builder()
             .withShape(mpq_class(6,11),mpq_class(3,7),Complex<mpq_class>(1))
             .withScales(mpq_class(-50,150), mpq_class(1,150), 22050)
             .withAspectRatio(mpq_class(16, 9))

@@ -15,7 +15,16 @@ class Zoom {
 public:
     class Builder {
     public:
-        Builder(const DiverT& diver_, const ColorerT& colorer_): diver(diver_), colorer(colorer_) { }
+        Builder() {
+            static_assert(std::is_base_of<Diver<T>, DiverT>::value,
+                "DiverT must implement Diver<T> interface");
+            static_assert(std::is_default_constructible<DiverT>::value,
+                "DiverT must have a default constructor");
+            static_assert(std::is_base_of<Colorer, ColorerT>::value,
+                "ColorerT must implement Colorer interface");
+            static_assert(std::is_default_constructible<DiverT>::value,
+                "ColorerT must have a default constructor");
+        }
         Builder& withShape(T r1_, T r2_, Complex<T> f_, bool flip_ = false) {
             initShape = true;
             r1 = r1_;
@@ -49,12 +58,10 @@ public:
             }
             Shape<T> shape(r1, r2, f, flip);
             Scaler<T> scaler(iniLogscale, step, numSteps, precDigits);
-            return Zoom(shape, diver, scaler, colorer, aspectRatio);
+            ColorerT colorer;
+            return Zoom(shape, scaler, aspectRatio);
         }
     private:
-        const DiverT& diver;
-        const ColorerT& colorer;
-
         bool initShape = false;
         T r1, r2;
         Complex<T> f;
@@ -76,14 +83,8 @@ public:
     }
 
 private:
-    Zoom(const Shape<T>& shape_, const DiverT& diver_,
-        const Scaler<T>& scaler_, const ColorerT& colorer_, T ar_):
-        ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
-
-        static_assert(std::is_base_of<Diver<T>, DiverT>::value,
-            "DiverT must implement Diver<T> interface");
-        static_assert(std::is_base_of<Colorer, ColorerT>::value,
-            "ColorerT must implement Colorer interface");
+    Zoom(const Shape<T>& shape_, const Scaler<T>& scaler_, T ar_):
+        ar(ar_), shape(shape_), scaler(scaler_) {
 
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
@@ -115,9 +116,9 @@ private:
 
     T ar;
     const Shape<T>& shape;
-    const DiverT& diver;
+    DiverT diver;
     const Scaler<T>& scaler;
-    const ColorerT& colorer;
+    ColorerT colorer;
     std::map<double, KeyGasket> keyGaskets;
     std::map<double, int> diveIndicesMap;
 };
