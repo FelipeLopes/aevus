@@ -18,12 +18,8 @@ public:
         Builder() {
             static_assert(std::is_base_of<Diver<T>, DiverT>::value,
                 "DiverT must implement Diver<T> interface");
-            static_assert(std::is_default_constructible<DiverT>::value,
-                "DiverT must have a default constructor");
             static_assert(std::is_base_of<Colorer, ColorerT>::value,
                 "ColorerT must implement Colorer interface");
-            static_assert(std::is_default_constructible<DiverT>::value,
-                "ColorerT must have a default constructor");
         }
         Builder& withShape(T r1_, T r2_, Complex<T> f_, bool flip_ = false) {
             initShape = true;
@@ -46,7 +42,7 @@ public:
             aspectRatio = aspectRatio_;
             return *this;
         }
-        Zoom build() {
+        Zoom build(DiverT diver, ColorerT colorer) {
             if (!initShape) {
                 throw std::invalid_argument("Shape not initialized");
             }
@@ -58,8 +54,7 @@ public:
             }
             Shape<T> shape(r1, r2, f, flip);
             Scaler<T> scaler(iniLogscale, step, numSteps, precDigits);
-            ColorerT colorer;
-            return Zoom(shape, scaler, aspectRatio);
+            return Zoom(shape, diver, scaler, colorer, aspectRatio);
         }
     private:
         bool initShape = false;
@@ -82,8 +77,8 @@ public:
     }
 
 private:
-    Zoom(const Shape<T>& shape_, const Scaler<T>& scaler_, T ar_):
-        ar(ar_), shape(shape_), scaler(scaler_) {
+    Zoom(const Shape<T>& shape_, DiverT diver_, const Scaler<T>& scaler_, ColorerT colorer_, T ar_):
+        diver(diver_), colorer(colorer_), ar(ar_), shape(shape_), scaler(scaler_) {
 
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
