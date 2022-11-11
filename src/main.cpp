@@ -9,14 +9,14 @@
 #include <sstream>
 #include <boost/gil.hpp>
 #include <tinyxml2.h>
-#include "key_gasket.hpp"
-#include "zoom.hpp"
-#include "complex_type.hpp"
-#include "mobius.hpp"
-#include "palette.hpp"
-#include "scaler.hpp"
-#include "sdf.hpp"
-#include "diver.hpp"
+#include "gasket/key_gasket.hpp"
+#include "gasket/zoom.hpp"
+#include "gasket/complex_type.hpp"
+#include "gasket/mobius.hpp"
+#include "gasket/palette.hpp"
+#include "gasket/scaler.hpp"
+#include "gasket/sdf.hpp"
+#include "gasket/diver.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;

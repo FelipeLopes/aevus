@@ -1,7 +1,7 @@
 cc_library(
-    name = "gasket-lib",
-    srcs = glob(["src/*.cpp"]),
-    hdrs = glob(["src/*.hpp"]),
+    name = "gasket",
+    srcs = glob(["src/gasket/*.cpp"]),
+    hdrs = glob(["src/gasket/*.hpp"]),
     deps = [
         "@tinyxml2//:tinyxml2",
         "@gmp//:gmp",
@@ -10,8 +10,9 @@ cc_library(
 )
 
 cc_binary(
-    name = "gasket",
+    name = "aevus",
+    srcs = ["src/main.cpp"],
     deps = [
-        ":gasket-lib",
+        ":gasket",
     ],
 )
