@@ -21,17 +21,15 @@
 using boost::gil::rgb8_pixel_t;
 using std::map;
 
-void convertFlame(std::string source, std::string dest);
-
 template<typename T>
-class DiverImpl : public Diver<T> {
+class DiverImpl : public gasket::Diver<T> {
 public:
     DiverImpl(int depth_, int seed): depth(depth_), rng(seed), dist2(0,1), dist3(0,2) {
 
     }
-    int chooseDive(Mobius<T> acc) const {
-        if (acc.a == Complex<T>(1) && acc.b == Complex<T>(0) &&
-            acc.c == Complex<T>(0) && acc.d == Complex<T>(1)) {
+    int chooseDive(gasket::Mobius<T> acc) const {
+        if (acc.a == gasket::Complex<T>(1) && acc.b == gasket::Complex<T>(0) &&
+            acc.c == gasket::Complex<T>(0) && acc.d == gasket::Complex<T>(1)) {
 
             int k = dist2(rng);
             return k*3 + dist3(rng);
@@ -47,21 +45,21 @@ private:
     mutable std::uniform_int_distribution<std::mt19937::result_type> dist2, dist3;
 };
 
-class ColorerImpl: public Colorer {
+class ColorerImpl: public gasket::Colorer {
 public:
     ColorerImpl() { }
-    void keyGaskets(const map<double, KeyGasket>& keyGaskets) {
+    void keyGaskets(const map<double, gasket::KeyGasket>& keyGaskets) {
         keyGasketsMap = &keyGaskets;
         int idx = 0;
         for (auto kg: keyGaskets) {
             scaleIndex[kg.first] = idx++;
         }
     }
-    ColorParams color(double logscale, int diveTransform) const {
-        ColorParams params;
+    gasket::ColorParams color(double logscale, int diveTransform) const {
+        gasket::ColorParams params;
         auto it = std::prev(keyGasketsMap->lower_bound(logscale));
         int idx = scaleIndex.find(it->first)->second;
-        params.palette = (idx % 2 == 1) ? Palette(RED, WHITE) : Palette(WHITE, RED);
+        params.palette = (idx % 2 == 1) ? gasket::Palette(RED, WHITE) : gasket::Palette(WHITE, RED);
         int numTransforms = it->second.numTransforms();
         double iniKeyLogscale = it->first;
         double endKeyLogscale = std::next(it)->first;
@@ -77,7 +75,7 @@ public:
         return params;
     }
 private:
-    const map<double, KeyGasket>* keyGasketsMap = nullptr;
+    const map<double, gasket::KeyGasket>* keyGasketsMap = nullptr;
     map<double, int> scaleIndex;
     static const boost::gil::rgb8_pixel_t RED, WHITE;
 };
@@ -89,9 +87,9 @@ int main(int argc, char* argv[]) {
     try {
         DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
-        typedef Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
+        typedef gasket::Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         const GasketZoom gz = GasketZoom::Builder()
-            .withShape(mpq_class(6,11),mpq_class(3,7),Complex<mpq_class>(1))
+            .withShape(mpq_class(6,11),mpq_class(3,7),gasket::Complex<mpq_class>(1))
             .withScales(mpq_class(-50,150), mpq_class(1,150), 22050)
             .withAspectRatio(mpq_class(16, 9))
             .build(diver, colorer);
