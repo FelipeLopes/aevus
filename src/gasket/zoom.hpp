@@ -39,9 +39,10 @@ public:
             precDigits = precDigits_;
             return *this;
         }
-        Builder& withAspectRatio(T aspectRatio_) {
-            initAspectRatio = true;
-            aspectRatio = aspectRatio_;
+        Builder& withImageSize(int width_, int height_) {
+            initImageSize = true;
+            width = width_;
+            height = height_;
             return *this;
         }
         Zoom build(DiverT diver, ColorerT colorer) {
@@ -51,12 +52,12 @@ public:
             if (!initScales) {
                 throw std::invalid_argument("Scales not initialized");
             }
-            if (!initAspectRatio) {
+            if (!initImageSize) {
                 throw std::invalid_argument("Aspect ratio not initialized");
             }
             Shape<T> shape(r1, r2, f, flip);
             Scaler<T> scaler(iniLogscale, step, numSteps, precDigits);
-            return Zoom(shape, diver, scaler, colorer, aspectRatio);
+            return Zoom(shape, diver, scaler, colorer, width, height);
         }
     private:
         bool initShape = false;
@@ -68,19 +69,20 @@ public:
         T iniLogscale, step;
         int numSteps, precDigits;
 
-        bool initAspectRatio = false;
-        T aspectRatio;
+        bool initImageSize = false;
+        int width, height;
     };
 
     Flame getFlame(double logscale) const {
         auto it = std::prev(keyGaskets.lower_bound(logscale));
         ColorParams params = colorer.color(logscale, diveIndicesMap.find(it->first)->second);
-        return it->second.toFlame(params, logscale-it->first);
+        return it->second.toFlame(width, height, params, logscale-it->first);
     }
 
 private:
-    Zoom(const Shape<T>& shape_, DiverT diver_, const Scaler<T>& scaler_, ColorerT colorer_, T ar_):
-        ar(ar_), shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_) {
+    Zoom(const Shape<T>& shape_, DiverT diver_, const Scaler<T>& scaler_, ColorerT colorer_,
+        int width_, int height_): shape(shape_), diver(diver_), scaler(scaler_), colorer(colorer_),
+        width(width_), height(height_) {
 
         Mobius<T> acc;
         int k = diver.chooseDive(acc);
@@ -100,6 +102,9 @@ private:
         }
         auto center = (acc.apply(pts[0])+acc.apply(pts[1])+acc.apply(pts[2]))/Complex<T>(3);
 
+        T ar(width, height);
+        ar.canonicalize();
+
         Searcher<T> searcher(shape, scaler, center, inverseDive, zoomTransforms, keyGaskets, ar);
 
         searcher.start();
@@ -111,12 +116,11 @@ private:
             diveIndicesMap[g.first] = diveIndices[g.second.level+1];
         }
     }
-
-    T ar;
     const Shape<T>& shape;
     DiverT diver;
     const Scaler<T>& scaler;
     ColorerT colorer;
+    int width, height;
     std::map<double, KeyGasket> keyGaskets;
     std::map<double, int> diveIndicesMap;
 };

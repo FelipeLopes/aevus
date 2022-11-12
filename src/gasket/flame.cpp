@@ -1,11 +1,13 @@
 #include "flame.hpp"
 #include <memory>
+#include <sstream>
 
 namespace gasket {
 
 using std::string;
 
-Flame::Flame(Palette palette_): palette(palette_) {
+Flame::Flame(int width_, int height_, Palette palette_):
+    palette(palette_), width(width_), height(height_) {
 
 }
 
@@ -13,13 +15,16 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     auto root = xmlDoc.NewElement("Flames");
     root->SetAttribute("name", "gasket");
 
+    std::ostringstream size;
+    size<<width<<" "<<height;
+
     auto flame = xmlDoc.NewElement("flame");
     flame->SetAttribute("name", "Gasket");
     flame->SetAttribute("background", "0 0 0");
-    flame->SetAttribute("version", "Apophysis 2.09");
-    flame->SetAttribute("size", "600 600");
+    flame->SetAttribute("version", "Aevus");
+    flame->SetAttribute("size", size.str().c_str());
     flame->SetAttribute("center", "0 0");
-    flame->SetAttribute("scale", "144");
+    flame->SetAttribute("scale", height/2);
     flame->SetAttribute("oversample", "1");
     flame->SetAttribute("filter", "0.2");
     flame->SetAttribute("quality", "1");

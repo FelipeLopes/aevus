@@ -8,10 +8,12 @@ namespace gasket {
 
 class Flame {
 public:
-    Flame(Palette palette);
+    Flame(int width, int height, Palette palette);
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
     std::vector<XForm> xforms;
     const Palette palette;
+private:
+    int width, height;
 };
 
 }

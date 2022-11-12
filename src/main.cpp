@@ -69,15 +69,15 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
-        /*DiverImpl<mpq_class> diver(200, 314159);
+        DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
         typedef gasket::Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         const GasketZoom gz = GasketZoom::Builder()
             .withShape(mpq_class(6,11),mpq_class(3,7),gasket::Complex<mpq_class>(1))
             .withScales(mpq_class(-50,150), mpq_class(1,150), 22050)
-            .withAspectRatio(mpq_class(16, 9))
+            .withImageSize(480, 270)
             .build(diver, colorer);
-
+        /*
         for (int i=0; i<900; i++) {
             tinyxml2::XMLDocument xmlDoc;
             auto node = gz.getFlame(20+i*1./150).toXMLNode(xmlDoc);
@@ -86,6 +86,11 @@ int main(int argc, char* argv[]) {
             ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
             xmlDoc.SaveFile(ss.str().c_str());
         }*/
+
+        tinyxml2::XMLDocument xmlDoc;
+        auto node = gz.getFlame(10).toXMLNode(xmlDoc);
+        xmlDoc.InsertFirstChild(node);
+        xmlDoc.SaveFile(stdout);
 
         auto cmdQueue = render::OpenCL::getInstance().createContext(0,1).createCommandQueue();
 
