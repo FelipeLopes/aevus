@@ -1,22 +1,6 @@
-#include <bits/types/clock_t.h>
-#include <cstddef>
-#include <gmpxx.h>
-#include <ctime>
-#include <memory>
-#include <cmath>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
 #include <boost/gil.hpp>
-#include <tinyxml2.h>
-#include "gasket/key_gasket.hpp"
 #include "gasket/zoom.hpp"
-#include "gasket/complex_type.hpp"
-#include "gasket/mobius.hpp"
-#include "gasket/palette.hpp"
-#include "gasket/scaler.hpp"
-#include "gasket/sdf.hpp"
-#include "gasket/diver.hpp"
+#include "render/opencl.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -85,7 +69,7 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
-        DiverImpl<mpq_class> diver(200, 314159);
+        /*DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
         typedef gasket::Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
         const GasketZoom gz = GasketZoom::Builder()
@@ -101,7 +85,9 @@ int main(int argc, char* argv[]) {
             std::ostringstream ss;
             ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
             xmlDoc.SaveFile(ss.str().c_str());
-        }
+        }*/
+
+        auto clContext = render::OpenCL::getInstance().getContext();
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

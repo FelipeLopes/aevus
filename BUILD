@@ -9,10 +9,17 @@ cc_library(
     ],
 )
 
+cc_library(
+    name = "render",
+    srcs = glob(["src/render/*.cpp"]),
+    hdrs = glob(["src/render/*.hpp"]),
+)
+
 cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
     deps = [
         ":gasket",
+        ":render",
     ],
 )
