@@ -92,7 +92,11 @@ int main(int argc, char* argv[]) {
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
-        auto cmdQueue = render::OpenCL::getInstance().createContext(0,1).createCommandQueue();
+        auto context = render::OpenCL::getInstance().createContext(0,1);
+        auto cmdQueue = context.createCommandQueue();
+        auto bufA = context.createReadOnlyBuffer(1024*sizeof(int));
+        auto bufB = context.createReadOnlyBuffer(1024*sizeof(int));
+        auto bufC = context.createWriteOnlyBuffer(1024*sizeof(int));
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

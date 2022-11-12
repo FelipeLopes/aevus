@@ -1,4 +1,5 @@
 #include "cl_context.hpp"
+#include "cl_buffer.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <system_error>
@@ -16,6 +17,14 @@ CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId) {
 
 CLQueue CLContext::createCommandQueue() {
     return CLQueue(context, deviceId);
+}
+
+CLBuffer CLContext::createReadOnlyBuffer(size_t size) {
+    return CLBuffer(context, CL_MEM_READ_ONLY, size);
+}
+
+CLBuffer CLContext::createWriteOnlyBuffer(size_t size) {
+    return CLBuffer(context, CL_MEM_WRITE_ONLY, size);
 }
 
 CLContext::~CLContext() {
