@@ -13,6 +13,9 @@ cc_library(
     name = "render",
     srcs = glob(["src/render/*.cpp"]),
     hdrs = glob(["src/render/*.hpp"]),
+    deps = [
+        "@opencl-headers//:opencl-headers"
+    ]
 )
 
 cc_binary(
@@ -21,5 +24,6 @@ cc_binary(
     deps = [
         ":gasket",
         ":render",
+        "@opencl//:opencl"
     ],
 )

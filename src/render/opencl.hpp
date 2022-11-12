@@ -12,7 +12,7 @@ public:
     }
     CLContext getContext();
 private:
-    OpenCL() { }
+    OpenCL();
     OpenCL(OpenCL const&) = delete;
     void operator= (OpenCL const&) = delete;
 };
