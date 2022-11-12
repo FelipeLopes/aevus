@@ -12,7 +12,7 @@ public:
         static OpenCL instance;
         return instance;
     }
-    CLContext getContext();
+    CLContext getContext(int platformIdx, int deviceIdx);
 private:
     OpenCL();
     OpenCL(OpenCL const&) = delete;

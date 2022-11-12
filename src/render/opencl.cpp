@@ -36,8 +36,8 @@ OpenCL::OpenCL() {
     }
 }
 
-CLContext OpenCL::getContext() {
-    return CLContext();
+CLContext OpenCL::getContext(int platformIdx, int deviceIdx) {
+    return CLContext(deviceIDs[platformIdx][deviceIdx]);
 }
 
 }
