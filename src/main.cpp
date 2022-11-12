@@ -87,7 +87,7 @@ int main(int argc, char* argv[]) {
             xmlDoc.SaveFile(ss.str().c_str());
         }*/
 
-        auto clContext = render::OpenCL::getInstance().getContext(0,1);
+        auto cmdQueue = render::OpenCL::getInstance().createContext(0,1).createCommandQueue();
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
