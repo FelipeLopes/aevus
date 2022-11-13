@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CL/cl.h>
+
 namespace render {
 
 class CLBuffer {
