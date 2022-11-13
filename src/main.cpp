@@ -99,6 +99,15 @@ int main(int argc, char* argv[]) {
         auto bufB = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
         auto bufC = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(int));
 
+        std::vector<int> vecA, vecB;
+        for (int i = 0; i < 1024; i++) {
+            vecA.push_back(i);
+            vecB.push_back(1024-i);
+        }
+
+        bufA.write(vecA);
+        bufB.write(vecB);
+
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
