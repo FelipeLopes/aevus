@@ -1,6 +1,8 @@
 #include <CL/cl.h>
 #include <boost/gil.hpp>
+#include <cstdlib>
 #include "gasket/zoom.hpp"
+#include "render/cl_executable.hpp"
 #include "render/opencl.hpp"
 
 using boost::gil::rgb8_pixel_t;
@@ -107,6 +109,8 @@ int main(int argc, char* argv[]) {
 
         bufA.write(vecA);
         bufB.write(vecB);
+
+        render::CLExecutable kernel("src/render/cl/vector_add.cl");
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
