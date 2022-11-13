@@ -4,8 +4,8 @@
 
 namespace render {
 
-CLBuffer::CLBuffer(cl_context clContext, cl_mem_flags clMemFlags, size_t size):
-    memFlags(clMemFlags) {
+CLBuffer::CLBuffer(cl_context clContext, cl_command_queue clCommandQueue,
+    cl_mem_flags clMemFlags, size_t size): commandQueue(clCommandQueue), memFlags(clMemFlags) {
 
     cl_int ret;
     memObject = clCreateBuffer(clContext, memFlags, size, NULL, &ret);

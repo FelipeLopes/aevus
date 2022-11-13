@@ -19,12 +19,12 @@ CLQueue CLContext::createCommandQueue() {
     return CLQueue(context, deviceId);
 }
 
-CLBuffer CLContext::createReadOnlyBuffer(size_t size) {
-    return CLBuffer(context, CL_MEM_READ_ONLY, size);
+CLBuffer CLContext::createReadOnlyBuffer(CLQueue queue, size_t size) {
+    return CLBuffer(context, queue.commandQueue, CL_MEM_READ_ONLY, size);
 }
 
-CLBuffer CLContext::createWriteOnlyBuffer(size_t size) {
-    return CLBuffer(context, CL_MEM_WRITE_ONLY, size);
+CLBuffer CLContext::createWriteOnlyBuffer(CLQueue queue, size_t size) {
+    return CLBuffer(context, queue.commandQueue, CL_MEM_WRITE_ONLY, size);
 }
 
 CLContext::~CLContext() {

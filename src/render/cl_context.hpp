@@ -10,8 +10,8 @@ class CLContext {
 public:
     CLContext(cl_device_id clDeviceId);
     CLQueue createCommandQueue();
-    CLBuffer createReadOnlyBuffer(size_t size);
-    CLBuffer createWriteOnlyBuffer(size_t size);
+    CLBuffer createReadOnlyBuffer(CLQueue queue, size_t size);
+    CLBuffer createWriteOnlyBuffer(CLQueue queue, size_t size);
     ~CLContext();
 private:
     cl_context context;

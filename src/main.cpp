@@ -1,3 +1,4 @@
+#include <CL/cl.h>
 #include <boost/gil.hpp>
 #include "gasket/zoom.hpp"
 #include "render/opencl.hpp"
@@ -94,9 +95,9 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
-        auto bufA = context.createReadOnlyBuffer(1024*sizeof(int));
-        auto bufB = context.createReadOnlyBuffer(1024*sizeof(int));
-        auto bufC = context.createWriteOnlyBuffer(1024*sizeof(int));
+        auto bufA = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
+        auto bufB = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
+        auto bufC = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(int));
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
