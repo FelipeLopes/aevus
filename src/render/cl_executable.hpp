@@ -7,7 +7,7 @@ namespace render {
 
 class CLExecutable {
 public:
-    CLExecutable(std::string filename);
+    CLExecutable(cl_context clContext, std::string filename);
 private:
     cl_program program;
     cl_kernel kernel;

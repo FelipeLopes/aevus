@@ -2,6 +2,7 @@
 
 #include <CL/cl.h>
 #include "cl_buffer.hpp"
+#include "cl_executable.hpp"
 #include "cl_queue.hpp"
 
 namespace render {
@@ -12,6 +13,7 @@ public:
     CLQueue createCommandQueue();
     CLBuffer createReadOnlyBuffer(const CLQueue& queue, size_t size);
     CLBuffer createWriteOnlyBuffer(const CLQueue& queue, size_t size);
+    CLExecutable createExecutable(std::string filename);
     ~CLContext();
 private:
     cl_context context;

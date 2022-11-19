@@ -1,5 +1,6 @@
 #include "cl_context.hpp"
 #include "cl_buffer.hpp"
+#include "cl_executable.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <system_error>
@@ -25,6 +26,10 @@ CLBuffer CLContext::createReadOnlyBuffer(const CLQueue& queue, size_t size) {
 
 CLBuffer CLContext::createWriteOnlyBuffer(const CLQueue& queue, size_t size) {
     return CLBuffer(context, queue.commandQueue, CL_MEM_WRITE_ONLY, size);
+}
+
+CLExecutable CLContext::createExecutable(std::string filename) {
+    return CLExecutable(context, filename);
 }
 
 CLContext::~CLContext() {
