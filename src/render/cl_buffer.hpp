@@ -24,6 +24,7 @@ public:
             throw std::system_error(ec, "Could not write to OpenCL buffer");
         }
     }
+    const cl_mem* memoryObject() const;
 private:
     cl_command_queue commandQueue;
     cl_mem memObject;

@@ -15,6 +15,10 @@ CLBuffer::CLBuffer(cl_context clContext, cl_command_queue clCommandQueue,
     }
 }
 
+const cl_mem* CLBuffer::memoryObject() const {
+    return &memObject;
+}
+
 CLBuffer::~CLBuffer() {
     clReleaseMemObject(memObject);
 }

@@ -112,6 +112,10 @@ int main(int argc, char* argv[]) {
 
         auto kernel = context.createExecutable("vector_add", "src/render/cl/vector_add.cl");
 
+        kernel.setArg(0, bufA);
+        kernel.setArg(1, bufB);
+        kernel.setArg(2, bufC);
+
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }

@@ -32,6 +32,15 @@ CLExecutable::CLExecutable(std::string name, cl_context clContext,
     }
 }
 
+void CLExecutable::setArg(unsigned int argIndex, const CLBuffer& clBuffer) {
+    cl_int ret;
+    ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer.memoryObject());
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not set OpenCL kernel argument");
+    }
+}
+
 CLExecutable::~CLExecutable() {
     clReleaseKernel(kernel);
     clReleaseProgram(program);
