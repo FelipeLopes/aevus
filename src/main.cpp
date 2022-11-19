@@ -116,6 +116,14 @@ int main(int argc, char* argv[]) {
         kernel.setArg(1, bufB);
         kernel.setArg(2, bufC);
 
+        kernel.run(cmdQueue, 1024, 64);
+
+        std::vector<int> ans;
+        bufC.read(ans);
+        for (auto& k: ans) {
+            printf("%d\n",k);
+        }
+
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }

@@ -1,4 +1,5 @@
 #include "cl_executable.hpp"
+#include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <fstream>
 #include <sstream>
@@ -33,11 +34,21 @@ CLExecutable::CLExecutable(std::string name, cl_context clContext,
 }
 
 void CLExecutable::setArg(unsigned int argIndex, const CLBuffer& clBuffer) {
-    cl_int ret;
-    ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer.memoryObject());
+    cl_int ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer.memoryObject());
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not set OpenCL kernel argument");
+    }
+}
+
+void CLExecutable::run(const CLQueue& clQueue, const size_t globalWorkSize,
+    const size_t localWorkSize) {
+
+    cl_int ret = clEnqueueNDRangeKernel(clQueue.commandQueue, kernel, 1, NULL,
+        &globalWorkSize, &localWorkSize, 0, NULL, NULL);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not run OpenCL kernel");
     }
 }
 
