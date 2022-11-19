@@ -5,7 +5,9 @@
 
 namespace render {
 
-CLExecutable::CLExecutable(cl_context clContext, std::string filename) {
+CLExecutable::CLExecutable(std::string name, cl_context clContext,
+    cl_device_id clDeviceId, std::string filename) {
+
     std::ifstream file(filename);
     std::stringstream buffer;
     buffer<<file.rdbuf();
@@ -18,6 +20,21 @@ CLExecutable::CLExecutable(cl_context clContext, std::string filename) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not create OpenCL program");
     }
+    ret = clBuildProgram(program, 1, &clDeviceId, NULL, NULL, NULL);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not build OpenCL program");
+    }
+    kernel = clCreateKernel(program, name.c_str(), &ret);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not create OpenCL kernel");
+    }
+}
+
+CLExecutable::~CLExecutable() {
+    clReleaseKernel(kernel);
+    clReleaseProgram(program);
 }
 
 }

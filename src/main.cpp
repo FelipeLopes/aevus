@@ -110,7 +110,7 @@ int main(int argc, char* argv[]) {
         bufA.write(vecA);
         bufB.write(vecB);
 
-        auto kernel = context.createExecutable("src/render/cl/vector_add.cl");
+        auto kernel = context.createExecutable("vector_add", "src/render/cl/vector_add.cl");
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

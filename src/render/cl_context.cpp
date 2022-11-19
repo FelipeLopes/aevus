@@ -28,8 +28,8 @@ CLBuffer CLContext::createWriteOnlyBuffer(const CLQueue& queue, size_t size) {
     return CLBuffer(context, queue.commandQueue, CL_MEM_WRITE_ONLY, size);
 }
 
-CLExecutable CLContext::createExecutable(std::string filename) {
-    return CLExecutable(context, filename);
+CLExecutable CLContext::createExecutable(std::string name, std::string filename) {
+    return CLExecutable(name, context, deviceId, filename);
 }
 
 CLContext::~CLContext() {

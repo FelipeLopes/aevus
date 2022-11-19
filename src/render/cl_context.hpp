@@ -13,7 +13,7 @@ public:
     CLQueue createCommandQueue();
     CLBuffer createReadOnlyBuffer(const CLQueue& queue, size_t size);
     CLBuffer createWriteOnlyBuffer(const CLQueue& queue, size_t size);
-    CLExecutable createExecutable(std::string filename);
+    CLExecutable createExecutable(std::string name, std::string filename);
     ~CLContext();
 private:
     cl_context context;
