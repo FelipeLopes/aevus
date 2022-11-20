@@ -2,6 +2,7 @@
 #include <boost/gil.hpp>
 #include <cstdlib>
 #include <cinttypes>
+#include <random>
 #include "gasket/zoom.hpp"
 #include "render/cl_executable.hpp"
 #include "render/iteration_state.hpp"
@@ -100,13 +101,14 @@ int main(int argc, char* argv[]) {
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
         auto stateBuf = context.createReadWriteBuffer(cmdQueue, 1024*sizeof(IterationState));
-        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(uint64_t));
+        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(uint32_t));
 
         std::vector<IterationState> stateVec;
+        std::mt19937_64 rng(314159);
+        std::uniform_int_distribution<uint64_t> dist;
         for (int i = 0; i < 1024; i++) {
             IterationState st;
-            st.seed.word.low = 0;
-            st.seed.word.hi = i;
+            st.seed.value = dist(rng);
             stateVec.push_back(st);
         }
 
@@ -119,11 +121,14 @@ int main(int argc, char* argv[]) {
 
         kernel.run(cmdQueue, 1024, 64);
 
-        std::vector<uint64_t> ans;
+        std::vector<IterationState> nStateVec;
+        std::vector<uint32_t> ans;
+        stateBuf.read(nStateVec);
         outputBuf.read(ans);
 
-        for (auto& k: ans) {
-            std::cout<<k<<std::endl;
+        for (int i=0; i<1024; i++) {
+            printf("%lu -> (%lu, %u)\n", stateVec[i].seed.value,
+                nStateVec[i].seed.value, ans[i]);
         }
 
     } catch (std::exception& e) {

@@ -9,7 +9,18 @@ typedef struct IterationState {
     SeedUnion seed;
 } IterationState;
 
-__kernel void iterate(__global IterationState *state, __global ulong *output) {
+enum { MWC64X_A = 4294883355u };
+
+inline uint mwc64x(__global SeedUnion* s)
+{
+	uint c = s->word.y;
+    uint x = s->word.x;
+    s->value = x*((ulong)MWC64X_A) + c;
+	return x^c;
+}
+
+
+__kernel void iterate(__global IterationState *state, __global uint *output) {
     int i = get_global_id(0);
-    output[i] = state[i].seed.value;
+    output[i] = mwc64x(&state[i].seed);
 }
