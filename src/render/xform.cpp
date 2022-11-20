@@ -4,7 +4,9 @@
 #include <sstream>
 #include <boost/assign.hpp>
 #include <stdexcept>
+#include "variation.hpp"
 #include "xform.hpp"
+#include "xform_cl.hpp"
 
 namespace render {
 
@@ -87,6 +89,34 @@ std::string XForm::affineString(Affine aff) {
         aff.y.x<<" "<<aff.y.y<<" "<<
         aff.o.x<<" "<<aff.o.y;
     return buffer.str();
+}
+
+XFormCL XForm::toXFormCL() {
+    XFormCL xf;
+
+    xf.a = pre.x.x;
+    xf.b = pre.y.x;
+    xf.c = pre.o.x;
+    xf.d = pre.x.y;
+    xf.e = pre.y.y;
+    xf.f = pre.o.y;
+
+    xf.pa = post.x.x;
+    xf.pb = post.y.x;
+    xf.pc = post.o.x;
+    xf.pd = post.x.y;
+    xf.pe = post.y.y;
+    xf.pf = post.o.y;
+
+    int sz = 0;
+    for (auto k: variations) {
+        xf.varData[sz].id = k.first;
+        xf.varData[sz].weight = k.second;
+        sz++;
+    }
+    xf.varData[sz].id = Variation::NO_VAR;
+
+    return xf;
 }
 
 tinyxml2::XMLNode* XForm::toXMLNode(tinyxml2::XMLDocument &xmlDoc) {

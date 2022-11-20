@@ -94,7 +94,8 @@ int main(int argc, char* argv[]) {
         }*/
 
         tinyxml2::XMLDocument xmlDoc;
-        auto node = gz.getFlame(10).toXMLNode(xmlDoc);
+        auto flame = gz.getFlame(10);
+        auto node = flame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
@@ -130,6 +131,9 @@ int main(int argc, char* argv[]) {
             printf("%lu -> (%lu, %u)\n", stateVec[i].seed.value,
                 nStateVec[i].seed.value, ans[i]);
         }
+
+        auto xf = flame.xforms[0].toXFormCL();
+        printf("%d\n",xf.varData[0].id);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
