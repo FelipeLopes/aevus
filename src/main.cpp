@@ -105,13 +105,16 @@ int main(int argc, char* argv[]) {
         auto cmdQueue = context.createCommandQueue();
         auto stateBuf = context.createReadWriteBuffer(cmdQueue, 1024*sizeof(IterationState));
         auto xformBuf = context.createReadOnlyBuffer(cmdQueue, sizeof(render::XFormCL));
-        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(float));
+        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*2*sizeof(float));
 
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
         std::uniform_int_distribution<uint64_t> dist;
+        std::uniform_real_distribution<float> floatDist(-1.0, 1.0);
         for (int i = 0; i < 1024; i++) {
             IterationState st;
+            st.x = floatDist(rng);
+            st.y = floatDist(rng);
             st.seed.value = dist(rng);
             stateVec.push_back(st);
         }
@@ -125,7 +128,9 @@ int main(int argc, char* argv[]) {
         kernel.setArg(1, xformBuf);
         kernel.setArg(2, outputBuf);
 
-        kernel.run(cmdQueue, 1024, 64);
+        for (int i=0; i<100; i++) {
+            kernel.run(cmdQueue, 1024, 64);
+        }
 
         std::vector<IterationState> nStateVec;
         std::vector<float> ans;
@@ -133,7 +138,7 @@ int main(int argc, char* argv[]) {
         outputBuf.read(ans);
 
         for (int i=1014; i<1024; i++) {
-            printf("%f\n",ans[i]);
+            printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
         }
 
     } catch (std::exception& e) {
