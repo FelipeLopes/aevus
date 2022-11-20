@@ -1,7 +1,7 @@
 cc_library(
     name = "gasket",
     srcs = glob(["src/gasket/*.cpp"]),
-    hdrs = glob(["src/gasket/*.hpp"]),
+    hdrs = glob(["src/gasket/*.hpp"]) + ["src/render/xform.hpp"],
     deps = [
         "@tinyxml2//:tinyxml2",
         "@gmp//:gmp",
@@ -14,7 +14,9 @@ cc_library(
     srcs = glob(["src/render/*.cpp"]),
     hdrs = glob(["src/render/*.hpp"]),
     deps = [
-        "@opencl-headers//:opencl-headers"
+        "@opencl-headers//:opencl-headers",
+        "@tinyxml2//:tinyxml2",
+        "@boost//:boost",
     ]
 )
 

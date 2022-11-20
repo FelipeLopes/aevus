@@ -7,7 +7,7 @@
 #include <vector>
 #include <tinyxml2.h>
 
-namespace gasket {
+namespace render {
 
 typedef std::complex<double> cx;
 

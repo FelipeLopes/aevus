@@ -2,7 +2,10 @@
 
 #include <gmpxx.h>
 #include "complex_type.hpp"
-#include "xform.hpp"
+#include "../render/xform.hpp"
+
+using render::XForm;
+using render::Affine;
 
 namespace gasket {
 

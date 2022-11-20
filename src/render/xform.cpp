@@ -5,7 +5,7 @@
 #include <boost/assign.hpp>
 #include "xform.hpp"
 
-namespace gasket {
+namespace render {
 
 Point::Point() {
     x = 0;
