@@ -1,6 +1,7 @@
 #include <CL/cl.h>
 #include <boost/gil.hpp>
 #include <cstdlib>
+#include <cinttypes>
 #include "gasket/zoom.hpp"
 #include "render/cl_executable.hpp"
 #include "render/iteration_state.hpp"
@@ -98,37 +99,32 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
-        auto bufA = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
-        auto bufB = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
-        auto bufC = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(int));
-        auto debug = context.createWriteOnlyBuffer(cmdQueue, 10000);
-        auto debugSize = context.createReadWriteBuffer(cmdQueue, sizeof(int));
+        auto stateBuf = context.createReadWriteBuffer(cmdQueue, 1024*sizeof(IterationState));
+        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(uint64_t));
 
-        std::vector<int> vecA, vecB;
+        std::vector<IterationState> stateVec;
         for (int i = 0; i < 1024; i++) {
-            vecA.push_back(i);
-            vecB.push_back(1024-i);
+            IterationState st;
+            st.seed.word.low = 0;
+            st.seed.word.hi = i;
+            stateVec.push_back(st);
         }
 
-        bufA.write(vecA);
-        bufB.write(vecB);
-        debugSize.write(std::vector<int>{0});
+        stateBuf.write(stateVec);
 
-        auto kernel = context.createExecutable("vector_add", "src/render/cl/vector_add.cl");
+        auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
 
-        kernel.setArg(0, bufA);
-        kernel.setArg(1, bufB);
-        kernel.setArg(2, bufC);
-        kernel.setArg(3, debug);
-        kernel.setArg(4, debugSize);
+        kernel.setArg(0, stateBuf);
+        kernel.setArg(1, outputBuf);
 
         kernel.run(cmdQueue, 1024, 64);
 
-        IterationState state;
-        state.x = state.y = state.c = 0;
-        state.seed.value = 4294967298u;
-        printf("%u\n",state.seed.word.hi);
-        printf("%u\n",state.seed.word.low);
+        std::vector<uint64_t> ans;
+        outputBuf.read(ans);
+
+        for (auto& k: ans) {
+            std::cout<<k<<std::endl;
+        }
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
