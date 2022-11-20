@@ -7,7 +7,7 @@ namespace render {
 
 struct Variation {
     enum VariationID {
-        NO_VAR = -1,
+        NO_VARIATION = -1,
         LINEAR = 0,
         SPHERICAL = 2
     };

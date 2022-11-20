@@ -3,10 +3,12 @@
 #include <cstdlib>
 #include <cinttypes>
 #include <random>
+#include <vector>
 #include "gasket/zoom.hpp"
 #include "render/cl_executable.hpp"
 #include "render/iteration_state.hpp"
 #include "render/opencl.hpp"
+#include "render/xform_cl.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -102,7 +104,8 @@ int main(int argc, char* argv[]) {
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
         auto stateBuf = context.createReadWriteBuffer(cmdQueue, 1024*sizeof(IterationState));
-        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(uint32_t));
+        auto xformBuf = context.createReadOnlyBuffer(cmdQueue, sizeof(render::XFormCL));
+        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(float));
 
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
@@ -114,26 +117,24 @@ int main(int argc, char* argv[]) {
         }
 
         stateBuf.write(stateVec);
+        xformBuf.write(std::vector<render::XFormCL>{flame.xforms[0].toXFormCL()});
 
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
 
         kernel.setArg(0, stateBuf);
-        kernel.setArg(1, outputBuf);
+        kernel.setArg(1, xformBuf);
+        kernel.setArg(2, outputBuf);
 
         kernel.run(cmdQueue, 1024, 64);
 
         std::vector<IterationState> nStateVec;
-        std::vector<uint32_t> ans;
+        std::vector<float> ans;
         stateBuf.read(nStateVec);
         outputBuf.read(ans);
 
-        for (int i=1023; i<1024; i++) {
-            printf("%lu -> (%lu, %u)\n", stateVec[i].seed.value,
-                nStateVec[i].seed.value, ans[i]);
+        for (int i=1014; i<1024; i++) {
+            printf("%f\n",ans[i]);
         }
-
-        auto xf = flame.xforms[0].toXFormCL();
-        printf("%d\n",xf.varData[0].id);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

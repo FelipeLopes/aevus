@@ -1,3 +1,5 @@
+#define MAX_VARIATIONS 10
+
 typedef union SeedUnion {
     uint2 word;
     ulong value;
@@ -9,6 +11,23 @@ typedef struct IterationState {
     SeedUnion seed;
 } IterationState;
 
+typedef enum VariationID {
+    NO_VARIATION = -1,
+    LINEAR = 0,
+    SPHERICAL = 2
+} VariationID;
+
+typedef struct VariationData {
+    VariationID id;
+    float weight;
+} VariationData;
+
+typedef struct XFormCL {
+    VariationData varData[MAX_VARIATIONS];
+    float a, b, c, d, e, f;
+    float pa, pb, pc, pd, pe, pf;
+} XFormCL;
+
 enum { MWC64X_A = 4294883355u };
 
 inline uint mwc64x(__global SeedUnion* s)
@@ -19,7 +38,15 @@ inline uint mwc64x(__global SeedUnion* s)
 	return x^c;
 }
 
-__kernel void iterate(__global IterationState *state, __global uint *output) {
+inline float2 calcXform(__global XFormCL* xform, float2 p) {
+    return p;
+}
+
+__kernel void iterate(
+    __global IterationState *state,
+    __global XFormCL *xform,
+    __global float *output)
+{
     int i = get_global_id(0);
-    output[i] = mwc64x(&state[i].seed);
+    output[i] = xform->pc;
 }

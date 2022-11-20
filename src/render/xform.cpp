@@ -114,7 +114,7 @@ XFormCL XForm::toXFormCL() {
         xf.varData[sz].weight = k.second;
         sz++;
     }
-    xf.varData[sz].id = Variation::NO_VAR;
+    xf.varData[sz].id = Variation::NO_VARIATION;
 
     return xf;
 }
