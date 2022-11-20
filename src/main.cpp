@@ -9,6 +9,7 @@
 #include "render/iteration_state.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
+#include "render/xform_distribution.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -96,7 +97,7 @@ int main(int argc, char* argv[]) {
         }*/
 
         tinyxml2::XMLDocument xmlDoc;
-        auto flame = gz.getFlame(10);
+        auto flame = gz.getFlame(0, 10);
         auto node = flame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
@@ -140,6 +141,21 @@ int main(int argc, char* argv[]) {
         for (int i=1014; i<1024; i++) {
             printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
         }
+
+        render::XFormDistribution distrib;
+        flame.readXFormDistribution(distrib);
+        int ct[4];
+        ct[0] = 0;
+        ct[1] = 0;
+        ct[2] = 0;
+        ct[3] = 0;
+        for (int i=0; i<16384; i++) {
+            ct[distrib.data[2*16384+i]]++;
+        }
+        printf("%d\n",ct[0]);
+        printf("%d\n",ct[1]);
+        printf("%d\n",ct[2]);
+        printf("%d\n",ct[3]);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

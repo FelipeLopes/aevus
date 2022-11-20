@@ -73,10 +73,10 @@ public:
         int width, height;
     };
 
-    Flame getFlame(double logscale) const {
+    Flame getFlame(double correction, double logscale) const {
         auto it = std::prev(keyGaskets.lower_bound(logscale));
         ColorParams params = colorer.color(logscale, diveIndicesMap.find(it->first)->second);
-        return it->second.toFlame(width, height, params, logscale-it->first);
+        return it->second.toFlame(width, height, params, correction, logscale-it->first);
     }
 
 private:
