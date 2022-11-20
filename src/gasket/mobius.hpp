@@ -5,6 +5,7 @@
 #include "../render/xform.hpp"
 
 using render::XForm;
+using render::Variation;
 using render::Affine;
 
 namespace gasket {
@@ -73,7 +74,7 @@ public:
             cx yf = y.toCxDouble();
 
             return XForm(
-                XForm::LINEAR,
+                Variation::LINEAR,
                 Affine(
                     xf.real(), xf.imag(),
                     yf.real(), yf.imag(),
@@ -105,7 +106,7 @@ public:
             cx pstXf = pstX.toCxDouble();
             cx pstYf = pstY.toCxDouble();
 
-            return XForm(XForm::SPHERICAL,
+            return XForm(Variation::SPHERICAL,
                 Affine(
                     preXf.real(),preXf.imag(),
                     preYf.real(),preYf.imag(),

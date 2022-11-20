@@ -1,5 +1,7 @@
 #pragma once
 
+#include "xform_cl.hpp"
+#include "variation.hpp"
 #include <string>
 #include <complex>
 #include <array>
@@ -28,20 +30,15 @@ struct Affine {
 
 class XForm {
 public:
-    enum VariationID {
-        LINEAR = 0,
-        SPHERICAL = 2
-    };
     XForm();
-    XForm(VariationID variation, Affine pre, Affine post = Affine(), double color = 0);
+    XForm(Variation::VariationID variation, Affine pre, Affine post = Affine(), double color = 0);
     double weight, color, opacity;
-    std::map<VariationID, double> variations;
+    std::map<Variation::VariationID, double> variations;
     std::vector<double> chaos;
     std::string coefsString();
     std::string postString();
     std::string chaosString();
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
-    static std::map<VariationID, std::string> variationName;
 private:
     Affine pre, post;
     std::string affineString(Affine aff);
