@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include "gasket/zoom.hpp"
 #include "render/cl_executable.hpp"
+#include "render/iteration_state.hpp"
 #include "render/opencl.hpp"
 
 using boost::gil::rgb8_pixel_t;
@@ -100,6 +101,8 @@ int main(int argc, char* argv[]) {
         auto bufA = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
         auto bufB = context.createReadOnlyBuffer(cmdQueue, 1024*sizeof(int));
         auto bufC = context.createWriteOnlyBuffer(cmdQueue, 1024*sizeof(int));
+        auto debug = context.createWriteOnlyBuffer(cmdQueue, 10000);
+        auto debugSize = context.createReadWriteBuffer(cmdQueue, sizeof(int));
 
         std::vector<int> vecA, vecB;
         for (int i = 0; i < 1024; i++) {
@@ -109,20 +112,23 @@ int main(int argc, char* argv[]) {
 
         bufA.write(vecA);
         bufB.write(vecB);
+        debugSize.write(std::vector<int>{0});
 
         auto kernel = context.createExecutable("vector_add", "src/render/cl/vector_add.cl");
 
         kernel.setArg(0, bufA);
         kernel.setArg(1, bufB);
         kernel.setArg(2, bufC);
+        kernel.setArg(3, debug);
+        kernel.setArg(4, debugSize);
 
         kernel.run(cmdQueue, 1024, 64);
 
-        std::vector<int> ans;
-        bufC.read(ans);
-        for (auto& k: ans) {
-            printf("%d\n",k);
-        }
+        IterationState state;
+        state.x = state.y = state.c = 0;
+        state.seed.value = 4294967298u;
+        printf("%u\n",state.seed.word.hi);
+        printf("%u\n",state.seed.word.low);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
