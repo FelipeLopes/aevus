@@ -19,7 +19,6 @@ inline uint mwc64x(__global SeedUnion* s)
 	return x^c;
 }
 
-
 __kernel void iterate(__global IterationState *state, __global uint *output) {
     int i = get_global_id(0);
     output[i] = mwc64x(&state[i].seed);

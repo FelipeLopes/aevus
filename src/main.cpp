@@ -126,7 +126,7 @@ int main(int argc, char* argv[]) {
         stateBuf.read(nStateVec);
         outputBuf.read(ans);
 
-        for (int i=0; i<1024; i++) {
+        for (int i=1023; i<1024; i++) {
             printf("%lu -> (%lu, %u)\n", stateVec[i].seed.value,
                 nStateVec[i].seed.value, ans[i]);
         }

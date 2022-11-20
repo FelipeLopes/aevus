@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <boost/assign.hpp>
 #include "xform.hpp"
 
 namespace gasket {
@@ -43,11 +44,15 @@ Affine::Affine(double xx, double xy, double yx, double yy, double ox, double oy)
     y = Point(yx,yy);
 }
 
+std::map<XForm::VariationID, std::string> XForm::variationName = boost::assign::map_list_of
+    (XForm::LINEAR, "linear")
+    (XForm::SPHERICAL, "spherical");
+
 XForm::XForm() {
     initParams();
 }
 
-XForm::XForm(std::string variation, Affine pre_, Affine post_, double color_):
+XForm::XForm(VariationID variation, Affine pre_, Affine post_, double color_):
     color(color_), pre(pre_), post(post_) {
 
     weight = 0.5;
@@ -91,8 +96,8 @@ tinyxml2::XMLNode* XForm::toXMLNode(tinyxml2::XMLDocument &xmlDoc) {
     auto xform = xmlDoc.NewElement("xform");
     xform->SetAttribute("weight", weight);
     xform->SetAttribute("color", color);
-    for (auto var: variations) {
-        xform->SetAttribute(var.first.c_str(), var.second);
+    for (auto& var: variations) {
+        xform->SetAttribute(variationName[var.first].c_str(), var.second);
     }
     xform->SetAttribute("coefs", coefsString().c_str());
     xform->SetAttribute("post", postString().c_str());
