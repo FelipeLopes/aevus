@@ -11,7 +11,7 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(Flame flame, const CLQueuedContext& context);
+    Iterator(Flame flame, const CLQueuedContext& context, std::vector<IterationState>& stateVec);
     void run();
     void readOutput(std::vector<float>& arr);
 private:
@@ -21,7 +21,7 @@ private:
     CLExecutable kernel;
 
     CLArg<FlameCL> flameCL;
-    ReadWriteCLBuffer<IterationState> stateBuf;
+    CLReadWriteBufferArg<IterationState> state;
     ReadOnlyCLBuffer<XFormCL> xformBuf;
     ReadOnlyCLBuffer<uint8_t> xformDistBuf;
     ReadOnlyCLBuffer<ColorCL> paletteBuf;
