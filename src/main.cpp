@@ -105,10 +105,11 @@ int main(int argc, char* argv[]) {
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
-        render::Iterator iterator(flame);
-
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
+
+        render::Iterator iterator(flame, context, cmdQueue);
+
         render::ReadWriteCLBuffer<IterationState>
             stateBuf(context, cmdQueue, 1024);
 

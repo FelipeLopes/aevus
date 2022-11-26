@@ -13,9 +13,9 @@ public:
     Palette(boost::gil::rgb8_pixel_t color1, boost::gil::rgb8_pixel_t color2);
     std::string hexAt(int pos) const;
     void readColorCLArray(std::vector<render::ColorCL>& arr) const;
+    static const unsigned PALETTE_WIDTH = 256;
 private:
     typedef unsigned char byte;
-    static const unsigned PALETTE_WIDTH = 256;
     std::vector<byte> paletteData;
 };
 
