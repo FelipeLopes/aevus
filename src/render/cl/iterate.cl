@@ -87,10 +87,12 @@ __kernel void iterate(
     __global IterationState *state,
     __global const XFormCL *xform,
     FlameCL flameCL,
-    __global uchar* xformDist,
+    __global uchar *xformDist,
+    __global float4 *palette,
     __global float2 *output)
 {
     int i = get_global_id(0);
     float2 ans = calcXform(&xform[2], &state[i]);
+    ans.x = palette[127].z;
     output[i] = ans;
 }

@@ -7,6 +7,7 @@
 #include "gasket/zoom.hpp"
 #include "render/cl_buffer.hpp"
 #include "render/cl_executable.hpp"
+#include "render/color_cl.hpp"
 #include "render/iteration_state.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
@@ -110,7 +111,11 @@ int main(int argc, char* argv[]) {
         std::vector<render::XFormCL> xformVec;
         flame.readXFormCLArray(xformVec);
 
+        std::vector<render::ColorCL> paletteVec;
+        flame.palette.readColorCLArray(paletteVec);
+
         auto xformBuf = context.createReadOnlyBuffer<render::XForm>(cmdQueue, xformVec.size());
+        auto paletteBuf = context.createReadOnlyBuffer<render::ColorCL>(cmdQueue, paletteVec.size());
         auto outputBuf = context.createWriteOnlyBuffer<float>(cmdQueue, 1024*2);
 
         std::vector<IterationState> stateVec;
@@ -127,6 +132,7 @@ int main(int argc, char* argv[]) {
 
         stateBuf.write(stateVec);
         xformBuf.write(xformVec);
+        paletteBuf.write(paletteVec);
 
         render::XFormDistribution distrib;
         flame.readXFormDistribution(distrib);
@@ -142,7 +148,8 @@ int main(int argc, char* argv[]) {
         kernel.setArg(1, xformBuf);
         kernel.setArg(2, flameCL);
         kernel.setArg(3, xformDistBuf);
-        kernel.setArg(4, outputBuf);
+        kernel.setArg(4, paletteBuf);
+        kernel.setArg(5, outputBuf);
 
         for (int i=0; i<100; i++) {
             kernel.run(cmdQueue, 1024, 64);

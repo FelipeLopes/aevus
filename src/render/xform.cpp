@@ -91,7 +91,7 @@ std::string XForm::affineString(Affine aff) {
     return buffer.str();
 }
 
-XFormCL XForm::toXFormCL() {
+XFormCL XForm::toXFormCL() const {
     XFormCL xf;
 
     xf.a = pre.x.x;

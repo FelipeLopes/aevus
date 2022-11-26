@@ -62,14 +62,14 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     return root;
 }
 
-void Flame::readXFormCLArray(std::vector<render::XFormCL>& arr) {
+void Flame::readXFormCLArray(std::vector<render::XFormCL>& arr) const {
     arr.resize(xforms.size());
     for (int i=0; i<arr.size(); i++) {
         arr[i] = xforms[i].toXFormCL();
     }
 }
 
-void Flame::readXFormDistribution(render::XFormDistribution& dist) {
+void Flame::readXFormDistribution(render::XFormDistribution& dist) const {
     int sizeGrains = render::XFormDistribution::XFORM_DISTRIBUTION_GRAINS;
     dist.data.resize(sizeGrains*xforms.size());
     for (int i=0; i<xforms.size(); i++) {
@@ -92,7 +92,7 @@ void Flame::readXFormDistribution(render::XFormDistribution& dist) {
     }
 }
 
-render::FlameCL Flame::getFlameCL() {
+render::FlameCL Flame::getFlameCL() const {
     render::FlameCL flameCL;
     flameCL.cx = centerX;
     flameCL.cy = centerY;

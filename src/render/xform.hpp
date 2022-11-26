@@ -38,7 +38,7 @@ public:
     std::string coefsString();
     std::string postString();
     std::string chaosString();
-    XFormCL toXFormCL();
+    XFormCL toXFormCL() const;
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
 private:
     Affine pre, post;

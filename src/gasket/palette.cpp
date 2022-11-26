@@ -55,4 +55,14 @@ std::string Palette::hexAt(int pos) const {
     return std::string(s);
 }
 
+void Palette::readColorCLArray(std::vector<render::ColorCL>& arr) const {
+    arr.resize(PALETTE_WIDTH);
+    for (int i=0; i<PALETTE_WIDTH; i++) {
+        arr[i].r = paletteData[3*i] / 255.0;
+        arr[i].g = paletteData[3*i+1] / 255.0;
+        arr[i].b = paletteData[3*i+2] / 255.0;
+        arr[i].a = 1.0;
+    }
+}
+
 }
