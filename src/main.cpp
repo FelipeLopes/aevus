@@ -105,9 +105,9 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
-        auto stateBuf = context.createReadWriteBuffer(cmdQueue, 1024*sizeof(IterationState));
-        auto xformBuf = context.createReadOnlyBuffer(cmdQueue, sizeof(render::XFormCL));
-        auto outputBuf = context.createWriteOnlyBuffer(cmdQueue, 1024*2*sizeof(float));
+        auto stateBuf = context.createReadWriteBuffer<IterationState>(cmdQueue, 1024);
+        auto xformBuf = context.createReadOnlyBuffer<render::XForm>(cmdQueue, 1);
+        auto outputBuf = context.createWriteOnlyBuffer<float>(cmdQueue, 1024*2);
 
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
@@ -127,8 +127,7 @@ int main(int argc, char* argv[]) {
         render::XFormDistribution distrib;
         flame.readXFormDistribution(distrib);
 
-        auto xformDistBuf = context.createReadOnlyBuffer(cmdQueue,
-            distrib.data.size()*sizeof(uint8_t));
+        auto xformDistBuf = context.createReadOnlyBuffer<uint8_t>(cmdQueue, distrib.data.size());
         xformDistBuf.write(distrib.data);
 
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");

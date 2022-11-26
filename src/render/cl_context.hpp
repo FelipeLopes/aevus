@@ -11,9 +11,18 @@ class CLContext {
 public:
     CLContext(cl_device_id clDeviceId);
     CLQueue createCommandQueue();
-    CLBuffer createReadOnlyBuffer(const CLQueue& queue, size_t size);
-    CLBuffer createWriteOnlyBuffer(const CLQueue& queue, size_t size);
-    CLBuffer createReadWriteBuffer(const CLQueue& queue, size_t size);
+    template <typename T>
+    CLBuffer createReadOnlyBuffer(const CLQueue& queue, size_t size) {
+        return CLBuffer(context, queue.commandQueue, CL_MEM_READ_ONLY, size*sizeof(T));
+    }
+    template <typename T>
+    CLBuffer createWriteOnlyBuffer(const CLQueue& queue, size_t size) {
+        return CLBuffer(context, queue.commandQueue, CL_MEM_WRITE_ONLY, size*sizeof(T));
+    }
+    template <typename T>
+    CLBuffer createReadWriteBuffer(const CLQueue& queue, size_t size) {
+        return CLBuffer(context, queue.commandQueue, CL_MEM_READ_WRITE, size*sizeof(T));
+    }
     CLExecutable createExecutable(std::string name, std::string filename);
     ~CLContext();
 private:
