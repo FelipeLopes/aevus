@@ -5,6 +5,7 @@
 #include <random>
 #include <vector>
 #include "gasket/zoom.hpp"
+#include "render/cl_buffer.hpp"
 #include "render/cl_executable.hpp"
 #include "render/iteration_state.hpp"
 #include "render/opencl.hpp"
@@ -97,7 +98,7 @@ int main(int argc, char* argv[]) {
         }*/
 
         tinyxml2::XMLDocument xmlDoc;
-        auto flame = gz.getFlame(0, 10);
+        auto flame = gz.getFlame(3, 10);
         auto node = flame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
@@ -123,11 +124,20 @@ int main(int argc, char* argv[]) {
         stateBuf.write(stateVec);
         xformBuf.write(std::vector<render::XFormCL>{flame.xforms[0].toXFormCL()});
 
+        render::XFormDistribution distrib;
+        flame.readXFormDistribution(distrib);
+
+        auto xformDistBuf = context.createReadOnlyBuffer(cmdQueue,
+            distrib.data.size()*sizeof(uint8_t));
+        xformDistBuf.write(distrib.data);
+
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
 
         kernel.setArg(0, stateBuf);
         kernel.setArg(1, xformBuf);
-        kernel.setArg(2, outputBuf);
+        kernel.setArg(2, distrib.numXForms);
+        kernel.setArg(3, xformDistBuf);
+        kernel.setArg(4, outputBuf);
 
         for (int i=0; i<100; i++) {
             kernel.run(cmdQueue, 1024, 64);
@@ -141,21 +151,6 @@ int main(int argc, char* argv[]) {
         for (int i=1014; i<1024; i++) {
             printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
         }
-
-        render::XFormDistribution distrib;
-        flame.readXFormDistribution(distrib);
-        int ct[4];
-        ct[0] = 0;
-        ct[1] = 0;
-        ct[2] = 0;
-        ct[3] = 0;
-        for (int i=0; i<16384; i++) {
-            ct[distrib.data[2*16384+i]]++;
-        }
-        printf("%d\n",ct[0]);
-        printf("%d\n",ct[1]);
-        printf("%d\n",ct[2]);
-        printf("%d\n",ct[3]);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

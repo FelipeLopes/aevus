@@ -1,4 +1,8 @@
-#define MAX_VARIATIONS 10
+enum {
+    MAX_VARIATIONS = 10,
+    MWC64X_A = 4294883355u,
+    XFORM_DISTRIBUTION_GRAINS = 16384
+};
 
 typedef union SeedUnion {
     uint2 word;
@@ -27,8 +31,6 @@ typedef struct XFormCL {
     float a, b, c, d, e, f;
     float pa, pb, pc, pd, pe, pf;
 } XFormCL;
-
-enum { MWC64X_A = 4294883355u };
 
 inline uint mwc64x(__global SeedUnion* s)
 {
@@ -79,8 +81,12 @@ inline float2 calcXform(__global const XFormCL* xform, __global IterationState* 
 __kernel void iterate(
     __global IterationState *state,
     __global const XFormCL *xform,
+    int numXForms,
+    __global uchar* xformDist,
     __global float2 *output)
 {
     int i = get_global_id(0);
-    output[i] = calcXform(xform, &state[i]);
+    float2 ans = calcXform(xform, &state[i]);
+    ans.x = xformDist[2*XFORM_DISTRIBUTION_GRAINS-1];
+    output[i] = ans;
 }
