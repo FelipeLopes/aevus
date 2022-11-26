@@ -32,6 +32,11 @@ typedef struct XFormCL {
     float pa, pb, pc, pd, pe, pf;
 } XFormCL;
 
+typedef struct FlameCL {
+    float cx, cy, scale;
+    int width, height;
+} FlameCL;
+
 inline uint mwc64x(__global SeedUnion* s)
 {
 	uint c = s->word.y;
@@ -81,12 +86,12 @@ inline float2 calcXform(__global const XFormCL* xform, __global IterationState* 
 __kernel void iterate(
     __global IterationState *state,
     __global const XFormCL *xform,
-    int numXForms,
+    FlameCL flameCL,
     __global uchar* xformDist,
     __global float2 *output)
 {
     int i = get_global_id(0);
     float2 ans = calcXform(xform, &state[i]);
-    ans.x = xformDist[2*XFORM_DISTRIBUTION_GRAINS-1];
+    ans.x = flameCL.width;
     output[i] = ans;
 }

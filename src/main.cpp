@@ -127,6 +127,8 @@ int main(int argc, char* argv[]) {
         render::XFormDistribution distrib;
         flame.readXFormDistribution(distrib);
 
+        auto flameCL = flame.getFlameCL();
+
         auto xformDistBuf = context.createReadOnlyBuffer<uint8_t>(cmdQueue, distrib.data.size());
         xformDistBuf.write(distrib.data);
 
@@ -134,7 +136,7 @@ int main(int argc, char* argv[]) {
 
         kernel.setArg(0, stateBuf);
         kernel.setArg(1, xformBuf);
-        kernel.setArg(2, distrib.numXForms);
+        kernel.setArg(2, flameCL);
         kernel.setArg(3, xformDistBuf);
         kernel.setArg(4, outputBuf);
 
