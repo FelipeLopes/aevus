@@ -17,10 +17,10 @@ int KeyGasket::numTransforms() const {
     return ifsTransforms.size();
 }
 
-Flame KeyGasket::toFlame(int width, int height, ColorParams colorParams,
+render::Flame KeyGasket::toFlame(int width, int height, ColorParams colorParams,
     double corr, double logscale) const
 {
-    Flame flame(0, 0, width, height, colorParams.palette);
+    render::Flame flame(0, 0, width, height, colorParams.palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));
 

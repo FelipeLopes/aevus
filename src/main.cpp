@@ -9,6 +9,7 @@
 #include "render/cl_executable.hpp"
 #include "render/color_cl.hpp"
 #include "render/iteration_state.hpp"
+#include "render/iterator.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
 #include "render/xform_distribution.hpp"
@@ -54,7 +55,7 @@ public:
         gasket::ColorParams params;
         auto it = std::prev(keyGasketsMap->lower_bound(logscale));
         int idx = scaleIndex.find(it->first)->second;
-        params.palette = (idx % 2 == 1) ? gasket::Palette(RED, WHITE) : gasket::Palette(WHITE, RED);
+        params.palette = (idx % 2 == 1) ? render::Palette(RED, WHITE) : render::Palette(WHITE, RED);
         int numTransforms = it->second.numTransforms();
         double iniKeyLogscale = it->first;
         double endKeyLogscale = std::next(it)->first;
@@ -104,6 +105,8 @@ int main(int argc, char* argv[]) {
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
+        render::Iterator iterator(flame);
+
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
         auto stateBuf = context.createReadWriteBuffer<IterationState>(cmdQueue, 1024);
@@ -144,9 +147,9 @@ int main(int argc, char* argv[]) {
 
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
 
-        kernel.setArg(0, stateBuf);
-        kernel.setArg(1, xformBuf);
-        kernel.setArg(2, flameCL);
+        kernel.setArg(0, flameCL);
+        kernel.setArg(1, stateBuf);
+        kernel.setArg(2, xformBuf);
         kernel.setArg(3, xformDistBuf);
         kernel.setArg(4, paletteBuf);
         kernel.setArg(5, outputBuf);

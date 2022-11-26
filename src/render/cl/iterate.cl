@@ -84,9 +84,9 @@ inline float2 calcXform(__global const XFormCL* xform, __global IterationState* 
 }
 
 __kernel void iterate(
+    FlameCL flameCL,
     __global IterationState *state,
     __global const XFormCL *xform,
-    FlameCL flameCL,
     __global uchar *xformDist,
     __global float4 *palette,
     __global float2 *output)

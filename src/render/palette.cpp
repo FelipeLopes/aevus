@@ -2,7 +2,7 @@
 #include <memory>
 #include <tuple>
 
-namespace gasket {
+namespace render {
 
 using boost::gil::get_color;
 using boost::gil::red_t;

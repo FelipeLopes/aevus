@@ -2,9 +2,9 @@
 
 #include <boost/gil.hpp>
 #include <memory>
-#include "../render/color_cl.hpp"
+#include "color_cl.hpp"
 
-namespace gasket {
+namespace render {
 
 class Palette {
 public:

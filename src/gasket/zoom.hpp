@@ -3,7 +3,7 @@
 #include "colorer.hpp"
 #include "complex_type.hpp"
 #include "diver.hpp"
-#include "flame.hpp"
+#include "../render/flame.hpp"
 #include "key_gasket.hpp"
 #include "scaler.hpp"
 #include "searcher.hpp"
@@ -73,7 +73,7 @@ public:
         int width, height;
     };
 
-    Flame getFlame(double correction, double logscale) const {
+    render::Flame getFlame(double correction, double logscale) const {
         auto it = std::prev(keyGaskets.lower_bound(logscale));
         ColorParams params = colorer.color(logscale, diveIndicesMap.find(it->first)->second);
         return it->second.toFlame(width, height, params, correction, logscale-it->first);

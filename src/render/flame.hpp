@@ -6,7 +6,7 @@
 #include "../render/xform_distribution.hpp"
 #include <memory>
 
-namespace gasket {
+namespace render {
 
 class Flame {
 public:

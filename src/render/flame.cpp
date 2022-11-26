@@ -3,7 +3,7 @@
 #include <memory>
 #include <sstream>
 
-namespace gasket {
+namespace render {
 
 using std::string;
 
