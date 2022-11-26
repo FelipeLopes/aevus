@@ -40,4 +40,8 @@ CLContext OpenCL::createContext(int platformIdx, int deviceIdx) {
     return CLContext(deviceIDs[platformIdx][deviceIdx]);
 }
 
+CLQueuedContext OpenCL::createQueuedContext(int platformIdx, int deviceIdx) {
+    return CLQueuedContext(deviceIDs[platformIdx][deviceIdx]);
+}
+
 }

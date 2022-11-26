@@ -24,4 +24,7 @@ CLContext::~CLContext() {
     clReleaseContext(context);
 }
 
+CLQueuedContext::CLQueuedContext(cl_device_id clDeviceId):
+    CLContext(clDeviceId), defaultQueue(context, deviceId) { }
+
 }

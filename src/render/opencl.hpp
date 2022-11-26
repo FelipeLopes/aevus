@@ -13,6 +13,7 @@ public:
         return instance;
     }
     CLContext createContext(int platformIdx, int deviceIdx);
+    CLQueuedContext createQueuedContext(int platformIdx, int deviceIdx);
 private:
     OpenCL();
     OpenCL(OpenCL const&) = delete;

@@ -1,4 +1,5 @@
 #include "cl_executable.hpp"
+#include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <fstream>
@@ -6,8 +7,8 @@
 
 namespace render {
 
-CLExecutable::CLExecutable(std::string name, cl_context clContext,
-    cl_device_id clDeviceId, std::string filename)
+CLExecutable::CLExecutable(std::string name, const CLContext& clContext, std::string filename):
+    context(clContext)
 {
     std::ifstream file(filename);
     std::stringstream buffer;
@@ -16,12 +17,12 @@ CLExecutable::CLExecutable(std::string name, cl_context clContext,
     auto sArr = source.c_str();
     auto len = source.size();
     cl_int ret;
-    program = clCreateProgramWithSource(clContext, 1, &sArr, &len, &ret);
+    program = clCreateProgramWithSource(clContext.context, 1, &sArr, &len, &ret);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not create OpenCL program");
     }
-    ret = clBuildProgram(program, 1, &clDeviceId, NULL, NULL, NULL);
+    ret = clBuildProgram(program, 1, &clContext.deviceId, NULL, NULL, NULL);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not build OpenCL program");

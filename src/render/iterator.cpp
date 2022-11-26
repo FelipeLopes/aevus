@@ -7,9 +7,9 @@
 
 namespace render {
 
-Iterator::Iterator(Flame flame, const CLContext& context_, const CLQueue& queue_):
-    context(context_), queue(queue_),
-    kernel("iterate", context.context, context.deviceId, "src/render/cl/iterate.cl"),
+Iterator::Iterator(Flame flame, const CLQueuedContext& context_):
+    context(context_), queue(context.defaultQueue),
+    kernel("iterate", context, "src/render/cl/iterate.cl"),
     flameCL(flame.getFlameCL()),
     stateBuf(context, queue, 1024),
     xformBuf(context, queue, flame.xforms.size()),

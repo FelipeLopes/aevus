@@ -9,14 +9,14 @@ namespace render {
 
 class CLExecutable {
 public:
-    CLExecutable(std::string name, cl_context clContext,
-        cl_device_id clDeviceId, std::string filename);
+    CLExecutable(std::string name, const CLContext& clContext, std::string filename);
     ~CLExecutable();
     template <typename T>
     void setArg(unsigned int argIndex, const T& arg);
     template <typename T>
     void setBufferArg(unsigned int argIndex, const CLBuffer<T>& arg);
     void run(const CLQueue& clQueue, const size_t globalWorkSize, const size_t localWorkSize);
+    const CLContext& context;
 private:
     cl_program program;
     cl_kernel kernel;

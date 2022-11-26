@@ -10,11 +10,11 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(Flame flame, const CLContext& context, const CLQueue& queue);
+    Iterator(Flame flame, const CLQueuedContext& context);
     void run();
     void readOutput(std::vector<float>& arr);
 private:
-    const CLContext& context;
+    const CLQueuedContext& context;
     const CLQueue& queue;
 
     CLExecutable kernel;
