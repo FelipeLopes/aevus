@@ -20,7 +20,7 @@ int KeyGasket::numTransforms() const {
 Flame KeyGasket::toFlame(int width, int height, ColorParams colorParams,
     double corr, double logscale) const
 {
-    Flame flame(width, height, colorParams.palette);
+    Flame flame(0, 0, width, height, colorParams.palette);
 
     Mobius<double> s = Mobius<double>::scaling(exp(logscale));
 
