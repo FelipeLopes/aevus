@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
-        auto xformBuf = context.createReadOnlyBuffer<render::XForm>(cmdQueue, xformVec.size());
+        auto xformBuf = context.createReadOnlyBuffer<render::XFormCL>(cmdQueue, xformVec.size());
         auto paletteBuf = context.createReadOnlyBuffer<render::ColorCL>(cmdQueue, paletteVec.size());
         auto outputBuf = context.createWriteOnlyBuffer<float>(cmdQueue, 1024*2);
 
@@ -148,11 +148,11 @@ int main(int argc, char* argv[]) {
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
 
         kernel.setArg(0, flameCL);
-        kernel.setArg(1, stateBuf);
-        kernel.setArg(2, xformBuf);
-        kernel.setArg(3, xformDistBuf);
-        kernel.setArg(4, paletteBuf);
-        kernel.setArg(5, outputBuf);
+        kernel.setBufferArg(1, stateBuf);
+        kernel.setBufferArg(2, xformBuf);
+        kernel.setBufferArg(3, xformDistBuf);
+        kernel.setBufferArg(4, paletteBuf);
+        kernel.setBufferArg(5, outputBuf);
 
         for (int i=0; i<100; i++) {
             kernel.run(cmdQueue, 1024, 64);
