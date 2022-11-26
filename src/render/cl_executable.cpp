@@ -7,7 +7,7 @@
 
 namespace render {
 
-CLExecutable::CLExecutable(std::string name, const CLContext& clContext, std::string filename):
+CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name, std::string filename):
     context(clContext)
 {
     std::ifstream file(filename);
@@ -34,10 +34,8 @@ CLExecutable::CLExecutable(std::string name, const CLContext& clContext, std::st
     }
 }
 
-void CLExecutable::run(const CLQueue& clQueue, const size_t globalWorkSize,
-    const size_t localWorkSize) {
-
-    cl_int ret = clEnqueueNDRangeKernel(clQueue.commandQueue, kernel, 1, NULL,
+void CLExecutable::run(const size_t globalWorkSize, const size_t localWorkSize) {
+    cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,
         &globalWorkSize, &localWorkSize, 0, NULL, NULL);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());

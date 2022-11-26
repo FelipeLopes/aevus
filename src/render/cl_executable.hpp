@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cl_buffer.hpp"
+#include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <string>
@@ -9,14 +10,14 @@ namespace render {
 
 class CLExecutable {
 public:
-    CLExecutable(std::string name, const CLContext& clContext, std::string filename);
+    CLExecutable(const CLQueuedContext& clContext, std::string name, std::string filename);
     ~CLExecutable();
     template <typename T>
     void setArg(unsigned int argIndex, const T& arg);
     template <typename T>
     void setBufferArg(unsigned int argIndex, const CLBuffer<T>& arg);
-    void run(const CLQueue& clQueue, const size_t globalWorkSize, const size_t localWorkSize);
-    const CLContext& context;
+    void run(const size_t globalWorkSize, const size_t localWorkSize);
+    const CLQueuedContext& context;
 private:
     cl_program program;
     cl_kernel kernel;

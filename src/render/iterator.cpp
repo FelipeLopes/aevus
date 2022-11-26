@@ -9,8 +9,8 @@ namespace render {
 
 Iterator::Iterator(Flame flame, const CLQueuedContext& context_):
     context(context_), queue(context.defaultQueue),
-    kernel("iterate", context, "src/render/cl/iterate.cl"),
-    flameCL(flame.getFlameCL()),
+    kernel(context, "iterate", "src/render/cl/iterate.cl"),
+    flameCL(kernel, 0, flame.getFlameCL()),
     stateBuf(context, queue, 1024),
     xformBuf(context, queue, flame.xforms.size()),
     xformDistBuf(context, queue, flame.xforms.size()*XFormDistribution::XFORM_DISTRIBUTION_GRAINS),
@@ -42,7 +42,6 @@ Iterator::Iterator(Flame flame, const CLQueuedContext& context_):
     XFormDistribution distrib;
     flame.readXFormDistribution(distrib);
 
-    kernel.setArg(0, flameCL);
     kernel.setBufferArg(1, stateBuf);
     kernel.setBufferArg(2, xformBuf);
     kernel.setBufferArg(3, xformDistBuf);
@@ -50,12 +49,12 @@ Iterator::Iterator(Flame flame, const CLQueuedContext& context_):
     kernel.setBufferArg(5, outputBuf);
 
     for (int i=0; i<20; i++) {
-        kernel.run(queue, 1024, 64);
+        kernel.run(1024, 64);
     }
 }
 
 void Iterator::run() {
-    kernel.run(queue, 1024, 64);
+    kernel.run(1024, 64);
 }
 
 void Iterator::readOutput(std::vector<float>& arr) {

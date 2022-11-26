@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cl_arg.hpp"
 #include "cl_buffer.hpp"
 #include "cl_context.hpp"
 #include "cl_executable.hpp"
@@ -19,7 +20,7 @@ private:
 
     CLExecutable kernel;
 
-    FlameCL flameCL;
+    CLArg<FlameCL> flameCL;
     ReadWriteCLBuffer<IterationState> stateBuf;
     ReadOnlyCLBuffer<XFormCL> xformBuf;
     ReadOnlyCLBuffer<uint8_t> xformDistBuf;
