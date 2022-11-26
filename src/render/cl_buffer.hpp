@@ -12,7 +12,7 @@ class CLBuffer {
 public:
     CLBuffer(cl_context clContext, cl_command_queue clCommandQueue,
         cl_mem_flags clMemFlags, size_t size);
-    ~CLBuffer();
+    virtual ~CLBuffer();
     void write(const std::vector<T>& data);
     void read(std::vector<T>& data);
     const cl_mem* memoryObject() const;
@@ -67,5 +67,35 @@ template <typename T>
 CLBuffer<T>::~CLBuffer() {
     clReleaseMemObject(memObject);
 }
+
+template <typename T>
+class ReadOnlyCLBuffer: public CLBuffer<T> {
+    ReadOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+};
+
+template <typename T>
+ReadOnlyCLBuffer<T>::ReadOnlyCLBuffer(cl_context clContext,
+    cl_command_queue clCommandQueue, size_t size):
+    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_READ_ONLY, size) { }
+
+template <typename T>
+class WriteOnlyCLBuffer: public CLBuffer<T> {
+    WriteOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+};
+
+template <typename T>
+WriteOnlyCLBuffer<T>::WriteOnlyCLBuffer(cl_context clContext,
+    cl_command_queue clCommandQueue, size_t size):
+    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_WRITE_ONLY, size) { }
+
+template <typename T>
+class ReadWriteCLBuffer: public CLBuffer<T> {
+    ReadWriteCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+};
+
+template <typename T>
+ReadWriteCLBuffer<T>::ReadWriteCLBuffer(cl_context clContext,
+    cl_command_queue clCommandQueue, size_t size):
+    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_READ_WRITE, size) { }
 
 }
