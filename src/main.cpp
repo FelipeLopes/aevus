@@ -106,7 +106,11 @@ int main(int argc, char* argv[]) {
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
         auto stateBuf = context.createReadWriteBuffer<IterationState>(cmdQueue, 1024);
-        auto xformBuf = context.createReadOnlyBuffer<render::XForm>(cmdQueue, 1);
+
+        std::vector<render::XFormCL> xformVec;
+        flame.readXFormCLArray(xformVec);
+
+        auto xformBuf = context.createReadOnlyBuffer<render::XForm>(cmdQueue, xformVec.size());
         auto outputBuf = context.createWriteOnlyBuffer<float>(cmdQueue, 1024*2);
 
         std::vector<IterationState> stateVec;
@@ -122,7 +126,7 @@ int main(int argc, char* argv[]) {
         }
 
         stateBuf.write(stateVec);
-        xformBuf.write(std::vector<render::XFormCL>{flame.xforms[0].toXFormCL()});
+        xformBuf.write(xformVec);
 
         render::XFormDistribution distrib;
         flame.readXFormDistribution(distrib);

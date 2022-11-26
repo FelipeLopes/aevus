@@ -91,7 +91,6 @@ __kernel void iterate(
     __global float2 *output)
 {
     int i = get_global_id(0);
-    float2 ans = calcXform(xform, &state[i]);
-    ans.x = flameCL.width;
+    float2 ans = calcXform(&xform[2], &state[i]);
     output[i] = ans;
 }

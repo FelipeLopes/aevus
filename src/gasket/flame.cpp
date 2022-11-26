@@ -62,14 +62,20 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     return root;
 }
 
+void Flame::readXFormCLArray(std::vector<render::XFormCL>& arr) {
+    arr.resize(xforms.size());
+    for (int i=0; i<arr.size(); i++) {
+        arr[i] = xforms[i].toXFormCL();
+    }
+}
+
 void Flame::readXFormDistribution(render::XFormDistribution& dist) {
-    dist.numXForms = xforms.size();
     int sizeGrains = render::XFormDistribution::XFORM_DISTRIBUTION_GRAINS;
-    dist.data.resize(sizeGrains*dist.numXForms);
-    for (int i=0; i<dist.numXForms; i++) {
+    dist.data.resize(sizeGrains*xforms.size());
+    for (int i=0; i<xforms.size(); i++) {
         double acc = 0;
         std::vector<double> densities;
-        for (int j=0; j<dist.numXForms; j++) {
+        for (int j=0; j<xforms.size(); j++) {
             acc += xforms[i].chaos[j]*xforms[j].weight;
             densities.push_back(acc);
         }
@@ -77,7 +83,7 @@ void Flame::readXFormDistribution(render::XFormDistribution& dist) {
         int j = 0;
         double curr = 0;
         for (int k=0; k<sizeGrains; k++) {
-            while (curr >= densities[j] && j<dist.numXForms) {
+            while (curr >= densities[j] && j<xforms.size()) {
                 j++;
             }
             dist.data[i*sizeGrains+k] = j;
