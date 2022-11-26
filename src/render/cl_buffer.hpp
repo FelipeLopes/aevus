@@ -70,6 +70,7 @@ CLBuffer<T>::~CLBuffer() {
 
 template <typename T>
 class ReadOnlyCLBuffer: public CLBuffer<T> {
+public:
     ReadOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
 };
 
@@ -80,6 +81,7 @@ ReadOnlyCLBuffer<T>::ReadOnlyCLBuffer(cl_context clContext,
 
 template <typename T>
 class WriteOnlyCLBuffer: public CLBuffer<T> {
+public:
     WriteOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
 };
 
@@ -90,6 +92,7 @@ WriteOnlyCLBuffer<T>::WriteOnlyCLBuffer(cl_context clContext,
 
 template <typename T>
 class ReadWriteCLBuffer: public CLBuffer<T> {
+public:
     ReadWriteCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
 };
 

@@ -93,6 +93,6 @@ __kernel void iterate(
 {
     int i = get_global_id(0);
     float2 ans = calcXform(&xform[2], &state[i]);
-    ans.x = palette[127].z;
+    ans.x = palette[0].z;
     output[i] = ans;
 }

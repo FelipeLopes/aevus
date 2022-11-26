@@ -109,7 +109,8 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createContext(0,1);
         auto cmdQueue = context.createCommandQueue();
-        auto stateBuf = context.createReadWriteBuffer<IterationState>(cmdQueue, 1024);
+        render::ReadWriteCLBuffer<IterationState>
+            stateBuf(context.context, cmdQueue.commandQueue, 1024);
 
         std::vector<render::XFormCL> xformVec;
         flame.readXFormCLArray(xformVec);
@@ -117,9 +118,12 @@ int main(int argc, char* argv[]) {
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
-        auto xformBuf = context.createReadOnlyBuffer<render::XFormCL>(cmdQueue, xformVec.size());
-        auto paletteBuf = context.createReadOnlyBuffer<render::ColorCL>(cmdQueue, paletteVec.size());
-        auto outputBuf = context.createWriteOnlyBuffer<float>(cmdQueue, 1024*2);
+        render::ReadOnlyCLBuffer<render::XFormCL>
+            xformBuf(context.context, cmdQueue.commandQueue, xformVec.size());
+        render::ReadOnlyCLBuffer<render::ColorCL>
+            paletteBuf(context.context, cmdQueue.commandQueue, paletteVec.size());
+        render::WriteOnlyCLBuffer<float>
+            outputBuf(context.context, cmdQueue.commandQueue, 1024*2);
 
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
@@ -142,7 +146,8 @@ int main(int argc, char* argv[]) {
 
         auto flameCL = flame.getFlameCL();
 
-        auto xformDistBuf = context.createReadOnlyBuffer<uint8_t>(cmdQueue, distrib.data.size());
+        render::ReadOnlyCLBuffer<uint8_t>
+            xformDistBuf(context.context, cmdQueue.commandQueue, distrib.data.size());
         xformDistBuf.write(distrib.data);
 
         auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
