@@ -110,65 +110,12 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(flame, context, cmdQueue);
 
-        render::ReadWriteCLBuffer<IterationState>
-            stateBuf(context, cmdQueue, 1024);
-
-        std::vector<render::XFormCL> xformVec;
-        flame.readXFormCLArray(xformVec);
-
-        std::vector<render::ColorCL> paletteVec;
-        flame.palette.readColorCLArray(paletteVec);
-
-        render::ReadOnlyCLBuffer<render::XFormCL>
-            xformBuf(context, cmdQueue, xformVec.size());
-        render::ReadOnlyCLBuffer<render::ColorCL>
-            paletteBuf(context, cmdQueue, paletteVec.size());
-        render::WriteOnlyCLBuffer<float>
-            outputBuf(context, cmdQueue, 1024*2);
-
-        std::vector<IterationState> stateVec;
-        std::mt19937_64 rng(314159);
-        std::uniform_int_distribution<uint64_t> dist;
-        std::uniform_real_distribution<float> floatDist(-1.0, 1.0);
-        for (int i = 0; i < 1024; i++) {
-            IterationState st;
-            st.x = floatDist(rng);
-            st.y = floatDist(rng);
-            st.seed.value = dist(rng);
-            stateVec.push_back(st);
+        for (int i=0; i<80; i++) {
+            iterator.run();
         }
 
-        stateBuf.write(stateVec);
-        xformBuf.write(xformVec);
-        paletteBuf.write(paletteVec);
-
-        render::XFormDistribution distrib;
-        flame.readXFormDistribution(distrib);
-
-        auto flameCL = flame.getFlameCL();
-
-        render::ReadOnlyCLBuffer<uint8_t>
-            xformDistBuf(context, cmdQueue, distrib.data.size());
-        xformDistBuf.write(distrib.data);
-
-        render::CLExecutable kernel("iterate", context.context, context.deviceId,
-            "src/render/cl/iterate.cl");
-
-        kernel.setArg(0, flameCL);
-        kernel.setBufferArg(1, stateBuf);
-        kernel.setBufferArg(2, xformBuf);
-        kernel.setBufferArg(3, xformDistBuf);
-        kernel.setBufferArg(4, paletteBuf);
-        kernel.setBufferArg(5, outputBuf);
-
-        for (int i=0; i<100; i++) {
-            kernel.run(cmdQueue, 1024, 64);
-        }
-
-        std::vector<IterationState> nStateVec;
         std::vector<float> ans;
-        stateBuf.read(nStateVec);
-        outputBuf.read(ans);
+        iterator.readOutput(ans);
 
         for (int i=1014; i<1024; i++) {
             printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
