@@ -20,10 +20,6 @@ CLQueue CLContext::createCommandQueue() {
     return CLQueue(context, deviceId);
 }
 
-CLExecutable CLContext::createExecutable(std::string name, std::string filename) {
-    return CLExecutable(name, context, deviceId, filename);
-}
-
 CLContext::~CLContext() {
     clReleaseContext(context);
 }

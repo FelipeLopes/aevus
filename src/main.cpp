@@ -150,7 +150,8 @@ int main(int argc, char* argv[]) {
             xformDistBuf(context.context, cmdQueue.commandQueue, distrib.data.size());
         xformDistBuf.write(distrib.data);
 
-        auto kernel = context.createExecutable("iterate", "src/render/cl/iterate.cl");
+        render::CLExecutable kernel("iterate", context.context, context.deviceId,
+            "src/render/cl/iterate.cl");
 
         kernel.setArg(0, flameCL);
         kernel.setBufferArg(1, stateBuf);

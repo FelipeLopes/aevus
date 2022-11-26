@@ -7,8 +7,8 @@
 namespace render {
 
 CLExecutable::CLExecutable(std::string name, cl_context clContext,
-    cl_device_id clDeviceId, std::string filename) {
-
+    cl_device_id clDeviceId, std::string filename)
+{
     std::ifstream file(filename);
     std::stringstream buffer;
     buffer<<file.rdbuf();
