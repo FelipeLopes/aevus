@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cl_context.hpp"
 #include <CL/cl.h>
 #include <stdexcept>
 #include <system_error>
@@ -10,7 +11,7 @@ namespace render {
 template <typename T>
 class CLBuffer {
 public:
-    CLBuffer(cl_context clContext, cl_command_queue clCommandQueue,
+    CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
         cl_mem_flags clMemFlags, size_t size);
     virtual ~CLBuffer();
     void write(const std::vector<T>& data);
@@ -21,6 +22,23 @@ private:
     cl_mem memObject;
     size_t size;
 };
+
+template <typename T>
+CLBuffer<T>::CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
+    cl_mem_flags clMemFlags, size_t size_): commandQueue(clQueue.commandQueue), size(size_) {
+
+    cl_int ret;
+    memObject = clCreateBuffer(clContext.context, clMemFlags, size*sizeof(T), NULL, &ret);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not create OpenCL buffer");
+    }
+}
+
+template <typename T>
+CLBuffer<T>::~CLBuffer() {
+    clReleaseMemObject(memObject);
+}
 
 template <typename T>
 void CLBuffer<T>::write(const std::vector<T>& data) {
@@ -47,58 +65,41 @@ void CLBuffer<T>::read(std::vector<T>& data) {
 }
 
 template <typename T>
-CLBuffer<T>::CLBuffer(cl_context clContext, cl_command_queue clCommandQueue,
-    cl_mem_flags clMemFlags, size_t size_): commandQueue(clCommandQueue), size(size_) {
-
-    cl_int ret;
-    memObject = clCreateBuffer(clContext, clMemFlags, size*sizeof(T), NULL, &ret);
-    if (ret != CL_SUCCESS) {
-        auto ec = std::error_code(ret, std::generic_category());
-        throw std::system_error(ec, "Could not create OpenCL buffer");
-    }
-}
-
-template <typename T>
 const cl_mem* CLBuffer<T>::memoryObject() const {
     return &memObject;
 }
 
 template <typename T>
-CLBuffer<T>::~CLBuffer() {
-    clReleaseMemObject(memObject);
-}
-
-template <typename T>
 class ReadOnlyCLBuffer: public CLBuffer<T> {
 public:
-    ReadOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+    ReadOnlyCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
 };
 
 template <typename T>
-ReadOnlyCLBuffer<T>::ReadOnlyCLBuffer(cl_context clContext,
-    cl_command_queue clCommandQueue, size_t size):
-    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_READ_ONLY, size) { }
+ReadOnlyCLBuffer<T>::ReadOnlyCLBuffer(const CLContext& clContext,
+    const CLQueue& clQueue, size_t size):
+    CLBuffer<T>(clContext, clQueue, CL_MEM_READ_ONLY, size) { }
 
 template <typename T>
 class WriteOnlyCLBuffer: public CLBuffer<T> {
 public:
-    WriteOnlyCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+    WriteOnlyCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
 };
 
 template <typename T>
-WriteOnlyCLBuffer<T>::WriteOnlyCLBuffer(cl_context clContext,
-    cl_command_queue clCommandQueue, size_t size):
-    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_WRITE_ONLY, size) { }
+WriteOnlyCLBuffer<T>::WriteOnlyCLBuffer(const CLContext& clContext,
+    const CLQueue& clQueue, size_t size):
+    CLBuffer<T>(clContext, clQueue, CL_MEM_WRITE_ONLY, size) { }
 
 template <typename T>
 class ReadWriteCLBuffer: public CLBuffer<T> {
 public:
-    ReadWriteCLBuffer(cl_context clContext, cl_command_queue clCommandQueue, size_t size);
+    ReadWriteCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
 };
 
 template <typename T>
-ReadWriteCLBuffer<T>::ReadWriteCLBuffer(cl_context clContext,
-    cl_command_queue clCommandQueue, size_t size):
-    CLBuffer<T>(clContext, clCommandQueue, CL_MEM_READ_WRITE, size) { }
+ReadWriteCLBuffer<T>::ReadWriteCLBuffer(const CLContext& clContext,
+    const CLQueue& clQueue, size_t size):
+    CLBuffer<T>(clContext, clQueue, CL_MEM_READ_WRITE, size) { }
 
 }
