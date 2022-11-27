@@ -9,7 +9,7 @@
 #include "render/cl_executable.hpp"
 #include "render/color_cl.hpp"
 #include "render/iteration_state.hpp"
-#include "render/iterate_kernel.hpp"
+#include "render/iterator.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
 #include "render/xform_distribution.hpp"
@@ -121,6 +121,11 @@ int main(int argc, char* argv[]) {
             stateVec.push_back(st);
         }
 
+        render::CLBuffer<render::XFormCL> buf(context, context.defaultQueue, CL_MEM_READ_ONLY,
+            [flame] (std::vector<render::XFormCL>& arr){
+                flame.readXFormCLArray(arr);
+            });
+
         std::vector<render::XFormCL> xformVec;
         flame.readXFormCLArray(xformVec);
 
@@ -130,15 +135,15 @@ int main(int argc, char* argv[]) {
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
-        render::IterateKernel iterateKernel(context, flameCL,
+        render::Iterator iterator(context, flameCL,
             stateVec, xformVec, distrib.data, paletteVec);
 
         for (int i=0; i<80; i++) {
-            iterateKernel.run();
+            iterator.run();
         }
 
         std::vector<float> ans;
-        iterateKernel.readOutput(ans);
+        iterator.readOutput(ans);
 
         for (int i=1014; i<1024; i++) {
             printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);

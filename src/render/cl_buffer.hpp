@@ -2,6 +2,7 @@
 
 #include "cl_context.hpp"
 #include <CL/cl.h>
+#include <functional>
 #include <stdexcept>
 #include <system_error>
 #include <vector>
@@ -13,6 +14,8 @@ class CLBuffer {
 public:
     CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
         cl_mem_flags clMemFlags, size_t size);
+    CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
+        cl_mem_flags clMemFlags, std::function<void(std::vector<T>&)> f);
     virtual ~CLBuffer();
     void write(const std::vector<T>& data);
     void read(std::vector<T>& data);
@@ -25,14 +28,31 @@ private:
 
 template <typename T>
 CLBuffer<T>::CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
-    cl_mem_flags clMemFlags, size_t size_): commandQueue(clQueue.commandQueue), size(size_) {
-
+    cl_mem_flags clMemFlags, size_t size_): commandQueue(clQueue.commandQueue), size(size_)
+{
     cl_int ret;
     memObject = clCreateBuffer(clContext.context, clMemFlags, size*sizeof(T), NULL, &ret);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not create OpenCL buffer");
     }
+}
+
+template <typename T>
+CLBuffer<T>::CLBuffer(const CLContext& clContext, const CLQueue& clQueue,
+    cl_mem_flags clMemFlags, std::function<void(std::vector<T>&)> f):
+    commandQueue(clQueue.commandQueue)
+{
+    std::vector<T> arr;
+    f(arr);
+    size = arr.size();
+    cl_int ret;
+    memObject = clCreateBuffer(clContext.context, clMemFlags, size*sizeof(T), NULL, &ret);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not create OpenCL buffer");
+    }
+    write(arr);
 }
 
 template <typename T>

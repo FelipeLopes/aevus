@@ -1,4 +1,4 @@
-#include "iterate_kernel.hpp"
+#include "iterator.hpp"
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include "palette.hpp"
@@ -7,7 +7,7 @@
 
 namespace render {
 
-IterateKernel::IterateKernel(const CLQueuedContext& context_, FlameCL flameCL_,
+Iterator::Iterator(const CLQueuedContext& context_, FlameCL flameCL_,
     std::vector<IterationState>& stateVec, std::vector<XFormCL>& xformVec,
     std::vector<uint8_t>& xformDistVec, std::vector<ColorCL>& paletteVec):
     context(context_),
@@ -24,11 +24,11 @@ IterateKernel::IterateKernel(const CLQueuedContext& context_, FlameCL flameCL_,
     }
 }
 
-void IterateKernel::run() {
+void Iterator::run() {
     kernel.run(1024, 64);
 }
 
-void IterateKernel::readOutput(std::vector<float>& arr) {
+void Iterator::readOutput(std::vector<float>& arr) {
     outputArg.buffer.read(arr);
 }
 
