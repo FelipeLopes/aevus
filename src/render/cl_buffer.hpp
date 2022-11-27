@@ -69,37 +69,4 @@ const cl_mem* CLBuffer<T>::memoryObject() const {
     return &memObject;
 }
 
-template <typename T>
-class ReadOnlyCLBuffer: public CLBuffer<T> {
-public:
-    ReadOnlyCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
-};
-
-template <typename T>
-ReadOnlyCLBuffer<T>::ReadOnlyCLBuffer(const CLContext& clContext,
-    const CLQueue& clQueue, size_t size):
-    CLBuffer<T>(clContext, clQueue, CL_MEM_READ_ONLY, size) { }
-
-template <typename T>
-class WriteOnlyCLBuffer: public CLBuffer<T> {
-public:
-    WriteOnlyCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
-};
-
-template <typename T>
-WriteOnlyCLBuffer<T>::WriteOnlyCLBuffer(const CLContext& clContext,
-    const CLQueue& clQueue, size_t size):
-    CLBuffer<T>(clContext, clQueue, CL_MEM_WRITE_ONLY, size) { }
-
-template <typename T>
-class ReadWriteCLBuffer: public CLBuffer<T> {
-public:
-    ReadWriteCLBuffer(const CLContext& clContext, const CLQueue& clQueue, size_t size);
-};
-
-template <typename T>
-ReadWriteCLBuffer<T>::ReadWriteCLBuffer(const CLContext& clContext,
-    const CLQueue& clQueue, size_t size):
-    CLBuffer<T>(clContext, clQueue, CL_MEM_READ_WRITE, size) { }
-
 }

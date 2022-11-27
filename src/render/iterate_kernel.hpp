@@ -10,11 +10,11 @@
 
 namespace render {
 
-class Iterator {
+class IterateKernel {
 public:
-    Iterator(Flame flame, const CLQueuedContext& context, std::vector<IterationState>& stateVec,
-        std::vector<XFormCL>& xformVec, std::vector<uint8_t>& xformDistVec,
-        std::vector<ColorCL>& paletteVec);
+    IterateKernel(const CLQueuedContext& context, FlameCL flameCL,
+        std::vector<IterationState>& stateVec, std::vector<XFormCL>& xformVec,
+        std::vector<uint8_t>& xformDistVec, std::vector<ColorCL>& paletteVec);
     void run();
     void readOutput(std::vector<float>& arr);
 private:

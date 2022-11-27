@@ -9,7 +9,7 @@
 #include "render/cl_executable.hpp"
 #include "render/color_cl.hpp"
 #include "render/iteration_state.hpp"
-#include "render/iterator.hpp"
+#include "render/iterate_kernel.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
 #include "render/xform_distribution.hpp"
@@ -107,6 +107,8 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
+        auto flameCL = flame.getFlameCL();
+
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
         std::uniform_int_distribution<uint64_t> dist;
@@ -128,14 +130,15 @@ int main(int argc, char* argv[]) {
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
-        render::Iterator iterator(flame, context, stateVec, xformVec, distrib.data, paletteVec);
+        render::IterateKernel iterateKernel(context, flameCL,
+            stateVec, xformVec, distrib.data, paletteVec);
 
         for (int i=0; i<80; i++) {
-            iterator.run();
+            iterateKernel.run();
         }
 
         std::vector<float> ans;
-        iterator.readOutput(ans);
+        iterateKernel.readOutput(ans);
 
         for (int i=1014; i<1024; i++) {
             printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
