@@ -8,33 +8,17 @@
 namespace render {
 
 Iterator::Iterator(Flame flame, const CLQueuedContext& context_,
-    std::vector<IterationState>& stateVec):
-    context(context_), queue(context.defaultQueue),
+    std::vector<IterationState>& stateVec, std::vector<XFormCL>& xformVec,
+    std::vector<uint8_t>& xformDistVec, std::vector<ColorCL>& paletteVec):
+    context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     flameCL(kernel, 0, flame.getFlameCL()),
-    state(kernel, 1, stateVec),
-    xformBuf(context, queue, flame.xforms.size()),
-    xformDistBuf(context, queue, flame.xforms.size()*XFormDistribution::XFORM_DISTRIBUTION_GRAINS),
-    paletteBuf(context, queue, Palette::PALETTE_WIDTH),
-    outputBuf(context, queue, 1024*2)
+    stateArg(kernel, 1, stateVec),
+    xformArg(kernel, 2, xformVec),
+    xformDistArg(kernel, 3, xformDistVec),
+    paletteArg(kernel, 4, paletteVec),
+    outputArg(kernel, 5, 1024*2)
 {
-    std::vector<XFormCL> xformVec;
-    flame.readXFormCLArray(xformVec);
-
-    std::vector<ColorCL> paletteVec;
-    flame.palette.readColorCLArray(paletteVec);
-
-    xformBuf.write(xformVec);
-    paletteBuf.write(paletteVec);
-
-    XFormDistribution distrib;
-    flame.readXFormDistribution(distrib);
-
-    kernel.setBufferArg(2, xformBuf);
-    kernel.setBufferArg(3, xformDistBuf);
-    kernel.setBufferArg(4, paletteBuf);
-    kernel.setBufferArg(5, outputBuf);
-
     for (int i=0; i<20; i++) {
         kernel.run(1024, 64);
     }
@@ -45,7 +29,7 @@ void Iterator::run() {
 }
 
 void Iterator::readOutput(std::vector<float>& arr) {
-    outputBuf.read(arr);
+    outputArg.buffer.read(arr);
 }
 
 }

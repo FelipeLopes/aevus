@@ -119,7 +119,16 @@ int main(int argc, char* argv[]) {
             stateVec.push_back(st);
         }
 
-        render::Iterator iterator(flame, context, stateVec);
+        std::vector<render::XFormCL> xformVec;
+        flame.readXFormCLArray(xformVec);
+
+        render::XFormDistribution distrib;
+        flame.readXFormDistribution(distrib);
+
+        std::vector<render::ColorCL> paletteVec;
+        flame.palette.readColorCLArray(paletteVec);
+
+        render::Iterator iterator(flame, context, stateVec, xformVec, distrib.data, paletteVec);
 
         for (int i=0; i<80; i++) {
             iterator.run();

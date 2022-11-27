@@ -23,15 +23,23 @@ class CLBufferArg {
 public:
     CLBufferArg(CLExecutable& kernel, cl_mem_flags clMemFlags, unsigned argIndex,
         std::vector<T>& arg);
-    CLBuffer<T> buf;
+    CLBufferArg(CLExecutable& kernel, cl_mem_flags clMemFlags, unsigned argIndex, size_t size);
+    CLBuffer<T> buffer;
 };
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable& kernel, cl_mem_flags clMemFlags, unsigned argIndex,
-    std::vector<T>& arg): buf(kernel.context, kernel.context.defaultQueue, clMemFlags, arg.size())
+    std::vector<T>& arg): buffer(kernel.context, kernel.context.defaultQueue, clMemFlags, arg.size())
 {
-    buf.write(arg);
-    kernel.setBufferArg(argIndex, buf);
+    buffer.write(arg);
+    kernel.setBufferArg(argIndex, buffer);
+}
+
+template <typename T>
+CLBufferArg<T>::CLBufferArg(CLExecutable& kernel, cl_mem_flags clMemFlags, unsigned argIndex,
+    size_t size): buffer(kernel.context, kernel.context.defaultQueue, clMemFlags, size)
+{
+    kernel.setBufferArg(argIndex, buffer);
 }
 
 template <typename T>
@@ -47,12 +55,12 @@ CLReadOnlyBufferArg<T>::CLReadOnlyBufferArg(CLExecutable& kernel, unsigned argIn
 template <typename T>
 class CLWriteOnlyBufferArg: public CLBufferArg<T> {
 public:
-    CLWriteOnlyBufferArg(CLExecutable& kernel, unsigned argIndex, std::vector<T>& arg);
+    CLWriteOnlyBufferArg(CLExecutable& kernel, unsigned argIndex, size_t size);
 };
 
 template <typename T>
 CLWriteOnlyBufferArg<T>::CLWriteOnlyBufferArg(CLExecutable& kernel, unsigned argIndex,
-    std::vector<T>& arg): CLBufferArg<T>(kernel, CL_MEM_WRITE_ONLY, argIndex, arg) { }
+    size_t size): CLBufferArg<T>(kernel, CL_MEM_WRITE_ONLY, argIndex, size) { }
 
 template <typename T>
 class CLReadWriteBufferArg: public CLBufferArg<T> {
