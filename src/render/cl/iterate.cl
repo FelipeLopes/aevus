@@ -1,7 +1,10 @@
+#define BUCKET_FACTOR 1.0f-FLT_EPSILON
+
 enum {
     MAX_VARIATIONS = 10,
     MWC64X_A = 4294883355u,
-    XFORM_DISTRIBUTION_GRAINS = 16384
+    XFORM_DISTRIBUTION_GRAINS = 16384,
+    XFORM_DISTRIBUTION_GRAINS_M1 = 16383
 };
 
 typedef union SeedUnion {
@@ -61,25 +64,42 @@ inline float2 spherical(float2 p) {
     return ans;
 }
 
-inline float2 calcXform(__global const XFormCL* xform, __global IterationState* state) {
+inline int histogramIndex(FlameCL* flame, float2 p) {
+    float2 tl, prop;
+    prop.x = flame->width/flame->scale;
+    prop.y = flame->height/flame->scale;
+    tl.x = flame->cx - prop.x/2;
+    tl.y = flame->cy + prop.y/2;
+    if (p.x - tl.x < 0 || p.x - tl.x > prop.y) {
+        return -1;
+    } else if (tl.y - p.y < 0 || tl.y - p.y > prop.y) {
+        return -1;
+    }
+    int iPos = (tl.y-p.y)*BUCKET_FACTOR*flame->height;
+    int jPos = (p.x-tl.x)*BUCKET_FACTOR*flame->width;
+    return iPos*flame->width+jPos;
+}
+
+inline float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
     float2 t, acc, ans;
-    t.x = xform->a*state->x + xform->b*state->y + xform->c;
-    t.y = xform->d*state->x + xform->e*state->y + xform->f;
+    t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
+    t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
     acc.x = 0;
     acc.y = 0;
     int i = 0;
-    while (i < MAX_VARIATIONS && xform->varData[i].id != NO_VARIATION) {
-        switch (xform->varData[i].id) {
-            case LINEAR: acc += xform->varData[i].weight*linear(t); break;
-            case SPHERICAL: acc += xform->varData[i].weight*spherical(t); break;
+    while (i < MAX_VARIATIONS && xform[idx].varData[i].id != NO_VARIATION) {
+        switch (xform[idx].varData[i].id) {
+            case LINEAR: acc += xform[idx].varData[i].weight*linear(t); break;
+            case SPHERICAL: acc += xform[idx].varData[i].weight*spherical(t); break;
             default: break;
         }
         i++;
     }
-    ans.x = xform->pa*acc.x + xform->pb*acc.y + xform->pc;
-    ans.y = xform->pd*acc.x + xform->pe*acc.y + xform->pf;
+    ans.x = xform[idx].pa*acc.x + xform[idx].pb*acc.y + xform[idx].pc;
+    ans.y = xform[idx].pd*acc.x + xform[idx].pe*acc.y + xform[idx].pf;
     state->x = ans.x;
     state->y = ans.y;
+    state->xf = idx;
     return ans;
 }
 
@@ -89,10 +109,11 @@ __kernel void iterate(
     __global const XFormCL *xform,
     __global uchar *xformDist,
     __global float4 *palette,
-    __global float2 *output)
+    __global int *output)
 {
     int i = get_global_id(0);
-    float2 ans = calcXform(&xform[2], &state[i]);
-    ans.x = palette[127].z;
-    output[i] = ans;
+    int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
+    int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
+    float2 p = calcXform(xform, xfIdx, &state[i]);
+    output[i] = histogramIndex(&flameCL, p);
 }

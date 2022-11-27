@@ -1,5 +1,6 @@
 #include <CL/cl.h>
 #include <boost/gil.hpp>
+#include <cfloat>
 #include <cstdlib>
 #include <cinttypes>
 #include <random>
@@ -112,11 +113,11 @@ int main(int argc, char* argv[]) {
             iterator.run();
         }
 
-        std::vector<float> ans;
+        std::vector<int> ans;
         iterator.readOutput(ans);
 
         for (int i=1014; i<1024; i++) {
-            printf("(%f,%f)\n",ans[2*i],ans[2*i+1]);
+            printf("%d\n",ans[i]);
         }
 
     } catch (std::exception& e) {
