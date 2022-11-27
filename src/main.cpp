@@ -121,22 +121,14 @@ int main(int argc, char* argv[]) {
             stateVec.push_back(st);
         }
 
-        render::CLBuffer<render::XFormCL> buf(context, context.defaultQueue, CL_MEM_READ_ONLY,
-            [flame] (std::vector<render::XFormCL>& arr){
-                flame.readXFormCLArray(arr);
-            });
-
-        std::vector<render::XFormCL> xformVec;
-        flame.readXFormCLArray(xformVec);
-
         render::XFormDistribution distrib;
         flame.readXFormDistribution(distrib);
 
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
-        render::Iterator iterator(context, flameCL,
-            stateVec, xformVec, distrib.data, paletteVec);
+        render::Iterator iterator(context, flame, flameCL,
+            stateVec, distrib.data, paletteVec);
 
         for (int i=0; i<80; i++) {
             iterator.run();
