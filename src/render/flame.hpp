@@ -3,7 +3,6 @@
 #include "palette.hpp"
 #include "../render/flame_cl.hpp"
 #include "../render/xform.hpp"
-#include "../render/xform_distribution.hpp"
 #include <memory>
 
 namespace render {
@@ -14,9 +13,10 @@ public:
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
     std::vector<render::XForm> xforms;
     void readXFormCLArray(std::vector<render::XFormCL>& arr) const;
-    void readXFormDistribution(render::XFormDistribution& dist) const;
+    void readXFormDistribution(std::vector<uint8_t>& dist) const;
     render::FlameCL getFlameCL() const;
     const Palette palette;
+    const static int XFORM_DISTRIBUTION_GRAINS = 16384;
 private:
     double centerX, centerY, scale;
     int width, height;

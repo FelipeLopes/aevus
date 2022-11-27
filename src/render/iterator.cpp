@@ -2,7 +2,6 @@
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include "palette.hpp"
-#include "xform_distribution.hpp"
 #include <random>
 
 using std::vector;

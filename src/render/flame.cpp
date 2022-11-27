@@ -69,9 +69,8 @@ void Flame::readXFormCLArray(std::vector<render::XFormCL>& arr) const {
     }
 }
 
-void Flame::readXFormDistribution(render::XFormDistribution& dist) const {
-    int sizeGrains = render::XFormDistribution::XFORM_DISTRIBUTION_GRAINS;
-    dist.data.resize(sizeGrains*xforms.size());
+void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
+    dist.resize(XFORM_DISTRIBUTION_GRAINS*xforms.size());
     for (int i=0; i<xforms.size(); i++) {
         double acc = 0;
         std::vector<double> densities;
@@ -79,14 +78,14 @@ void Flame::readXFormDistribution(render::XFormDistribution& dist) const {
             acc += xforms[i].chaos[j]*xforms[j].weight;
             densities.push_back(acc);
         }
-        double step = acc / sizeGrains;
+        double step = acc / XFORM_DISTRIBUTION_GRAINS;
         int j = 0;
         double curr = 0;
-        for (int k=0; k<sizeGrains; k++) {
+        for (int k=0; k<XFORM_DISTRIBUTION_GRAINS; k++) {
             while (curr >= densities[j] && j<xforms.size()) {
                 j++;
             }
-            dist.data[i*sizeGrains+k] = j;
+            dist[i*XFORM_DISTRIBUTION_GRAINS+k] = j;
             curr += step;
         }
     }

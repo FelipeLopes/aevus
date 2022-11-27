@@ -12,7 +12,6 @@
 #include "render/iterator.hpp"
 #include "render/opencl.hpp"
 #include "render/xform_cl.hpp"
-#include "render/xform_distribution.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -121,14 +120,14 @@ int main(int argc, char* argv[]) {
             stateVec.push_back(st);
         }
 
-        render::XFormDistribution distrib;
+        std::vector<uint8_t> distrib;
         flame.readXFormDistribution(distrib);
 
         std::vector<render::ColorCL> paletteVec;
         flame.palette.readColorCLArray(paletteVec);
 
         render::Iterator iterator(context, flame, flameCL,
-            stateVec, distrib.data, paletteVec);
+            stateVec, distrib, paletteVec);
 
         for (int i=0; i<80; i++) {
             iterator.run();
