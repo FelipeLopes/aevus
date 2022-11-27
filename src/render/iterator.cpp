@@ -8,13 +8,16 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkSize_,
+    int localWorkSize_, int initialIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
+    globalWorkSize(globalWorkSize_),
+    localWorkSize(localWorkSize_),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1,
-        [flame] (auto& arr) {
-            flame.readInitialStateArray(arr);
+        [flame, globalWorkSize_] (auto& arr) {
+            flame.readInitialStateArray(arr, globalWorkSize_);
         }
     ),
     xformArg(kernel, 2,
@@ -32,15 +35,15 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame):
             flame.palette.readColorCLArray(arr);
         }
     ),
-    outputArg(kernel, 5, 1024*2)
+    outputArg(kernel, 5, globalWorkSize*2)
 {
-    for (int i=0; i<20; i++) {
-        kernel.run(1024, 64);
+    for (int i=0; i<initialIters; i++) {
+        kernel.run(globalWorkSize, localWorkSize);
     }
 }
 
 void Iterator::run() {
-    kernel.run(1024, 64);
+    kernel.run(globalWorkSize, localWorkSize);
 }
 
 void Iterator::readOutput(vector<float>& arr) {

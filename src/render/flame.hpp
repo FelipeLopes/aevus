@@ -13,7 +13,7 @@ public:
     Flame(double centerX, double centerY, int width, int height, Palette palette);
     tinyxml2::XMLNode* toXMLNode(tinyxml2::XMLDocument& xmlDoc);
     std::vector<XForm> xforms;
-    void readInitialStateArray(std::vector<IterationState>& arr) const;
+    void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
     void readXFormCLArray(std::vector<XFormCL>& arr) const;
     void readXFormDistribution(std::vector<uint8_t>& dist) const;
     FlameCL getFlameCL() const;

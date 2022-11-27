@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, flame);
+        render::Iterator iterator(context, flame, 1024, 64, 20);
 
         for (int i=0; i<80; i++) {
             iterator.run();

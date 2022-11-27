@@ -12,12 +12,14 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, Flame flame);
+    Iterator(const CLQueuedContext& context, Flame flame, int globalWorkSize, int localWorkSize,
+        int initialIters);
     void run();
     void readOutput(std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
+    const int globalWorkSize, localWorkSize;
 
     CLArg<FlameCL> flameCL;
     CLReadWriteBufferArg<IterationState> stateArg;
