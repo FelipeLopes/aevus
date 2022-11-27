@@ -106,19 +106,7 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        std::vector<IterationState> stateVec;
-        std::mt19937_64 rng(314159);
-        std::uniform_int_distribution<uint64_t> dist;
-        std::uniform_real_distribution<float> floatDist(-1.0, 1.0);
-        for (int i = 0; i < 1024; i++) {
-            IterationState st;
-            st.x = floatDist(rng);
-            st.y = floatDist(rng);
-            st.seed.value = dist(rng);
-            stateVec.push_back(st);
-        }
-
-        render::Iterator iterator(context, flame, stateVec);
+        render::Iterator iterator(context, flame);
 
         for (int i=0; i<80; i++) {
             iterator.run();

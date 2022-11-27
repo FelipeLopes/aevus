@@ -1,6 +1,7 @@
 #include "flame.hpp"
 #include <iomanip>
 #include <memory>
+#include <random>
 #include <sstream>
 
 namespace render {
@@ -62,7 +63,24 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
     return root;
 }
 
-void Flame::readXFormCLArray(std::vector<render::XFormCL>& arr) const {
+void Flame::readInitialStateArray(std::vector<IterationState> &arr) const {
+    std::mt19937_64 rng(314159);
+    std::uniform_int_distribution<uint64_t> seedDist;
+    std::uniform_int_distribution<uint8_t> xformDist;
+    std::uniform_real_distribution<float> posDist(-1.0, 1.0);
+    std::uniform_real_distribution<float> colorDist(0.0, 1.0);
+    for (int i = 0; i < 1024; i++) {
+        IterationState st;
+        st.x = posDist(rng);
+        st.y = posDist(rng);
+        st.c = colorDist(rng);
+        st.seed.value = seedDist(rng);
+        st.xf = xformDist(rng);
+        arr.push_back(st);
+    }
+}
+
+void Flame::readXFormCLArray(std::vector<XFormCL>& arr) const {
     arr.resize(xforms.size());
     for (int i=0; i<arr.size(); i++) {
         arr[i] = xforms[i].toXFormCL();
@@ -91,8 +109,8 @@ void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
     }
 }
 
-render::FlameCL Flame::getFlameCL() const {
-    render::FlameCL flameCL;
+FlameCL Flame::getFlameCL() const {
+    FlameCL flameCL;
     flameCL.cx = centerX;
     flameCL.cy = centerY;
     flameCL.scale = scale;

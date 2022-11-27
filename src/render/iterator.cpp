@@ -8,12 +8,15 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame,
-    vector<IterationState>& stateVec):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     flameCL(kernel, 0, flame.getFlameCL()),
-    stateArg(kernel, 1, stateVec),
+    stateArg(kernel, 1,
+        [flame] (auto& arr) {
+            flame.readInitialStateArray(arr);
+        }
+    ),
     xformArg(kernel, 2,
         [flame] (auto& arr) {
             flame.readXFormCLArray(arr);

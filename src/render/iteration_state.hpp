@@ -2,6 +2,8 @@
 
 #include <inttypes.h>
 
+namespace render {
+
 struct IterationState {
     float x, y, c;
     uint8_t xf;
@@ -12,3 +14,5 @@ struct IterationState {
         uint64_t value;
     } seed;
 };
+
+}
