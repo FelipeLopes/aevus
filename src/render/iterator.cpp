@@ -8,20 +8,27 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame, FlameCL flameCL_,
-    vector<IterationState>& stateVec,
-    vector<uint8_t>& xformDistVec, vector<ColorCL>& paletteVec):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame,
+    vector<IterationState>& stateVec):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1, stateVec),
     xformArg(kernel, 2,
-        [flame] (vector<XFormCL>& arr) {
+        [flame] (auto& arr) {
             flame.readXFormCLArray(arr);
         }
     ),
-    xformDistArg(kernel, 3, xformDistVec),
-    paletteArg(kernel, 4, paletteVec),
+    xformDistArg(kernel, 3,
+        [flame] (auto& arr) {
+            flame.readXFormDistribution(arr);
+        }
+    ),
+    paletteArg(kernel, 4,
+        [flame] (auto& arr) {
+            flame.palette.readColorCLArray(arr);
+        }
+    ),
     outputArg(kernel, 5, 1024*2)
 {
     for (int i=0; i<20; i++) {

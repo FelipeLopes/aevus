@@ -12,9 +12,8 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, Flame flame, FlameCL flameCL,
-        std::vector<IterationState>& stateVec,
-        std::vector<uint8_t>& xformDistVec, std::vector<ColorCL>& paletteVec);
+    Iterator(const CLQueuedContext& context, Flame flame,
+        std::vector<IterationState>& stateVec);
     void run();
     void readOutput(std::vector<float>& arr);
 private:

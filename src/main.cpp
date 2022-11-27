@@ -106,8 +106,6 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        auto flameCL = flame.getFlameCL();
-
         std::vector<IterationState> stateVec;
         std::mt19937_64 rng(314159);
         std::uniform_int_distribution<uint64_t> dist;
@@ -120,14 +118,7 @@ int main(int argc, char* argv[]) {
             stateVec.push_back(st);
         }
 
-        std::vector<uint8_t> distrib;
-        flame.readXFormDistribution(distrib);
-
-        std::vector<render::ColorCL> paletteVec;
-        flame.palette.readColorCLArray(paletteVec);
-
-        render::Iterator iterator(context, flame, flameCL,
-            stateVec, distrib, paletteVec);
+        render::Iterator iterator(context, flame, stateVec);
 
         for (int i=0; i<80; i++) {
             iterator.run();
