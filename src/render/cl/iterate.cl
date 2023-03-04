@@ -7,6 +7,18 @@ enum {
     XFORM_DISTRIBUTION_GRAINS_M1 = 16383
 };
 
+inline void atomic_add_f(volatile global float* addr, const float val) {
+    union {
+        uint  u32;
+        float f32;
+    } next, expected, current;
+    current.f32 = *addr;
+    do {
+        next.f32 = (expected.f32=current.f32)+val;
+        current.u32 = atomic_cmpxchg((volatile global uint*)addr, expected.u32, next.u32);
+    } while(current.u32!=expected.u32);
+}
+
 typedef union SeedUnion {
     uint2 word;
     ulong value;
@@ -109,11 +121,19 @@ __kernel void iterate(
     __global const XFormCL *xform,
     __global uchar *xformDist,
     __global float4 *palette,
-    __global int *output)
+    __global float4 *hist)
 {
     int i = get_global_id(0);
     int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
     int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
     float2 p = calcXform(xform, xfIdx, &state[i]);
-    output[i] = histogramIndex(&flameCL, p);
+    int idx = histogramIndex(&flameCL, p);
+    float4 color = (1);
+    if (idx != -1) {
+        global float* p = (global float*)&hist[idx];
+        atomic_add_f(&p[0], color.x);
+        atomic_add_f(&p[1], color.y);
+        atomic_add_f(&p[0], color.z);
+        atomic_add_f(&p[1], color.w);
+    }
 }

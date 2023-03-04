@@ -13,9 +13,8 @@ namespace render {
 class Iterator {
 public:
     Iterator(const CLQueuedContext& context, Flame flame, int globalWorkSize, int localWorkSize,
-        int initialIters);
-    void run();
-    void readOutput(std::vector<int>& arr);
+        int initialIters, int histIters);
+    void readHistogram(std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
@@ -26,7 +25,7 @@ private:
     CLReadOnlyBufferArg<XFormCL> xformArg;
     CLReadOnlyBufferArg<uint8_t> xformDistArg;
     CLReadOnlyBufferArg<ColorCL> paletteArg;
-    CLWriteOnlyBufferArg<int> outputArg;
+    CLReadWriteBufferArg<float> histogramArg;
 };
 
 }

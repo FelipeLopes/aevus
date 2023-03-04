@@ -9,7 +9,7 @@ using std::vector;
 namespace render {
 
 Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkSize_,
-    int localWorkSize_, int initialIters):
+    int localWorkSize_, int initialIters, int histIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     globalWorkSize(globalWorkSize_),
@@ -35,19 +35,22 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
             flame.palette.readColorCLArray(arr);
         }
     ),
-    outputArg(kernel, 5, globalWorkSize)
+    histogramArg(kernel, 5, 4*flame.width*flame.height)
 {
     for (int i=0; i<initialIters; i++) {
         kernel.run(globalWorkSize, localWorkSize);
     }
+    std::vector<float> zeros;
+    zeros.resize(4*flame.width*flame.height);
+    fill(zeros.begin(), zeros.end(), 0);
+    histogramArg.buffer.write(zeros);
+    for (int i=0; i<histIters; i++) {
+        kernel.run(globalWorkSize, localWorkSize);
+    }
 }
 
-void Iterator::run() {
-    kernel.run(globalWorkSize, localWorkSize);
-}
-
-void Iterator::readOutput(vector<int>& arr) {
-    outputArg.buffer.read(arr);
+void Iterator::readHistogram(vector<float>& arr) {
+    histogramArg.buffer.read(arr);
 }
 
 }

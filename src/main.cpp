@@ -107,18 +107,16 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, flame, 1024, 64, 20);
+        render::Iterator iterator(context, flame, 1024, 64, 20, 80);
 
-        for (int i=0; i<1; i++) {
-            iterator.run();
+        std::vector<float> ans;
+        iterator.readHistogram(ans);
+
+        float sum = 0;
+        for (auto& f: ans) {
+            sum += f;
         }
-
-        std::vector<int> ans;
-        iterator.readOutput(ans);
-
-        for (int i=1014; i<1024; i++) {
-            printf("%d\n", ans[i]);
-        }
+        printf("%f\n",sum);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

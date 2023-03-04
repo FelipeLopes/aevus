@@ -9,8 +9,8 @@ namespace render {
 using std::string;
 
 Flame::Flame(double centerX_, double centerY_, int width_, int height_, Palette palette_):
-    palette(palette_), centerX(centerX_), centerY(centerY_), scale(height_/2.0), width(width_),
-    height(height_)
+    width(width_), height(height_), palette(palette_), centerX(centerX_), centerY(centerY_),
+    scale(height_/2.0)
 {
 
 }

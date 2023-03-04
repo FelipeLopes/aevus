@@ -82,10 +82,15 @@ CLWriteOnlyBufferArg<T>::CLWriteOnlyBufferArg(CLExecutable& kernel, unsigned arg
 template <typename T>
 class CLReadWriteBufferArg: public CLBufferArg<T> {
 public:
+    CLReadWriteBufferArg(CLExecutable& kernel, unsigned argIndex, size_t size);
     CLReadWriteBufferArg(CLExecutable& kernel, unsigned argIndex, std::vector<T>& arg);
     CLReadWriteBufferArg(CLExecutable& kernel, unsigned argIndex,
         std::function<void(std::vector<T>&)> f);
 };
+
+template <typename T>
+CLReadWriteBufferArg<T>::CLReadWriteBufferArg(CLExecutable& kernel, unsigned argIndex,
+    size_t size): CLBufferArg<T>(kernel, CL_MEM_READ_WRITE, argIndex, size) { }
 
 template <typename T>
 CLReadWriteBufferArg<T>::CLReadWriteBufferArg(CLExecutable& kernel, unsigned argIndex,
