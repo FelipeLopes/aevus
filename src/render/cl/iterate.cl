@@ -80,7 +80,7 @@ inline int histogramIndex(FlameCL* flame, float2 p) {
     return iPos*flame->width+jPos;
 }
 
-inline float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
+inline void calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
     float2 t, acc, ans;
     t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
     t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
@@ -100,7 +100,6 @@ inline float2 calcXform(__global const XFormCL* xform, int idx, __global Iterati
     state->x = ans.x;
     state->y = ans.y;
     state->xf = idx;
-    return ans;
 }
 
 __kernel void iterate(
@@ -109,11 +108,13 @@ __kernel void iterate(
     __global const XFormCL *xform,
     __global uchar *xformDist,
     __global float4 *palette,
-    __global int *output)
+    __global float4 *output)
 {
     int i = get_global_id(0);
     int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
     int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-    float2 p = calcXform(xform, xfIdx, &state[i]);
-    output[i] = histogramIndex(&flameCL, p);
+    calcXform(xform, xfIdx, &state[i]);
+    output[i].x = state[i].x;
+    output[i].y = state[i].y;
+    output[i].z = state[i].xf;
 }

@@ -15,7 +15,7 @@ public:
     Iterator(const CLQueuedContext& context, Flame flame, int globalWorkSize, int localWorkSize,
         int initialIters);
     void run();
-    void readOutput(std::vector<int>& arr);
+    void readOutput(std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
@@ -26,7 +26,7 @@ private:
     CLReadOnlyBufferArg<XFormCL> xformArg;
     CLReadOnlyBufferArg<uint8_t> xformDistArg;
     CLReadOnlyBufferArg<ColorCL> paletteArg;
-    CLWriteOnlyBufferArg<int> outputArg;
+    CLWriteOnlyBufferArg<float> outputArg;
 };
 
 }

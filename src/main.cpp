@@ -107,17 +107,17 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, flame, 1024, 64, 20);
+        render::Iterator iterator(context, flame, 1024, 64, 0);
 
-        for (int i=0; i<80; i++) {
+        for (int i=0; i<1; i++) {
             iterator.run();
         }
 
-        std::vector<int> ans;
+        std::vector<float> ans;
         iterator.readOutput(ans);
 
         for (int i=1014; i<1024; i++) {
-            printf("%d\n",ans[i]);
+            printf("%f %f %d\n",ans[4*i], ans[4*i+1], (int)ans[4*i+2]);
         }
 
     } catch (std::exception& e) {

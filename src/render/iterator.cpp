@@ -35,7 +35,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
             flame.palette.readColorCLArray(arr);
         }
     ),
-    outputArg(kernel, 5, globalWorkSize)
+    outputArg(kernel, 5, 4*globalWorkSize)
 {
     for (int i=0; i<initialIters; i++) {
         kernel.run(globalWorkSize, localWorkSize);
@@ -46,7 +46,7 @@ void Iterator::run() {
     kernel.run(globalWorkSize, localWorkSize);
 }
 
-void Iterator::readOutput(vector<int>& arr) {
+void Iterator::readOutput(vector<float>& arr) {
     outputArg.buffer.read(arr);
 }
 

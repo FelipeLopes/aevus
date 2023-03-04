@@ -66,7 +66,7 @@ tinyxml2::XMLNode* Flame::toXMLNode(tinyxml2::XMLDocument& xmlDoc) {
 void Flame::readInitialStateArray(std::vector<IterationState> &arr, int size) const {
     std::mt19937_64 rng(314159);
     std::uniform_int_distribution<uint64_t> seedDist;
-    std::uniform_int_distribution<uint8_t> xformDist;
+    std::uniform_int_distribution<uint8_t> xformDist(0,xforms.size()-1);
     std::uniform_real_distribution<float> posDist(-1.0, 1.0);
     std::uniform_real_distribution<float> colorDist(0.0, 1.0);
     for (int i = 0; i < size; i++) {
