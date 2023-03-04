@@ -1,4 +1,4 @@
-#define BUCKET_FACTOR 1.0f-FLT_EPSILON
+#define BUCKET_FACTOR (1.0f-FLT_EPSILON)
 
 enum {
     MAX_VARIATIONS = 10,
@@ -70,17 +70,17 @@ inline int histogramIndex(FlameCL* flame, float2 p) {
     prop.y = flame->height/flame->scale;
     tl.x = flame->cx - prop.x/2;
     tl.y = flame->cy + prop.y/2;
-    if (p.x - tl.x < 0 || p.x - tl.x > prop.y) {
+    if (p.x - tl.x < 0 || p.x - tl.x > prop.x) {
         return -1;
     } else if (tl.y - p.y < 0 || tl.y - p.y > prop.y) {
         return -1;
     }
-    int iPos = (tl.y-p.y)*BUCKET_FACTOR*flame->height;
-    int jPos = (p.x-tl.x)*BUCKET_FACTOR*flame->width;
+    int iPos = (tl.y-p.y)*BUCKET_FACTOR*flame->scale;
+    int jPos = (p.x-tl.x)*BUCKET_FACTOR*flame->scale;
     return iPos*flame->width+jPos;
 }
 
-inline void calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
+inline float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
     float2 t, acc, ans;
     t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
     t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
@@ -100,6 +100,7 @@ inline void calcXform(__global const XFormCL* xform, int idx, __global Iteration
     state->x = ans.x;
     state->y = ans.y;
     state->xf = idx;
+    return ans;
 }
 
 __kernel void iterate(
@@ -108,13 +109,11 @@ __kernel void iterate(
     __global const XFormCL *xform,
     __global uchar *xformDist,
     __global float4 *palette,
-    __global float4 *output)
+    __global int *output)
 {
     int i = get_global_id(0);
     int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
     int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-    calcXform(xform, xfIdx, &state[i]);
-    output[i].x = state[i].x;
-    output[i].y = state[i].y;
-    output[i].z = state[i].xf;
+    float2 p = calcXform(xform, xfIdx, &state[i]);
+    output[i] = histogramIndex(&flameCL, p);
 }
