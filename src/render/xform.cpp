@@ -85,9 +85,9 @@ std::string XForm::chaosString() {
 std::string XForm::affineString(Affine aff) {
     std::stringstream buffer;
     buffer<<std::fixed<<std::setprecision(6)<<
-        aff.x.x<<" "<<aff.x.y<<" "<<
-        aff.y.x<<" "<<aff.y.y<<" "<<
-        aff.o.x<<" "<<aff.o.y;
+        aff.x.x<<" "<<-aff.x.y<<" "<<
+        -aff.y.x<<" "<<aff.y.y<<" "<<
+        aff.o.x<<" "<<-aff.o.y;
     return buffer.str();
 }
 
