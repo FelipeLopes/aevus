@@ -1,6 +1,7 @@
 #include "iterator.hpp"
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
+#include "density_calculator.hpp"
 #include "palette.hpp"
 #include <random>
 
@@ -42,13 +43,16 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     for (int i=0; i<initialIters; i++) {
         kernel.run(globalWorkSize, localWorkSize);
     }
-    std::vector<float> zeros;
+    vector<float> zeros;
     zeros.resize(4*flame.width*flame.height);
     fill(zeros.begin(), zeros.end(), 0);
     histogramArg.buffer.write(zeros);
     for (int i=0; i<histIters; i++) {
         kernel.run(globalWorkSize, localWorkSize);
     }
+    vector<float> arr;
+    histogramArg.buffer.read(arr);
+    DensityCalculator densityCalculator(context, 1.0, 1.0, arr);
 }
 
 void Iterator::writeImage(std::string filename) {

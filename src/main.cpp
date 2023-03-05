@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, flame, 1024, 64, 20, 80);
 
-        iterator.writeImage("gasket.pam");
+        //iterator.writeImage("gasket.pam");
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
