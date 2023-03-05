@@ -14,7 +14,6 @@ class Iterator {
 public:
     Iterator(const CLQueuedContext& context, Flame flame, int globalWorkSize, int localWorkSize,
         int initialIters, int histIters);
-    void readHistogram(std::vector<float>& arr);
     void writeImage(std::string filename);
 private:
     const CLQueuedContext& context;

@@ -109,16 +109,7 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, flame, 1024, 64, 20, 80);
 
-        std::vector<float> ans;
-        iterator.readHistogram(ans);
-
         iterator.writeImage("gasket.pam");
-
-        float sum = 0;
-        for (auto& f: ans) {
-            sum += f;
-        }
-        printf("%f\n",sum);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

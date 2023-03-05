@@ -51,10 +51,6 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     }
 }
 
-void Iterator::readHistogram(vector<float>& arr) {
-    histogramArg.buffer.read(arr);
-}
-
 void Iterator::writeImage(std::string filename) {
     std::ostringstream os;
     os << "P7\nWIDTH " << width <<
@@ -63,6 +59,11 @@ void Iterator::writeImage(std::string filename) {
     FILE* f = fopen(filename.c_str(),"wb");
     std::string s = os.str();
     fwrite(s.c_str(), 1, s.size(), f);
+    vector<float> arr;
+    histogramArg.buffer.read(arr);
+    for (int i=0; i<arr.size(); i++) {
+        fputc(((arr[i] > 0.0) || (i%4 == 3)) ? 255 : 0,f);
+    }
 }
 
 }
