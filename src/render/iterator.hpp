@@ -15,10 +15,12 @@ public:
     Iterator(const CLQueuedContext& context, Flame flame, int globalWorkSize, int localWorkSize,
         int initialIters, int histIters);
     void readHistogram(std::vector<float>& arr);
+    void writeImage(std::string filename);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
     const int globalWorkSize, localWorkSize;
+    const int width, height;
 
     CLArg<FlameCL> flameCL;
     CLReadWriteBufferArg<IterationState> stateArg;

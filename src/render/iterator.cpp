@@ -14,6 +14,8 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     globalWorkSize(globalWorkSize_),
     localWorkSize(localWorkSize_),
+    width(flame.width),
+    height(flame.height),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1,
         [flame, globalWorkSize_] (auto& arr) {
@@ -35,7 +37,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
             flame.palette.readColorCLArray(arr);
         }
     ),
-    histogramArg(kernel, 5, 4*flame.width*flame.height)
+    histogramArg(kernel, 5, 4*width*height)
 {
     for (int i=0; i<initialIters; i++) {
         kernel.run(globalWorkSize, localWorkSize);
@@ -51,6 +53,16 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
 
 void Iterator::readHistogram(vector<float>& arr) {
     histogramArg.buffer.read(arr);
+}
+
+void Iterator::writeImage(std::string filename) {
+    std::ostringstream os;
+    os << "P7\nWIDTH " << width <<
+        "\nHEIGHT "<< height <<
+        "\nDEPTH 4\nMAXVAL 255\nTUPLTYPE RGB_ALPHA\nENDHDR\n";
+    FILE* f = fopen(filename.c_str(),"wb");
+    std::string s = os.str();
+    fwrite(s.c_str(), 1, s.size(), f);
 }
 
 }

@@ -7,7 +7,7 @@ enum {
     XFORM_DISTRIBUTION_GRAINS_M1 = 16383
 };
 
-inline void atomic_add_f(volatile global float* addr, const float val) {
+inline void atomic_add_f(global float* addr, const float val) {
     union {
         uint  u32;
         float f32;
@@ -17,6 +17,14 @@ inline void atomic_add_f(volatile global float* addr, const float val) {
         next.f32 = (expected.f32=current.f32)+val;
         current.u32 = atomic_cmpxchg((volatile global uint*)addr, expected.u32, next.u32);
     } while(current.u32!=expected.u32);
+}
+
+inline void atomic_add_f4(global float4* addr, const float4 val) {
+    global float* p = (global float*)addr;
+    atomic_add_f(&p[0], val.x);
+    atomic_add_f(&p[1], val.y);
+    atomic_add_f(&p[2], val.z);
+    atomic_add_f(&p[3], val.w);
 }
 
 typedef union SeedUnion {
@@ -130,10 +138,6 @@ __kernel void iterate(
     int idx = histogramIndex(&flameCL, p);
     float4 color = (1);
     if (idx != -1) {
-        global float* p = (global float*)&hist[idx];
-        atomic_add_f(&p[0], color.x);
-        atomic_add_f(&p[1], color.y);
-        atomic_add_f(&p[0], color.z);
-        atomic_add_f(&p[1], color.w);
+        atomic_add_f4(&hist[idx], color);
     }
 }

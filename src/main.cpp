@@ -112,6 +112,8 @@ int main(int argc, char* argv[]) {
         std::vector<float> ans;
         iterator.readHistogram(ans);
 
+        iterator.writeImage("gasket.pam");
+
         float sum = 0;
         for (auto& f: ans) {
             sum += f;
