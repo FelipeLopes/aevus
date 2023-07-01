@@ -20,7 +20,6 @@ public:
     FlameCL getFlameCL() const;
     const Palette palette;
     const static int XFORM_DISTRIBUTION_GRAINS = 16384;
-private:
     double centerX, centerY, scale;
 };
 

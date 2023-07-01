@@ -12,6 +12,9 @@
 #include "render/iteration_state.hpp"
 #include "render/iterator.hpp"
 #include "render/opencl.hpp"
+#include "render/palette.hpp"
+#include "render/variation.hpp"
+#include "render/xform.hpp"
 #include "render/xform_cl.hpp"
 
 using boost::gil::rgb8_pixel_t;
@@ -70,10 +73,10 @@ public:
 
         return params;
     }
+    static const boost::gil::rgb8_pixel_t RED, WHITE;
 private:
     const map<double, gasket::KeyGasket>* keyGasketsMap = nullptr;
     map<double, int> scaleIndex;
-    static const boost::gil::rgb8_pixel_t RED, WHITE;
 };
 
 const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
@@ -101,13 +104,25 @@ int main(int argc, char* argv[]) {
 
         tinyxml2::XMLDocument xmlDoc;
         auto flame = gz.getFlame(3, 10);
-        auto node = flame.toXMLNode(xmlDoc);
+        /*auto node = flame.toXMLNode(xmlDoc);
+        xmlDoc.InsertFirstChild(node);
+        xmlDoc.SaveFile(stdout);*/
+
+        auto squareFlame = render::Flame(0, 0, 400, 400, render::Palette(ColorerImpl::WHITE));
+        squareFlame.scale = 800;
+        render::XForm xform;
+        xform.variations[render::Variation::VariationID::SQUARE] = 1;
+        xform.chaos.resize(1);
+        xform.chaos[0]=1;
+        squareFlame.xforms.push_back(xform);
+
+        auto node = squareFlame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, flame, 1024, 64, 20, 80);
+        render::Iterator iterator(context, squareFlame, 1024, 64, 20, 80);
 
         //iterator.writeImage("gasket.pam");
 

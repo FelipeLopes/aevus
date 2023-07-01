@@ -9,7 +9,8 @@ struct Variation {
     enum VariationID {
         NO_VARIATION = -1,
         LINEAR = 0,
-        SPHERICAL = 2
+        SPHERICAL = 2,
+        SQUARE = 44
     };
 
     const static std::map<VariationID, std::string> names;

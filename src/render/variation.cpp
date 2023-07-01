@@ -6,6 +6,7 @@ namespace render {
 const std::map<Variation::VariationID, std::string> Variation::names =
     boost::assign::map_list_of
         (Variation::LINEAR, "linear")
-        (Variation::SPHERICAL, "spherical");
+        (Variation::SPHERICAL, "spherical")
+        (Variation::SQUARE, "square");
 
 }

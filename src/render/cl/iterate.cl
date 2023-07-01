@@ -41,7 +41,8 @@ typedef struct IterationState {
 typedef enum VariationID {
     NO_VARIATION = -1,
     LINEAR = 0,
-    SPHERICAL = 2
+    SPHERICAL = 2,
+    SQUARE = 44
 } VariationID;
 
 typedef struct VariationData {
@@ -60,12 +61,15 @@ typedef struct FlameCL {
     int width, height;
 } FlameCL;
 
-inline uint mwc64x(__global SeedUnion* s)
-{
+inline uint mwc64x(__global SeedUnion* s) {
 	uint c = s->word.y;
     uint x = s->word.x;
     s->value = x*((ulong)MWC64X_A) + c;
 	return x^c;
+}
+
+inline float mwc64x01(__global SeedUnion* s) {
+    return mwc64x(s) * (1.0f / 4294967296.0f);
 }
 
 inline float zeps(float f) {
@@ -81,6 +85,13 @@ inline float2 spherical(float2 p) {
     float2 ans;
     ans.x = invR2*p.x;
     ans.y = invR2*p.y;
+    return ans;
+}
+
+inline float2 square(__global SeedUnion* s) {
+    float2 ans;
+    ans.x = mwc64x01(s) - 0.5f;
+    ans.y = mwc64x01(s) - 0.5f;
     return ans;
 }
 
@@ -111,6 +122,7 @@ inline float2 calcXform(__global const XFormCL* xform, int idx, __global Iterati
         switch (xform[idx].varData[i].id) {
             case LINEAR: acc += xform[idx].varData[i].weight*linear(t); break;
             case SPHERICAL: acc += xform[idx].varData[i].weight*spherical(t); break;
+            case SQUARE: acc += xform[idx].varData[i].weight*square(&state->seed); break;
             default: break;
         }
         i++;
