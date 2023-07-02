@@ -1,7 +1,7 @@
 #include "iterator.hpp"
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
-#include "density_calculator.hpp"
+#include "tone_mapper.hpp"
 #include "palette.hpp"
 #include <random>
 
@@ -52,7 +52,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     }
     vector<float> arr;
     histogramArg.buffer.read(arr);
-    DensityCalculator densityCalculator(context, 1.0, 1.0, arr);
+    ToneMapper toneMapper(context, 1.0, 1.0, arr);
 }
 
 void Iterator::writeImage(std::string filename) {

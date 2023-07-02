@@ -5,9 +5,9 @@
 
 namespace render {
 
-class DensityCalculator {
+class ToneMapper {
 public:
-    DensityCalculator(const CLQueuedContext& context, float scale, float slope,
+    ToneMapper(const CLQueuedContext& context, float scale, float slope,
         std::vector<float>& hist);
 private:
     const CLQueuedContext& context;
