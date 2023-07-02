@@ -16,7 +16,7 @@ public:
     void setArg(unsigned int argIndex, const T& arg);
     template <typename T>
     void setBufferArg(unsigned int argIndex, const CLBuffer<T>& arg);
-    void run(const size_t globalWorkSize, const size_t localWorkSize);
+    void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
     const CLQueuedContext& context;
 private:
     cl_program program;

@@ -34,12 +34,17 @@ CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name, s
     }
 }
 
-void CLExecutable::run(const size_t globalWorkSize, const size_t localWorkSize) {
+void CLExecutable::runBlocking(const size_t globalWorkSize, const size_t localWorkSize) {
     cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,
         &globalWorkSize, &localWorkSize, 0, NULL, NULL);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not run OpenCL kernel");
+    }
+    ret = clFinish(context.defaultQueue.commandQueue);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "OpenCL kernel finished with error");
     }
 }
 

@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
         xmlDoc.SaveFile(stdout);*/
 
         auto squareFlame = render::Flame(0, 0, 400, 400, render::Palette(ColorerImpl::WHITE));
-        squareFlame.scale = 800;
+        squareFlame.scale = 400;
         render::XForm xform;
         xform.variations[render::Variation::VariationID::SQUARE] = 1;
         xform.chaos.resize(1);

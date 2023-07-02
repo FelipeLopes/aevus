@@ -40,7 +40,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, i
     histogramArg(kernel, 5, 4*width*height)
 {
     for (int i=0; i<initialIters; i++) {
-        kernel.run(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     vector<float> zeros;
     zeros.resize(4*flame.width*flame.height);
@@ -48,9 +48,9 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, i
     histogramArg.buffer.write(zeros);
     int samples = width*height*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
-        kernel.run(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
-    kernel.run(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     vector<float> arr;
     histogramArg.buffer.read(arr);
     ToneMapper toneMapper(context, scale, 1.0, arr);
