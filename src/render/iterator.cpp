@@ -39,11 +39,12 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, i
     ),
     histogramArg(kernel, 5, 4*width*height)
 {
+    int area = width*height;
     for (int i=0; i<initialIters; i++) {
         kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     vector<float> zeros;
-    zeros.resize(4*flame.width*flame.height);
+    zeros.resize(4*area);
     fill(zeros.begin(), zeros.end(), 0);
     histogramArg.buffer.write(zeros);
     int samples = width*height*quality;
@@ -53,7 +54,9 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, i
     kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     vector<float> arr;
     histogramArg.buffer.read(arr);
-    ToneMapper toneMapper(context, scale, 1.0, arr);
+    double scale2 = ((double)scale)*scale;
+    double ref = 1.0*quality*area/scale2;
+    ToneMapper toneMapper(context, 268.0/256, 1.0/ref, arr);
 }
 
 void Iterator::writeImage(std::string filename) {

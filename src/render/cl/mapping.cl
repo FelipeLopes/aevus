@@ -1,3 +1,3 @@
-__kernel void mapping(float scale, float slope, __global float4* hist) {
+__kernel void mapping(float a, float b, __global float4* hist) {
 
 }

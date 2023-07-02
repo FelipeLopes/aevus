@@ -7,14 +7,14 @@ namespace render {
 
 class ToneMapper {
 public:
-    ToneMapper(const CLQueuedContext& context, float scale, float slope,
+    ToneMapper(const CLQueuedContext& context, float a, float b,
         std::vector<float>& hist);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
 
-    CLArg<float> scaleArg;
-    CLArg<float> slopeArg;
+    CLArg<float> aArg;
+    CLArg<float> bArg;
     CLReadWriteBufferArg<float> histArg;
 };
 
