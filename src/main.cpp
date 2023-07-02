@@ -122,7 +122,7 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, squareFlame, 200, 20, 80);
+        render::Iterator iterator(context, squareFlame, 200, 20);
 
         //iterator.writeImage("gasket.pam");
 

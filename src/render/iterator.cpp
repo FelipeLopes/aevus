@@ -9,8 +9,7 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_,
-    int initialIters, int histIters):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, int initialIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame.width),
@@ -47,12 +46,14 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_,
     zeros.resize(4*flame.width*flame.height);
     fill(zeros.begin(), zeros.end(), 0);
     histogramArg.buffer.write(zeros);
-    for (int i=0; i<histIters; i++) {
+    int samples = width*height*quality;
+    for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
         kernel.run(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
+    kernel.run(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     vector<float> arr;
     histogramArg.buffer.read(arr);
-    ToneMapper toneMapper(context, 1.0, 1.0, arr);
+    ToneMapper toneMapper(context, scale, 1.0, arr);
 }
 
 void Iterator::writeImage(std::string filename) {
