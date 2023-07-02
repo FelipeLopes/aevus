@@ -9,16 +9,18 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkSize_,
-    int localWorkSize_, int initialIters, int histIters):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_,
+    int initialIters, int histIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame.width),
     height(flame.height),
+    scale(flame.scale),
+    quality(quality_),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1,
-        [flame, globalWorkSize_] (auto& arr) {
-            flame.readInitialStateArray(arr, globalWorkSize_);
+        [flame] (auto& arr) {
+            flame.readInitialStateArray(arr, GLOBAL_WORK_SIZE);
         }
     ),
     xformArg(kernel, 2,
