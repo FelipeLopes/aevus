@@ -9,7 +9,8 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, int initialIters):
+Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, double brightness,
+    int initialIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame.width),
@@ -56,7 +57,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, i
     histogramArg.buffer.read(arr);
     double scale2 = ((double)scale)*scale;
     double ref = 1.0*quality*area/scale2;
-    ToneMapper toneMapper(context, 268.0/256, 1.0/ref, arr);
+    ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
 }
 
 void Iterator::writeImage(std::string filename) {

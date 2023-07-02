@@ -12,7 +12,8 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, Flame flame, int quality, int initialIters);
+    Iterator(const CLQueuedContext& context, Flame flame, int quality, double brightness,
+        int initialIters);
     void writeImage(std::string filename);
 private:
     const CLQueuedContext& context;
