@@ -13,8 +13,6 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     int localWorkSize_, int initialIters, int histIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
-    globalWorkSize(globalWorkSize_),
-    localWorkSize(localWorkSize_),
     width(flame.width),
     height(flame.height),
     flameCL(kernel, 0, flame.getFlameCL()),
@@ -41,14 +39,14 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int globalWorkS
     histogramArg(kernel, 5, 4*width*height)
 {
     for (int i=0; i<initialIters; i++) {
-        kernel.run(globalWorkSize, localWorkSize);
+        kernel.run(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     vector<float> zeros;
     zeros.resize(4*flame.width*flame.height);
     fill(zeros.begin(), zeros.end(), 0);
     histogramArg.buffer.write(zeros);
     for (int i=0; i<histIters; i++) {
-        kernel.run(globalWorkSize, localWorkSize);
+        kernel.run(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     vector<float> arr;
     histogramArg.buffer.read(arr);

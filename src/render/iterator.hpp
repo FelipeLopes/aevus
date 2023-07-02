@@ -18,7 +18,6 @@ public:
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
-    const int globalWorkSize, localWorkSize;
     const int width, height;
 
     CLArg<FlameCL> flameCL;
@@ -27,6 +26,9 @@ private:
     CLReadOnlyBufferArg<uint8_t> xformDistArg;
     CLReadOnlyBufferArg<ColorCL> paletteArg;
     CLReadWriteBufferArg<float> histogramArg;
+
+    static const int GLOBAL_WORK_SIZE = 1024;
+    static const int LOCAL_WORK_SIZE = 64;
 };
 
 }
