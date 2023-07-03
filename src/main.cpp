@@ -84,6 +84,7 @@ const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
 int main(int argc, char* argv[]) {
     try {
+        /*
         DiverImpl<mpq_class> diver(200, 314159);
         ColorerImpl colorer;
         typedef gasket::Zoom<mpq_class, DiverImpl<mpq_class>, ColorerImpl> GasketZoom;
@@ -92,7 +93,7 @@ int main(int argc, char* argv[]) {
             .withScales(mpq_class(-50,150), mpq_class(1,150), 22050)
             .withImageSize(480, 270)
             .build(diver, colorer);
-        /*
+
         for (int i=0; i<900; i++) {
             tinyxml2::XMLDocument xmlDoc;
             auto node = gz.getFlame(20+i*1./150).toXMLNode(xmlDoc);
@@ -100,25 +101,28 @@ int main(int argc, char* argv[]) {
             std::ostringstream ss;
             ss<<"/home/felipe/zoom/frame"<<std::setfill('0')<<std::setw(3)<<i<<".flame";
             xmlDoc.SaveFile(ss.str().c_str());
-        }*/
+        }
 
         tinyxml2::XMLDocument xmlDoc;
         auto flame = gz.getFlame(3, 10);
-        /*auto node = flame.toXMLNode(xmlDoc);
+        auto node = flame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);*/
 
+        double a;
+        if (argc < 2) {
+            a = 1;
+        } else {
+            sscanf(argv[1], "%lf", &a);
+        }
+
         auto squareFlame = render::Flame(0, 0, 400, 400, render::Palette(ColorerImpl::WHITE));
-        squareFlame.scale = 400;
-        render::XForm xform;
-        xform.variations[render::Variation::VariationID::SQUARE] = 1;
+        squareFlame.scale = ceil(400*sqrt(a));
+        render::XForm xform(render::Variation::VariationID::SQUARE, Affine(),
+            Affine(1/sqrt(a),0,0,1/sqrt(a),0,0));
         xform.chaos.resize(1);
         xform.chaos[0]=1;
         squareFlame.xforms.push_back(xform);
-
-        auto node = squareFlame.toXMLNode(xmlDoc);
-        xmlDoc.InsertFirstChild(node);
-        xmlDoc.SaveFile(stdout);
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
