@@ -9,6 +9,7 @@ class ToneMapper {
 public:
     ToneMapper(const CLQueuedContext& context, int area, float a, float b,
         std::vector<float>& hist);
+    void readOutput(std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     const int area;

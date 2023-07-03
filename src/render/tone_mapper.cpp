@@ -14,4 +14,8 @@ ToneMapper::ToneMapper(const CLQueuedContext& context_, int area_, float a, floa
     kernel.runBlocking(area, LOCAL_WORK_SIZE);
 }
 
+void ToneMapper::readOutput(std::vector<float> &arr) {
+    histArg.buffer.read(arr);
+}
+
 }

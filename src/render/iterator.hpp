@@ -14,7 +14,7 @@ class Iterator {
 public:
     Iterator(const CLQueuedContext& context, Flame flame, int quality, double brightness,
         int initialIters);
-    void writeImage(std::string filename);
+    void writeImage(std::string filename, std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;

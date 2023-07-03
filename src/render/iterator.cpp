@@ -58,9 +58,11 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, d
     double scale2 = ((double)scale)*scale;
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
+    toneMapper.readOutput(arr);
+    writeImage("square.pam", arr);
 }
 
-void Iterator::writeImage(std::string filename) {
+void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
     std::ostringstream os;
     os << "P7\nWIDTH " << width <<
         "\nHEIGHT "<< height <<
@@ -68,10 +70,10 @@ void Iterator::writeImage(std::string filename) {
     FILE* f = fopen(filename.c_str(),"wb");
     std::string s = os.str();
     fwrite(s.c_str(), 1, s.size(), f);
-    vector<float> arr;
     histogramArg.buffer.read(arr);
     for (int i=0; i<arr.size(); i++) {
-        fputc(((arr[i] > 0.0) || (i%4 == 3)) ? 255 : 0,f);
+        uint8_t val = (i%4 == 3) ? 255 : (uint8_t)(arr[i]*255 + 0.5);
+        fputc(val,f);
     }
 }
 
