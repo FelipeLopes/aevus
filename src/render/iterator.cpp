@@ -71,7 +71,7 @@ void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
     std::string s = os.str();
     fwrite(s.c_str(), 1, s.size(), f);
     for (int i=0; i<arr.size(); i++) {
-        uint8_t val = (arr[i] > 1.0 || i%4 == 3) ? 255 : (uint8_t)(arr[i]*255 + 0.5);
+        uint8_t val = (arr[i] > 1.0 || i%4 == 3) ? 255 : (uint8_t)(arr[i]*255);
         fputc(val,f);
     }
 }
