@@ -6,25 +6,25 @@ using std::to_string;
 
 namespace render {
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, std::string name) {
+XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
 
 }
 
-XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, std::string name):
+XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
 string XMLAttributeInt::value() {
     return to_string(val);
 }
 
-XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, std::string name):
+XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
 string XMLAttributeDouble::value() {
     return to_string(val);
 }
 
-XMLAttributeString::XMLAttributeString(XMLElementClass& element, std::string name):
+XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
 string XMLAttributeString::value() {
