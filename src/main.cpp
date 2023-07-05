@@ -91,18 +91,30 @@ using render::XMLAttributeString;
 
 class TestClass : public XMLElementClass {
 public:
-    TestClass();
+    TestClass(XMLElementClass& el);
     XMLAttributeInt testInt;
     XMLAttributeDouble testDouble;
     XMLAttributeString testString;
     XMLContentString content;
 };
 
-TestClass::TestClass(): XMLElementClass("test"),
+TestClass::TestClass(XMLElementClass& el): XMLElementClass(el, "test"),
     testInt(*this, "testInt"),
     testDouble(*this, "testDouble"),
     testString(*this, "testString"),
     content(*this)
+{
+
+}
+
+class RootClass : public XMLElementClass {
+public:
+    RootClass();
+    TestClass testClass;
+};
+
+RootClass::RootClass(): XMLElementClass("root"),
+    testClass(*this)
 {
 
 }
@@ -153,21 +165,27 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, squareFlame, 1, 4, 20);
 
-        TestClass testClass;
+        RootClass rootClass;
+
+        printf("%s\n",rootClass.tag.c_str());
 
         //iterator.writeImage("gasket.pam");
 
-        testClass.testDouble.val = 3.14;
-        testClass.testInt.val = 420;
-        testClass.testString.val = "hello";
-        testClass.content.val = "content";
+        rootClass.testClass.testDouble.val = 3.14;
+        rootClass.testClass.testInt.val = 420;
+        rootClass.testClass.testString.val = "hello";
+        rootClass.testClass.content.val = "content";
 
-        for (auto el: testClass.attributes) {
+        auto child = rootClass.children.front();
+
+        printf("%s\n",child->tag.c_str());
+
+        for (auto el: child->attributes) {
             printf("%s\n",el.first.c_str());
             printf("%s\n",el.second->value().c_str());
         }
 
-        printf("%s\n",testClass.content.val.c_str());
+        printf("%s\n",child->contentString->val.c_str());
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
