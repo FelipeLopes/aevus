@@ -16,6 +16,7 @@
 #include "render/variation.hpp"
 #include "render/xform.hpp"
 #include "render/xform_cl.hpp"
+#include "render/xml_serialization.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -82,6 +83,30 @@ private:
 const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
 const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
+using render::XMLElementClass;
+using render::XMLContentString;
+using render::XMLAttributeInt;
+using render::XMLAttributeDouble;
+using render::XMLAttributeString;
+
+class TestClass : public XMLElementClass {
+public:
+    TestClass();
+    XMLAttributeInt testInt;
+    XMLAttributeDouble testDouble;
+    XMLAttributeString testString;
+    XMLContentString content;
+};
+
+TestClass::TestClass(): XMLElementClass("test"),
+    testInt(*this, "testInt"),
+    testDouble(*this, "testDouble"),
+    testString(*this, "testString"),
+    content(*this)
+{
+
+}
+
 int main(int argc, char* argv[]) {
     try {
         /*
@@ -126,7 +151,9 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, squareFlame, 200, 4, 20);
+        render::Iterator iterator(context, squareFlame, 1, 4, 20);
+
+        TestClass testClass;
 
         //iterator.writeImage("gasket.pam");
 

@@ -59,7 +59,7 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, d
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
     toneMapper.readOutput(arr);
-    writeImage("square.pam", arr);
+    writeImage("../square.pam", arr);
 }
 
 void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
