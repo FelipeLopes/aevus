@@ -7,7 +7,7 @@ using std::to_string;
 namespace render {
 
 XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
-
+    element.attributes[name] = this;
 }
 
 XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
@@ -37,6 +37,10 @@ XMLContentString::XMLContentString(XMLElementClass& element) {
 
 XMLElementClass::XMLElementClass(std::string tag_): tag(tag_) {
 
+}
+
+XMLElementClass::XMLElementClass(XMLElementClass& element, std::string tag_): tag(tag_) {
+    element.children.push_back(this);
 }
 
 }

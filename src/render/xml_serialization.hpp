@@ -47,11 +47,11 @@ public:
 class XMLElementClass {
 public:
     XMLElementClass(std::string tag);
+    XMLElementClass(XMLElementClass& element, std::string tag);
     std::string contentString;
     std::string tag;
-private:
-    std::deque<XMLElementClass> children;
-    std::map<std::string, std::unique_ptr<XMLAttributeField>> attributes;
+    std::deque<XMLElementClass*> children;
+    std::map<std::string, XMLAttributeField*> attributes;
 };
 
 }
