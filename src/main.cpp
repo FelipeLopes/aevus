@@ -160,11 +160,14 @@ int main(int argc, char* argv[]) {
         testClass.testDouble.val = 3.14;
         testClass.testInt.val = 420;
         testClass.testString.val = "hello";
+        testClass.content.val = "content";
 
         for (auto el: testClass.attributes) {
             printf("%s\n",el.first.c_str());
             printf("%s\n",el.second->value().c_str());
         }
+
+        printf("%s\n",testClass.content.val.c_str());
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

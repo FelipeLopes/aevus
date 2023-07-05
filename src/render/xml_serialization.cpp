@@ -32,7 +32,7 @@ string XMLAttributeString::value() {
 }
 
 XMLContentString::XMLContentString(XMLElementClass& element) {
-    element.contentString = val;
+    element.contentString = this;
 }
 
 XMLElementClass::XMLElementClass(std::string tag_): tag(tag_) {
