@@ -78,13 +78,20 @@ XMLElementClass::XMLElementClass(XMLElementClass& element, std::string tag_): ta
     element.children.push_back(this);
 }
 
-XMLNode* XMLElementClass::serialize(XMLDocument& xmlDoc) {
+void XMLElementClass::serialize(FILE *fp) {
+    tinyxml2::XMLDocument xmlDoc;
+    auto node = nodeSerialize(xmlDoc);
+    xmlDoc.InsertFirstChild(node);
+    xmlDoc.SaveFile(stdout);
+}
+
+XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
     for (auto kv: attributes) {
         element->SetAttribute(kv.first.c_str(), kv.second->text().c_str());
     }
     for (auto child: children) {
-        element->InsertEndChild(child->serialize(xmlDoc));
+        element->InsertEndChild(child->nodeSerialize(xmlDoc));
     }
     if (contentString != NULL) {
         element->SetText(contentString->getValue().c_str());

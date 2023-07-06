@@ -61,11 +61,13 @@ class XMLElementClass {
 public:
     XMLElementClass(std::string tag);
     XMLElementClass(XMLElementClass& element, std::string tag);
-    tinyxml2::XMLNode* serialize(tinyxml2::XMLDocument& xmlDoc);
+    void serialize(FILE* fp);
     std::string tag;
     std::vector<XMLElementClass*> children;
     std::map<std::string, XMLAttributeField*> attributes;
     XMLContentString* contentString;
+private:
+    tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
 };
 
 }

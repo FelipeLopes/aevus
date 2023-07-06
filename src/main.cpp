@@ -174,11 +174,7 @@ int main(int argc, char* argv[]) {
         rootClass.testClass.testString.setValue("hello");
         rootClass.testClass.content.setValue("content");
 
-        tinyxml2::XMLDocument xmlDoc;
-        auto node = rootClass.serialize(xmlDoc);
-        xmlDoc.InsertFirstChild(node);
-        xmlDoc.SaveFile(stdout);
-
+        rootClass.serialize(stdout);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
