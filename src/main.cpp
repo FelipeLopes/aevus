@@ -167,25 +167,18 @@ int main(int argc, char* argv[]) {
 
         RootClass rootClass;
 
-        printf("%s\n",rootClass.tag.c_str());
-
         //iterator.writeImage("gasket.pam");
 
-        rootClass.testClass.testDouble.val = 3.14;
-        rootClass.testClass.testInt.val = 420;
-        rootClass.testClass.testString.val = "hello";
-        rootClass.testClass.content.val = "content";
+        rootClass.testClass.testDouble.setValue(3.14);
+        rootClass.testClass.testInt.setValue(420);
+        rootClass.testClass.testString.setValue("hello");
+        rootClass.testClass.content.setValue("content");
 
-        auto child = rootClass.children.front();
+        tinyxml2::XMLDocument xmlDoc;
+        auto node = rootClass.serialize(xmlDoc);
+        xmlDoc.InsertFirstChild(node);
+        xmlDoc.SaveFile(stdout);
 
-        printf("%s\n",child->tag.c_str());
-
-        for (auto el: child->attributes) {
-            printf("%s\n",el.first.c_str());
-            printf("%s\n",el.second->value().c_str());
-        }
-
-        printf("%s\n",child->contentString->val.c_str());
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
