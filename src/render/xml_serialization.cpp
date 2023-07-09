@@ -22,6 +22,15 @@ string XMLAttributeInt::text() {
     return to_string(val);
 }
 
+void XMLAttributeInt::deserialize(XMLElement* element, std::string name) {
+    auto err = element->QueryIntAttribute(name.c_str(), &val);
+    if (err != tinyxml2::XML_SUCCESS) {
+        auto ec = std::error_code(err, std::generic_category());
+        string msg("Could not load int attribute with name ");
+        throw std::system_error(ec, msg + name);
+    }
+}
+
 int XMLAttributeInt::getValue() {
     return val;
 }
@@ -37,6 +46,15 @@ string XMLAttributeDouble::text() {
     return to_string(val);
 }
 
+void XMLAttributeDouble::deserialize(XMLElement* element, std::string name) {
+    auto err = element->QueryDoubleAttribute(name.c_str(), &val);
+    if (err != tinyxml2::XML_SUCCESS) {
+        auto ec = std::error_code(err, std::generic_category());
+        string msg("Could not load double attribute with name ");
+        throw std::system_error(ec, msg + name);
+    }
+}
+
 double XMLAttributeDouble::getValue() {
     return val;
 }
@@ -50,6 +68,17 @@ XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name):
 
 string XMLAttributeString::text() {
     return val;
+}
+
+void XMLAttributeString::deserialize(XMLElement* element, std::string name) {
+    const char* buf;
+    auto err = element->QueryStringAttribute(name.c_str(), &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        auto ec = std::error_code(err, std::generic_category());
+        string msg("Could not load int attribute with name ");
+        throw std::system_error(ec, msg + name);
+    }
+    val = buf;
 }
 
 string XMLAttributeString::getValue() {
@@ -127,6 +156,9 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
     string name = element->Name();
     if (name != tag) {
         throw std::invalid_argument("XML node has invalid tag");
+    }
+    for (auto kv: attributes) {
+        kv.second->deserialize(element, kv.first);
     }
     XMLNode* childNode = node->FirstChild();
     for (auto child: children) {

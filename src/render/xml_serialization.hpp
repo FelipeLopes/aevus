@@ -16,6 +16,7 @@ class XMLAttributeField {
 public:
     XMLAttributeField(XMLElementClass& element, std::string name);
     virtual std::string text() = 0;
+    virtual void deserialize(tinyxml2::XMLElement* element, std::string name) = 0;
     virtual ~XMLAttributeField() { }
 };
 
@@ -23,6 +24,7 @@ class XMLAttributeInt : public XMLAttributeField {
 public:
     XMLAttributeInt(XMLElementClass& element, std::string name);
     virtual std::string text();
+    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     int getValue();
     void setValue(int value);
 private:
@@ -33,6 +35,7 @@ class XMLAttributeDouble : public XMLAttributeField {
 public:
     XMLAttributeDouble(XMLElementClass& element, std::string name);
     virtual std::string text();
+    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     double getValue();
     void setValue(double value);
 private:
@@ -43,6 +46,7 @@ class XMLAttributeString : public XMLAttributeField {
 public:
     XMLAttributeString(XMLElementClass& element, std::string name);
     virtual std::string text();
+    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     std::string getValue();
     void setValue(std::string value);
 private:
