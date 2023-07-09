@@ -169,6 +169,7 @@ int main(int argc, char* argv[]) {
 
         FILE* fp = fopen("in.xml", "r");
         rootClass.deserialize(fp);
+        fclose(fp);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
