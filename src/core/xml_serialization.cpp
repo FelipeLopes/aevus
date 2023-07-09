@@ -9,7 +9,7 @@ using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
 using tinyxml2::XMLNode;
 
-namespace render {
+namespace core {
 
 XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
     element.attributes[name] = this;

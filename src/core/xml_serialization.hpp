@@ -8,7 +8,7 @@
 #include <system_error>
 #include <tinyxml2.h>
 
-namespace render {
+namespace core {
 
 class XMLElementClass;
 

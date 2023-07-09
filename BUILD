@@ -10,6 +10,15 @@ cc_library(
 )
 
 cc_library(
+    name = "core",
+    srcs = glob(["src/core/*.cpp"]),
+    hdrs = glob(["src/core/*.hpp"]),
+    deps = [
+        "@tinyxml2//:tinyxml2",
+    ]
+)
+
+cc_library(
     name = "render",
     srcs = glob(["src/render/*.cpp"]),
     hdrs = glob(["src/render/*.hpp"]),
@@ -26,6 +35,7 @@ cc_binary(
     deps = [
         ":gasket",
         ":render",
+        ":core",
         "@opencl//:opencl"
     ],
 )

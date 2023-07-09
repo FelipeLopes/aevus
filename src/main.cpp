@@ -16,7 +16,7 @@
 #include "render/variation.hpp"
 #include "render/xform.hpp"
 #include "render/xform_cl.hpp"
-#include "render/xml_serialization.hpp"
+#include "core/xml_serialization.hpp"
 
 using boost::gil::rgb8_pixel_t;
 using std::map;
@@ -83,11 +83,11 @@ private:
 const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
 const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
-using render::XMLElementClass;
-using render::XMLContentString;
-using render::XMLAttributeInt;
-using render::XMLAttributeDouble;
-using render::XMLAttributeString;
+using core::XMLElementClass;
+using core::XMLContentString;
+using core::XMLAttributeInt;
+using core::XMLAttributeDouble;
+using core::XMLAttributeString;
 
 class TestClass : public XMLElementClass {
 public:
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
 
         RootClass rootClass;
 
-        FILE* fp = fopen("in.xml", "r");
+        FILE* fp = fopen("../in.xml", "r");
         rootClass.deserialize(fp);
         fclose(fp);
 

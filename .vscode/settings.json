@@ -1,2 +1,5 @@
 {
+    "bsv.cc.compdb.targets": [
+        "aevus"
+    ]
 }
