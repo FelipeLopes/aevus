@@ -167,14 +167,8 @@ int main(int argc, char* argv[]) {
 
         RootClass rootClass;
 
-        //iterator.writeImage("gasket.pam");
-
-        rootClass.testClass.testDouble.setValue(3.14);
-        rootClass.testClass.testInt.setValue(420);
-        rootClass.testClass.testString.setValue("hello");
-        rootClass.testClass.content.setValue("content");
-
-        rootClass.serialize(stdout);
+        FILE* fp = fopen("in.xml", "r");
+        rootClass.deserialize(fp);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

@@ -1,4 +1,6 @@
 #include "xml_serialization.hpp"
+#include <exception>
+#include <stdexcept>
 #include <string>
 
 using std::string;
@@ -78,11 +80,26 @@ XMLElementClass::XMLElementClass(XMLElementClass& element, std::string tag_): ta
     element.children.push_back(this);
 }
 
-void XMLElementClass::serialize(FILE *fp) {
-    tinyxml2::XMLDocument xmlDoc;
+void XMLElementClass::serialize(FILE* fp) {
+    XMLDocument xmlDoc;
     auto node = nodeSerialize(xmlDoc);
     xmlDoc.InsertFirstChild(node);
     xmlDoc.SaveFile(stdout);
+}
+
+void XMLElementClass::deserialize(FILE* fp) {
+    XMLDocument xmlDoc;
+    auto err = xmlDoc.LoadFile(fp);
+    if (err != tinyxml2::XML_SUCCESS) {
+        auto ec = std::error_code(err, std::generic_category());
+        throw std::system_error(ec, "Could not load XML file");
+    }
+    XMLNode* node = xmlDoc.FirstChild();
+    nodeDeserialize(node);
+    node = node->NextSibling();
+    if (node != NULL) {
+        throw std::invalid_argument("XMLDocument has more than one root");
+    }
 }
 
 XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
@@ -97,6 +114,18 @@ XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
         element->SetText(contentString->getValue().c_str());
     }
     return element;
+}
+
+void XMLElementClass::nodeDeserialize(XMLNode* node) {
+    if (node == NULL) {
+        throw std::invalid_argument("XML document has no nodes");
+    }
+    XMLElement* element = node->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("XML node is not an element");
+    }
+    string name = element->Name();
+    printf("%s\n", name.c_str());
 }
 
 }

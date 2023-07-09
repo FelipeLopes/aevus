@@ -4,6 +4,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <stdexcept>
+#include <system_error>
 #include <tinyxml2.h>
 
 namespace render {
@@ -62,12 +64,14 @@ public:
     XMLElementClass(std::string tag);
     XMLElementClass(XMLElementClass& element, std::string tag);
     void serialize(FILE* fp);
+    void deserialize(FILE* fp);
     std::string tag;
     std::vector<XMLElementClass*> children;
     std::map<std::string, XMLAttributeField*> attributes;
     XMLContentString* contentString;
 private:
     tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
+    void nodeDeserialize(tinyxml2::XMLNode* node);
 };
 
 }
