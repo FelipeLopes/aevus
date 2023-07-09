@@ -15,7 +15,7 @@ class XMLElementClass;
 class XMLAttributeField {
 public:
     XMLAttributeField(XMLElementClass& element, std::string name);
-    virtual std::string text() = 0;
+    virtual std::string serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name) = 0;
     virtual ~XMLAttributeField() { }
 };
@@ -23,7 +23,7 @@ public:
 class XMLAttributeInt : public XMLAttributeField {
 public:
     XMLAttributeInt(XMLElementClass& element, std::string name);
-    virtual std::string text();
+    virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     int getValue();
     void setValue(int value);
@@ -34,7 +34,7 @@ private:
 class XMLAttributeDouble : public XMLAttributeField {
 public:
     XMLAttributeDouble(XMLElementClass& element, std::string name);
-    virtual std::string text();
+    virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     double getValue();
     void setValue(double value);
@@ -45,12 +45,45 @@ private:
 class XMLAttributeString : public XMLAttributeField {
 public:
     XMLAttributeString(XMLElementClass& element, std::string name);
-    virtual std::string text();
+    virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     std::string getValue();
     void setValue(std::string value);
 private:
     std::string val;
+};
+
+class XMLSerializable {
+public:
+    virtual std::string toXMLString() = 0;
+    virtual void fromXMLString(std::string text) = 0;
+    virtual ~XMLSerializable() { }
+};
+
+template <typename T>
+class XMLAttribute: public XMLAttributeField {
+public:
+    XMLAttribute(XMLElementClass& element, std::string name): XMLAttributeField(element, name) {
+        static_assert(std::is_base_of<XMLSerializable, T>::value,
+            "T must implement XMLSerializable interface");
+    }
+    virtual std::string serialize() {
+        return val.toXMLString();
+    }
+    virtual void deserialize(tinyxml2::XMLElement* element, std::string name) {
+        const char* buf;
+        auto err = element->QueryStringAttribute(name.c_str(), &buf);
+        if (err != tinyxml2::XML_SUCCESS) {
+            auto ec = std::error_code(err, std::generic_category());
+            std::string msg("Could not load string attribute with name ");
+            throw std::system_error(ec, msg + name);
+        }
+        val.fromXMLString(buf);
+    }
+    T getValue();
+    void setValue(T value);
+private:
+    T val;
 };
 
 class XMLContentString {

@@ -18,7 +18,7 @@ XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
 XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
-string XMLAttributeInt::text() {
+string XMLAttributeInt::serialize() {
     return to_string(val);
 }
 
@@ -42,7 +42,7 @@ void XMLAttributeInt::setValue(int value) {
 XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
-string XMLAttributeDouble::text() {
+string XMLAttributeDouble::serialize() {
     return to_string(val);
 }
 
@@ -66,7 +66,7 @@ void XMLAttributeDouble::setValue(double value) {
 XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name):
     XMLAttributeField(element, name) { }
 
-string XMLAttributeString::text() {
+string XMLAttributeString::serialize() {
     return val;
 }
 
@@ -138,7 +138,7 @@ void XMLElementClass::deserialize(FILE* fp) {
 XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
     for (auto kv: attributes) {
-        element->SetAttribute(kv.first.c_str(), kv.second->text().c_str());
+        element->SetAttribute(kv.first.c_str(), kv.second->serialize().c_str());
     }
     for (auto child: children) {
         element->InsertEndChild(child->nodeSerialize(xmlDoc));

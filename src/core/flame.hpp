@@ -4,7 +4,7 @@
 
 namespace core {
 
-class Palette : public XMLElementClass {
+class Palette: public XMLElementClass {
 public:
     Palette(XMLElementClass& el);
     XMLAttributeInt count;
@@ -12,10 +12,20 @@ public:
     XMLContentString colors;
 };
 
-class Flame : public XMLElementClass {
+class SizeParams: public XMLSerializable {
+public:
+    SizeParams();
+    int width, height;
+    virtual std::string toXMLString();
+    virtual void fromXMLString(std::string text);
+};
+
+class Flame: public XMLElementClass {
 public:
     Flame();
+    XMLAttributeString name;
     XMLAttributeString version;
+    XMLAttribute<SizeParams> size;
     XMLAttributeDouble scale;
     XMLAttributeInt quality;
     XMLAttributeDouble brightness;

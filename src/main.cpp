@@ -131,6 +131,7 @@ int main(int argc, char* argv[]) {
         render::Iterator iterator(context, squareFlame, 1, 4, 20);
 
         core::Flame flame;
+        core::SizeParams sp;
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
