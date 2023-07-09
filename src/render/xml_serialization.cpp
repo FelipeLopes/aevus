@@ -75,7 +75,7 @@ void XMLAttributeString::deserialize(XMLElement* element, std::string name) {
     auto err = element->QueryStringAttribute(name.c_str(), &buf);
     if (err != tinyxml2::XML_SUCCESS) {
         auto ec = std::error_code(err, std::generic_category());
-        string msg("Could not load int attribute with name ");
+        string msg("Could not load string attribute with name ");
         throw std::system_error(ec, msg + name);
     }
     val = buf;
@@ -91,6 +91,10 @@ void XMLAttributeString::setValue(string value) {
 
 XMLContentString::XMLContentString(XMLElementClass& element) {
     element.contentString = this;
+}
+
+void XMLContentString::deserialize(XMLNode* node) {
+    val = node->Value();
 }
 
 string XMLContentString::getValue() {
@@ -167,6 +171,12 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
     }
     if (contentString == NULL && childNode != NULL) {
         throw std::invalid_argument("XML node has incorrect number of children");
+    }
+    if (contentString != NULL) {
+        if (childNode == NULL) {
+            throw std::invalid_argument("XML node has no content");
+        }
+        contentString->deserialize(childNode);
     }
 }
 

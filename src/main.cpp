@@ -174,6 +174,7 @@ int main(int argc, char* argv[]) {
         printf("%d\n",rootClass.testClass.testInt.getValue());
         printf("%lf\n",rootClass.testClass.testDouble.getValue());
         printf("%s\n",rootClass.testClass.testString.getValue().c_str());
+        printf("%s\n",rootClass.testClass.contentString->getValue().c_str());
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
