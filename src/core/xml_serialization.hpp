@@ -55,7 +55,6 @@ private:
 
 class XMLContentString {
 public:
-    XMLContentString();
     XMLContentString(XMLElementClass& element);
     void deserialize(tinyxml2::XMLNode* node);
     std::string getValue();

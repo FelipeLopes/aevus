@@ -5,6 +5,7 @@
 #include <cinttypes>
 #include <random>
 #include <vector>
+#include "core/flame.hpp"
 #include "gasket/zoom.hpp"
 #include "render/cl_buffer.hpp"
 #include "render/cl_executable.hpp"
@@ -83,42 +84,6 @@ private:
 const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
 const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
-using core::XMLElementClass;
-using core::XMLContentString;
-using core::XMLAttributeInt;
-using core::XMLAttributeDouble;
-using core::XMLAttributeString;
-
-class TestClass : public XMLElementClass {
-public:
-    TestClass(XMLElementClass& el);
-    XMLAttributeInt testInt;
-    XMLAttributeDouble testDouble;
-    XMLAttributeString testString;
-    XMLContentString content;
-};
-
-TestClass::TestClass(XMLElementClass& el): XMLElementClass(el, "test"),
-    testInt(*this, "testInt"),
-    testDouble(*this, "testDouble"),
-    testString(*this, "testString"),
-    content(*this)
-{
-
-}
-
-class RootClass : public XMLElementClass {
-public:
-    RootClass();
-    TestClass testClass;
-};
-
-RootClass::RootClass(): XMLElementClass("root"),
-    testClass(*this)
-{
-
-}
-
 int main(int argc, char* argv[]) {
     try {
         /*
@@ -165,16 +130,7 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, squareFlame, 1, 4, 20);
 
-        RootClass rootClass;
-
-        FILE* fp = fopen("../in.xml", "r");
-        rootClass.deserialize(fp);
-        fclose(fp);
-
-        printf("%d\n",rootClass.testClass.testInt.getValue());
-        printf("%lf\n",rootClass.testClass.testDouble.getValue());
-        printf("%s\n",rootClass.testClass.testString.getValue().c_str());
-        printf("%s\n",rootClass.testClass.contentString->getValue().c_str());
+        core::Flame flame;
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
