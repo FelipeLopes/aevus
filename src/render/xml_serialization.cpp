@@ -125,7 +125,17 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
         throw std::invalid_argument("XML node is not an element");
     }
     string name = element->Name();
-    printf("%s\n", name.c_str());
+    if (name != tag) {
+        throw std::invalid_argument("XML node has invalid tag");
+    }
+    XMLNode* childNode = node->FirstChild();
+    for (auto child: children) {
+        child->nodeDeserialize(childNode);
+        childNode = childNode->NextSibling();
+    }
+    if (contentString == NULL && childNode != NULL) {
+        throw std::invalid_argument("XML node has incorrect number of children");
+    }
 }
 
 }
