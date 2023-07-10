@@ -12,10 +12,11 @@ Flame::Flame(): XMLElementClass("flame"),
     name(*this, "name"),
     version(*this, "version"),
     size(*this, "size"),
+    center(*this, "center"),
     scale(*this, "scale"),
     quality(*this, "quality"),
     brightness(*this, "brightness"),
-    contrast(*this, "contrast"),
+    contrast(*this, "contrast", 1.0),
     initial(*this, "initial", 20),
     palette(*this) { }
 
@@ -33,6 +34,19 @@ string SizeParams::toXMLString() {
 
 void SizeParams::fromXMLString(string text) {
     if (sscanf(text.c_str(),"%d %d", &width, &height) < 2) {
+        throw std::invalid_argument("Could not read SizeParams");
+    }
+}
+
+CenterParams::CenterParams() { }
+
+string CenterParams::toXMLString() {
+    string ans = to_string(x) + " " + to_string(y);
+    return ans;
+}
+
+void CenterParams::fromXMLString(string text) {
+    if (sscanf(text.c_str(),"%lf %lf", &x, &y) < 2) {
         throw std::invalid_argument("Could not read SizeParams");
     }
 }

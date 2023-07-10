@@ -20,12 +20,21 @@ public:
     virtual void fromXMLString(std::string text);
 };
 
+class CenterParams: public XMLSerializable {
+public:
+    CenterParams();
+    double x, y;
+    virtual std::string toXMLString();
+    virtual void fromXMLString(std::string text);
+};
+
 class Flame: public XMLElementClass {
 public:
     Flame();
     XMLAttributeString name;
     XMLAttributeString version;
     XMLAttribute<SizeParams> size;
+    XMLAttribute<CenterParams> center;
     XMLAttributeDouble scale;
     XMLAttributeInt quality;
     XMLAttributeDouble brightness;
