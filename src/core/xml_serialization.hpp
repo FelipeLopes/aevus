@@ -75,6 +75,8 @@ public:
     XMLAttribute(XMLElementClass& element, std::string name): XMLAttributeField(element, name) {
         static_assert(std::is_base_of<XMLSerializable, T>::value,
             "T must implement XMLSerializable interface");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
     }
     virtual std::string serialize() {
         return val.toXMLString();
@@ -89,8 +91,12 @@ public:
         }
         val.fromXMLString(buf);
     }
-    T getValue();
-    void setValue(T value);
+    T getValue() {
+        return val;
+    }
+    void setValue(T value) {
+        val = value;
+    }
 private:
     T val;
 };

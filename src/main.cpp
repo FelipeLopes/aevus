@@ -84,6 +84,8 @@ private:
 const rgb8_pixel_t ColorerImpl::RED = rgb8_pixel_t(255,0,0);
 const rgb8_pixel_t ColorerImpl::WHITE = rgb8_pixel_t(255,255,255);
 
+using std::string;
+
 int main(int argc, char* argv[]) {
     try {
         /*
@@ -130,8 +132,35 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, squareFlame, 1, 4, 20);
 
+        render::Palette whitePalette(ColorerImpl::WHITE);
+
+        string whiteSpace(8, ' ');
+        string text = "\n";
+        for (int i=0; i<32; i++) {
+            string paletteChars = "";
+            for (int j=0; j<8; j++) {
+                paletteChars += whitePalette.hexAt(i*8+j);
+            }
+            text += (whiteSpace + paletteChars + "\n");
+        }
+        text += "    ";
+
         core::Flame flame;
-        core::SizeParams sp;
+
+        flame.version.setValue("Aevus");
+        flame.name.setValue("test");
+        flame.size.setValue(core::SizeParams(732, 640));
+        flame.center.setValue(core::CenterParams(0.390876, -0.402954));
+        flame.scale.setValue(401.823);
+        flame.quality.setValue(50);
+        flame.background.setValue(core::Color(0,0,0));
+        flame.brightness.setValue(4.0);
+        flame.contrast.setValue(1.0);
+        flame.initial.setValue(20);
+        flame.palette.colors.setValue(text);
+
+        flame.serialize(stdout);
+
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
     }
