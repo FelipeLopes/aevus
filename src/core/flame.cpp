@@ -16,6 +16,7 @@ Flame::Flame(): XMLElementClass("flame"),
     quality(*this, "quality"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast"),
+    initial(*this, "initial", 20),
     palette(*this) { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),

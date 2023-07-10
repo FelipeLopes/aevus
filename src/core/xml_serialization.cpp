@@ -16,18 +16,29 @@ XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
 }
 
 XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
-    XMLAttributeField(element, name) { }
+    XMLAttributeField(element, name),
+    defaultValue(0),
+    hasDefault(false) { }
+
+XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name, int defaultValue_):
+    XMLAttributeField(element, name),
+    defaultValue(defaultValue_),
+    hasDefault(true) { }
 
 string XMLAttributeInt::serialize() {
     return to_string(val);
 }
 
 void XMLAttributeInt::deserialize(XMLElement* element, std::string name) {
-    auto err = element->QueryIntAttribute(name.c_str(), &val);
-    if (err != tinyxml2::XML_SUCCESS) {
-        auto ec = std::error_code(err, std::generic_category());
-        string msg("Could not load int attribute with name ");
-        throw std::system_error(ec, msg + name);
+    if (hasDefault) {
+        val = element->IntAttribute(name.c_str(), defaultValue);
+    } else {
+        auto err = element->QueryIntAttribute(name.c_str(), &val);
+        if (err != tinyxml2::XML_SUCCESS) {
+            auto ec = std::error_code(err, std::generic_category());
+            string msg("Could not load int attribute with name ");
+            throw std::system_error(ec, msg + name);
+        }
     }
 }
 
@@ -40,18 +51,29 @@ void XMLAttributeInt::setValue(int value) {
 }
 
 XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name):
-    XMLAttributeField(element, name) { }
+    XMLAttributeField(element, name),
+    defaultValue(0.0),
+    hasDefault(false) { }
+
+XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name, double defaultValue_):
+    XMLAttributeField(element, name),
+    defaultValue(defaultValue_),
+    hasDefault(true) { }
 
 string XMLAttributeDouble::serialize() {
     return to_string(val);
 }
 
 void XMLAttributeDouble::deserialize(XMLElement* element, std::string name) {
-    auto err = element->QueryDoubleAttribute(name.c_str(), &val);
-    if (err != tinyxml2::XML_SUCCESS) {
-        auto ec = std::error_code(err, std::generic_category());
-        string msg("Could not load double attribute with name ");
-        throw std::system_error(ec, msg + name);
+    if (hasDefault) {
+        val = element->DoubleAttribute(name.c_str(), defaultValue);
+    } else {
+        auto err = element->QueryDoubleAttribute(name.c_str(), &val);
+        if (err != tinyxml2::XML_SUCCESS) {
+            auto ec = std::error_code(err, std::generic_category());
+            string msg("Could not load double attribute with name ");
+            throw std::system_error(ec, msg + name);
+        }
     }
 }
 
@@ -64,7 +86,14 @@ void XMLAttributeDouble::setValue(double value) {
 }
 
 XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name):
-    XMLAttributeField(element, name) { }
+    XMLAttributeField(element, name),
+    defaultValue(""),
+    hasDefault(false) { }
+
+XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name, string defaultValue_):
+    XMLAttributeField(element, name),
+    defaultValue(defaultValue_),
+    hasDefault(true) { }
 
 string XMLAttributeString::serialize() {
     return val;
@@ -72,11 +101,15 @@ string XMLAttributeString::serialize() {
 
 void XMLAttributeString::deserialize(XMLElement* element, std::string name) {
     const char* buf;
-    auto err = element->QueryStringAttribute(name.c_str(), &buf);
-    if (err != tinyxml2::XML_SUCCESS) {
-        auto ec = std::error_code(err, std::generic_category());
-        string msg("Could not load string attribute with name ");
-        throw std::system_error(ec, msg + name);
+    if (hasDefault) {
+        buf = element->Attribute(name.c_str(), defaultValue.c_str());
+    } else {
+        auto err = element->QueryStringAttribute(name.c_str(), &buf);
+        if (err != tinyxml2::XML_SUCCESS) {
+            auto ec = std::error_code(err, std::generic_category());
+            string msg("Could not load string attribute with name ");
+            throw std::system_error(ec, msg + name);
+        }
     }
     val = buf;
 }

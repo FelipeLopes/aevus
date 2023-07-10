@@ -30,6 +30,7 @@ public:
     XMLAttributeInt quality;
     XMLAttributeDouble brightness;
     XMLAttributeDouble contrast;
+    XMLAttributeInt initial;
     Palette palette;
 };
 

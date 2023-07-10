@@ -23,34 +23,43 @@ public:
 class XMLAttributeInt : public XMLAttributeField {
 public:
     XMLAttributeInt(XMLElementClass& element, std::string name);
+    XMLAttributeInt(XMLElementClass& element, std::string name, int defaultValue);
     virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     int getValue();
     void setValue(int value);
 private:
     int val;
+    const int defaultValue;
+    const bool hasDefault;
 };
 
 class XMLAttributeDouble : public XMLAttributeField {
 public:
     XMLAttributeDouble(XMLElementClass& element, std::string name);
+    XMLAttributeDouble(XMLElementClass& element, std::string name, double defaultValue);
     virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     double getValue();
     void setValue(double value);
 private:
     double val;
+    const double defaultValue;
+    const bool hasDefault;
 };
 
 class XMLAttributeString : public XMLAttributeField {
 public:
     XMLAttributeString(XMLElementClass& element, std::string name);
+    XMLAttributeString(XMLElementClass& element, std::string name, std::string defaultValue);
     virtual std::string serialize();
     virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
     std::string getValue();
     void setValue(std::string value);
 private:
     std::string val;
+    const std::string defaultValue;
+    const bool hasDefault;
 };
 
 class XMLSerializable {
