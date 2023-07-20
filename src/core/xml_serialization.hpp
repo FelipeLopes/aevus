@@ -2,6 +2,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -16,8 +17,18 @@ class XMLAttributeField {
 public:
     XMLAttributeField(XMLElementClass& element, std::string name);
     virtual std::string serialize() = 0;
-    virtual void deserialize(tinyxml2::XMLElement* element, std::string name) = 0;
+    virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
+protected:
+    const std::string name;
+};
+
+class XMLMultiAttributeField {
+public:
+    XMLMultiAttributeField(XMLElementClass& element, std::set<std::string> names);
+    virtual std::map<std::string, std::string> serialize() = 0;
+    virtual void deserialize(tinyxml2::XMLElement* element) = 0;
+    virtual ~XMLMultiAttributeField() { }
 };
 
 class XMLAttributeInt : public XMLAttributeField {
@@ -25,7 +36,7 @@ public:
     XMLAttributeInt(XMLElementClass& element, std::string name);
     XMLAttributeInt(XMLElementClass& element, std::string name, int defaultValue);
     virtual std::string serialize();
-    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
+    virtual void deserialize(tinyxml2::XMLElement* element);
     int getValue();
     void setValue(int value);
 private:
@@ -39,7 +50,7 @@ public:
     XMLAttributeDouble(XMLElementClass& element, std::string name);
     XMLAttributeDouble(XMLElementClass& element, std::string name, double defaultValue);
     virtual std::string serialize();
-    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
+    virtual void deserialize(tinyxml2::XMLElement* element);
     double getValue();
     void setValue(double value);
 private:
@@ -53,7 +64,7 @@ public:
     XMLAttributeString(XMLElementClass& element, std::string name);
     XMLAttributeString(XMLElementClass& element, std::string name, std::string defaultValue);
     virtual std::string serialize();
-    virtual void deserialize(tinyxml2::XMLElement* element, std::string name);
+    virtual void deserialize(tinyxml2::XMLElement* element);
     std::string getValue();
     void setValue(std::string value);
 private:
@@ -81,7 +92,7 @@ public:
     virtual std::string serialize() {
         return val.toXMLString();
     }
-    virtual void deserialize(tinyxml2::XMLElement* element, std::string name) {
+    virtual void deserialize(tinyxml2::XMLElement* element) {
         const char* buf;
         auto err = element->QueryStringAttribute(name.c_str(), &buf);
         if (err != tinyxml2::XML_SUCCESS) {

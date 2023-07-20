@@ -11,7 +11,9 @@ using tinyxml2::XMLNode;
 
 namespace core {
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name) {
+XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name_):
+    name(name_)
+{
     element.attributes[name] = this;
 }
 
@@ -29,7 +31,7 @@ string XMLAttributeInt::serialize() {
     return to_string(val);
 }
 
-void XMLAttributeInt::deserialize(XMLElement* element, std::string name) {
+void XMLAttributeInt::deserialize(XMLElement* element) {
     if (hasDefault) {
         val = element->IntAttribute(name.c_str(), defaultValue);
     } else {
@@ -64,7 +66,7 @@ string XMLAttributeDouble::serialize() {
     return to_string(val);
 }
 
-void XMLAttributeDouble::deserialize(XMLElement* element, std::string name) {
+void XMLAttributeDouble::deserialize(XMLElement* element) {
     if (hasDefault) {
         val = element->DoubleAttribute(name.c_str(), defaultValue);
     } else {
@@ -99,7 +101,7 @@ string XMLAttributeString::serialize() {
     return val;
 }
 
-void XMLAttributeString::deserialize(XMLElement* element, std::string name) {
+void XMLAttributeString::deserialize(XMLElement* element) {
     const char* buf;
     if (hasDefault) {
         buf = element->Attribute(name.c_str(), defaultValue.c_str());
@@ -196,7 +198,7 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
         throw std::invalid_argument("XML node has invalid tag");
     }
     for (auto kv: attributes) {
-        kv.second->deserialize(element, kv.first);
+        kv.second->deserialize(element);
     }
     XMLNode* childNode = node->FirstChild();
     for (auto child: children) {
