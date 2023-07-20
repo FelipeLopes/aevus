@@ -2,19 +2,22 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
+#include <boost/assign.hpp>
 
 using std::string;
 using std::to_string;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
 using tinyxml2::XMLNode;
+using boost::assign::list_of;
 
 namespace core {
 
 XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name_):
-    name(name_)
+    name(name_),
+    names(list_of(name))
 {
-    element.attributes[name] = this;
+    element.attributeFields.push_back(this);
 }
 
 XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
@@ -173,8 +176,8 @@ void XMLElementClass::deserialize(FILE* fp) {
 
 XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
-    for (auto kv: attributes) {
-        element->SetAttribute(kv.first.c_str(), kv.second->serialize().c_str());
+    for (auto field: attributeFields) {
+        element->SetAttribute(field->name.c_str(), field->serialize().c_str());
     }
     for (auto child: children) {
         element->InsertEndChild(child->nodeSerialize(xmlDoc));
@@ -197,8 +200,8 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
     if (name != tag) {
         throw std::invalid_argument("XML node has invalid tag");
     }
-    for (auto kv: attributes) {
-        kv.second->deserialize(element);
+    for (auto field: attributeFields) {
+        field->deserialize(element);
     }
     XMLNode* childNode = node->FirstChild();
     for (auto child: children) {

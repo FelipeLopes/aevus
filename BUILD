@@ -15,6 +15,7 @@ cc_library(
     hdrs = glob(["src/core/*.hpp"]),
     deps = [
         "@tinyxml2//:tinyxml2",
+        "@boost//:boost",
     ]
 )
 

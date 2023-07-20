@@ -19,8 +19,8 @@ public:
     virtual std::string serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
-protected:
     const std::string name;
+    const std::set<std::string> names;
 };
 
 class XMLMultiAttributeField {
@@ -130,7 +130,7 @@ public:
     void deserialize(FILE* fp);
     std::string tag;
     std::vector<XMLElementClass*> children;
-    std::map<std::string, XMLAttributeField*> attributes;
+    std::vector<XMLAttributeField*> attributeFields;
     XMLContentString* contentString;
 private:
     tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
