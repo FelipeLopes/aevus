@@ -4,6 +4,7 @@
 #include <string>
 
 using std::map;
+using std::set;
 using std::string;
 using std::to_string;
 using tinyxml2::XMLDocument;
@@ -13,6 +14,12 @@ using boost::assign::list_of;
 using boost::assign::map_list_of;
 
 namespace core {
+
+XMLAttributeField::XMLAttributeField(XMLElementClass& element, set<string> names_):
+    names(names_)
+{
+    element.attributeFields.push_back(this);
+}
 
 XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name):
     names(list_of(name))

@@ -13,22 +13,22 @@ public:
     XMLContentString colors;
 };
 
-class SizeParams: public XMLSerializable {
+class SizeParams: public StringSerializable {
 public:
     SizeParams();
     SizeParams(int width, int height);
     int width, height;
-    virtual std::string toXMLString();
-    virtual void fromXMLString(std::string text);
+    virtual std::string toString();
+    virtual void fromString(std::string text);
 };
 
-class CenterParams: public XMLSerializable {
+class CenterParams: public StringSerializable {
 public:
     CenterParams();
     CenterParams(double x, double y);
     double x, y;
-    virtual std::string toXMLString();
-    virtual void fromXMLString(std::string text);
+    virtual std::string toString();
+    virtual void fromString(std::string text);
 };
 
 class XForm: public XMLElementClass {
@@ -39,13 +39,13 @@ public:
     XMLAttributeDouble opacity;
 };
 
-class Color: public XMLSerializable {
+class Color: public StringSerializable {
 public:
     Color();
     Color(uint8_t r, uint8_t g, uint8_t b);
     uint8_t r, g, b;
-    virtual std::string toXMLString();
-    virtual void fromXMLString(std::string text);
+    virtual std::string toString();
+    virtual void fromString(std::string text);
 };
 
 class Flame: public XMLElementClass {

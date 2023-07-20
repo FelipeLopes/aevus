@@ -16,6 +16,7 @@ class XMLElementClass;
 
 class XMLAttributeField {
 public:
+    XMLAttributeField(XMLElementClass& element, std::set<std::string> names);
     XMLAttributeField(XMLElementClass& element, std::string name);
     virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
@@ -66,25 +67,25 @@ private:
     const bool hasDefault;
 };
 
-class XMLSerializable {
+class StringSerializable {
 public:
-    virtual std::string toXMLString() = 0;
-    virtual void fromXMLString(std::string text) = 0;
-    virtual ~XMLSerializable() { }
+    virtual std::string toString() = 0;
+    virtual void fromString(std::string text) = 0;
+    virtual ~StringSerializable() { }
 };
 
 template <typename T>
 class XMLAttribute: public XMLAttributeField {
 public:
     XMLAttribute(XMLElementClass& element, std::string name): XMLAttributeField(element, name) {
-        static_assert(std::is_base_of<XMLSerializable, T>::value,
-            "T must implement XMLSerializable interface");
+        static_assert(std::is_base_of<StringSerializable, T>::value,
+            "T must implement StringSerializable interface");
         static_assert(std::is_default_constructible<T>::value,
             "T must have a default constructor");
     }
     virtual std::map<std::string, std::string> serialize() {
         std::string name = *names.begin();
-        return boost::assign::map_list_of(name, val.toXMLString());
+        return boost::assign::map_list_of(name, val.toString());
     }
     virtual void deserialize(tinyxml2::XMLElement* element) {
         const char* buf;
@@ -95,7 +96,7 @@ public:
             std::string msg("Could not load string attribute with name ");
             throw std::system_error(ec, msg + name);
         }
-        val.fromXMLString(buf);
+        val.fromString(buf);
     }
     T getValue() {
         return val;
