@@ -21,7 +21,13 @@ Flame::Flame(): XMLElementClass("flame"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast", 1.0),
     initial(*this, "initial", 20),
+    xform(*this),
     palette(*this) { }
+
+XForm::XForm(XMLElementClass& el): XMLElementClass(el, "xform"),
+    weight(*this, "weight"),
+    color(*this, "color"),
+    opacity(*this, "opacity") { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),
     count(*this, "count"),

@@ -143,6 +143,7 @@ XMLElementClass::XMLElementClass(std::string tag_): tag(tag_) {
 }
 
 XMLElementClass::XMLElementClass(XMLElementClass& element, std::string tag_): tag(tag_) {
+    contentString = NULL;
     element.children.push_back(this);
 }
 

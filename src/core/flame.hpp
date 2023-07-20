@@ -31,6 +31,14 @@ public:
     virtual void fromXMLString(std::string text);
 };
 
+class XForm: public XMLElementClass {
+public:
+    XForm(XMLElementClass& el);
+    XMLAttributeDouble weight;
+    XMLAttributeDouble color;
+    XMLAttributeDouble opacity;
+};
+
 class Color: public XMLSerializable {
 public:
     Color();
@@ -53,6 +61,7 @@ public:
     XMLAttributeDouble brightness;
     XMLAttributeDouble contrast;
     XMLAttributeInt initial;
+    XForm xform;
     Palette palette;
 };
 

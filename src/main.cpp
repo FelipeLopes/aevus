@@ -147,19 +147,12 @@ int main(int argc, char* argv[]) {
 
         core::Flame flame;
 
-        flame.version.setValue("Aevus");
-        flame.name.setValue("test");
-        flame.size.setValue(core::SizeParams(732, 640));
-        flame.center.setValue(core::CenterParams(0.390876, -0.402954));
-        flame.scale.setValue(401.823);
-        flame.quality.setValue(50);
-        flame.background.setValue(core::Color(0,0,0));
-        flame.brightness.setValue(4.0);
-        flame.contrast.setValue(1.0);
-        flame.initial.setValue(20);
-        flame.palette.colors.setValue(text);
+        FILE* fp = fopen("../in.xml", "r");
+        flame.deserialize(fp);
+        fclose(fp);
 
-        flame.serialize(stdout);
+        printf("%lf\n%lf\n%lf\n",flame.xform.weight.getValue(),
+            flame.xform.color.getValue(),flame.xform.opacity.getValue());
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());
