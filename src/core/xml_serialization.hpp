@@ -108,6 +108,51 @@ private:
     T val;
 };
 
+class StringMapSerializable {
+public:
+    virtual std::map<std::string, std::string> toStringMap() = 0;
+    virtual void fromStringMap(std::map<std::string, std::string> stringMap) = 0;
+    virtual ~StringMapSerializable() { }
+};
+
+template <typename T>
+class XMLMultiAttribute: public XMLAttributeField {
+public:
+    XMLMultiAttribute(XMLElementClass& element, std::set<std::string> names):
+        XMLAttributeField(element, names)
+    {
+        static_assert(std::is_base_of<StringMapSerializable, T>::value,
+            "T must implement StringMapSerializable interface");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
+    }
+    virtual std::map<std::string, std::string> serialize() {
+        return val.toStringMap();
+    }
+    virtual void deserialize(tinyxml2::XMLElement* element) {
+        const char* buf;
+        std::map<std::string, std::string> stringMap;
+        for (auto name: names) {
+            auto err = element->QueryStringAttribute(name.c_str(), &buf);
+            if (err != tinyxml2::XML_SUCCESS) {
+                auto ec = std::error_code(err, std::generic_category());
+                std::string msg("Could not load string attribute with name ");
+                throw std::system_error(ec, msg + name);
+            }
+            stringMap[name] = buf;
+        }
+        val.fromStringMap(stringMap);
+    }
+    T getValue() {
+        return val;
+    }
+    void setValue(T value) {
+        val = value;
+    }
+private:
+    T val;
+};
+
 class XMLContentString {
 public:
     XMLContentString(XMLElementClass& element);
