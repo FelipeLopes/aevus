@@ -19,7 +19,6 @@ public:
     virtual std::string serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
-    const std::string name;
     const std::set<std::string> names;
 };
 
@@ -94,6 +93,7 @@ public:
     }
     virtual void deserialize(tinyxml2::XMLElement* element) {
         const char* buf;
+        std::string name = *names.begin();
         auto err = element->QueryStringAttribute(name.c_str(), &buf);
         if (err != tinyxml2::XML_SUCCESS) {
             auto ec = std::error_code(err, std::generic_category());

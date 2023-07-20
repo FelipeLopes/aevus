@@ -13,8 +13,7 @@ using boost::assign::list_of;
 
 namespace core {
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name_):
-    name(name_),
+XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name):
     names(list_of(name))
 {
     element.attributeFields.push_back(this);
@@ -35,6 +34,7 @@ string XMLAttributeInt::serialize() {
 }
 
 void XMLAttributeInt::deserialize(XMLElement* element) {
+    string name = *names.begin();
     if (hasDefault) {
         val = element->IntAttribute(name.c_str(), defaultValue);
     } else {
@@ -70,6 +70,7 @@ string XMLAttributeDouble::serialize() {
 }
 
 void XMLAttributeDouble::deserialize(XMLElement* element) {
+    string name = *names.begin();
     if (hasDefault) {
         val = element->DoubleAttribute(name.c_str(), defaultValue);
     } else {
@@ -106,6 +107,7 @@ string XMLAttributeString::serialize() {
 
 void XMLAttributeString::deserialize(XMLElement* element) {
     const char* buf;
+    string name = *names.begin();
     if (hasDefault) {
         buf = element->Attribute(name.c_str(), defaultValue.c_str());
     } else {
@@ -177,7 +179,9 @@ void XMLElementClass::deserialize(FILE* fp) {
 XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
     for (auto field: attributeFields) {
-        element->SetAttribute(field->name.c_str(), field->serialize().c_str());
+        for (auto name: field->names) {
+            element->SetAttribute(name.c_str(), field->serialize().c_str());
+        }
     }
     for (auto child: children) {
         element->InsertEndChild(child->nodeSerialize(xmlDoc));
