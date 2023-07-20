@@ -20,6 +20,7 @@ public:
     virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
+protected:
     const std::set<std::string> names;
 };
 
