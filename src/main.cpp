@@ -151,8 +151,7 @@ int main(int argc, char* argv[]) {
         flame.deserialize(fp);
         fclose(fp);
 
-        printf("%lf\n%lf\n%lf\n",flame.xform.weight.getValue(),
-            flame.xform.color.getValue(),flame.xform.opacity.getValue());
+        flame.serialize(stdout);
 
     } catch (std::exception& e) {
         printf("Error occured: %s\n",e.what());

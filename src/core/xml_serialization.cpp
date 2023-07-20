@@ -2,14 +2,15 @@
 #include <exception>
 #include <stdexcept>
 #include <string>
-#include <boost/assign.hpp>
 
+using std::map;
 using std::string;
 using std::to_string;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
 using tinyxml2::XMLNode;
 using boost::assign::list_of;
+using boost::assign::map_list_of;
 
 namespace core {
 
@@ -29,8 +30,9 @@ XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name, int defa
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
-string XMLAttributeInt::serialize() {
-    return to_string(val);
+map<string,string> XMLAttributeInt::serialize() {
+    string name = *names.begin();
+    return map_list_of(name, to_string(val));
 }
 
 void XMLAttributeInt::deserialize(XMLElement* element) {
@@ -65,8 +67,9 @@ XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name, do
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
-string XMLAttributeDouble::serialize() {
-    return to_string(val);
+map<string,string> XMLAttributeDouble::serialize() {
+    string name = *names.begin();
+    return map_list_of(name, to_string(val));
 }
 
 void XMLAttributeDouble::deserialize(XMLElement* element) {
@@ -101,8 +104,9 @@ XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name, st
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
-string XMLAttributeString::serialize() {
-    return val;
+map<string,string> XMLAttributeString::serialize() {
+    string name = *names.begin();
+    return map_list_of(name, val);
 }
 
 void XMLAttributeString::deserialize(XMLElement* element) {
@@ -179,8 +183,9 @@ void XMLElementClass::deserialize(FILE* fp) {
 XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
     for (auto field: attributeFields) {
-        for (auto name: field->names) {
-            element->SetAttribute(name.c_str(), field->serialize().c_str());
+        auto attributeMap = field->serialize();
+        for (auto kv: attributeMap) {
+            element->SetAttribute(kv.first.c_str(), kv.second.c_str());
         }
     }
     for (auto child: children) {

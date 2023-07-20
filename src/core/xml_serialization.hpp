@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <system_error>
 #include <tinyxml2.h>
+#include <boost/assign.hpp>
 
 namespace core {
 
@@ -16,25 +17,17 @@ class XMLElementClass;
 class XMLAttributeField {
 public:
     XMLAttributeField(XMLElementClass& element, std::string name);
-    virtual std::string serialize() = 0;
+    virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
     const std::set<std::string> names;
-};
-
-class XMLMultiAttributeField {
-public:
-    XMLMultiAttributeField(XMLElementClass& element, std::set<std::string> names);
-    virtual std::map<std::string, std::string> serialize() = 0;
-    virtual void deserialize(tinyxml2::XMLElement* element) = 0;
-    virtual ~XMLMultiAttributeField() { }
 };
 
 class XMLAttributeInt : public XMLAttributeField {
 public:
     XMLAttributeInt(XMLElementClass& element, std::string name);
     XMLAttributeInt(XMLElementClass& element, std::string name, int defaultValue);
-    virtual std::string serialize();
+    virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     int getValue();
     void setValue(int value);
@@ -48,7 +41,7 @@ class XMLAttributeDouble : public XMLAttributeField {
 public:
     XMLAttributeDouble(XMLElementClass& element, std::string name);
     XMLAttributeDouble(XMLElementClass& element, std::string name, double defaultValue);
-    virtual std::string serialize();
+    virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     double getValue();
     void setValue(double value);
@@ -62,7 +55,7 @@ class XMLAttributeString : public XMLAttributeField {
 public:
     XMLAttributeString(XMLElementClass& element, std::string name);
     XMLAttributeString(XMLElementClass& element, std::string name, std::string defaultValue);
-    virtual std::string serialize();
+    virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     std::string getValue();
     void setValue(std::string value);
@@ -88,8 +81,9 @@ public:
         static_assert(std::is_default_constructible<T>::value,
             "T must have a default constructor");
     }
-    virtual std::string serialize() {
-        return val.toXMLString();
+    virtual std::map<std::string, std::string> serialize() {
+        std::string name = *names.begin();
+        return boost::assign::map_list_of(name, val.toXMLString());
     }
     virtual void deserialize(tinyxml2::XMLElement* element) {
         const char* buf;
