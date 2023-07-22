@@ -2,6 +2,7 @@
 
 #include "xml_serialization.hpp"
 #include <cstdint>
+#include <boost/bimap.hpp>
 
 namespace core {
 
@@ -29,6 +30,27 @@ public:
     double x, y;
     virtual std::string toString();
     virtual void fromString(std::string text);
+};
+
+struct Variation {
+    enum VariationID {
+        NO_VARIATION = -1,
+        LINEAR = 0,
+        SPHERICAL = 2,
+        POLAR = 6,
+        HYPERBOLIC = 11,
+        SQUARE = 44
+    };
+
+    const static boost::bimap<VariationID, std::string> variationNames;
+};
+
+class VariationMap: public StringMapSerializable {
+public:
+    VariationMap();
+    virtual std::map<std::string, std::string> toStringMap();
+    virtual void fromStringMap(std::map<std::string, std::string> stringMap);
+    std::map<Variation::VariationID, double> variations;
 };
 
 class XForm: public XMLElementClass {

@@ -3,6 +3,7 @@
 #include <cfloat>
 #include <cstdlib>
 #include <cinttypes>
+#include <map>
 #include <random>
 #include <vector>
 #include "core/flame.hpp"
@@ -150,6 +151,23 @@ int main(int argc, char* argv[]) {
         FILE* fp = fopen("../in.xml", "r");
         flame.deserialize(fp);
         fclose(fp);
+
+        core::VariationMap variationMap;
+        std::map<std::string, std::string> vars;
+        vars["polar"] = "0.79439632431604";
+        vars["hyperbolic"] = "0.20560367568396";
+
+        variationMap.fromStringMap(vars);
+
+        printf("%lf\n",variationMap.variations[core::Variation::VariationID::POLAR]);
+        printf("%lf\n",variationMap.variations[core::Variation::VariationID::HYPERBOLIC]);
+
+        variationMap.variations[core::Variation::VariationID::HYPERBOLIC] += 0.5;
+
+        auto stringMap = variationMap.toStringMap();
+        for (auto kv: stringMap) {
+            printf("%s: %s\n",kv.first.c_str(), kv.second.c_str());
+        }
 
         flame.serialize(stdout);
 

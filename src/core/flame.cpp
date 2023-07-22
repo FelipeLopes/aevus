@@ -5,8 +5,12 @@
 #include <stdexcept>
 #include <string>
 
+using std::map;
 using std::string;
+using std::stod;
 using std::to_string;
+using boost::bimap;
+using boost::assign::list_of;
 
 namespace core {
 
@@ -23,6 +27,39 @@ Flame::Flame(): XMLElementClass("flame"),
     initial(*this, "initial", 20),
     xform(*this),
     palette(*this) { }
+
+const bimap<Variation::VariationID, string> Variation::variationNames =
+    list_of<bimap<Variation::VariationID, string>::relation>
+        (LINEAR, "linear")
+        (SPHERICAL, "spherical")
+        (POLAR, "polar")
+        (HYPERBOLIC, "hyperbolic")
+        (SQUARE, "square");
+
+VariationMap::VariationMap() { }
+
+map<string, string> VariationMap::toStringMap() {
+    map<string, string> ans;
+    for (auto kv: variations) {
+        auto it = Variation::variationNames.left.find(kv.first);
+        if (it == Variation::variationNames.left.end()) {
+            throw std::invalid_argument("Unknown variation ID");
+        }
+        ans[it->second] = to_string(kv.second);
+    }
+    return ans;
+}
+
+void VariationMap::fromStringMap(map<string, string> stringMap) {
+    variations.clear();
+    for (auto kv: stringMap) {
+        auto it = Variation::variationNames.right.find(kv.first);
+        if (it == Variation::variationNames.right.end()) {
+            throw std::invalid_argument("Unknown variation name");
+        }
+        variations[it->second] = stod(kv.second);
+    }
+}
 
 XForm::XForm(XMLElementClass& el): XMLElementClass(el, "xform"),
     weight(*this, "weight"),
