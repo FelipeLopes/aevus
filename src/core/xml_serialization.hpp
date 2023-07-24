@@ -180,7 +180,6 @@ public:
     std::vector<XMLAttributeField*> attributeFields;
     XMLContentString* contentString;
     virtual ~XMLElementClass();
-protected:
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual void nodeDeserialize(tinyxml2::XMLNode* node);
 };
@@ -192,7 +191,6 @@ public:
     void remove(int index);
     bool empty();
     ~ListXMLElementClass();
-protected:
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual void nodeDeserialize(tinyxml2::XMLNode* node);
 private:

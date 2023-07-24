@@ -276,11 +276,29 @@ ListXMLElementClass::~ListXMLElementClass() {
 }
 
 void ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
-
+    for (auto el: *list) {
+        el->nodeSerialize(xmlDoc, parent);
+    }
 }
 
 void ListXMLElementClass::nodeDeserialize(XMLNode* node) {
-
+    while (true) {
+        if (node == NULL) {
+            break;
+        }
+        XMLElement* element = node->ToElement();
+        if (element == NULL) {
+            break;
+        }
+        string name = element->Name();
+        if (name != tag) {
+            break;
+        }
+        XMLElementClass clazz(tag);
+        clazz.nodeDeserialize(node);
+        append(clazz);
+        node = node->NextSibling();
+    }
 }
 
 }
