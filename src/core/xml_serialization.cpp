@@ -250,8 +250,30 @@ ListXMLElementClass::ListXMLElementClass(XMLElementClass& parent_, string tag_):
     list = &parent.listTags[tag];
 }
 
+XMLElementClass ListXMLElementClass::get(int index) {
+    int count = list->size();
+    if (index < 0 || index > count-1) {
+        throw std::invalid_argument("Attempted to access out of list bounds");
+    }
+    auto it = std::next(list->begin(), index);
+    return *(*it);
+}
+
+void ListXMLElementClass::set(int index, XMLElementClass element) {
+    int count = list->size();
+    if (index < 0 || index > count-1) {
+        throw std::invalid_argument("Attempted to access out of list bounds");
+    }
+    auto it = std::next(list->begin(), index);
+    delete *it;
+    XMLElementClass* listEl = new XMLElementClass(element);
+    listEl->tag = tag;
+    *it = listEl;
+}
+
 void ListXMLElementClass::append(XMLElementClass element) {
     XMLElementClass* listEl = new XMLElementClass(element);
+    listEl->tag = tag;
     list->push_back(listEl);
 }
 
@@ -269,10 +291,14 @@ bool ListXMLElementClass::empty() {
     return list->empty();
 }
 
-ListXMLElementClass::~ListXMLElementClass() {
+void ListXMLElementClass::clear() {
     while (!empty()) {
         remove(0);
     }
+}
+
+ListXMLElementClass::~ListXMLElementClass() {
+    clear();
 }
 
 void ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {

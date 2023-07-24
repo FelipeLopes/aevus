@@ -187,8 +187,11 @@ public:
 class ListXMLElementClass: public XMLElementClass {
 public:
     ListXMLElementClass(XMLElementClass& parent, std::string tag);
+    XMLElementClass get(int index);
+    void set(int index, XMLElementClass element);
     void append(XMLElementClass element);
     void remove(int index);
+    void clear();
     bool empty();
     ~ListXMLElementClass();
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);

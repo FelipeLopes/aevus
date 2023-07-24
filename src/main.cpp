@@ -152,10 +152,6 @@ int main(int argc, char* argv[]) {
         flame.deserialize(fp);
         fclose(fp);
 
-        auto varMap = flame.xform.variationMap.getValue();
-        varMap.variations[core::Variation::VariationID::LINEAR] = 0.314;
-        flame.xform.variationMap.setValue(varMap);
-
         flame.serialize(stdout);
 
     } catch (std::exception& e) {

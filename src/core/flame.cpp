@@ -25,7 +25,7 @@ Flame::Flame(): XMLElementClass("flame"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast", 1.0),
     initial(*this, "initial", 20),
-    xform(*this),
+    xforms(*this, "xform"),
     palette(*this) { }
 
 const bimap<Variation::VariationID, string> Variation::variationNames =

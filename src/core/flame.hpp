@@ -84,7 +84,7 @@ public:
     XMLAttributeDouble brightness;
     XMLAttributeDouble contrast;
     XMLAttributeInt initial;
-    XForm xform;
+    ListXMLElementClass xforms;
     Palette palette;
 };
 
