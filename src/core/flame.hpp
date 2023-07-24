@@ -39,6 +39,9 @@ struct Variation {
         SPHERICAL = 2,
         POLAR = 6,
         HYPERBOLIC = 11,
+        DIAMOND = 12,
+        EYEFISH = 28,
+        CYLINDER = 30,
         SQUARE = 44
     };
 

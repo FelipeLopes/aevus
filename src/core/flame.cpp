@@ -34,6 +34,9 @@ const bimap<Variation::VariationID, string> Variation::variationNames =
         (SPHERICAL, "spherical")
         (POLAR, "polar")
         (HYPERBOLIC, "hyperbolic")
+        (DIAMOND, "diamond")
+        (EYEFISH, "eyefish")
+        (CYLINDER, "cylinder")
         (SQUARE, "square");
 
 VariationMap::VariationMap() { }

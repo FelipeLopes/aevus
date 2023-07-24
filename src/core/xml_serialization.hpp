@@ -192,26 +192,19 @@ public:
     {
         static_assert(std::is_base_of<XMLElementClass, T>::value,
             "T must inherit from XMLElementClass");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
         parent.listTags[tag] = std::list<std::shared_ptr<XMLElementClass>>();
         list = &parent.listTags[tag];
     }
 
-    T get(int index) {
+    std::shared_ptr<T> get(int index) {
         int count = list->size();
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to access out of list bounds");
         }
         auto it = std::next(list->begin(), index);
-        return *(*it);
-    }
-
-    void set(int index, std::shared_ptr<T> element) {
-        int count = list->size();
-        if (index < 0 || index > count-1) {
-            throw std::invalid_argument("Attempted to access out of list bounds");
-        }
-        auto it = std::next(list->begin(), index);
-        *it = element;
+        return std::static_pointer_cast<T>(*it);
     }
 
     void append(std::shared_ptr<T> element) {

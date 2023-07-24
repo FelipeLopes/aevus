@@ -152,6 +152,24 @@ int main(int argc, char* argv[]) {
         flame.deserialize(fp);
         fclose(fp);
 
+        auto xf = flame.xforms.get(1);
+        core::VariationMap varMap;
+        varMap.variations[core::Variation::VariationID::POLAR] = 0.327155917417258;
+        varMap.variations[core::Variation::VariationID::DIAMOND] = 0.672844082582742;
+
+        xf->weight.setValue(0.44895494837104);
+        xf->color.setValue(0.5);
+        xf->variationMap.setValue(varMap);
+
+        xf = flame.xforms.get(2);
+        varMap.variations.clear();
+        varMap.variations[core::Variation::VariationID::EYEFISH] = 0.152098431950435;
+        varMap.variations[core::Variation::VariationID::CYLINDER] = 0.847901568049565;
+
+        xf->weight.setValue(0.166865676549752);
+        xf->color.setValue(1);
+        xf->variationMap.setValue(varMap);
+
         flame.serialize(stdout);
 
     } catch (std::exception& e) {
