@@ -210,7 +210,7 @@ void XMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
     parent->InsertEndChild(element);
 }
 
-void XMLElementClass::nodeDeserialize(XMLNode* node) {
+XMLNode* XMLElementClass::nodeDeserialize(XMLNode* node) {
     if (node == NULL) {
         throw std::invalid_argument("XML document has no nodes");
     }
@@ -227,8 +227,7 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
     }
     XMLNode* childNode = node->FirstChild();
     for (auto child: children) {
-        child->nodeDeserialize(childNode);
-        childNode = childNode->NextSibling();
+        childNode = child->nodeDeserialize(childNode);
     }
     if (contentString == NULL && childNode != NULL) {
         throw std::invalid_argument("XML node has incorrect number of children");
@@ -239,6 +238,7 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
         }
         contentString->deserialize(childNode);
     }
+    return node->NextSibling();
 }
 
 XMLElementClass::~XMLElementClass() { }
@@ -307,7 +307,7 @@ void ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
     }
 }
 
-void ListXMLElementClass::nodeDeserialize(XMLNode* node) {
+XMLNode* ListXMLElementClass::nodeDeserialize(XMLNode* node) {
     while (true) {
         if (node == NULL) {
             break;
@@ -325,6 +325,7 @@ void ListXMLElementClass::nodeDeserialize(XMLNode* node) {
         append(clazz);
         node = node->NextSibling();
     }
+    return node;
 }
 
 }

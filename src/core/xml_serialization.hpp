@@ -181,7 +181,7 @@ public:
     XMLContentString* contentString;
     virtual ~XMLElementClass();
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
-    virtual void nodeDeserialize(tinyxml2::XMLNode* node);
+    virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node);
 };
 
 class ListXMLElementClass: public XMLElementClass {
@@ -195,7 +195,7 @@ public:
     bool empty();
     ~ListXMLElementClass();
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
-    virtual void nodeDeserialize(tinyxml2::XMLNode* node);
+    virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node);
 private:
     XMLElementClass& parent;
     std::string tag;
