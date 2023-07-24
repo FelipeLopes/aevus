@@ -64,6 +64,11 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
 XForm::XForm(XMLElementClass& el): XMLElementClass(el, "xform"),
     weight(*this, "weight"),
     color(*this, "color"),
+    variationMap(*this, [](auto& names) {
+        for (auto kv: Variation::variationNames.right) {
+            names.insert(kv.first);
+        }
+    }),
     opacity(*this, "opacity") { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),

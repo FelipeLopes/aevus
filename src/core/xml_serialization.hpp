@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <set>
@@ -18,11 +19,12 @@ class XMLAttributeField {
 public:
     XMLAttributeField(XMLElementClass& element, std::set<std::string> names);
     XMLAttributeField(XMLElementClass& element, std::string name);
+    XMLAttributeField(XMLElementClass& element, std::function<void(std::set<std::string>&)> f);
     virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
 protected:
-    const std::set<std::string> names;
+    std::set<std::string> names;
 };
 
 class XMLAttributeInt : public XMLAttributeField {
@@ -118,8 +120,8 @@ public:
 template <typename T>
 class XMLMultiAttribute: public XMLAttributeField {
 public:
-    XMLMultiAttribute(XMLElementClass& element, std::set<std::string> names):
-        XMLAttributeField(element, names)
+    XMLMultiAttribute(XMLElementClass& element, std::function<void(std::set<std::string>&)> f):
+        XMLAttributeField(element, f)
     {
         static_assert(std::is_base_of<StringMapSerializable, T>::value,
             "T must implement StringMapSerializable interface");
@@ -134,6 +136,9 @@ public:
         std::map<std::string, std::string> stringMap;
         for (auto name: names) {
             auto err = element->QueryStringAttribute(name.c_str(), &buf);
+            if (err == tinyxml2::XML_NO_ATTRIBUTE) {
+                continue;
+            }
             if (err != tinyxml2::XML_SUCCESS) {
                 auto ec = std::error_code(err, std::generic_category());
                 std::string msg("Could not load string attribute with name ");

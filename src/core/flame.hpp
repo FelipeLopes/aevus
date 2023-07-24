@@ -58,6 +58,7 @@ public:
     XForm(XMLElementClass& el);
     XMLAttributeDouble weight;
     XMLAttributeDouble color;
+    XMLMultiAttribute<VariationMap> variationMap;
     XMLAttributeDouble opacity;
 };
 

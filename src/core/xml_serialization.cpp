@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 
+using std::function;
 using std::map;
 using std::set;
 using std::string;
@@ -24,6 +25,11 @@ XMLAttributeField::XMLAttributeField(XMLElementClass& element, set<string> names
 XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name):
     names(list_of(name))
 {
+    element.attributeFields.push_back(this);
+}
+
+XMLAttributeField::XMLAttributeField(XMLElementClass& element, function<void(set<string>&)> f) {
+    f(names);
     element.attributeFields.push_back(this);
 }
 
