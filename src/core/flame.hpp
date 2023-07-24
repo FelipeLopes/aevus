@@ -55,7 +55,7 @@ public:
 
 class XForm: public XMLElementClass {
 public:
-    XForm(XMLElementClass& el);
+    XForm();
     XMLAttributeDouble weight;
     XMLAttributeDouble color;
     XMLMultiAttribute<VariationMap> variationMap;
@@ -84,7 +84,7 @@ public:
     XMLAttributeDouble brightness;
     XMLAttributeDouble contrast;
     XMLAttributeInt initial;
-    ListXMLElementClass xforms;
+    ListXMLElementClass<XForm> xforms;
     Palette palette;
 };
 

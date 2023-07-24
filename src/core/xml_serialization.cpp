@@ -186,8 +186,7 @@ void XMLElementClass::deserialize(FILE* fp) {
         throw std::system_error(ec, "Could not load XML file");
     }
     XMLNode* node = xmlDoc.FirstChild();
-    nodeDeserialize(node);
-    node = node->NextSibling();
+    node = nodeDeserialize(node);
     if (node != NULL) {
         throw std::invalid_argument("XMLDocument has more than one root");
     }
@@ -242,90 +241,5 @@ XMLNode* XMLElementClass::nodeDeserialize(XMLNode* node) {
 }
 
 XMLElementClass::~XMLElementClass() { }
-
-ListXMLElementClass::ListXMLElementClass(XMLElementClass& parent_, string tag_):
-    XMLElementClass(parent_, tag_), parent(parent_), tag(tag_)
-{
-    parent.listTags[tag] = std::list<XMLElementClass*>();
-    list = &parent.listTags[tag];
-}
-
-XMLElementClass ListXMLElementClass::get(int index) {
-    int count = list->size();
-    if (index < 0 || index > count-1) {
-        throw std::invalid_argument("Attempted to access out of list bounds");
-    }
-    auto it = std::next(list->begin(), index);
-    return *(*it);
-}
-
-void ListXMLElementClass::set(int index, XMLElementClass element) {
-    int count = list->size();
-    if (index < 0 || index > count-1) {
-        throw std::invalid_argument("Attempted to access out of list bounds");
-    }
-    auto it = std::next(list->begin(), index);
-    delete *it;
-    XMLElementClass* listEl = new XMLElementClass(element);
-    listEl->tag = tag;
-    *it = listEl;
-}
-
-void ListXMLElementClass::append(XMLElementClass element) {
-    XMLElementClass* listEl = new XMLElementClass(element);
-    listEl->tag = tag;
-    list->push_back(listEl);
-}
-
-void ListXMLElementClass::remove(int index) {
-    int count = list->size();
-    if (index < 0 || index > count-1) {
-        throw std::invalid_argument("Attempted to remove out of list bounds");
-    }
-    auto it = std::next(list->begin(), index);
-    delete *it;
-    list->erase(it);
-}
-
-bool ListXMLElementClass::empty() {
-    return list->empty();
-}
-
-void ListXMLElementClass::clear() {
-    while (!empty()) {
-        remove(0);
-    }
-}
-
-ListXMLElementClass::~ListXMLElementClass() {
-    clear();
-}
-
-void ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
-    for (auto el: *list) {
-        el->nodeSerialize(xmlDoc, parent);
-    }
-}
-
-XMLNode* ListXMLElementClass::nodeDeserialize(XMLNode* node) {
-    while (true) {
-        if (node == NULL) {
-            break;
-        }
-        XMLElement* element = node->ToElement();
-        if (element == NULL) {
-            break;
-        }
-        string name = element->Name();
-        if (name != tag) {
-            break;
-        }
-        XMLElementClass clazz(tag);
-        clazz.nodeDeserialize(node);
-        append(clazz);
-        node = node->NextSibling();
-    }
-    return node;
-}
 
 }

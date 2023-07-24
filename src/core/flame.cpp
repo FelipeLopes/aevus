@@ -61,7 +61,7 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
     }
 }
 
-XForm::XForm(XMLElementClass& el): XMLElementClass(el, "xform"),
+XForm::XForm(): XMLElementClass("xform"),
     weight(*this, "weight"),
     color(*this, "color"),
     variationMap(*this, [](auto& names) {
