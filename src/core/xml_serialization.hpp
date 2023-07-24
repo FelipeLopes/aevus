@@ -17,9 +17,9 @@ class XMLElementClass;
 
 class XMLAttributeField {
 public:
-    XMLAttributeField(XMLElementClass& element, std::set<std::string> names);
-    XMLAttributeField(XMLElementClass& element, std::string name);
-    XMLAttributeField(XMLElementClass& element, std::function<void(std::set<std::string>&)> f);
+    XMLAttributeField(XMLElementClass& parent, std::set<std::string> names);
+    XMLAttributeField(XMLElementClass& parent, std::string name);
+    XMLAttributeField(XMLElementClass& parent, std::function<void(std::set<std::string>&)> f);
     virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
@@ -29,8 +29,8 @@ protected:
 
 class XMLAttributeInt : public XMLAttributeField {
 public:
-    XMLAttributeInt(XMLElementClass& element, std::string name);
-    XMLAttributeInt(XMLElementClass& element, std::string name, int defaultValue);
+    XMLAttributeInt(XMLElementClass& parent, std::string name);
+    XMLAttributeInt(XMLElementClass& parent, std::string name, int defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     int getValue();
@@ -43,8 +43,8 @@ private:
 
 class XMLAttributeDouble : public XMLAttributeField {
 public:
-    XMLAttributeDouble(XMLElementClass& element, std::string name);
-    XMLAttributeDouble(XMLElementClass& element, std::string name, double defaultValue);
+    XMLAttributeDouble(XMLElementClass& parent, std::string name);
+    XMLAttributeDouble(XMLElementClass& parent, std::string name, double defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     double getValue();
@@ -57,8 +57,8 @@ private:
 
 class XMLAttributeString : public XMLAttributeField {
 public:
-    XMLAttributeString(XMLElementClass& element, std::string name);
-    XMLAttributeString(XMLElementClass& element, std::string name, std::string defaultValue);
+    XMLAttributeString(XMLElementClass& parent, std::string name);
+    XMLAttributeString(XMLElementClass& parent, std::string name, std::string defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
     std::string getValue();
@@ -79,7 +79,7 @@ public:
 template <typename T>
 class XMLAttribute: public XMLAttributeField {
 public:
-    XMLAttribute(XMLElementClass& element, std::string name): XMLAttributeField(element, name) {
+    XMLAttribute(XMLElementClass& parent, std::string name): XMLAttributeField(parent, name) {
         static_assert(std::is_base_of<StringSerializable, T>::value,
             "T must implement StringSerializable interface");
         static_assert(std::is_default_constructible<T>::value,
@@ -120,8 +120,8 @@ public:
 template <typename T>
 class XMLMultiAttribute: public XMLAttributeField {
 public:
-    XMLMultiAttribute(XMLElementClass& element, std::function<void(std::set<std::string>&)> f):
-        XMLAttributeField(element, f)
+    XMLMultiAttribute(XMLElementClass& parent, std::function<void(std::set<std::string>&)> f):
+        XMLAttributeField(parent, f)
     {
         static_assert(std::is_base_of<StringMapSerializable, T>::value,
             "T must implement StringMapSerializable interface");
@@ -160,7 +160,7 @@ private:
 
 class XMLContentString {
 public:
-    XMLContentString(XMLElementClass& element);
+    XMLContentString(XMLElementClass& parent);
     void deserialize(tinyxml2::XMLNode* node);
     std::string getValue();
     void setValue(std::string value);
@@ -171,16 +171,34 @@ private:
 class XMLElementClass {
 public:
     XMLElementClass(std::string tag);
-    XMLElementClass(XMLElementClass& element, std::string tag);
+    XMLElementClass(XMLElementClass& parent, std::string tag);
     void serialize(FILE* fp);
     void deserialize(FILE* fp);
     std::string tag;
     std::vector<XMLElementClass*> children;
+    std::map<std::string, std::list<XMLElementClass*>> listTags;
     std::vector<XMLAttributeField*> attributeFields;
     XMLContentString* contentString;
+    virtual ~XMLElementClass();
+protected:
+    virtual tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
+    virtual void nodeDeserialize(tinyxml2::XMLNode* node);
+};
+
+class ListXMLElementClass: public XMLElementClass {
+public:
+    ListXMLElementClass(XMLElementClass& parent, std::string tag);
+    void append(XMLElementClass element);
+    void remove(int index);
+    bool empty();
+    ~ListXMLElementClass();
+protected:
+    virtual tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
+    virtual void nodeDeserialize(tinyxml2::XMLNode* node);
 private:
-    tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
-    void nodeDeserialize(tinyxml2::XMLNode* node);
+    XMLElementClass& parent;
+    std::string tag;
+    std::list<XMLElementClass*>* list;
 };
 
 }

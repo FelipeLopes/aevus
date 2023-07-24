@@ -1,5 +1,6 @@
 #include "xml_serialization.hpp"
 #include <exception>
+#include <iterator>
 #include <stdexcept>
 #include <string>
 
@@ -16,30 +17,30 @@ using boost::assign::map_list_of;
 
 namespace core {
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, set<string> names_):
+XMLAttributeField::XMLAttributeField(XMLElementClass& parent, set<string> names_):
     names(names_)
 {
-    element.attributeFields.push_back(this);
+    parent.attributeFields.push_back(this);
 }
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, string name):
+XMLAttributeField::XMLAttributeField(XMLElementClass& parent, string name):
     names(list_of(name))
 {
-    element.attributeFields.push_back(this);
+    parent.attributeFields.push_back(this);
 }
 
-XMLAttributeField::XMLAttributeField(XMLElementClass& element, function<void(set<string>&)> f) {
+XMLAttributeField::XMLAttributeField(XMLElementClass& parent, function<void(set<string>&)> f) {
     f(names);
-    element.attributeFields.push_back(this);
+    parent.attributeFields.push_back(this);
 }
 
-XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name):
-    XMLAttributeField(element, name),
+XMLAttributeInt::XMLAttributeInt(XMLElementClass& parent, string name):
+    XMLAttributeField(parent, name),
     defaultValue(0),
     hasDefault(false) { }
 
-XMLAttributeInt::XMLAttributeInt(XMLElementClass& element, string name, int defaultValue_):
-    XMLAttributeField(element, name),
+XMLAttributeInt::XMLAttributeInt(XMLElementClass& parent, string name, int defaultValue_):
+    XMLAttributeField(parent, name),
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
@@ -70,13 +71,13 @@ void XMLAttributeInt::setValue(int value) {
     val = value;
 }
 
-XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name):
-    XMLAttributeField(element, name),
+XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& parent, string name):
+    XMLAttributeField(parent, name),
     defaultValue(0.0),
     hasDefault(false) { }
 
-XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& element, string name, double defaultValue_):
-    XMLAttributeField(element, name),
+XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& parent, string name, double defaultValue_):
+    XMLAttributeField(parent, name),
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
@@ -107,13 +108,13 @@ void XMLAttributeDouble::setValue(double value) {
     val = value;
 }
 
-XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name):
-    XMLAttributeField(element, name),
+XMLAttributeString::XMLAttributeString(XMLElementClass& parent, string name):
+    XMLAttributeField(parent, name),
     defaultValue(""),
     hasDefault(false) { }
 
-XMLAttributeString::XMLAttributeString(XMLElementClass& element, string name, string defaultValue_):
-    XMLAttributeField(element, name),
+XMLAttributeString::XMLAttributeString(XMLElementClass& parent, string name, string defaultValue_):
+    XMLAttributeField(parent, name),
     defaultValue(defaultValue_),
     hasDefault(true) { }
 
@@ -146,8 +147,8 @@ void XMLAttributeString::setValue(string value) {
     val = value;
 }
 
-XMLContentString::XMLContentString(XMLElementClass& element) {
-    element.contentString = this;
+XMLContentString::XMLContentString(XMLElementClass& parent) {
+    parent.contentString = this;
 }
 
 void XMLContentString::deserialize(XMLNode* node) {
@@ -162,13 +163,13 @@ void XMLContentString::setValue(string value) {
     val = value;
 }
 
-XMLElementClass::XMLElementClass(std::string tag_): tag(tag_) {
+XMLElementClass::XMLElementClass(string tag_): tag(tag_) {
     contentString = NULL;
 }
 
-XMLElementClass::XMLElementClass(XMLElementClass& element, std::string tag_): tag(tag_) {
+XMLElementClass::XMLElementClass(XMLElementClass& parent, string tag_): tag(tag_) {
     contentString = NULL;
-    element.children.push_back(this);
+    parent.children.push_back(this);
 }
 
 void XMLElementClass::serialize(FILE* fp) {
@@ -239,6 +240,49 @@ void XMLElementClass::nodeDeserialize(XMLNode* node) {
         }
         contentString->deserialize(childNode);
     }
+}
+
+XMLElementClass::~XMLElementClass() { }
+
+ListXMLElementClass::ListXMLElementClass(XMLElementClass& parent_, string tag_):
+    XMLElementClass(parent_, tag_), parent(parent_), tag(tag_)
+{
+    parent.listTags[tag] = std::list<XMLElementClass*>();
+    list = &parent.listTags[tag];
+}
+
+void ListXMLElementClass::append(XMLElementClass element) {
+    XMLElementClass* listEl = new XMLElementClass(element);
+    list->push_back(listEl);
+}
+
+void ListXMLElementClass::remove(int index) {
+    int count = list->size();
+    if (index < 0 || index > count-1) {
+        throw std::invalid_argument("Attempted to remove out of list bounds");
+    }
+    auto it = std::next(list->begin(), index);
+    delete *it;
+    list->erase(it);
+}
+
+bool ListXMLElementClass::empty() {
+    return list->empty();
+}
+
+ListXMLElementClass::~ListXMLElementClass() {
+    while (!empty()) {
+        remove(0);
+    }
+}
+
+XMLNode* ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
+    XMLElement* element = xmlDoc.NewElement(tag.c_str());
+    return element;
+}
+
+void ListXMLElementClass::nodeDeserialize(XMLNode* node) {
+
 }
 
 }
