@@ -181,7 +181,7 @@ public:
     XMLContentString* contentString;
     virtual ~XMLElementClass();
 protected:
-    virtual tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
+    virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual void nodeDeserialize(tinyxml2::XMLNode* node);
 };
 
@@ -193,7 +193,7 @@ public:
     bool empty();
     ~ListXMLElementClass();
 protected:
-    virtual tinyxml2::XMLNode* nodeSerialize(tinyxml2::XMLDocument& xmlDoc);
+    virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual void nodeDeserialize(tinyxml2::XMLNode* node);
 private:
     XMLElementClass& parent;

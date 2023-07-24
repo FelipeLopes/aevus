@@ -174,8 +174,7 @@ XMLElementClass::XMLElementClass(XMLElementClass& parent, string tag_): tag(tag_
 
 void XMLElementClass::serialize(FILE* fp) {
     XMLDocument xmlDoc;
-    auto node = nodeSerialize(xmlDoc);
-    xmlDoc.InsertFirstChild(node);
+    nodeSerialize(xmlDoc, &xmlDoc);
     xmlDoc.SaveFile(stdout);
 }
 
@@ -194,7 +193,7 @@ void XMLElementClass::deserialize(FILE* fp) {
     }
 }
 
-XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
+void XMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
     XMLElement* element = xmlDoc.NewElement(tag.c_str());
     for (auto field: attributeFields) {
         auto attributeMap = field->serialize();
@@ -203,12 +202,12 @@ XMLNode* XMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
         }
     }
     for (auto child: children) {
-        element->InsertEndChild(child->nodeSerialize(xmlDoc));
+        child->nodeSerialize(xmlDoc, element);
     }
     if (contentString != NULL) {
         element->SetText(contentString->getValue().c_str());
     }
-    return element;
+    parent->InsertEndChild(element);
 }
 
 void XMLElementClass::nodeDeserialize(XMLNode* node) {
@@ -276,9 +275,8 @@ ListXMLElementClass::~ListXMLElementClass() {
     }
 }
 
-XMLNode* ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc) {
-    XMLElement* element = xmlDoc.NewElement(tag.c_str());
-    return element;
+void ListXMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
+
 }
 
 void ListXMLElementClass::nodeDeserialize(XMLNode* node) {
