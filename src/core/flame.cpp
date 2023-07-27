@@ -9,6 +9,7 @@ using std::map;
 using std::string;
 using std::stod;
 using std::to_string;
+using std::vector;
 using boost::bimap;
 using boost::assign::list_of;
 
@@ -62,6 +63,41 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
         }
         variations[it->second] = stod(kv.second);
     }
+}
+
+PaletteColors::PaletteColors() { }
+
+string PaletteColors::hexAt(int pos) const {
+    char s[7];
+    byte r = paletteData[3*pos];
+    byte g = paletteData[3*pos+1];
+    byte b = paletteData[3*pos+2];
+    s[0] = r/16 > 9 ? (r/16)+'A'-10 : (r/16)+'0';
+    s[1] = r%16 > 9 ? (r%16)+'A'-10 : (r%16)+'0';
+    s[2] = g/16 > 9 ? (g/16)+'A'-10 : (g/16)+'0';
+    s[3] = g%16 > 9 ? (g%16)+'A'-10 : (g%16)+'0';
+    s[4] = b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
+    s[5] = b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
+    s[6] = '\0';
+    return std::string(s);
+}
+
+void PaletteColors::readColorCLArray(vector<ColorCL>& arr) const {
+    arr.resize(PALETTE_WIDTH);
+    for (int i=0; i<PALETTE_WIDTH; i++) {
+        arr[i].r = paletteData[3*i] / 255.0;
+        arr[i].g = paletteData[3*i+1] / 255.0;
+        arr[i].b = paletteData[3*i+2] / 255.0;
+        arr[i].a = 1.0;
+    }
+}
+
+string PaletteColors::toString() {
+    return "";
+}
+
+void PaletteColors::fromString(string text) {
+
 }
 
 XForm::XForm(): XMLElementClass("xform"),

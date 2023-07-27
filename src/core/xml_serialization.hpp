@@ -23,7 +23,6 @@ public:
     virtual std::map<std::string, std::string> serialize() = 0;
     virtual void deserialize(tinyxml2::XMLElement* element) = 0;
     virtual ~XMLAttributeField() { }
-//protected:
     std::set<std::string> names;
 };
 
@@ -158,14 +157,43 @@ private:
     T val;
 };
 
-class XMLContentString {
+class XMLContent {
+public:
+    XMLContent(XMLElementClass& parent);
+    virtual void deserialize(tinyxml2::XMLNode* node) = 0;
+    virtual std::string serialize() = 0;
+    virtual ~XMLContent() { }
+};
+
+class XMLContentString: public XMLContent {
 public:
     XMLContentString(XMLElementClass& parent);
-    void deserialize(tinyxml2::XMLNode* node);
-    std::string getValue();
+    virtual std::string serialize();
+    virtual void deserialize(tinyxml2::XMLNode* node);
     void setValue(std::string value);
 private:
     std::string val;
+};
+
+template <typename T>
+class XMLCustomContent: public XMLContent {
+public:
+    XMLCustomContent(XMLElementClass& parent): XMLContent(parent) {
+        static_assert(std::is_base_of<StringSerializable, T>::value,
+            "T must implement StringSerializable interface");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
+    }
+
+    virtual std::string serialize() {
+        return val.toString();
+    }
+
+    virtual void deserialize(tinyxml2::XMLNode* node) {
+        val.fromString(node->Value());
+    }
+private:
+    T val;
 };
 
 class XMLElementClass {
@@ -178,7 +206,7 @@ public:
     std::vector<XMLElementClass*> children;
     std::map<std::string, std::list<std::shared_ptr<XMLElementClass>>> listTags;
     std::vector<XMLAttributeField*> attributeFields;
-    XMLContentString* contentString;
+    XMLContent* content;
     virtual ~XMLElementClass();
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node);

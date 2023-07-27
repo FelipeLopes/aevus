@@ -147,15 +147,17 @@ void XMLAttributeString::setValue(string value) {
     val = value;
 }
 
-XMLContentString::XMLContentString(XMLElementClass& parent) {
-    parent.contentString = this;
+XMLContent::XMLContent(XMLElementClass& parent) {
+    parent.content = this;
 }
+
+XMLContentString::XMLContentString(XMLElementClass& parent): XMLContent(parent) { }
 
 void XMLContentString::deserialize(XMLNode* node) {
     val = node->Value();
 }
 
-string XMLContentString::getValue() {
+string XMLContentString::serialize() {
     return val;
 }
 
@@ -164,11 +166,11 @@ void XMLContentString::setValue(string value) {
 }
 
 XMLElementClass::XMLElementClass(string tag_): tag(tag_) {
-    contentString = NULL;
+    content = NULL;
 }
 
 XMLElementClass::XMLElementClass(XMLElementClass& parent, string tag_): tag(tag_) {
-    contentString = NULL;
+    content = NULL;
     parent.children.push_back(this);
 }
 
@@ -203,8 +205,8 @@ void XMLElementClass::nodeSerialize(XMLDocument& xmlDoc, XMLNode* parent) {
     for (auto child: children) {
         child->nodeSerialize(xmlDoc, element);
     }
-    if (contentString != NULL) {
-        element->SetText(contentString->getValue().c_str());
+    if (content != NULL) {
+        element->SetText(content->serialize().c_str());
     }
     parent->InsertEndChild(element);
 }
@@ -228,14 +230,14 @@ XMLNode* XMLElementClass::nodeDeserialize(XMLNode* node) {
     for (auto child: children) {
         childNode = child->nodeDeserialize(childNode);
     }
-    if (contentString == NULL && childNode != NULL) {
+    if (content == NULL && childNode != NULL) {
         throw std::invalid_argument("XML node has incorrect number of children");
     }
-    if (contentString != NULL) {
+    if (content != NULL) {
         if (childNode == NULL) {
             throw std::invalid_argument("XML node has no content");
         }
-        contentString->deserialize(childNode);
+        content->deserialize(childNode);
     }
     return node->NextSibling();
 }

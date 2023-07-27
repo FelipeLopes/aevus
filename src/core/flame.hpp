@@ -6,12 +6,29 @@
 
 namespace core {
 
+struct ColorCL {
+    float r,g,b,a;
+};
+
+class PaletteColors: public StringSerializable {
+public:
+    PaletteColors();
+    std::string hexAt(int pos) const;
+    void readColorCLArray(std::vector<ColorCL>& arr) const;
+    virtual std::string toString();
+    virtual void fromString(std::string text);
+    static const unsigned PALETTE_WIDTH = 256;
+private:
+    typedef unsigned char byte;
+    std::vector<byte> paletteData;
+};
+
 class Palette: public XMLElementClass {
 public:
     Palette(XMLElementClass& el);
     XMLAttributeInt count;
     XMLAttributeString format;
-    XMLContentString colors;
+    XMLCustomContent<PaletteColors> colors;
 };
 
 class SizeParams: public StringSerializable {
