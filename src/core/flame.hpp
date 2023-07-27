@@ -20,6 +20,9 @@ public:
     static const unsigned PALETTE_WIDTH = 256;
 private:
     typedef unsigned char byte;
+    char hexHigh(byte b) const;
+    char hexLow(byte b) const;
+    byte hexValue(char high, char low) const;
     std::vector<byte> paletteData;
 };
 

@@ -1,5 +1,7 @@
 #include "flame.hpp"
 #include "xml_serialization.hpp"
+#include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <inttypes.h>
 #include <stdexcept>
@@ -67,17 +69,30 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
 
 PaletteColors::PaletteColors() { }
 
+char PaletteColors::hexHigh(byte b) const {
+    return b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
+}
+
+char PaletteColors::hexLow(byte b) const {
+    return b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
+}
+
+PaletteColors::byte PaletteColors::hexValue(char high, char low) const {
+    return (high >= 'A' ? (10 + high - 'A') : (high - '0')) * 16
+        + (low >= 'A' ? (10 + low - 'A') : (low - '0'));
+}
+
 string PaletteColors::hexAt(int pos) const {
     char s[7];
     byte r = paletteData[3*pos];
     byte g = paletteData[3*pos+1];
     byte b = paletteData[3*pos+2];
-    s[0] = r/16 > 9 ? (r/16)+'A'-10 : (r/16)+'0';
-    s[1] = r%16 > 9 ? (r%16)+'A'-10 : (r%16)+'0';
-    s[2] = g/16 > 9 ? (g/16)+'A'-10 : (g/16)+'0';
-    s[3] = g%16 > 9 ? (g%16)+'A'-10 : (g%16)+'0';
-    s[4] = b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
-    s[5] = b%16 > 9 ? (b%16)+'A'-10 : (b%16)+'0';
+    s[0] = hexHigh(r);
+    s[1] = hexLow(r);
+    s[2] = hexHigh(g);
+    s[3] = hexLow(g);
+    s[4] = hexHigh(b);
+    s[5] = hexLow(b);
     s[6] = '\0';
     return std::string(s);
 }
@@ -93,11 +108,30 @@ void PaletteColors::readColorCLArray(vector<ColorCL>& arr) const {
 }
 
 string PaletteColors::toString() {
-    return "";
+    string whiteSpace(8, ' ');
+    string text = "\n";
+    for (int i=0; i<32; i++) {
+        string paletteChars = "";
+        for (int j=0; j<8; j++) {
+            paletteChars += hexAt(i*8+j);
+        }
+        text += (whiteSpace + paletteChars + "\n");
+    }
+    text += "    ";
+    return text;
 }
 
 void PaletteColors::fromString(string text) {
-
+    text.erase(std::remove_if(text.begin(), text.end(), isspace), text.end());
+    if (text.size() != PALETTE_WIDTH * 6) {
+        throw std::invalid_argument("Palette color string has wrong size");
+    }
+    paletteData.resize(PALETTE_WIDTH * 3);
+    for (int i=0; i<PALETTE_WIDTH; i++) {
+        paletteData[3*i] = hexValue(text[6*i], text[6*i+1]);
+        paletteData[3*i+1] = hexValue(text[6*i+2], text[6*i+3]);
+        paletteData[3*i+2] = hexValue(text[6*i+4], text[6*i+5]);
+    }
 }
 
 XForm::XForm(): XMLElementClass("xform"),
