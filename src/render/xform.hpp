@@ -25,7 +25,6 @@ struct Affine {
     Affine(double xx, double xy, double yx, double yy, double ox, double oy);
     Point o, x, y;
     Point apply(Point p);
-    std::string coefString();
 };
 
 class XForm {

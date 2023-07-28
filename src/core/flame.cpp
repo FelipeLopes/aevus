@@ -4,6 +4,7 @@
 #include <cctype>
 #include <cstdint>
 #include <inttypes.h>
+#include <iomanip>
 #include <stdexcept>
 #include <string>
 
@@ -134,6 +135,31 @@ void PaletteColors::fromString(string text) {
     }
 }
 
+Affine::Affine() {
+    ox = oy = 0;
+    xx = yy = 1;
+    xy = yx = 0;
+}
+
+string Affine::toString() {
+    std::stringstream buffer;
+    buffer<<std::fixed<<std::setprecision(6)<<
+        xx<<" "<<-xy<<" "<<
+        -yx<<" "<<yy<<" "<<
+        ox<<" "<<oy;
+    return buffer.str();
+}
+
+void Affine::fromString(string text) {
+    if (sscanf(text.c_str(), "%lf %lf %lf %lf %lf %lf",
+        &xx, &xy, &yx, &yy, &ox, &oy) < 6)
+    {
+        throw std::invalid_argument("Could not read Affine");
+    }
+    xy *= -1;
+    yx *= -1;
+}
+
 XForm::XForm(): XMLElementClass("xform"),
     weight(*this, "weight"),
     color(*this, "color"),
@@ -142,6 +168,7 @@ XForm::XForm(): XMLElementClass("xform"),
             names.insert(kv.first);
         }
     }),
+    coefs(*this, "coefs", true),
     opacity(*this, "opacity") { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),

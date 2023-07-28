@@ -147,11 +147,11 @@ void XMLAttributeString::setValue(string value) {
     val = value;
 }
 
-XMLContent::XMLContent(XMLElementClass& parent) {
+XMLContentClass::XMLContentClass(XMLElementClass& parent) {
     parent.content = this;
 }
 
-XMLContentString::XMLContentString(XMLElementClass& parent): XMLContent(parent) { }
+XMLContentString::XMLContentString(XMLElementClass& parent): XMLContentClass(parent) { }
 
 void XMLContentString::deserialize(XMLNode* node) {
     val = node->Value();

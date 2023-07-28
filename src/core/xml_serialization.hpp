@@ -78,7 +78,10 @@ public:
 template <typename T>
 class XMLAttribute: public XMLAttributeField {
 public:
-    XMLAttribute(XMLElementClass& parent, std::string name): XMLAttributeField(parent, name) {
+    XMLAttribute(XMLElementClass& parent, std::string name, bool useDefault_ = false):
+        XMLAttributeField(parent, name),
+        useDefault(useDefault_)
+    {
         static_assert(std::is_base_of<StringSerializable, T>::value,
             "T must implement StringSerializable interface");
         static_assert(std::is_default_constructible<T>::value,
@@ -92,6 +95,9 @@ public:
         const char* buf;
         std::string name = *names.begin();
         auto err = element->QueryStringAttribute(name.c_str(), &buf);
+        if (useDefault && err == tinyxml2::XML_NO_ATTRIBUTE) {
+            return;
+        }
         if (err != tinyxml2::XML_SUCCESS) {
             auto ec = std::error_code(err, std::generic_category());
             std::string msg("Could not load string attribute with name ");
@@ -106,6 +112,7 @@ public:
         val = value;
     }
 private:
+    bool useDefault;
     T val;
 };
 
@@ -157,15 +164,15 @@ private:
     T val;
 };
 
-class XMLContent {
+class XMLContentClass {
 public:
-    XMLContent(XMLElementClass& parent);
+    XMLContentClass(XMLElementClass& parent);
     virtual void deserialize(tinyxml2::XMLNode* node) = 0;
     virtual std::string serialize() = 0;
-    virtual ~XMLContent() { }
+    virtual ~XMLContentClass() { }
 };
 
-class XMLContentString: public XMLContent {
+class XMLContentString: public XMLContentClass {
 public:
     XMLContentString(XMLElementClass& parent);
     virtual std::string serialize();
@@ -176,9 +183,9 @@ private:
 };
 
 template <typename T>
-class XMLCustomContent: public XMLContent {
+class XMLContent: public XMLContentClass {
 public:
-    XMLCustomContent(XMLElementClass& parent): XMLContent(parent) {
+    XMLContent(XMLElementClass& parent): XMLContentClass(parent) {
         static_assert(std::is_base_of<StringSerializable, T>::value,
             "T must implement StringSerializable interface");
         static_assert(std::is_default_constructible<T>::value,
@@ -206,7 +213,7 @@ public:
     std::vector<XMLElementClass*> children;
     std::map<std::string, std::list<std::shared_ptr<XMLElementClass>>> listTags;
     std::vector<XMLAttributeField*> attributeFields;
-    XMLContent* content;
+    XMLContentClass* content;
     virtual ~XMLElementClass();
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent);
     virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node);

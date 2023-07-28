@@ -29,12 +29,6 @@ Point Affine::apply(Point p) {
     return Point(o.x + p.x*x.x + p.y*y.x, o.y + p.x*x.y+p.y*y.y);
 }
 
-std::string Affine::coefString() {
-    std::stringstream buffer;
-    buffer<<std::fixed<<std::setprecision(6)<<x.x<<" "<<x.y<<" "<<y.x<<" "<<y.y<<" "<<o.x<<" "<<o.y;
-    return buffer.str();
-}
-
 Affine::Affine() {
     o = Point(0,0);
     x = Point(1,0);

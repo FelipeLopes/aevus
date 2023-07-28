@@ -31,7 +31,7 @@ public:
     Palette(XMLElementClass& el);
     XMLAttributeInt count;
     XMLAttributeString format;
-    XMLCustomContent<PaletteColors> colors;
+    XMLContent<PaletteColors> colors;
 };
 
 class SizeParams: public StringSerializable {
@@ -76,12 +76,22 @@ public:
     std::map<Variation::VariationID, double> variations;
 };
 
+class Affine: public StringSerializable {
+public:
+    Affine();
+    virtual std::string toString();
+    virtual void fromString(std::string text);
+private:
+    double xx, xy, yx, yy, ox, oy;
+};
+
 class XForm: public XMLElementClass {
 public:
     XForm();
     XMLAttributeDouble weight;
     XMLAttributeDouble color;
     XMLMultiAttribute<VariationMap> variationMap;
+    XMLAttribute<Affine> coefs;
     XMLAttributeDouble opacity;
 };
 
