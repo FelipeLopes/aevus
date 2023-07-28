@@ -141,12 +141,15 @@ Affine::Affine() {
     xy = yx = 0;
 }
 
+Affine::Affine(double xx_, double xy_, double yx_, double yy_, double ox_, double oy_):
+    xx(xx_), xy(xy_), yx(yx_), yy(yy_), ox(ox_), oy(oy_) { }
+
 string Affine::toString() {
     std::stringstream buffer;
     buffer<<std::fixed<<std::setprecision(6)<<
         xx<<" "<<-xy<<" "<<
         -yx<<" "<<yy<<" "<<
-        ox<<" "<<oy;
+        ox<<" "<<-oy;
     return buffer.str();
 }
 
@@ -158,6 +161,7 @@ void Affine::fromString(string text) {
     }
     xy *= -1;
     yx *= -1;
+    oy *= -1;
 }
 
 XForm::XForm(): XMLElementClass("xform"),

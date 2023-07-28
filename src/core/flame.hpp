@@ -79,6 +79,7 @@ public:
 class Affine: public StringSerializable {
 public:
     Affine();
+    Affine(double xx, double xy, double yx, double yy, double ox, double oy);
     virtual std::string toString();
     virtual void fromString(std::string text);
 private:

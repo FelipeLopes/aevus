@@ -133,19 +133,6 @@ int main(int argc, char* argv[]) {
 
         render::Iterator iterator(context, squareFlame, 1, 4, 20);
 
-        render::Palette whitePalette(ColorerImpl::WHITE);
-
-        string whiteSpace(8, ' ');
-        string text = "\n";
-        for (int i=0; i<32; i++) {
-            string paletteChars = "";
-            for (int j=0; j<8; j++) {
-                paletteChars += whitePalette.hexAt(i*8+j);
-            }
-            text += (whiteSpace + paletteChars + "\n");
-        }
-        text += "    ";
-
         core::Flame flame;
 
         FILE* fp = fopen("../in.xml", "r");
