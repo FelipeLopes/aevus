@@ -3,6 +3,7 @@
 #include "xml_serialization.hpp"
 #include <cstdint>
 #include <boost/bimap.hpp>
+#include <optional>
 
 namespace core {
 
@@ -15,8 +16,8 @@ public:
     PaletteColors();
     std::string hexAt(int pos) const;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
     static const unsigned PALETTE_WIDTH = 256;
 private:
     typedef unsigned char byte;
@@ -39,8 +40,8 @@ public:
     SizeParams();
     SizeParams(int width, int height);
     int width, height;
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
 };
 
 class CenterParams: public StringSerializable {
@@ -48,8 +49,8 @@ public:
     CenterParams();
     CenterParams(double x, double y);
     double x, y;
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
 };
 
 struct Variation {
@@ -80,8 +81,8 @@ class Affine: public StringSerializable {
 public:
     Affine();
     Affine(double xx, double xy, double yx, double yy, double ox, double oy);
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
 private:
     double xx, xy, yx, yy, ox, oy;
 };
@@ -89,8 +90,8 @@ private:
 class Chaos: public StringSerializable {
 public:
     Chaos();
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
 private:
     std::vector<double> chaos;
 };
@@ -112,8 +113,8 @@ public:
     Color();
     Color(uint8_t r, uint8_t g, uint8_t b);
     uint8_t r, g, b;
-    virtual std::string toString();
-    virtual void fromString(std::string text);
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
 };
 
 class Flame: public XMLElementClass {

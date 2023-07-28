@@ -1,5 +1,6 @@
 #include "xml_serialization.hpp"
 #include <exception>
+#include <iomanip>
 #include <iterator>
 #include <stdexcept>
 #include <string>
@@ -8,6 +9,7 @@ using std::function;
 using std::map;
 using std::set;
 using std::string;
+using std::stringstream;
 using std::to_string;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
@@ -16,6 +18,16 @@ using boost::assign::list_of;
 using boost::assign::map_list_of;
 
 namespace core {
+
+string formattedDouble(double x) {
+    stringstream buffer;
+    buffer<<std::setprecision(15)<<x;
+    auto ans = buffer.str();
+    if (ans == "-0") {
+        ans = "0";
+    }
+    return ans;
+}
 
 XMLAttributeField::XMLAttributeField(XMLElementClass& parent, set<string> names_):
     names(names_)
@@ -83,7 +95,7 @@ XMLAttributeDouble::XMLAttributeDouble(XMLElementClass& parent, string name, dou
 
 map<string,string> XMLAttributeDouble::serialize() {
     string name = *names.begin();
-    return map_list_of(name, to_string(val));
+    return map_list_of(name, formattedDouble(val));
 }
 
 void XMLAttributeDouble::deserialize(XMLElement* element) {

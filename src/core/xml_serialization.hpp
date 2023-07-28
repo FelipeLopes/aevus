@@ -3,6 +3,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <string>
 #include <vector>
@@ -12,6 +13,8 @@
 #include <boost/assign.hpp>
 
 namespace core {
+
+std::string formattedDouble(double x);
 
 class XMLElementClass;
 
@@ -70,18 +73,15 @@ private:
 
 class StringSerializable {
 public:
-    virtual std::string toString() = 0;
-    virtual void fromString(std::string text) = 0;
+    virtual std::optional<std::string> toString() = 0;
+    virtual void fromString(std::optional<std::string> text) = 0;
     virtual ~StringSerializable() { }
 };
 
 template <typename T>
 class XMLAttribute: public XMLAttributeField {
 public:
-    XMLAttribute(XMLElementClass& parent, std::string name, bool useDefault_ = false):
-        XMLAttributeField(parent, name),
-        useDefault(useDefault_)
-    {
+    XMLAttribute(XMLElementClass& parent, std::string name): XMLAttributeField(parent, name) {
         static_assert(std::is_base_of<StringSerializable, T>::value,
             "T must implement StringSerializable interface");
         static_assert(std::is_default_constructible<T>::value,
@@ -89,21 +89,28 @@ public:
     }
     virtual std::map<std::string, std::string> serialize() {
         std::string name = *names.begin();
-        return boost::assign::map_list_of(name, val.toString());
+        auto opt = val.toString();
+        if (opt.has_value()) {
+            return boost::assign::map_list_of(name, opt.value());
+        } else {
+            return std::map<std::string, std::string>();
+        }
     }
     virtual void deserialize(tinyxml2::XMLElement* element) {
         const char* buf;
+        std::optional<std::string> opt;
         std::string name = *names.begin();
         auto err = element->QueryStringAttribute(name.c_str(), &buf);
-        if (useDefault && err == tinyxml2::XML_NO_ATTRIBUTE) {
-            return;
-        }
-        if (err != tinyxml2::XML_SUCCESS) {
+        if (err == tinyxml2::XML_NO_ATTRIBUTE) {
+            opt = std::nullopt;
+        } else if (err != tinyxml2::XML_SUCCESS) {
             auto ec = std::error_code(err, std::generic_category());
             std::string msg("Could not load string attribute with name ");
             throw std::system_error(ec, msg + name);
+        } else {
+            opt = buf;
         }
-        val.fromString(buf);
+        val.fromString(opt);
     }
     T getValue() {
         return val;
@@ -112,7 +119,6 @@ public:
         val = value;
     }
 private:
-    bool useDefault;
     T val;
 };
 
@@ -193,7 +199,12 @@ public:
     }
 
     virtual std::string serialize() {
-        return val.toString();
+        auto opt = val.toString();
+        if (!opt.has_value()) {
+            return "";
+        } else {
+            return opt.value();
+        }
     }
 
     virtual void deserialize(tinyxml2::XMLNode* node) {

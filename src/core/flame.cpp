@@ -6,10 +6,12 @@
 #include <cstdio>
 #include <inttypes.h>
 #include <iomanip>
+#include <optional>
 #include <stdexcept>
 #include <string>
 
 using std::map;
+using std::optional;
 using std::string;
 using std::stod;
 using std::to_string;
@@ -53,7 +55,7 @@ map<string, string> VariationMap::toStringMap() {
         if (it == Variation::variationNames.left.end()) {
             throw std::invalid_argument("Unknown variation ID");
         }
-        ans[it->second] = to_string(kv.second);
+        ans[it->second] = formattedDouble(kv.second);
     }
     return ans;
 }
@@ -109,7 +111,7 @@ void PaletteColors::readColorCLArray(vector<ColorCL>& arr) const {
     }
 }
 
-string PaletteColors::toString() {
+optional<string> PaletteColors::toString() {
     string whiteSpace(8, ' ');
     string text = "\n";
     for (int i=0; i<32; i++) {
@@ -123,16 +125,20 @@ string PaletteColors::toString() {
     return text;
 }
 
-void PaletteColors::fromString(string text) {
-    text.erase(std::remove_if(text.begin(), text.end(), isspace), text.end());
-    if (text.size() != PALETTE_WIDTH * 6) {
+void PaletteColors::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        throw std::invalid_argument("Palette color string does not exist");
+    }
+    auto str = text.value();
+    str.erase(std::remove_if(str.begin(), str.end(), isspace), str.end());
+    if (str.size() != PALETTE_WIDTH * 6) {
         throw std::invalid_argument("Palette color string has wrong size");
     }
     paletteData.resize(PALETTE_WIDTH * 3);
     for (int i=0; i<PALETTE_WIDTH; i++) {
-        paletteData[3*i] = hexValue(text[6*i], text[6*i+1]);
-        paletteData[3*i+1] = hexValue(text[6*i+2], text[6*i+3]);
-        paletteData[3*i+2] = hexValue(text[6*i+4], text[6*i+5]);
+        paletteData[3*i] = hexValue(str[6*i], str[6*i+1]);
+        paletteData[3*i+1] = hexValue(str[6*i+2], str[6*i+3]);
+        paletteData[3*i+2] = hexValue(str[6*i+4], str[6*i+5]);
     }
 }
 
@@ -141,17 +147,25 @@ Affine::Affine(double xx_, double xy_, double yx_, double yy_, double ox_, doubl
 
 Affine::Affine(): Affine(1,0,0,1,0,0) { }
 
-string Affine::toString() {
-    std::stringstream buffer;
-    buffer<<std::fixed<<std::setprecision(6)<<
-        xx<<" "<<-xy<<" "<<
-        -yx<<" "<<yy<<" "<<
-        ox<<" "<<-oy;
-    return buffer.str();
+optional<string> Affine::toString() {
+    string ans = formattedDouble(xx) + " " +
+        formattedDouble(-xy) + " " +
+        formattedDouble(-yx) + " " +
+        formattedDouble(yy) + " " +
+        formattedDouble(ox) + " " +
+        formattedDouble(-oy);
+    if (ans == "1 0 0 1 0 0") {
+        return std::nullopt;
+    }
+    return ans;
 }
 
-void Affine::fromString(string text) {
-    if (sscanf(text.c_str(), "%lf %lf %lf %lf %lf %lf",
+void Affine::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        return;
+    }
+    auto str = text.value();
+    if (sscanf(str.c_str(), "%lf %lf %lf %lf %lf %lf",
         &xx, &xy, &yx, &yy, &ox, &oy) < 6)
     {
         throw std::invalid_argument("Could not read Affine");
@@ -163,20 +177,26 @@ void Affine::fromString(string text) {
 
 Chaos::Chaos() { }
 
-string Chaos::toString() {
+optional<string> Chaos::toString() {
     string ans;
     for (int i=0; i<chaos.size(); i++) {
         if (i>0) {
             ans += " ";
         }
-        ans += to_string(chaos[i]);
+        ans += formattedDouble(chaos[i]);
+    }
+    if (ans == "") {
+        return std::nullopt;
     }
     return ans;
 }
 
-void Chaos::fromString(string text) {
-    chaos.clear();
-    FILE* stream = fmemopen((void*)text.c_str(), text.size(), "r");
+void Chaos::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        return;
+    }
+    auto str = text.value();
+    FILE* stream = fmemopen((void*)str.c_str(), str.size(), "r");
     double val;
     while (fscanf(stream, " %lf", &val) > 0) {
         chaos.push_back(val);
@@ -192,9 +212,9 @@ XForm::XForm(): XMLElementClass("xform"),
             names.insert(kv.first);
         }
     }),
-    coefs(*this, "coefs", true),
-    post(*this, "post", true),
-    chaos(*this, "chaos", true),
+    coefs(*this, "coefs"),
+    post(*this, "post"),
+    chaos(*this, "chaos"),
     opacity(*this, "opacity") { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),
@@ -211,13 +231,17 @@ SizeParams::SizeParams(): SizeParams(0,0) { }
 SizeParams::SizeParams(int width_, int height_):
     width(width_), height(height_) { }
 
-string SizeParams::toString() {
-    string ans = to_string(width) + " " + to_string(height);
+optional<string> SizeParams::toString() {
+    string ans = formattedDouble(width) + " " + formattedDouble(height);
     return ans;
 }
 
-void SizeParams::fromString(string text) {
-    if (sscanf(text.c_str(),"%d %d", &width, &height) < 2) {
+void SizeParams::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        throw std::invalid_argument("SizeParams string does not exist");
+    }
+    auto str = text.value();
+    if (sscanf(str.c_str(),"%d %d", &width, &height) < 2) {
         throw std::invalid_argument("Could not read SizeParams");
     }
 }
@@ -227,13 +251,17 @@ CenterParams::CenterParams(): CenterParams(0.0, 0.0) { }
 CenterParams::CenterParams(double x_, double y_):
     x(x_), y(y_) { }
 
-string CenterParams::toString() {
-    string ans = to_string(x) + " " + to_string(y);
+optional<string> CenterParams::toString() {
+    string ans = formattedDouble(x) + " " + formattedDouble(y);
     return ans;
 }
 
-void CenterParams::fromString(string text) {
-    if (sscanf(text.c_str(),"%lf %lf", &x, &y) < 2) {
+void CenterParams::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        throw std::invalid_argument("CenterParams string does not exist");
+    }
+    auto str = text.value();
+    if (sscanf(str.c_str(),"%lf %lf", &x, &y) < 2) {
         throw std::invalid_argument("Could not read CenterParams");
     }
 }
@@ -243,13 +271,17 @@ Color::Color(): Color(0,0,0) { }
 Color::Color(uint8_t r_, uint8_t g_, uint8_t b_):
     r(r_), g(g_), b(b_) { }
 
-string Color::toString() {
+optional<string> Color::toString() {
     string ans = to_string(r) + " " + to_string(g) + " " + to_string(b);
     return ans;
 }
 
-void Color::fromString(string text) {
-    if (sscanf(text.c_str(),"%" SCNu8 " %" SCNu8 " %" SCNu8, &r, &g, &b) < 3) {
+void Color::fromString(optional<string> text) {
+    if (!text.has_value()) {
+        throw std::invalid_argument("Color string does not exist");
+    }
+    auto str = text.value();
+    if (sscanf(str.c_str(),"%" SCNu8 " %" SCNu8 " %" SCNu8, &r, &g, &b) < 3) {
         throw std::invalid_argument("Could not read Color");
     }
 }
