@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cctype>
 #include <cstdint>
+#include <cstdio>
 #include <inttypes.h>
 #include <iomanip>
 #include <stdexcept>
@@ -135,14 +136,10 @@ void PaletteColors::fromString(string text) {
     }
 }
 
-Affine::Affine() {
-    ox = oy = 0;
-    xx = yy = 1;
-    xy = yx = 0;
-}
-
 Affine::Affine(double xx_, double xy_, double yx_, double yy_, double ox_, double oy_):
     xx(xx_), xy(xy_), yx(yx_), yy(yy_), ox(ox_), oy(oy_) { }
+
+Affine::Affine(): Affine(1,0,0,1,0,0) { }
 
 string Affine::toString() {
     std::stringstream buffer;
@@ -164,6 +161,29 @@ void Affine::fromString(string text) {
     oy *= -1;
 }
 
+Chaos::Chaos() { }
+
+string Chaos::toString() {
+    string ans;
+    for (int i=0; i<chaos.size(); i++) {
+        if (i>0) {
+            ans += " ";
+        }
+        ans += to_string(chaos[i]);
+    }
+    return ans;
+}
+
+void Chaos::fromString(string text) {
+    chaos.clear();
+    FILE* stream = fmemopen((void*)text.c_str(), text.size(), "r");
+    double val;
+    while (fscanf(stream, " %lf", &val) > 0) {
+        chaos.push_back(val);
+    }
+    fclose(stream);
+}
+
 XForm::XForm(): XMLElementClass("xform"),
     weight(*this, "weight"),
     color(*this, "color"),
@@ -173,6 +193,8 @@ XForm::XForm(): XMLElementClass("xform"),
         }
     }),
     coefs(*this, "coefs", true),
+    post(*this, "post", true),
+    chaos(*this, "chaos", true),
     opacity(*this, "opacity") { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),

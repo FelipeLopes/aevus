@@ -86,6 +86,15 @@ private:
     double xx, xy, yx, yy, ox, oy;
 };
 
+class Chaos: public StringSerializable {
+public:
+    Chaos();
+    virtual std::string toString();
+    virtual void fromString(std::string text);
+private:
+    std::vector<double> chaos;
+};
+
 class XForm: public XMLElementClass {
 public:
     XForm();
@@ -93,6 +102,8 @@ public:
     XMLAttributeDouble color;
     XMLMultiAttribute<VariationMap> variationMap;
     XMLAttribute<Affine> coefs;
+    XMLAttribute<Affine> post;
+    XMLAttribute<Chaos> chaos;
     XMLAttributeDouble opacity;
 };
 
