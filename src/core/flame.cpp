@@ -142,10 +142,10 @@ void PaletteColors::fromString(optional<string> text) {
     }
 }
 
-Affine::Affine(double xx_, double xy_, double yx_, double yy_, double ox_, double oy_):
-    xx(xx_), xy(xy_), yx(yx_), yy(yy_), ox(ox_), oy(oy_) { }
-
-Affine::Affine(): Affine(1,0,0,1,0,0) { }
+Affine::Affine(bool serializeIdentity_): serializeIdentity(serializeIdentity_) {
+    xx = yy = 1;
+    xy = yx = ox = oy = 0;
+ }
 
 optional<string> Affine::toString() {
     string ans = formattedDouble(xx) + " " +
@@ -154,7 +154,7 @@ optional<string> Affine::toString() {
         formattedDouble(yy) + " " +
         formattedDouble(ox) + " " +
         formattedDouble(-oy);
-    if (ans == "1 0 0 1 0 0") {
+    if (ans == "1 0 0 1 0 0" && !serializeIdentity) {
         return std::nullopt;
     }
     return ans;
@@ -174,6 +174,10 @@ void Affine::fromString(optional<string> text) {
     yx *= -1;
     oy *= -1;
 }
+
+CoefsAffine::CoefsAffine(): Affine(true) { }
+
+PostAffine::PostAffine(): Affine(false) { }
 
 Chaos::Chaos() { }
 

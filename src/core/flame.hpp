@@ -79,12 +79,22 @@ public:
 
 class Affine: public StringSerializable {
 public:
-    Affine();
-    Affine(double xx, double xy, double yx, double yy, double ox, double oy);
+    Affine(bool serializeIdentity);
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
 private:
+    bool serializeIdentity;
     double xx, xy, yx, yy, ox, oy;
+};
+
+class CoefsAffine: public Affine {
+public:
+    CoefsAffine();
+};
+
+class PostAffine: public Affine {
+public:
+    PostAffine();
 };
 
 class Chaos: public StringSerializable {
@@ -102,8 +112,8 @@ public:
     XMLAttributeDouble weight;
     XMLAttributeDouble color;
     XMLMultiAttribute<VariationMap> variationMap;
-    XMLAttribute<Affine> coefs;
-    XMLAttribute<Affine> post;
+    XMLAttribute<CoefsAffine> coefs;
+    XMLAttribute<PostAffine> post;
     XMLAttribute<Chaos> chaos;
     XMLAttributeDouble opacity;
 };
