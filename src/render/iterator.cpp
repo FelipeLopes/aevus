@@ -9,8 +9,8 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame flame, int quality_, double brightness,
-    int initialIters):
+Iterator::Iterator(const CLQueuedContext& context_, core::Flame coreFlame,
+    Flame flame, int quality_, double brightness, int initialIters):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame.width),

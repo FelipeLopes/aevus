@@ -7,13 +7,14 @@
 #include "color_cl.hpp"
 #include "flame.hpp"
 #include "iteration_state.hpp"
+#include "../core/flame.hpp"
 
 namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, Flame flame, int quality, double brightness,
-        int initialIters);
+    Iterator(const CLQueuedContext& context, core::Flame coreFlame, Flame flame,
+        int quality, double brightness, int initialIters);
     void writeImage(std::string filename, std::vector<float>& arr);
 private:
     const CLQueuedContext& context;

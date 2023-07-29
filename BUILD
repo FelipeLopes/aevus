@@ -27,6 +27,7 @@ cc_library(
         "@opencl-headers//:opencl-headers",
         "@tinyxml2//:tinyxml2",
         "@boost//:boost",
+        ":core",
     ]
 )
 

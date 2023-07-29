@@ -131,13 +131,13 @@ int main(int argc, char* argv[]) {
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 
-        render::Iterator iterator(context, squareFlame, 1, 4, 20);
-
         core::Flame flame;
 
         FILE* fp = fopen("../in.xml", "r");
         flame.deserialize(fp);
         fclose(fp);
+
+        render::Iterator iterator(context, flame, squareFlame, 1, 4, 20);
 
         flame.serialize(stdout);
 
