@@ -208,6 +208,22 @@ void Chaos::fromString(optional<string> text) {
     fclose(stream);
 }
 
+ColorSpeed::ColorSpeed() { }
+
+void ColorSpeed::fromStringMap(map<string, string> stringMap) {
+    if (stringMap.find("color_speed") != stringMap.end()) {
+        colorSpeed = std::stod(stringMap["color_speed"]);
+    } else if (stringMap.find("symmetry") != stringMap.end()) {
+        colorSpeed = std::stod(stringMap["symmetry"]);
+    } else {
+        colorSpeed = 0.5;
+    }
+}
+
+map<string, string> ColorSpeed::toStringMap() {
+    return boost::assign::map_list_of("color_speed", formattedDouble(colorSpeed));
+}
+
 XForm::XForm(): XMLElementClass("xform"),
     weight(*this, "weight"),
     color(*this, "color"),
@@ -219,7 +235,7 @@ XForm::XForm(): XMLElementClass("xform"),
     coefs(*this, "coefs"),
     post(*this, "post"),
     chaos(*this, "chaos"),
-    opacity(*this, "opacity") { }
+    colorSpeed(*this, {"color_speed", "symmetry"}) { }
 
 Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),
     count(*this, "count"),

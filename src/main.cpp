@@ -139,9 +139,6 @@ int main(int argc, char* argv[]) {
         flame.deserialize(fp);
         fclose(fp);
 
-        core::CoefsAffine aff;
-        flame.xforms.get(0)->coefs.setValue(aff);
-
         flame.serialize(stdout);
 
     } catch (std::exception& e) {

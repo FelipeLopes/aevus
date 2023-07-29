@@ -106,6 +106,15 @@ private:
     std::vector<double> chaos;
 };
 
+class ColorSpeed: public StringMapSerializable {
+public:
+    ColorSpeed();
+    virtual std::map<std::string, std::string> toStringMap();
+    virtual void fromStringMap(std::map<std::string, std::string> stringMap);
+private:
+    double colorSpeed;
+};
+
 class XForm: public XMLElementClass {
 public:
     XForm();
@@ -115,7 +124,7 @@ public:
     XMLAttribute<CoefsAffine> coefs;
     XMLAttribute<PostAffine> post;
     XMLAttribute<Chaos> chaos;
-    XMLAttributeDouble opacity;
+    XMLMultiAttribute<ColorSpeed> colorSpeed;
 };
 
 class Color: public StringSerializable {

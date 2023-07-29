@@ -132,13 +132,15 @@ public:
 template <typename T>
 class XMLMultiAttribute: public XMLAttributeField {
 public:
+    XMLMultiAttribute(XMLElementClass& parent, std::set<std::string> names):
+        XMLAttributeField(parent, names)
+    {
+        assertGeneric();
+    }
     XMLMultiAttribute(XMLElementClass& parent, std::function<void(std::set<std::string>&)> f):
         XMLAttributeField(parent, f)
     {
-        static_assert(std::is_base_of<StringMapSerializable, T>::value,
-            "T must implement StringMapSerializable interface");
-        static_assert(std::is_default_constructible<T>::value,
-            "T must have a default constructor");
+        assertGeneric();
     }
     virtual std::map<std::string, std::string> serialize() {
         return val.toStringMap();
@@ -168,6 +170,12 @@ public:
     }
 private:
     T val;
+    void assertGeneric() {
+        static_assert(std::is_base_of<StringMapSerializable, T>::value,
+            "T must implement StringMapSerializable interface");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
+    }
 };
 
 class XMLContentClass {
