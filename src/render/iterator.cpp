@@ -20,22 +20,22 @@ Iterator::Iterator(const CLQueuedContext& context_, core::Flame flame):
     brightness(flame.brightness.getValue()),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1,
-        [flame] (auto& arr) {
+        [&flame] (auto& arr) {
             flame.readInitialStateArray(arr, GLOBAL_WORK_SIZE);
         }
     ),
     xformArg(kernel, 2,
-        [flame] (auto& arr) {
+        [&flame] (auto& arr) {
             flame.readXFormCLArray(arr);
         }
     ),
     xformDistArg(kernel, 3,
-        [flame] (auto& arr) {
+        [&flame] (auto& arr) {
             flame.readXFormDistribution(arr);
         }
     ),
     paletteArg(kernel, 4,
-        [flame] (auto& arr) {
+        [&flame] (auto& arr) {
             flame.palette.readColorCLArray(arr);
         }
     ),
