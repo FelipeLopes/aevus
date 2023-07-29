@@ -35,7 +35,7 @@ public:
     XMLAttributeInt(XMLElementClass& parent, std::string name, int defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    int getValue();
+    int getValue() const;
     void setValue(int value);
 private:
     int val;
@@ -49,7 +49,7 @@ public:
     XMLAttributeDouble(XMLElementClass& parent, std::string name, double defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    double getValue();
+    double getValue() const;
     void setValue(double value);
 private:
     double val;
@@ -63,7 +63,7 @@ public:
     XMLAttributeString(XMLElementClass& parent, std::string name, std::string defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    std::string getValue();
+    std::string getValue() const;
     void setValue(std::string value);
 private:
     std::string val;
@@ -112,7 +112,7 @@ public:
         }
         val.fromString(opt);
     }
-    T getValue() {
+    T getValue() const {
         return val;
     }
     void setValue(T value) {
@@ -162,7 +162,7 @@ public:
         }
         val.fromStringMap(stringMap);
     }
-    T getValue() {
+    T getValue() const {
         return val;
     }
     void setValue(T value) {
@@ -218,6 +218,14 @@ public:
     virtual void deserialize(tinyxml2::XMLNode* node) {
         val.fromString(node->Value());
     }
+
+    T getValue() const {
+        return val;
+    }
+
+    void setValue(T value) {
+        val = value;
+    }
 private:
     T val;
 };
@@ -252,7 +260,7 @@ public:
         list = &parent.listTags[tag];
     }
 
-    std::shared_ptr<T> get(int index) {
+    std::shared_ptr<T> get(int index) const {
         int count = list->size();
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to access out of list bounds");
@@ -280,8 +288,12 @@ public:
         }
     }
 
-    bool empty() {
+    bool empty() const {
         return list->empty();
+    }
+
+    size_t size() const {
+        return list->size();
     }
 
     ~ListXMLElementClass() {

@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
         flame.deserialize(fp);
         fclose(fp);
 
-        render::Iterator iterator(context, flame, squareFlame, 1, 4, 20);
+        render::Iterator iterator(context, flame);
 
         flame.serialize(stdout);
 

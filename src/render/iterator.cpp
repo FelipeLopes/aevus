@@ -9,14 +9,15 @@ using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, core::Flame coreFlame,
-    Flame flame, int quality_, double brightness, int initialIters):
+Iterator::Iterator(const CLQueuedContext& context_, core::Flame flame):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
-    width(flame.width),
-    height(flame.height),
-    scale(flame.scale),
-    quality(quality_),
+    width(flame.size.getValue().width),
+    height(flame.size.getValue().height),
+    scale(flame.scale.getValue()),
+    quality(flame.quality.getValue()),
+    initialIters(flame.initial.getValue()),
+    brightness(flame.brightness.getValue()),
     flameCL(kernel, 0, flame.getFlameCL()),
     stateArg(kernel, 1,
         [flame] (auto& arr) {

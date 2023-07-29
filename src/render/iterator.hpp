@@ -13,19 +13,19 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, core::Flame coreFlame, Flame flame,
-        int quality, double brightness, int initialIters);
+    Iterator(const CLQueuedContext& context, core::Flame coreFlame);
     void writeImage(std::string filename, std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
-    const int width, height, scale, quality;
+    const int width, height, scale, quality, initialIters;
+    const double brightness;
 
-    CLArg<FlameCL> flameCL;
-    CLReadWriteBufferArg<IterationState> stateArg;
-    CLReadOnlyBufferArg<XFormCL> xformArg;
+    CLArg<core::FlameCL> flameCL;
+    CLReadWriteBufferArg<core::IterationState> stateArg;
+    CLReadOnlyBufferArg<core::XFormCL> xformArg;
     CLReadOnlyBufferArg<uint8_t> xformDistArg;
-    CLReadOnlyBufferArg<ColorCL> paletteArg;
+    CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     CLReadWriteBufferArg<float> histogramArg;
 
     static const int GLOBAL_WORK_SIZE = 1024;

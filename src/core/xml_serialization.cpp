@@ -75,7 +75,7 @@ void XMLAttributeInt::deserialize(XMLElement* element) {
     }
 }
 
-int XMLAttributeInt::getValue() {
+int XMLAttributeInt::getValue() const {
     return val;
 }
 
@@ -112,7 +112,7 @@ void XMLAttributeDouble::deserialize(XMLElement* element) {
     }
 }
 
-double XMLAttributeDouble::getValue() {
+double XMLAttributeDouble::getValue() const {
     return val;
 }
 
@@ -151,7 +151,7 @@ void XMLAttributeString::deserialize(XMLElement* element) {
     val = buf;
 }
 
-string XMLAttributeString::getValue() {
+string XMLAttributeString::getValue() const {
     return val;
 }
 

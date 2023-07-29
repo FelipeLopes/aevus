@@ -33,6 +33,7 @@ public:
     XMLAttributeInt count;
     XMLAttributeString format;
     XMLContent<PaletteColors> colors;
+    void readColorCLArray(std::vector<ColorCL>& arr) const;
 };
 
 class SizeParams: public StringSerializable {
@@ -82,9 +83,9 @@ public:
     Affine(bool serializeIdentity);
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
+    double xx, xy, yx, yy, ox, oy;
 private:
     bool serializeIdentity;
-    double xx, xy, yx, yy, ox, oy;
 };
 
 class CoefsAffine: public Affine {
@@ -102,6 +103,7 @@ public:
     Chaos();
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
+    double getXaos(int idx);
 private:
     std::vector<double> chaos;
 };
@@ -115,6 +117,17 @@ private:
     double colorSpeed;
 };
 
+struct XFormCL {
+    static const int MAX_VARIATIONS = 10;
+    struct VariationData {
+        Variation::VariationID id;
+        float weight;
+    };
+    VariationData varData[MAX_VARIATIONS];
+    float a, b, c, d, e, f;
+    float pa, pb, pc, pd, pe, pf;
+};
+
 class XForm: public XMLElementClass {
 public:
     XForm();
@@ -125,6 +138,7 @@ public:
     XMLAttribute<PostAffine> post;
     XMLAttribute<Chaos> chaos;
     XMLMultiAttribute<ColorSpeed> colorSpeed;
+    XFormCL toXFormCL() const;
 };
 
 class Color: public StringSerializable {
@@ -134,6 +148,22 @@ public:
     uint8_t r, g, b;
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
+};
+
+struct FlameCL {
+    float cx, cy, scale;
+    int width, height;
+};
+
+struct IterationState {
+    float x, y, c;
+    uint8_t xf;
+    union SeedUnion {
+        struct Seed {
+            uint32_t low, hi;
+        } word;
+        uint64_t value;
+    } seed;
 };
 
 class Flame: public XMLElementClass {
@@ -151,6 +181,13 @@ public:
     XMLAttributeInt initial;
     ListXMLElementClass<XForm> xforms;
     Palette palette;
+
+    FlameCL getFlameCL() const;
+    void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
+    void readXFormCLArray(std::vector<XFormCL>& arr) const;
+    void readXFormDistribution(std::vector<uint8_t>& dist) const;
+
+    const static int XFORM_DISTRIBUTION_GRAINS = 16384;
 };
 
 }
