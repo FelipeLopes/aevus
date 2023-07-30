@@ -1,4 +1,5 @@
 #define BUCKET_FACTOR (1.0f-FLT_EPSILON)
+#define PI (3.141592653589793f)
 
 enum {
     MAX_VARIATIONS = 10,
@@ -42,7 +43,12 @@ typedef enum VariationID {
     NO_VARIATION = -1,
     LINEAR = 0,
     SPHERICAL = 2,
-    SQUARE = 44
+    POLAR = 5,
+    HYPERBOLIC = 10,
+    DIAMOND = 11,
+    EYEFISH = 27,
+    CYLINDER = 29,
+    SQUARE = 43
 } VariationID;
 
 typedef struct VariationData {
@@ -61,6 +67,10 @@ typedef struct FlameCL {
     int width, height;
 } FlameCL;
 
+inline bool badval(float2 p) {
+    return (p.x - p.x != 0) || (p.y - p.y != 0);
+}
+
 inline uint mwc64x(__global SeedUnion* s) {
 	uint c = s->word.y;
     uint x = s->word.x;
@@ -72,30 +82,75 @@ inline float mwc64x01(__global SeedUnion* s) {
     return mwc64x(s) * (1.0f / 4294967296.0f);
 }
 
-inline float zeps(float f) {
-    return f == 0.0f ? FLT_EPSILON : f;
+inline float mwc64xn11(__global SeedUnion* s) {
+    return -1.0f + (mwc64x(s) * (2.0f / 4294967296.0f));
 }
 
-inline float2 linear(float2 p) {
+inline void resetPoint(__global IterationState* state) {
+    state->x = mwc64xn11(&state->seed);
+    state->y = mwc64xn11(&state->seed);
+}
+
+float2 linear(float2 p) {
     return p;
 }
 
-inline float2 spherical(float2 p) {
-    float invR2 = 1.0f/zeps(p.x*p.x + p.y*p.y);
+float2 spherical(float2 p) {
+    float invR2 = 1.0f/(p.x*p.x + p.y*p.y);
     float2 ans;
     ans.x = invR2*p.x;
     ans.y = invR2*p.y;
     return ans;
 }
 
-inline float2 square(__global SeedUnion* s) {
+float2 polar(float2 p) {
+    float2 ans;
+    ans.x = atan2(p.x,p.y) / PI;
+    ans.y = sqrt(p.x*p.x + p.y*p.y) - 1;
+    return ans;
+}
+
+float2 hyperbolic(float2 p) {
+    float2 ans;
+    float a = atan2(p.x, p.y);
+    float r = sqrt(p.x*p.x + p.y*p.y);
+    ans.x = sin(a)/r;
+    ans.y = cos(a)*r;
+    return ans;
+}
+
+float2 diamond(float2 p) {
+    float2 ans;
+    float a = atan2(p.x, p.y);
+    float r = sqrt(p.x*p.x + p.y*p.y);
+    ans.x = sin(a)*cos(r);
+    ans.y = cos(a)*sin(r);
+    return ans;
+}
+
+float2 eyefish(float2 p) {
+    float2 ans;
+    float k = 2.0f/(sqrt(p.x*p.x+p.y*p.y)+1.0f);
+    ans.x = k*p.x;
+    ans.y = k*p.y;
+    return ans;
+}
+
+float2 cylinder(float2 p) {
+    float2 ans;
+    ans.x = sin(p.x);
+    ans.y = p.y;
+    return ans;
+}
+
+float2 square(__global SeedUnion* s) {
     float2 ans;
     ans.x = mwc64x01(s) - 0.5f;
     ans.y = mwc64x01(s) - 0.5f;
     return ans;
 }
 
-inline int histogramIndex(FlameCL* flame, float2 p) {
+int histogramIndex(FlameCL* flame, float2 p) {
     float2 tl, prop;
     prop.x = flame->width/flame->scale;
     prop.y = flame->height/flame->scale;
@@ -111,7 +166,7 @@ inline int histogramIndex(FlameCL* flame, float2 p) {
     return iPos*flame->width+jPos;
 }
 
-inline float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
+float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
     float2 t, acc, ans;
     t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
     t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
@@ -122,6 +177,11 @@ inline float2 calcXform(__global const XFormCL* xform, int idx, __global Iterati
         switch (xform[idx].varData[i].id) {
             case LINEAR: acc += xform[idx].varData[i].weight*linear(t); break;
             case SPHERICAL: acc += xform[idx].varData[i].weight*spherical(t); break;
+            case POLAR: acc += xform[idx].varData[i].weight*polar(t); break;
+            case HYPERBOLIC: acc += xform[idx].varData[i].weight*hyperbolic(t); break;
+            case DIAMOND: acc += xform[idx].varData[i].weight*diamond(t); break;
+            case EYEFISH: acc += xform[idx].varData[i].weight*eyefish(t); break;
+            case CYLINDER: acc +=xform[idx].varData[i].weight*cylinder(t); break;
             case SQUARE: acc += xform[idx].varData[i].weight*square(&state->seed); break;
             default: break;
         }
@@ -147,9 +207,13 @@ __kernel void iterate(
     int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
     int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
     float2 p = calcXform(xform, xfIdx, &state[i]);
-    int idx = histogramIndex(&flameCL, p);
-    float4 color = (1);
-    if (idx != -1) {
-        atomic_add_f4(&hist[idx], color);
+    if (badval(p)) {
+        resetPoint(&state[i]);
+    } else {
+        int idx = histogramIndex(&flameCL, p);
+        float4 color = (1);
+        if (idx != -1) {
+            atomic_add_f4(&hist[idx], color);
+        }
     }
 }

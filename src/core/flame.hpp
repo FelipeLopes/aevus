@@ -59,12 +59,12 @@ struct Variation {
         NO_VARIATION = -1,
         LINEAR = 0,
         SPHERICAL = 2,
-        POLAR = 6,
-        HYPERBOLIC = 11,
-        DIAMOND = 12,
-        EYEFISH = 28,
-        CYLINDER = 30,
-        SQUARE = 44
+        POLAR = 5,
+        HYPERBOLIC = 10,
+        DIAMOND = 11,
+        EYEFISH = 27,
+        CYLINDER = 29,
+        SQUARE = 43
     };
 
     const static boost::bimap<VariationID, std::string> variationNames;
