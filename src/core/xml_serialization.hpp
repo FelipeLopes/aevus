@@ -296,10 +296,6 @@ public:
         return list->size();
     }
 
-    ~ListXMLElementClass() {
-        clear();
-    }
-
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent) {
         for (auto el: *list) {
             el->nodeSerialize(xmlDoc, parent);
