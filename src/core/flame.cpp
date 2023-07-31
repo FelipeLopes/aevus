@@ -308,6 +308,9 @@ XFormCL XForm::toXFormCL() const {
     }
     xf.varData[sz].id = Variation::NO_VARIATION;
 
+    xf.color = color.getValue();
+    xf.colorSpeed = colorSpeed.getValue().colorSpeed;
+
     return xf;
 }
 

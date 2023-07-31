@@ -113,7 +113,6 @@ public:
     ColorSpeed();
     virtual std::map<std::string, std::string> toStringMap();
     virtual void fromStringMap(std::map<std::string, std::string> stringMap);
-private:
     double colorSpeed;
 };
 
@@ -126,6 +125,7 @@ struct XFormCL {
     VariationData varData[MAX_VARIATIONS];
     float a, b, c, d, e, f;
     float pa, pb, pc, pd, pe, pf;
+    float color, colorSpeed;
 };
 
 class XForm: public XMLElementClass {

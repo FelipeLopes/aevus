@@ -5,7 +5,8 @@ enum {
     MAX_VARIATIONS = 10,
     MWC64X_A = 4294883355u,
     XFORM_DISTRIBUTION_GRAINS = 16384,
-    XFORM_DISTRIBUTION_GRAINS_M1 = 16383
+    XFORM_DISTRIBUTION_GRAINS_M1 = 16383,
+    COLORMAP_LENGTH = 256
 };
 
 inline void atomic_add_f(global float* addr, const float val) {
@@ -60,6 +61,7 @@ typedef struct XFormCL {
     VariationData varData[MAX_VARIATIONS];
     float a, b, c, d, e, f;
     float pa, pb, pc, pd, pe, pf;
+    float color, colorSpeed;
 } XFormCL;
 
 typedef struct FlameCL {
@@ -89,6 +91,11 @@ inline float mwc64xn11(__global SeedUnion* s) {
 inline void resetPoint(__global IterationState* state) {
     state->x = mwc64xn11(&state->seed);
     state->y = mwc64xn11(&state->seed);
+}
+
+inline float4 lookupColor(__global float4* palette, float val) {
+    val = clamp(val, 0.0f, BUCKET_FACTOR);
+    return palette[(int)(val*COLORMAP_LENGTH)];
 }
 
 float2 linear(float2 p) {
@@ -192,6 +199,10 @@ float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState
     state->x = ans.x;
     state->y = ans.y;
     state->xf = idx;
+
+    float s = xform[idx].colorSpeed;
+    state->c = s*xform[idx].color + (1-s)*state->c;
+
     return ans;
 }
 
@@ -211,8 +222,8 @@ __kernel void iterate(
         resetPoint(&state[i]);
     } else {
         int idx = histogramIndex(&flameCL, p);
-        float4 color = (1);
         if (idx != -1) {
+            float4 color = lookupColor(palette, state[i].c);
             atomic_add_f4(&hist[idx], color);
         }
     }
