@@ -13,12 +13,12 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const CLQueuedContext& context, core::Flame coreFlame);
+    Iterator(const CLQueuedContext& context, std::shared_ptr<core::Flame> flame);
     void writeImage(std::string filename, std::vector<float>& arr);
 private:
     const CLQueuedContext& context;
     CLExecutable kernel;
-    const int width, height, scale, quality, initialIters;
+    const int width, height, scale, quality;
     const double brightness;
 
     CLArg<core::FlameCL> flameCL;

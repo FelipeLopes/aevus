@@ -5,46 +5,43 @@
 #include "palette.hpp"
 #include <random>
 
+using std::shared_ptr;
 using std::vector;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, core::Flame flame):
+Iterator::Iterator(const CLQueuedContext& context_, shared_ptr<core::Flame> flame):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
-    width(flame.size.getValue().width),
-    height(flame.size.getValue().height),
-    scale(flame.scale.getValue()),
-    quality(flame.quality.getValue()),
-    initialIters(flame.initial.getValue()),
-    brightness(flame.brightness.getValue()),
-    flameCL(kernel, 0, flame.getFlameCL()),
+    width(flame->size.getValue().width),
+    height(flame->size.getValue().height),
+    scale(flame->scale.getValue()),
+    quality(flame->quality.getValue()),
+    brightness(flame->brightness.getValue()),
+    flameCL(kernel, 0, flame->getFlameCL()),
     stateArg(kernel, 1,
         [&flame] (auto& arr) {
-            flame.readInitialStateArray(arr, GLOBAL_WORK_SIZE);
+            flame->readInitialStateArray(arr, GLOBAL_WORK_SIZE);
         }
     ),
     xformArg(kernel, 2,
         [&flame] (auto& arr) {
-            flame.readXFormCLArray(arr);
+            flame->readXFormCLArray(arr);
         }
     ),
     xformDistArg(kernel, 3,
         [&flame] (auto& arr) {
-            flame.readXFormDistribution(arr);
+            flame->readXFormDistribution(arr);
         }
     ),
     paletteArg(kernel, 4,
         [&flame] (auto& arr) {
-            flame.palette.readColorCLArray(arr);
+            flame->palette.readColorCLArray(arr);
         }
     ),
     histogramArg(kernel, 5, 4*width*height)
 {
     int area = width*height;
-    for (int i=0; i<initialIters; i++) {
-        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    }
     vector<float> zeros;
     zeros.resize(4*area);
     fill(zeros.begin(), zeros.end(), 0);

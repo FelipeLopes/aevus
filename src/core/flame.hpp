@@ -178,7 +178,6 @@ public:
     XMLAttribute<Color> background;
     XMLAttributeDouble brightness;
     XMLAttributeDouble contrast;
-    XMLAttributeInt initial;
     ListXMLElementClass<XForm> xforms;
     Palette palette;
 
