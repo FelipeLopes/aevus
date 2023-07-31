@@ -20,6 +20,7 @@ private:
     CLExecutable kernel;
     const int width, height, scale, quality;
     const double brightness;
+    const core::ColorCL background;
 
     CLArg<core::FlameCL> flameCL;
     CLReadWriteBufferArg<core::IterationState> stateArg;

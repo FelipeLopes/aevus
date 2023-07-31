@@ -395,6 +395,15 @@ Color::Color(): Color(0,0,0) { }
 Color::Color(uint8_t r_, uint8_t g_, uint8_t b_):
     r(r_), g(g_), b(b_) { }
 
+ColorCL Color::toColorCL() {
+    ColorCL ans;
+    ans.r = r / 255.0;
+    ans.g = g / 255.0;
+    ans.b = b / 255.0;
+    ans.a = 1.0;
+    return ans;
+}
+
 optional<string> Color::toString() {
     string ans = to_string(r) + " " + to_string(g) + " " + to_string(b);
     return ans;

@@ -18,6 +18,7 @@ Iterator::Iterator(const CLQueuedContext& context_, shared_ptr<core::Flame> flam
     scale(flame->scale.getValue()),
     quality(flame->quality.getValue()),
     brightness(flame->brightness.getValue()),
+    background(flame->background.getValue().toColorCL()),
     flameCL(kernel, 0, flame->getFlameCL()),
     stateArg(kernel, 1,
         [&flame] (auto& arr) {
@@ -68,10 +69,18 @@ void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
     FILE* f = fopen(filename.c_str(),"wb");
     std::string s = os.str();
     fwrite(s.c_str(), 1, s.size(), f);
-    for (int i=0; i<arr.size(); i++) {
-        uint8_t val = (arr[i] > 1.0 || i%4 == 3) ? 255 : (uint8_t)(arr[i]*255);
-        fputc(val,f);
+    for (int i=0; i<arr.size()/4; i++) {
+        float a = arr[4*i+3];
+        float r = arr[4*i]/a;
+        float g = arr[4*i+1]/a;
+        float b = arr[4*i+2]/a;
+
+        fputc((uint8_t)(r*255),f);
+        fputc((uint8_t)(g*255),f);
+        fputc((uint8_t)(b*255),f);
+        fputc(255,f);
     }
+    fclose(f);
 }
 
 }
