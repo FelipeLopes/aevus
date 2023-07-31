@@ -155,13 +155,13 @@ int histogramIndex(FlameCL* flame, float2 p) {
     prop.x = flame->width/flame->scale;
     prop.y = flame->height/flame->scale;
     tl.x = flame->cx - prop.x/2;
-    tl.y = flame->cy + prop.y/2;
+    tl.y = flame->cy - prop.y/2;
     if (p.x - tl.x < 0 || p.x - tl.x > prop.x) {
         return -1;
-    } else if (tl.y - p.y < 0 || tl.y - p.y > prop.y) {
+    } else if (p.y - tl.y < 0 || p.y - tl.y > prop.y) {
         return -1;
     }
-    int iPos = (tl.y-p.y)*BUCKET_FACTOR*flame->scale;
+    int iPos = (p.y-tl.y)*BUCKET_FACTOR*flame->scale;
     int jPos = (p.x-tl.x)*BUCKET_FACTOR*flame->scale;
     return iPos*flame->width+jPos;
 }

@@ -184,11 +184,11 @@ Affine::Affine(bool serializeIdentity_): serializeIdentity(serializeIdentity_) {
 
 optional<string> Affine::toString() {
     string ans = formattedDouble(xx) + " " +
-        formattedDouble(-xy) + " " +
-        formattedDouble(-yx) + " " +
+        formattedDouble(xy) + " " +
+        formattedDouble(yx) + " " +
         formattedDouble(yy) + " " +
         formattedDouble(ox) + " " +
-        formattedDouble(-oy);
+        formattedDouble(oy);
     if (ans == "1 0 0 1 0 0" && !serializeIdentity) {
         return std::nullopt;
     }
@@ -205,9 +205,6 @@ void Affine::fromString(optional<string> text) {
     {
         throw std::invalid_argument("Could not read Affine");
     }
-    xy *= -1;
-    yx *= -1;
-    oy *= -1;
 }
 
 CoefsAffine::CoefsAffine(): Affine(true) { }
