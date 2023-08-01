@@ -7,6 +7,23 @@ Aevus can read and write flames in an Apophysis compatible XML format, and pass 
 to an OpenCL kernel, which performs the chaos game iterations and does tone mapping. It can also
 export the resulting image in PAM format.
 
+The code is currently very basic and has no support for advanced features like gamma correction
+and density filtering. However, Aevus uses a different technique for coloring which, unlike other
+renderers like Flam3, suffers from clipping issues in color channels. As a result, color information
+is preserved better, and flames are not colored close to white at lower values of saturation,
+as shown in the example below:
+
+<table cellspacing="0" cellpadding="0">
+  <tr>
+    <td><img src="img/aevus.png?raw=true" width="320"></td>
+    <td><img src="img/flam3.png?raw=true" width="320"></td>
+  </tr>
+  <tr>
+    <td>Aevus render</td>
+    <td>flam3 render</td>
+  </tr>
+</table>
+
 Aevus uses Bazel for its build system and Conan for its package management. It's recommended
 to build on Linux, as other OS's are not tested.
 
