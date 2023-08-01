@@ -75,6 +75,8 @@ void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
         float g = arr[4*i+1];
         float b = arr[4*i+2];
 
+        a = std::min(a, 1.0f);
+
         fputc((uint8_t)(r*255),f);
         fputc((uint8_t)(g*255),f);
         fputc((uint8_t)(b*255),f);
