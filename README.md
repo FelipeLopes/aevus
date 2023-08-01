@@ -9,7 +9,7 @@ export the resulting image in PAM format.
 
 The code is currently very basic and has no support for advanced features like gamma correction
 and density filtering. However, Aevus uses a different technique for coloring which, unlike other
-renderers like Flam3, suffers from clipping issues in color channels. As a result, color information
+renderers like Flam3, does not suffer from clipping issues in color channels. As a result, color information
 is preserved better, and flames are not colored close to white at lower values of saturation,
 as shown in the example below:
 
