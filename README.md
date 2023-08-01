@@ -1,10 +1,11 @@
 # Aevus
 
-Aevus is a highly experimental tool to generate animations involving Apollonian gaskets
-using Iterated Function Systems (IFS) techniques.
+Aevus is a highly experimental fractal flame renderer.
 
-At the moment it's capable of generating IFS parameters for very deep zooms and
-serializing them to an XML format.
+At the moment it has basic custom libraries for XML serialization and OpenCL kernel execution.
+Aevus can read and write flames in an Apophysis compatible XML format, and pass the parameters
+to an OpenCL kernel, which performs the chaos game iterations and does tone mapping. It can also
+export the resulting image in PAM format.
 
 Aevus uses Bazel for its build system and Conan for its package management. It's recommended
 to build on Linux, as other OS's are not tested.
@@ -27,15 +28,15 @@ Finally, back on the aevus folder, run bazel to build the project:
 
 ```
 cd ..
-bazel build gasket
+bazel build aevus
 ```
 
 Execute the binary with
 
 ```
-bazel-bin/gasket
+bazel-bin/aevus
 ```
 
 To develop Aevus, it's recommended to use VSCode with the Bazel, Bazel-stack-vscode,
 and clangd extensions. By generating a compile_commands.json file, clangd can provide
-indexing to VSCode.
+indexing to VSCode, enabling intellisense and autocomplete.
