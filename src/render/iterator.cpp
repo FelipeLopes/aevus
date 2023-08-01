@@ -69,18 +69,26 @@ void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
     FILE* f = fopen(filename.c_str(),"wb");
     std::string s = os.str();
     fwrite(s.c_str(), 1, s.size(), f);
+    float bg_ra = background.r * background.a;
+    float bg_ga = background.g * background.a;
+    float bg_ba = background.b * background.a;
     for (int i=0; i<arr.size()/4; i++) {
         float a = arr[4*i+3];
-        float r = arr[4*i];
-        float g = arr[4*i+1];
-        float b = arr[4*i+2];
-
         a = std::min(a, 1.0f);
+        float r = arr[4*i]*a + bg_ra*(1-a);
+        float g = arr[4*i+1]*a + bg_ga*(1-a);
+        float b = arr[4*i+2]*a + bg_ba*(1-a);
+
+        float af = a + background.a - a*background.a;
+
+        r /= af;
+        g /= af;
+        b /= af;
 
         fputc((uint8_t)(r*255),f);
         fputc((uint8_t)(g*255),f);
         fputc((uint8_t)(b*255),f);
-        fputc((uint8_t)(a*255),f);
+        fputc((uint8_t)(af*255),f);
     }
     fclose(f);
 }
