@@ -1,10 +1,21 @@
 cc_library(
+    name = "serial",
+    srcs = glob(["src/serial/*.cpp"]),
+    hdrs = glob(["src/serial/*.hpp"]),
+    deps = [
+        "@tinyxml2//:tinyxml2",
+        "@boost//:boost",
+    ]
+)
+
+cc_library(
     name = "core",
     srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
     deps = [
         "@tinyxml2//:tinyxml2",
         "@boost//:boost",
+        ":serial",
     ]
 )
 

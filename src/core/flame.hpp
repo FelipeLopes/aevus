@@ -1,6 +1,6 @@
 #pragma once
 
-#include "xml_serialization.hpp"
+#include "../serial/xml_serialization.hpp"
 #include <cstdint>
 #include <boost/bimap.hpp>
 #include <optional>
@@ -11,7 +11,7 @@ struct ColorCL {
     float r,g,b,a;
 };
 
-class PaletteColors: public StringSerializable {
+class PaletteColors: public serial::StringSerializable {
 public:
     PaletteColors();
     std::string hexAt(int pos) const;
@@ -27,16 +27,16 @@ private:
     std::vector<byte> paletteData;
 };
 
-class Palette: public XMLElementClass {
+class Palette: public serial::XMLElementClass {
 public:
     Palette(XMLElementClass& el);
-    XMLAttributeInt count;
-    XMLAttributeString format;
-    XMLContent<PaletteColors> colors;
+    serial::XMLAttributeInt count;
+    serial::XMLAttributeString format;
+    serial::XMLContent<PaletteColors> colors;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
 };
 
-class SizeParams: public StringSerializable {
+class SizeParams: public serial::StringSerializable {
 public:
     SizeParams();
     SizeParams(int width, int height);
@@ -45,7 +45,7 @@ public:
     virtual void fromString(std::optional<std::string> text);
 };
 
-class CenterParams: public StringSerializable {
+class CenterParams: public serial::StringSerializable {
 public:
     CenterParams();
     CenterParams(double x, double y);
@@ -70,7 +70,7 @@ struct Variation {
     const static boost::bimap<VariationID, std::string> variationNames;
 };
 
-class VariationMap: public StringMapSerializable {
+class VariationMap: public serial::StringMapSerializable {
 public:
     VariationMap();
     virtual std::map<std::string, std::string> toStringMap();
@@ -78,7 +78,7 @@ public:
     std::map<Variation::VariationID, double> variations;
 };
 
-class Affine: public StringSerializable {
+class Affine: public serial::StringSerializable {
 public:
     Affine(bool serializeIdentity);
     virtual std::optional<std::string> toString();
@@ -98,7 +98,7 @@ public:
     PostAffine();
 };
 
-class Chaos: public StringSerializable {
+class Chaos: public serial::StringSerializable {
 public:
     Chaos();
     virtual std::optional<std::string> toString();
@@ -108,7 +108,7 @@ private:
     std::vector<double> chaos;
 };
 
-class ColorSpeed: public StringMapSerializable {
+class ColorSpeed: public serial::StringMapSerializable {
 public:
     ColorSpeed();
     virtual std::map<std::string, std::string> toStringMap();
@@ -128,20 +128,20 @@ struct XFormCL {
     float color, colorSpeed;
 };
 
-class XForm: public XMLElementClass {
+class XForm: public serial::XMLElementClass {
 public:
     XForm();
-    XMLAttributeDouble weight;
-    XMLAttributeDouble color;
-    XMLMultiAttribute<VariationMap> variationMap;
-    XMLAttribute<CoefsAffine> coefs;
-    XMLAttribute<PostAffine> post;
-    XMLAttribute<Chaos> chaos;
-    XMLMultiAttribute<ColorSpeed> colorSpeed;
+    serial::XMLAttributeDouble weight;
+    serial::XMLAttributeDouble color;
+    serial::XMLMultiAttribute<VariationMap> variationMap;
+    serial::XMLAttribute<CoefsAffine> coefs;
+    serial::XMLAttribute<PostAffine> post;
+    serial::XMLAttribute<Chaos> chaos;
+    serial::XMLMultiAttribute<ColorSpeed> colorSpeed;
     XFormCL toXFormCL() const;
 };
 
-class Color: public StringSerializable {
+class Color: public serial::StringSerializable {
 public:
     Color();
     Color(uint8_t r, uint8_t g, uint8_t b);
@@ -167,19 +167,19 @@ struct IterationState {
     } seed;
 };
 
-class Flame: public XMLElementClass {
+class Flame: public serial::XMLElementClass {
 public:
     Flame();
-    XMLAttributeString version;
-    XMLAttributeString name;
-    XMLAttribute<SizeParams> size;
-    XMLAttribute<CenterParams> center;
-    XMLAttributeDouble scale;
-    XMLAttributeInt quality;
-    XMLAttribute<Color> background;
-    XMLAttributeDouble brightness;
-    XMLAttributeDouble contrast;
-    ListXMLElementClass<XForm> xforms;
+    serial::XMLAttributeString version;
+    serial::XMLAttributeString name;
+    serial::XMLAttribute<SizeParams> size;
+    serial::XMLAttribute<CenterParams> center;
+    serial::XMLAttributeDouble scale;
+    serial::XMLAttributeInt quality;
+    serial::XMLAttribute<Color> background;
+    serial::XMLAttributeDouble brightness;
+    serial::XMLAttributeDouble contrast;
+    serial::ListXMLElementClass<XForm> xforms;
     Palette palette;
 
     FlameCL getFlameCL() const;

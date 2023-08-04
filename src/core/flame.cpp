@@ -1,5 +1,4 @@
 #include "flame.hpp"
-#include "xml_serialization.hpp"
 #include <algorithm>
 #include <cctype>
 #include <cstdint>
@@ -89,7 +88,7 @@ map<string, string> VariationMap::toStringMap() {
         if (it == Variation::variationNames.left.end()) {
             throw std::invalid_argument("Unknown variation ID");
         }
-        ans[it->second] = formattedDouble(kv.second);
+        ans[it->second] = serial::formattedDouble(kv.second);
     }
     return ans;
 }
@@ -182,12 +181,12 @@ Affine::Affine(bool serializeIdentity_): serializeIdentity(serializeIdentity_) {
  }
 
 optional<string> Affine::toString() {
-    string ans = formattedDouble(xx) + " " +
-        formattedDouble(-xy) + " " +
-        formattedDouble(-yx) + " " +
-        formattedDouble(yy) + " " +
-        formattedDouble(ox) + " " +
-        formattedDouble(-oy);
+    string ans = serial::formattedDouble(xx) + " " +
+        serial::formattedDouble(-xy) + " " +
+        serial::formattedDouble(-yx) + " " +
+        serial::formattedDouble(yy) + " " +
+        serial::formattedDouble(ox) + " " +
+        serial::formattedDouble(-oy);
     if (ans == "1 0 0 1 0 0" && !serializeIdentity) {
         return std::nullopt;
     }
@@ -229,7 +228,7 @@ optional<string> Chaos::toString() {
         if (i>0) {
             ans += " ";
         }
-        ans += formattedDouble(chaos[i]);
+        ans += serial::formattedDouble(chaos[i]);
     }
     if (ans == "") {
         return std::nullopt;
@@ -263,7 +262,7 @@ void ColorSpeed::fromStringMap(map<string, string> stringMap) {
 }
 
 map<string, string> ColorSpeed::toStringMap() {
-    return boost::assign::map_list_of("color_speed", formattedDouble(colorSpeed));
+    return boost::assign::map_list_of("color_speed", serial::formattedDouble(colorSpeed));
 }
 
 XForm::XForm(): XMLElementClass("xform"),
@@ -356,7 +355,7 @@ SizeParams::SizeParams(int width_, int height_):
     width(width_), height(height_) { }
 
 optional<string> SizeParams::toString() {
-    string ans = formattedDouble(width) + " " + formattedDouble(height);
+    string ans = serial::formattedDouble(width) + " " + serial::formattedDouble(height);
     return ans;
 }
 
@@ -376,7 +375,7 @@ CenterParams::CenterParams(double x_, double y_):
     x(x_), y(y_) { }
 
 optional<string> CenterParams::toString() {
-    string ans = formattedDouble(x) + " " + formattedDouble(y);
+    string ans = serial::formattedDouble(x) + " " + serial::formattedDouble(y);
     return ans;
 }
 

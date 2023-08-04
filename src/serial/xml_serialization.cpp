@@ -17,7 +17,7 @@ using tinyxml2::XMLNode;
 using boost::assign::list_of;
 using boost::assign::map_list_of;
 
-namespace core {
+namespace serial {
 
 string formattedDouble(double x) {
     stringstream buffer;

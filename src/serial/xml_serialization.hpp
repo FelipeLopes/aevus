@@ -12,7 +12,7 @@
 #include <tinyxml2.h>
 #include <boost/assign.hpp>
 
-namespace core {
+namespace serial {
 
 std::string formattedDouble(double x);
 
