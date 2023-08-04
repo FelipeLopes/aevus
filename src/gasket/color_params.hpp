@@ -1,11 +1,10 @@
 #pragma once
 
-#include "../render/palette.hpp"
+#include <vector>
 
 namespace gasket {
 
 struct ColorParams {
-    render::Palette palette;
     std::vector<double> colorValues;
 };
 

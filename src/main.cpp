@@ -11,14 +11,8 @@
 #include "gasket/zoom.hpp"
 #include "render/cl_buffer.hpp"
 #include "render/cl_executable.hpp"
-#include "render/color_cl.hpp"
-#include "render/iteration_state.hpp"
 #include "render/iterator.hpp"
 #include "render/opencl.hpp"
-#include "render/palette.hpp"
-#include "render/variation.hpp"
-#include "render/xform.hpp"
-#include "render/xform_cl.hpp"
 #include "core/xml_serialization.hpp"
 
 using boost::gil::rgb8_pixel_t;
@@ -61,8 +55,8 @@ public:
     gasket::ColorParams color(double logscale, int diveTransform) const {
         gasket::ColorParams params;
         auto it = std::prev(keyGasketsMap->lower_bound(logscale));
-        int idx = scaleIndex.find(it->first)->second;
-        params.palette = (idx % 2 == 1) ? render::Palette(RED, WHITE) : render::Palette(WHITE, RED);
+        //int idx = scaleIndex.find(it->first)->second;
+        //params.palette = (idx % 2 == 1) ? render::Palette(RED, WHITE) : render::Palette(WHITE, RED);
         int numTransforms = it->second.numTransforms();
         double iniKeyLogscale = it->first;
         double endKeyLogscale = std::next(it)->first;
@@ -114,21 +108,6 @@ int main(int argc, char* argv[]) {
         auto node = flame.toXMLNode(xmlDoc);
         xmlDoc.InsertFirstChild(node);
         xmlDoc.SaveFile(stdout);*/
-
-        double a;
-        if (argc < 2) {
-            a = 1;
-        } else {
-            sscanf(argv[1], "%lf", &a);
-        }
-
-        auto squareFlame = render::Flame(0, 0, 400, 400, render::Palette(ColorerImpl::WHITE));
-        squareFlame.scale = ceil(400*sqrt(a));
-        render::XForm xform(render::Variation::VariationID::SQUARE, Affine(),
-            Affine(1/sqrt(a),0,0,1/sqrt(a),0,0));
-        xform.chaos.resize(1);
-        xform.chaos[0]=1;
-        squareFlame.xforms.push_back(xform);
 
         auto context = render::OpenCL::getInstance().createQueuedContext(0,1);
 

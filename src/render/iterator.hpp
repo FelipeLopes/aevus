@@ -4,9 +4,6 @@
 #include "cl_buffer.hpp"
 #include "cl_context.hpp"
 #include "cl_executable.hpp"
-#include "color_cl.hpp"
-#include "flame.hpp"
-#include "iteration_state.hpp"
 #include "../core/flame.hpp"
 
 namespace render {

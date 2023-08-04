@@ -2,7 +2,6 @@
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include "tone_mapper.hpp"
-#include "palette.hpp"
 #include <random>
 
 using std::shared_ptr;
