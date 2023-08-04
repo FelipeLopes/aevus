@@ -2,7 +2,7 @@
 #include <CL/cl.h>
 #include <system_error>
 
-namespace render {
+namespace clwrap {
 
 CLQueue::CLQueue(cl_context clContext, cl_device_id clDeviceId) {
     cl_int ret;

@@ -5,7 +5,7 @@
 #include <CL/cl.h>
 #include <system_error>
 
-namespace render {
+namespace clwrap {
 
 CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId) {
     cl_int ret;

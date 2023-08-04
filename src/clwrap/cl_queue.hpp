@@ -1,7 +1,8 @@
 #pragma once
 
 #include <CL/cl.h>
-namespace render {
+
+namespace clwrap {
 
 class CLQueue {
 public:

@@ -6,7 +6,7 @@
 #include <functional>
 #include <vector>
 
-namespace render {
+namespace clwrap {
 
 template <typename T>
 class CLArg {

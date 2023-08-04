@@ -4,7 +4,7 @@
 #include <CL/cl.h>
 #include <vector>
 
-namespace render {
+namespace clwrap {
 
 class OpenCL {
 public:

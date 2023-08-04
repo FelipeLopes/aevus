@@ -3,7 +3,7 @@
 #include "CL/cl.h"
 #include <system_error>
 
-namespace render {
+namespace clwrap {
 
 OpenCL::OpenCL() {
     cl_uint numPlatforms;

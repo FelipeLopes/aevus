@@ -1,11 +1,11 @@
 #include "iterator.hpp"
-#include "cl_context.hpp"
-#include "cl_queue.hpp"
 #include "tone_mapper.hpp"
 #include <random>
 
 using std::shared_ptr;
 using std::vector;
+
+using clwrap::CLQueuedContext;
 
 namespace render {
 

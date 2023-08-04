@@ -1,23 +1,23 @@
 #pragma once
 
-#include "cl_arg.hpp"
+#include "../clwrap/cl_arg.hpp"
 #include <vector>
 
 namespace render {
 
 class ToneMapper {
 public:
-    ToneMapper(const CLQueuedContext& context, int area, float a, float b,
+    ToneMapper(const clwrap::CLQueuedContext& context, int area, float a, float b,
         std::vector<float>& hist);
     void readOutput(std::vector<float>& arr);
 private:
-    const CLQueuedContext& context;
+    const clwrap::CLQueuedContext& context;
     const int area;
-    CLExecutable kernel;
+    clwrap::CLExecutable kernel;
 
-    CLArg<float> aArg;
-    CLArg<float> bArg;
-    CLReadWriteBufferArg<float> histArg;
+    clwrap::CLArg<float> aArg;
+    clwrap::CLArg<float> bArg;
+    clwrap::CLReadWriteBufferArg<float> histArg;
 
     static const int LOCAL_WORK_SIZE = 64;
 };

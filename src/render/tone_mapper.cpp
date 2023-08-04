@@ -1,5 +1,7 @@
 #include "tone_mapper.hpp"
 
+using clwrap::CLQueuedContext;
+
 namespace render {
 
 ToneMapper::ToneMapper(const CLQueuedContext& context_, int area_, float a, float b,

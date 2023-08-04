@@ -7,7 +7,7 @@
 #include <system_error>
 #include <vector>
 
-namespace render {
+namespace clwrap {
 
 template <typename T>
 class CLBuffer {

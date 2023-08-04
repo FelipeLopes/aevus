@@ -9,11 +9,19 @@ cc_library(
 )
 
 cc_library(
+    name = "clwrap",
+    srcs = glob(["src/clwrap/*.cpp"]),
+    hdrs = glob(["src/clwrap/*.hpp"]),
+    deps = [
+        "@opencl-headers//:opencl-headers",
+    ]
+)
+
+cc_library(
     name = "core",
     srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
     deps = [
-        "@tinyxml2//:tinyxml2",
         "@boost//:boost",
         ":serial",
     ]
@@ -24,7 +32,7 @@ cc_library(
     srcs = glob(["src/render/*.cpp"]),
     hdrs = glob(["src/render/*.hpp"]),
     deps = [
-        "@opencl-headers//:opencl-headers",
+        ":clwrap",
         ":core",
     ]
 )
@@ -33,6 +41,7 @@ cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
     deps = [
+        ":clwrap",
         ":render",
         ":core",
         "@opencl//:opencl",

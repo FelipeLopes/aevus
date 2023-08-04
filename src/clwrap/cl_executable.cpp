@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-namespace render {
+namespace clwrap {
 
 CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name, std::string filename):
     context(clContext)

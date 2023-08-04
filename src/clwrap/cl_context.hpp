@@ -3,7 +3,7 @@
 #include <CL/cl.h>
 #include "cl_queue.hpp"
 
-namespace render {
+namespace clwrap {
 
 class CLContext {
 public:

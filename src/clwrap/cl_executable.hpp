@@ -6,7 +6,7 @@
 #include <CL/cl.h>
 #include <string>
 
-namespace render {
+namespace clwrap {
 
 class CLExecutable {
 public:
