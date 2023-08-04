@@ -1,15 +1,4 @@
 cc_library(
-    name = "gasket",
-    srcs = glob(["src/gasket/*.cpp"]),
-    hdrs = glob(["src/gasket/*.hpp", "src/render/*.hpp"]),
-    deps = [
-        "@tinyxml2//:tinyxml2",
-        "@gmp//:gmp",
-        "@boost//:boost",
-    ],
-)
-
-cc_library(
     name = "core",
     srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
@@ -35,7 +24,6 @@ cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
     deps = [
-        ":gasket",
         ":render",
         ":core",
         "@opencl//:opencl"
