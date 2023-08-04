@@ -14,8 +14,6 @@ cc_library(
     hdrs = glob(["src/render/*.hpp"]),
     deps = [
         "@opencl-headers//:opencl-headers",
-        "@tinyxml2//:tinyxml2",
-        "@boost//:boost",
         ":core",
     ]
 )
@@ -26,6 +24,6 @@ cc_binary(
     deps = [
         ":render",
         ":core",
-        "@opencl//:opencl"
+        "@opencl//:opencl",
     ],
 )
