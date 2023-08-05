@@ -1,1 +1,1 @@
-build -c opt --cxxopt='-std=c++17' --repo_env=CC=clang
+build -c opt --cxxopt='-std=c++17' --cxxopt='-pthread' --repo_env=CC=clang

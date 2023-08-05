@@ -37,17 +37,19 @@ cc_library(
     ]
 )
 
+cc_library(
+    name = "ui",
+    srcs = glob(["src/ui/*.cpp"]),
+    hdrs = glob(["src/ui/*.hpp"]),
+    deps = [
+        "@wxwidgets//:wxwidgets",
+    ]
+)
+
 cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
-    copts = [
-        "-pthread"
-    ],
     deps = [
-        ":clwrap",
-        ":render",
-        ":core",
-        "@opencl//:opencl",
-        "@wxwidgets//:wxwidgets",
+        ":ui",
     ],
 )
