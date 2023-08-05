@@ -40,6 +40,9 @@ cc_library(
 cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
+    copts = [
+        "-pthread"
+    ],
     deps = [
         ":clwrap",
         ":render",
