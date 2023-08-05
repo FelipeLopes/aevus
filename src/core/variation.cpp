@@ -1,4 +1,5 @@
 #include "variation.hpp"
+#include <boost/assign.hpp>
 
 using boost::assign::list_of;
 using boost::bimap;

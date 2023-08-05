@@ -1,5 +1,7 @@
 #include "custom_coefs.hpp"
+#include <boost/assign.hpp>
 #include <optional>
+#include <stdexcept>
 
 using std::map;
 using std::optional;

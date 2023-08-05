@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../serial/xml_serialization.hpp"
+#include "../serial/serializable.hpp"
 
 namespace core {
 

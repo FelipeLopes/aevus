@@ -1,7 +1,7 @@
 #pragma once
 
 #include <boost/bimap.hpp>
-#include "../serial/xml_serialization.hpp"
+#include "../serial/serializable.hpp"
 
 namespace core {
 

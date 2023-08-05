@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <boost/bimap.hpp>
 #include <optional>
-#include "../serial/xml_serialization.hpp"
+#include "../serial/xml_element.hpp"
 #include "color.hpp"
 #include "palette.hpp"
 #include "xform.hpp"

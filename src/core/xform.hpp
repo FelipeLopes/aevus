@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../serial/xml_serialization.hpp"
+#include "../serial/xml_attribute.hpp"
+#include "../serial/xml_element.hpp"
 #include "custom_coefs.hpp"
 #include "variation.hpp"
 

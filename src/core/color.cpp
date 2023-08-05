@@ -1,6 +1,7 @@
 #include "color.hpp"
 #include <inttypes.h>
 #include <optional>
+#include <stdexcept>
 
 using std::optional;
 using std::string;
