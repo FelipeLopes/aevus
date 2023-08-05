@@ -45,5 +45,6 @@ cc_binary(
         ":render",
         ":core",
         "@opencl//:opencl",
+        "@wxwidgets//:wxwidgets",
     ],
 )
