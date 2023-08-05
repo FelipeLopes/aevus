@@ -1,41 +1,13 @@
-#include <exception>
-#include <iomanip>
-#include <iterator>
-#include <stdexcept>
-#include <string>
+#include "xml_element.hpp"
 #include "xml_attribute.hpp"
 #include "xml_content.hpp"
-#include "xml_element.hpp"
 
 using std::string;
-using std::stringstream;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
 using tinyxml2::XMLNode;
 
 namespace serial {
-
-void XMLAttributeString::setValue(string value) {
-    val = value;
-}
-
-XMLContentClass::XMLContentClass(XMLElementClass& parent) {
-    parent.content = this;
-}
-
-XMLContentString::XMLContentString(XMLElementClass& parent): XMLContentClass(parent) { }
-
-void XMLContentString::deserialize(XMLNode* node) {
-    val = node->Value();
-}
-
-string XMLContentString::serialize() {
-    return val;
-}
-
-void XMLContentString::setValue(string value) {
-    val = value;
-}
 
 XMLElementClass::XMLElementClass(string tag_): tag(tag_) {
     content = NULL;

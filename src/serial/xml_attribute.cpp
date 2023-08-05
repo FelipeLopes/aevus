@@ -1,10 +1,4 @@
 #include "xml_attribute.hpp"
-#include <boost/assign.hpp>
-#include <functional>
-#include <map>
-#include <set>
-#include <string>
-#include <tinyxml2.h>
 #include "xml_element.hpp"
 
 using boost::assign::list_of;
@@ -142,6 +136,10 @@ void XMLAttributeString::deserialize(XMLElement* element) {
 
 string XMLAttributeString::getValue() const {
     return val;
+}
+
+void XMLAttributeString::setValue(string value) {
+    val = value;
 }
 
 }
