@@ -5,11 +5,17 @@
 // PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#include "aevus_frame.h"
+#include "wxfb_frame.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
-AevusFrame::AevusFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
+BEGIN_EVENT_TABLE( WxfbFrame, wxFrame )
+	EVT_MENU( ID_Hello, WxfbFrame::_wxFB_onHello )
+	EVT_MENU( wxID_EXIT, WxfbFrame::_wxFB_onExit )
+	EVT_MENU( wxID_ABOUT, WxfbFrame::_wxFB_onAbout )
+END_EVENT_TABLE()
+
+WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
 	this->SetSizeHints( wxDefaultSize, wxDefaultSize );
 
@@ -41,6 +47,6 @@ AevusFrame::AevusFrame( wxWindow* parent, wxWindowID id, const wxString& title, 
 	this->Centre( wxBOTH );
 }
 
-AevusFrame::~AevusFrame()
+WxfbFrame::~WxfbFrame()
 {
 }

@@ -24,11 +24,18 @@
 ///////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-/// Class AevusFrame
+/// Class WxfbFrame
 ///////////////////////////////////////////////////////////////////////////////
-class AevusFrame : public wxFrame
+class WxfbFrame : public wxFrame
 {
+	DECLARE_EVENT_TABLE()
 	private:
+
+		// Private event handlers
+		void _wxFB_onHello( wxCommandEvent& event ){ onHello( event ); }
+		void _wxFB_onExit( wxCommandEvent& event ){ onExit( event ); }
+		void _wxFB_onAbout( wxCommandEvent& event ){ onAbout( event ); }
+
 
 	protected:
 		enum
@@ -41,11 +48,17 @@ class AevusFrame : public wxFrame
 		wxMenu* m_menu2;
 		wxStatusBar* m_statusBar1;
 
+		// Virtual event handlers, override them in your derived class
+		virtual void onHello( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
+
+
 	public:
 
-		AevusFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( 50,50 ), const wxSize& size = wxSize( 450,340 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( 50,50 ), const wxSize& size = wxSize( 450,340 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
-		~AevusFrame();
+		~WxfbFrame();
 
 };
 
