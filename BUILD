@@ -39,8 +39,8 @@ cc_library(
 
 cc_library(
     name = "ui",
-    srcs = glob(["src/ui/*.cpp"]),
-    hdrs = glob(["src/ui/*.hpp"]),
+    srcs = glob(["src/ui/*.cpp"]) + ["src/ui/wxfb/code/aevus_frame.cpp"],
+    hdrs = glob(["src/ui/*.hpp"]) + ["src/ui/wxfb/code/aevus_frame.h"],
     deps = [
         "@wxwidgets//:wxwidgets",
     ]
