@@ -68,7 +68,7 @@ class WxfbFrame : public wxFrame
 
 	public:
 
-		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 880,660 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 1366,768 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~WxfbFrame();
 
@@ -80,13 +80,13 @@ class WxfbFrame : public wxFrame
 
 		void m_splitter2OnIdle( wxIdleEvent& )
 		{
-			m_splitter2->SetSashPosition( 200 );
+			m_splitter2->SetSashPosition( 350 );
 			m_splitter2->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter2OnIdle ), NULL, this );
 		}
 
 		void m_splitter3OnIdle( wxIdleEvent& )
 		{
-			m_splitter3->SetSashPosition( 300 );
+			m_splitter3->SetSashPosition( 450 );
 			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter3OnIdle ), NULL, this );
 		}
 

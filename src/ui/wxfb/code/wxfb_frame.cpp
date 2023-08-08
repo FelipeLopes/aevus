@@ -72,7 +72,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_panel4 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_panel4->SetBackgroundColour( wxColour( 0, 255, 95 ) );
 
-	m_splitter2->SplitVertically( m_panel3, m_panel4, 200 );
+	m_splitter2->SplitHorizontally( m_panel3, m_panel4, 350 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
 
 
@@ -97,14 +97,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_panel6 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_panel6->SetBackgroundColour( wxColour( 255, 255, 0 ) );
 
-	m_splitter3->SplitVertically( m_panel5, m_panel6, 300 );
+	m_splitter3->SplitHorizontally( m_panel5, m_panel6, 450 );
 	bSizer3->Add( m_splitter3, 1, wxEXPAND, 5 );
 
 
 	m_panel2->SetSizer( bSizer3 );
 	m_panel2->Layout();
 	bSizer3->Fit( m_panel2 );
-	m_splitter1->SplitHorizontally( m_panel1, m_panel2, 350 );
+	m_splitter1->SplitVertically( m_panel1, m_panel2, 350 );
 	bSizer1->Add( m_splitter1, 1, wxEXPAND, 5 );
 
 
