@@ -19,6 +19,9 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/statusbr.h>
+#include <wx/panel.h>
+#include <wx/splitter.h>
+#include <wx/sizer.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -47,6 +50,15 @@ class WxfbFrame : public wxFrame
 		wxMenu* m_menu1;
 		wxMenu* m_menu2;
 		wxStatusBar* m_statusBar1;
+		wxSplitterWindow* m_splitter1;
+		wxPanel* m_panel1;
+		wxSplitterWindow* m_splitter2;
+		wxPanel* m_panel3;
+		wxPanel* m_panel4;
+		wxPanel* m_panel2;
+		wxSplitterWindow* m_splitter3;
+		wxPanel* m_panel5;
+		wxPanel* m_panel6;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onHello( wxCommandEvent& event ) { event.Skip(); }
@@ -56,9 +68,27 @@ class WxfbFrame : public wxFrame
 
 	public:
 
-		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( 50,50 ), const wxSize& size = wxSize( 450,340 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Hello World"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 880,660 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
 		~WxfbFrame();
+
+		void m_splitter1OnIdle( wxIdleEvent& )
+		{
+			m_splitter1->SetSashPosition( 350 );
+			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter1OnIdle ), NULL, this );
+		}
+
+		void m_splitter2OnIdle( wxIdleEvent& )
+		{
+			m_splitter2->SetSashPosition( 200 );
+			m_splitter2->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter2OnIdle ), NULL, this );
+		}
+
+		void m_splitter3OnIdle( wxIdleEvent& )
+		{
+			m_splitter3->SetSashPosition( 300 );
+			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter3OnIdle ), NULL, this );
+		}
 
 };
 

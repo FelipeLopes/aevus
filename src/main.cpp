@@ -1,4 +1,4 @@
-#include "ui/wxhello.hpp"
+#include "ui/aevus_frame.hpp"
 
 wxIMPLEMENT_APP_NO_MAIN(ui::MyApp);
 

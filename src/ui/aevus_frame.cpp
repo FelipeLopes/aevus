@@ -1,9 +1,7 @@
-#include "wxhello.hpp"
+#include "aevus_frame.hpp"
 #include "wxfb/code/wxfb_frame.h"
 
 namespace ui {
-
-
 
 AevusFrame::AevusFrame(wxWindow* parent): WxfbFrame(parent) {
     SetStatusText("Welcome to wxWidgets!");

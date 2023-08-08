@@ -1,12 +1,8 @@
 #pragma once
 
+#include "event_id.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <wx/wx.h>
-
-enum
-{
-    ID_Hello = 1
-};
 
 namespace ui {
 
