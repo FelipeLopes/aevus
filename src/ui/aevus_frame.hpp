@@ -16,9 +16,9 @@ public:
     AevusFrame(wxWindow* parent);
     ~AevusFrame();
 protected:
-    virtual void onHello(wxCommandEvent& event);
-    virtual void onExit(wxCommandEvent& event);
-    virtual void onAbout(wxCommandEvent& event);
+    void onHello(wxCommandEvent& event);
+    void onExit(wxCommandEvent& event);
+    void onAbout(wxCommandEvent& event);
 };
 
 }
