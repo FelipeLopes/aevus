@@ -10,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE( WxfbFrame, wxFrame )
-	EVT_MENU( ID_Hello, WxfbFrame::_wxFB_onHello )
+	EVT_MENU( ID_FILE_OPEN, WxfbFrame::_wxFB_onFileOpen )
 	EVT_MENU( wxID_EXIT, WxfbFrame::_wxFB_onExit )
 	EVT_MENU( wxID_ABOUT, WxfbFrame::_wxFB_onAbout )
 END_EVENT_TABLE()
@@ -22,7 +22,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_menubar1 = new wxMenuBar( 0 );
 	m_menu1 = new wxMenu();
 	wxMenuItem* m_menuItem1;
-	m_menuItem1 = new wxMenuItem( m_menu1, ID_Hello, wxString( wxT("&Hello") ) + wxT('\t') + wxT("Ctrl-H"), wxT("Help string shown in status bar for this menu item"), wxITEM_NORMAL );
+	m_menuItem1 = new wxMenuItem( m_menu1, ID_FILE_OPEN, wxString( wxT("&Open flame") ) + wxT('\t') + wxT("Ctrl-O"), wxT("Open flame parameters from a file"), wxITEM_NORMAL );
 	m_menu1->Append( m_menuItem1 );
 
 	m_menu1->AppendSeparator();
@@ -124,7 +124,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer5, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	m_textCtrl1 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrl1 = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gbSizer1->Add( m_textCtrl1, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	m_textCtrl2 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );

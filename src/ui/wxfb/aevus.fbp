@@ -50,14 +50,14 @@
             <property name="size">1366,768</property>
             <property name="style">wxDEFAULT_FRAME_STYLE</property>
             <property name="subclass">; ; forward_declare</property>
-            <property name="title">Hello World</property>
+            <property name="title">Aevus</property>
             <property name="tooltip"></property>
             <property name="two_step_creation">0</property>
             <property name="window_extra_style"></property>
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
-            <object class="wxMenuBar" expanded="0">
+            <object class="wxMenuBar" expanded="1">
                 <property name="bg"></property>
                 <property name="context_help"></property>
                 <property name="context_menu">1</property>
@@ -78,7 +78,7 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <object class="wxMenu" expanded="0">
+                <object class="wxMenu" expanded="1">
                     <property name="label">&amp;File</property>
                     <property name="name">m_menu1</property>
                     <property name="permission">protected</property>
@@ -86,15 +86,15 @@
                         <property name="bitmap"></property>
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
-                        <property name="help">Help string shown in status bar for this menu item</property>
-                        <property name="id">ID_Hello</property>
+                        <property name="help">Open flame parameters from a file</property>
+                        <property name="id">ID_FILE_OPEN</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">&amp;Hello</property>
+                        <property name="label">&amp;Open flame</property>
                         <property name="name">m_menuItem1</property>
                         <property name="permission">none</property>
-                        <property name="shortcut">Ctrl-H</property>
+                        <property name="shortcut">Ctrl-O</property>
                         <property name="unchecked_bitmap"></property>
-                        <event name="OnMenuSelection">onHello</event>
+                        <event name="OnMenuSelection">onFileOpen</event>
                     </object>
                     <object class="separator" expanded="0">
                         <property name="name">m_separator1</property>
@@ -163,11 +163,11 @@
                 <property name="name">bSizer1</property>
                 <property name="orient">wxVERTICAL</property>
                 <property name="permission">none</property>
-                <object class="sizeritem" expanded="1">
+                <object class="sizeritem" expanded="0">
                     <property name="border">5</property>
                     <property name="flag">wxEXPAND</property>
                     <property name="proportion">1</property>
-                    <object class="wxSplitterWindow" expanded="1">
+                    <object class="wxSplitterWindow" expanded="0">
                         <property name="BottomDockable">1</property>
                         <property name="LeftDockable">1</property>
                         <property name="RightDockable">1</property>
@@ -224,8 +224,8 @@
                         <property name="window_extra_style"></property>
                         <property name="window_name"></property>
                         <property name="window_style"></property>
-                        <object class="splitteritem" expanded="1">
-                            <object class="wxPanel" expanded="1">
+                        <object class="splitteritem" expanded="0">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -276,16 +276,16 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxBoxSizer" expanded="1">
+                                <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer2</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="1">
+                                    <object class="sizeritem" expanded="0">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxSplitterWindow" expanded="1">
+                                        <object class="wxSplitterWindow" expanded="0">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
                                             <property name="RightDockable">1</property>
@@ -342,8 +342,8 @@
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
-                                            <object class="splitteritem" expanded="1">
-                                                <object class="wxPanel" expanded="1">
+                                            <object class="splitteritem" expanded="0">
+                                                <object class="wxPanel" expanded="0">
                                                     <property name="BottomDockable">1</property>
                                                     <property name="LeftDockable">1</property>
                                                     <property name="RightDockable">1</property>
@@ -394,7 +394,7 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style">wxTAB_TRAVERSAL</property>
-                                                    <object class="wxGridBagSizer" expanded="1">
+                                                    <object class="wxGridBagSizer" expanded="0">
                                                         <property name="empty_cell_size"></property>
                                                         <property name="flexible_direction">wxBOTH</property>
                                                         <property name="growablecols"></property>
@@ -405,7 +405,7 @@
                                                         <property name="non_flexible_grow_mode">wxFLEX_GROWMODE_SPECIFIED</property>
                                                         <property name="permission">none</property>
                                                         <property name="vgap">0</property>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">0</property>
@@ -469,7 +469,7 @@
                                                                 <property name="wrap">-1</property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">1</property>
@@ -564,7 +564,7 @@
                                                                 </object>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">2</property>
@@ -659,7 +659,7 @@
                                                                 </object>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">0</property>
@@ -754,7 +754,7 @@
                                                                 </object>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">1</property>
@@ -788,7 +788,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">wxID_ANY</property>
+                                                                <property name="id">ID_FLAME_UPDATE</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -821,7 +821,7 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">2</property>
@@ -888,7 +888,7 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">0</property>
@@ -983,7 +983,7 @@
                                                                 </object>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">1</property>
@@ -1050,7 +1050,7 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">2</property>
@@ -1117,7 +1117,7 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">0</property>
@@ -1212,7 +1212,7 @@
                                                                 </object>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">1</property>
@@ -1279,7 +1279,7 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">1</property>
                                                             <property name="column">2</property>
@@ -1346,23 +1346,23 @@
                                                                 <property name="window_style"></property>
                                                             </object>
                                                         </object>
-                                                        <object class="gbsizeritem" expanded="1">
+                                                        <object class="gbsizeritem" expanded="0">
                                                             <property name="border">5</property>
                                                             <property name="colspan">3</property>
                                                             <property name="column">0</property>
                                                             <property name="flag">wxEXPAND</property>
                                                             <property name="row">4</property>
                                                             <property name="rowspan">1</property>
-                                                            <object class="wxBoxSizer" expanded="1">
+                                                            <object class="wxBoxSizer" expanded="0">
                                                                 <property name="minimum_size"></property>
                                                                 <property name="name">bSizer17</property>
                                                                 <property name="orient">wxHORIZONTAL</property>
                                                                 <property name="permission">none</property>
-                                                                <object class="sizeritem" expanded="1">
+                                                                <object class="sizeritem" expanded="0">
                                                                     <property name="border">5</property>
                                                                     <property name="flag">wxALL</property>
                                                                     <property name="proportion">1</property>
-                                                                    <object class="wxButton" expanded="1">
+                                                                    <object class="wxButton" expanded="0">
                                                                         <property name="BottomDockable">1</property>
                                                                         <property name="LeftDockable">1</property>
                                                                         <property name="RightDockable">1</property>
@@ -1436,8 +1436,8 @@
                                                     </object>
                                                 </object>
                                             </object>
-                                            <object class="splitteritem" expanded="1">
-                                                <object class="wxPanel" expanded="1">
+                                            <object class="splitteritem" expanded="0">
+                                                <object class="wxPanel" expanded="0">
                                                     <property name="BottomDockable">1</property>
                                                     <property name="LeftDockable">1</property>
                                                     <property name="RightDockable">1</property>
@@ -1495,8 +1495,8 @@
                                 </object>
                             </object>
                         </object>
-                        <object class="splitteritem" expanded="1">
-                            <object class="wxPanel" expanded="1">
+                        <object class="splitteritem" expanded="0">
+                            <object class="wxPanel" expanded="0">
                                 <property name="BottomDockable">1</property>
                                 <property name="LeftDockable">1</property>
                                 <property name="RightDockable">1</property>
@@ -1547,16 +1547,16 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style">wxTAB_TRAVERSAL</property>
-                                <object class="wxBoxSizer" expanded="1">
+                                <object class="wxBoxSizer" expanded="0">
                                     <property name="minimum_size"></property>
                                     <property name="name">bSizer3</property>
                                     <property name="orient">wxVERTICAL</property>
                                     <property name="permission">none</property>
-                                    <object class="sizeritem" expanded="1">
+                                    <object class="sizeritem" expanded="0">
                                         <property name="border">5</property>
                                         <property name="flag">wxEXPAND</property>
                                         <property name="proportion">1</property>
-                                        <object class="wxSplitterWindow" expanded="1">
+                                        <object class="wxSplitterWindow" expanded="0">
                                             <property name="BottomDockable">1</property>
                                             <property name="LeftDockable">1</property>
                                             <property name="RightDockable">1</property>
@@ -1613,8 +1613,8 @@
                                             <property name="window_extra_style"></property>
                                             <property name="window_name"></property>
                                             <property name="window_style"></property>
-                                            <object class="splitteritem" expanded="1">
-                                                <object class="wxPanel" expanded="1">
+                                            <object class="splitteritem" expanded="0">
+                                                <object class="wxPanel" expanded="0">
                                                     <property name="BottomDockable">1</property>
                                                     <property name="LeftDockable">1</property>
                                                     <property name="RightDockable">1</property>
@@ -1667,8 +1667,8 @@
                                                     <property name="window_style">wxTAB_TRAVERSAL</property>
                                                 </object>
                                             </object>
-                                            <object class="splitteritem" expanded="1">
-                                                <object class="wxPanel" expanded="1">
+                                            <object class="splitteritem" expanded="0">
+                                                <object class="wxPanel" expanded="0">
                                                     <property name="BottomDockable">1</property>
                                                     <property name="LeftDockable">1</property>
                                                     <property name="RightDockable">1</property>

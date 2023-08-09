@@ -42,6 +42,7 @@ cc_library(
     srcs = glob(["src/ui/*.cpp"]) + ["src/ui/wxfb/code/wxfb_frame.cpp"],
     hdrs = glob(["src/ui/*.hpp"]) + ["src/ui/wxfb/code/wxfb_frame.h"],
     deps = [
+        ":core",
         "@wxwidgets//:wxwidgets",
     ]
 )
