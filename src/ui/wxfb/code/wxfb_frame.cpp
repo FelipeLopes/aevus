@@ -67,14 +67,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_splitter2->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
 	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	wxFlexGridSizer* fgSizer5;
-	fgSizer5 = new wxFlexGridSizer( 4, 3, 0, 0 );
-	fgSizer5->SetFlexibleDirection( wxBOTH );
-	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxGridBagSizer* gbSizer1;
+	gbSizer1 = new wxGridBagSizer( 0, 0 );
+	gbSizer1->SetFlexibleDirection( wxBOTH );
+	gbSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
 	m_staticText17 = new wxStaticText( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText17->Wrap( -1 );
-	fgSizer5->Add( m_staticText17, 0, wxALL, 5 );
+	gbSizer1->Add( m_staticText17, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
@@ -90,7 +90,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	fgSizer5->Add( bSizer9, 1, wxEXPAND, 5 );
+	gbSizer1->Add( bSizer9, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
@@ -106,7 +106,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	fgSizer5->Add( bSizer10, 1, wxEXPAND, 5 );
+	gbSizer1->Add( bSizer10, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
@@ -122,13 +122,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	fgSizer5->Add( bSizer5, 1, wxEXPAND, 5 );
+	gbSizer1->Add( bSizer5, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
 	m_textCtrl1 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl1, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl1, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	m_textCtrl2 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl2, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl2, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -144,13 +144,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	fgSizer5->Add( bSizer6, 1, wxEXPAND, 5 );
+	gbSizer1->Add( bSizer6, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
 	m_textCtrl3 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl3, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl3, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	m_textCtrl4 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl4, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl4, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
@@ -166,18 +166,27 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
 
 
-	fgSizer5->Add( bSizer7, 1, wxEXPAND, 5 );
+	gbSizer1->Add( bSizer7, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
 	m_textCtrl5 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl5, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl5, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	m_textCtrl6 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer5->Add( m_textCtrl6, 0, wxALL, 5 );
+	gbSizer1->Add( m_textCtrl6, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	wxBoxSizer* bSizer17;
+	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_button5 = new wxButton( m_panel11, wxID_ANY, wxT("Reset pre transform"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer17->Add( m_button5, 1, wxALL, 5 );
 
 
-	m_panel11->SetSizer( fgSizer5 );
+	gbSizer1->Add( bSizer17, wxGBPosition( 4, 0 ), wxGBSpan( 1, 3 ), wxEXPAND, 5 );
+
+
+	m_panel11->SetSizer( gbSizer1 );
 	m_panel11->Layout();
-	fgSizer5->Fit( m_panel11 );
+	gbSizer1->Fit( m_panel11 );
 	m_panel13 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_splitter2->SplitHorizontally( m_panel11, m_panel13, 350 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );

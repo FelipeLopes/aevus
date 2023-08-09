@@ -22,6 +22,8 @@
 #include <wx/stattext.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/gbsizer.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
 #include <wx/frame.h>
@@ -68,6 +70,7 @@ class WxfbFrame : public wxFrame
 		wxStaticText* m_staticText16;
 		wxTextCtrl* m_textCtrl5;
 		wxTextCtrl* m_textCtrl6;
+		wxButton* m_button5;
 		wxPanel* m_panel13;
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
