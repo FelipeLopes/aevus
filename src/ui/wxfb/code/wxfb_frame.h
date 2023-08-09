@@ -42,6 +42,7 @@ class WxfbFrame : public wxFrame
 		void _wxFB_onFileOpen( wxCommandEvent& event ){ onFileOpen( event ); }
 		void _wxFB_onExit( wxCommandEvent& event ){ onExit( event ); }
 		void _wxFB_onAbout( wxCommandEvent& event ){ onAbout( event ); }
+		void _wxFB_onTextFlameUpdate( wxCommandEvent& event ){ onTextFlameUpdate( event ); }
 
 
 	protected:
@@ -63,14 +64,14 @@ class WxfbFrame : public wxFrame
 		wxStaticText* m_staticText19;
 		wxStaticText* m_staticText20;
 		wxStaticText* m_staticText14;
-		wxTextCtrl* m_textCtrl1;
-		wxTextCtrl* m_textCtrl2;
+		wxTextCtrl* preXXtextCtrl;
+		wxTextCtrl* preXYtextCtrl;
 		wxStaticText* m_staticText15;
-		wxTextCtrl* m_textCtrl3;
-		wxTextCtrl* m_textCtrl4;
+		wxTextCtrl* preYXtextCtrl;
+		wxTextCtrl* preYYtextCtrl;
 		wxStaticText* m_staticText16;
-		wxTextCtrl* m_textCtrl5;
-		wxTextCtrl* m_textCtrl6;
+		wxTextCtrl* preOXtextCtrl;
+		wxTextCtrl* preOYtextCtrl;
 		wxButton* m_button5;
 		wxPanel* m_panel13;
 		wxPanel* m_panel2;
@@ -82,6 +83,7 @@ class WxfbFrame : public wxFrame
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onTextFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

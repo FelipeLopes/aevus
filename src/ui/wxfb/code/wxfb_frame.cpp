@@ -13,6 +13,7 @@ BEGIN_EVENT_TABLE( WxfbFrame, wxFrame )
 	EVT_MENU( ID_FILE_OPEN, WxfbFrame::_wxFB_onFileOpen )
 	EVT_MENU( wxID_EXIT, WxfbFrame::_wxFB_onExit )
 	EVT_MENU( wxID_ABOUT, WxfbFrame::_wxFB_onAbout )
+	EVT_TEXT_ENTER( ID_FLAME_UPDATE, WxfbFrame::_wxFB_onTextFlameUpdate )
 END_EVENT_TABLE()
 
 WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
@@ -124,11 +125,11 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer5, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	m_textCtrl1 = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl1, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preXXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preXXtextCtrl, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	m_textCtrl2 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl2, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preXYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preXYtextCtrl, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
@@ -146,11 +147,11 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer6, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	m_textCtrl3 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl3, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preYXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preYXtextCtrl, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	m_textCtrl4 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl4, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preYYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preYYtextCtrl, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxVERTICAL );
@@ -168,11 +169,11 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer7, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	m_textCtrl5 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl5, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preOXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preOXtextCtrl, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	m_textCtrl6 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	gbSizer1->Add( m_textCtrl6, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	preOYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_UPDATE, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	gbSizer1->Add( preOYtextCtrl, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxHORIZONTAL );

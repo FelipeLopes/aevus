@@ -15,12 +15,13 @@ class AevusFrame: public WxfbFrame {
 public:
     AevusFrame(std::shared_ptr<core::Flame> flame);
     ~AevusFrame();
-protected:
+private:
+    std::shared_ptr<core::Flame> flame;
+
     void onFileOpen(wxCommandEvent& event);
     void onExit(wxCommandEvent& event);
     void onAbout(wxCommandEvent& event);
-private:
-    std::shared_ptr<core::Flame> flame;
+    void onTextFlameUpdate(wxCommandEvent& event);
     void onFlameUpdate(wxCommandEvent& event);
 };
 
