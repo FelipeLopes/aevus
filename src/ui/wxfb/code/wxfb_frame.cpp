@@ -66,13 +66,120 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	m_splitter2->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
-	m_panel3 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel3->SetBackgroundColour( wxColour( 0, 255, 231 ) );
+	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	wxFlexGridSizer* fgSizer5;
+	fgSizer5 = new wxFlexGridSizer( 4, 3, 0, 0 );
+	fgSizer5->SetFlexibleDirection( wxBOTH );
+	fgSizer5->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_panel4 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel4->SetBackgroundColour( wxColour( 0, 255, 95 ) );
+	m_staticText17 = new wxStaticText( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText17->Wrap( -1 );
+	fgSizer5->Add( m_staticText17, 0, wxALL, 5 );
 
-	m_splitter2->SplitHorizontally( m_panel3, m_panel4, 350 );
+	wxBoxSizer* bSizer9;
+	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText19 = new wxStaticText( m_panel11, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19->Wrap( -1 );
+	bSizer9->Add( m_staticText19, 0, wxALL, 5 );
+
+
+	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer5->Add( bSizer9, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText20 = new wxStaticText( m_panel11, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20->Wrap( -1 );
+	bSizer10->Add( m_staticText20, 0, wxALL, 5 );
+
+
+	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer5->Add( bSizer10, 1, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText14 = new wxStaticText( m_panel11, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14->Wrap( -1 );
+	bSizer5->Add( m_staticText14, 0, wxALL, 5 );
+
+
+	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer5->Add( bSizer5, 1, wxEXPAND, 5 );
+
+	m_textCtrl1 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl1, 0, wxALL, 5 );
+
+	m_textCtrl2 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl2, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText15 = new wxStaticText( m_panel11, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15->Wrap( -1 );
+	bSizer6->Add( m_staticText15, 0, wxALL, 5 );
+
+
+	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer5->Add( bSizer6, 1, wxEXPAND, 5 );
+
+	m_textCtrl3 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl3, 0, wxALL, 5 );
+
+	m_textCtrl4 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl4, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer7;
+	bSizer7 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText16 = new wxStaticText( m_panel11, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText16->Wrap( -1 );
+	bSizer7->Add( m_staticText16, 0, wxALL, 5 );
+
+
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer5->Add( bSizer7, 1, wxEXPAND, 5 );
+
+	m_textCtrl5 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl5, 0, wxALL, 5 );
+
+	m_textCtrl6 = new wxTextCtrl( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer5->Add( m_textCtrl6, 0, wxALL, 5 );
+
+
+	m_panel11->SetSizer( fgSizer5 );
+	m_panel11->Layout();
+	fgSizer5->Fit( m_panel11 );
+	m_panel13 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_splitter2->SplitHorizontally( m_panel11, m_panel13, 350 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
 
 

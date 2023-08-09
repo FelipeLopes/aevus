@@ -19,9 +19,11 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/statusbr.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
-#include <wx/sizer.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -53,8 +55,20 @@ class WxfbFrame : public wxFrame
 		wxSplitterWindow* m_splitter1;
 		wxPanel* m_panel1;
 		wxSplitterWindow* m_splitter2;
-		wxPanel* m_panel3;
-		wxPanel* m_panel4;
+		wxPanel* m_panel11;
+		wxStaticText* m_staticText17;
+		wxStaticText* m_staticText19;
+		wxStaticText* m_staticText20;
+		wxStaticText* m_staticText14;
+		wxTextCtrl* m_textCtrl1;
+		wxTextCtrl* m_textCtrl2;
+		wxStaticText* m_staticText15;
+		wxTextCtrl* m_textCtrl3;
+		wxTextCtrl* m_textCtrl4;
+		wxStaticText* m_staticText16;
+		wxTextCtrl* m_textCtrl5;
+		wxTextCtrl* m_textCtrl6;
+		wxPanel* m_panel13;
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel5;
