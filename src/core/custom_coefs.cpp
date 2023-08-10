@@ -83,6 +83,30 @@ void Affine::fromString(optional<string> text) {
     oy *= -1;
 }
 
+double Affine::getValueByIndex(int idx) {
+    switch (idx) {
+        case 0: return xx; break;
+        case 1: return xy; break;
+        case 2: return yx; break;
+        case 3: return yy; break;
+        case 4: return ox; break;
+        case 5: return oy; break;
+        default: throw std::invalid_argument("Unrecognized index");
+    }
+}
+
+void Affine::setValueByIndex(int idx, double val) {
+    switch (idx) {
+        case 0: xx = val; break;
+        case 1: xy = val; break;
+        case 2: yx = val; break;
+        case 3: yy = val; break;
+        case 4: ox = val; break;
+        case 5: oy = val; break;
+        default: throw std::invalid_argument("Unrecognized index");
+    }
+}
+
 CoefsAffine::CoefsAffine(): Affine(true) { }
 
 PostAffine::PostAffine(): Affine(false) { }

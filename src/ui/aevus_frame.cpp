@@ -2,6 +2,7 @@
 #include "wxfb/code/wxfb_frame.h"
 #include <exception>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 using std::string;
@@ -17,18 +18,56 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     SetStatusText("Welcome to Aevus!");
     Bind(FLAME_UPDATE_EVENT, &AevusFrame::onFlameUpdate, this, wxID_ANY);
     editingId = -1;
+    textCtrls = {
+        preXXtextCtrl, preXYtextCtrl, preYXtextCtrl,
+        preYYtextCtrl, preOXtextCtrl, preOYtextCtrl,
+        postXXtextCtrl, postXYtextCtrl, postYXtextCtrl,
+        postYYtextCtrl, postOXtextCtrl, postOYtextCtrl
+    };
 }
 
-void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
-    core::CoefsAffine coefs;
-    if (flame->xforms.size() == 0) {
-        return;
+int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
+    switch (textCtrlId) {
+    case ID_FLAME_PRE_XX: return 0;
+    case ID_FLAME_PRE_XY: return 1;
+    case ID_FLAME_PRE_YX: return 2;
+    case ID_FLAME_PRE_YY: return 3;
+    case ID_FLAME_PRE_OX: return 4;
+    case ID_FLAME_PRE_OY: return 5;
+    case ID_FLAME_POST_XX: return 6;
+    case ID_FLAME_POST_XY: return 7;
+    case ID_FLAME_POST_YX: return 8;
+    case ID_FLAME_POST_YY: return 9;
+    case ID_FLAME_POST_OX: return 10;
+    case ID_FLAME_POST_OY: return 11;
+    default: return -1;
     }
-    flame->xforms.get(0)->coefs.setValue(coefs);
+}
 
+void AevusFrame::fireFlameUpdateEvent() {
     wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
     flameUpdateEvent.SetEventObject(this);
     ProcessWindowEvent(flameUpdateEvent);
+}
+
+void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
+    int eventId = event.GetId();
+    if (eventId == ID_FLAME_PRE_RESET) {
+        core::CoefsAffine coefs;
+        if (flame->xforms.size() == 0) {
+            return;
+        }
+        flame->xforms.get(0)->coefs.setValue(coefs);
+    } else if (eventId == ID_FLAME_POST_RESET) {
+        core::PostAffine post;
+        if (flame->xforms.size() == 0) {
+            return;
+        }
+        flame->xforms.get(0)->post.setValue(post);
+    } else {
+        throw std::invalid_argument("Unrecognized ID");
+    }
+    fireFlameUpdateEvent();
 }
 
 void AevusFrame::onEnterFlameUpdate(wxCommandEvent& event) {
@@ -50,36 +89,26 @@ void AevusFrame::onFocusFlameEdit(wxFocusEvent& event) {
 
 bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
     string text;
-    switch (textCtrlId) {
-        case ID_FLAME_PRE_OX: text = preOXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_OY: text = preOYtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_XX: text = preXXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_XY: text = preXYtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_YX: text = preYXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_YY: text = preYYtextCtrl->GetValue(); break;
-        default: return false;
+    int coefId = getCoefIndexByTextCtrlId(textCtrlId);
+    if (coefId == -1) {
+        return false;
     }
+    text = textCtrls[coefId]->GetValue();
     try {
         double val = std::stod(text);
         if (flame->xforms.size() == 0) {
             return false;
         }
-        auto coefs = flame->xforms.get(0)->coefs.getValue();
-        switch (textCtrlId) {
-            case ID_FLAME_PRE_OX: coefs.ox = val; break;
-            case ID_FLAME_PRE_OY: coefs.oy = val; break;
-            case ID_FLAME_PRE_XX: coefs.xx = val; break;
-            case ID_FLAME_PRE_XY: coefs.xy = val; break;
-            case ID_FLAME_PRE_YX: coefs.yx = val; break;
-            case ID_FLAME_PRE_YY: coefs.yy = val; break;
-            default: return false;
+        if (coefId / 6 == 0) {
+            auto coefs = flame->xforms.get(0)->coefs.getValue();
+            coefs.setValueByIndex(coefId % 6, val);
+            flame->xforms.get(0)->coefs.setValue(coefs);
+        } else {
+            auto post = flame->xforms.get(0)->post.getValue();
+            post.setValueByIndex(coefId % 6, val);
+            flame->xforms.get(0)->post.setValue(post);
         }
-        flame->xforms.get(0)->coefs.setValue(coefs);
-
-        wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
-        flameUpdateEvent.SetEventObject(this);
-        ProcessWindowEvent(flameUpdateEvent);
-
+        fireFlameUpdateEvent();
         return true;
     } catch (std::exception& e) {
         return false;
@@ -88,40 +117,30 @@ bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
 
 bool AevusFrame::flameTextEqual(int textCtrlId) {
     string text;
-    switch (textCtrlId) {
-        case ID_FLAME_PRE_OX: text = preOXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_OY: text = preOYtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_XX: text = preXXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_XY: text = preXYtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_YX: text = preYXtextCtrl->GetValue(); break;
-        case ID_FLAME_PRE_YY: text = preYYtextCtrl->GetValue(); break;
-        default: return true;
+    int coefId = getCoefIndexByTextCtrlId(textCtrlId);
+    if (coefId == -1) {
+        return true;
     }
+    text = textCtrls[coefId]->GetValue();
     if (flame->xforms.size() == 0) {
         return text == "";
     }
-    double flameVal = 0;
-    auto coefs = flame->xforms.get(0)->coefs.getValue();
-    switch (textCtrlId) {
-        case ID_FLAME_PRE_OX: flameVal = coefs.ox; break;
-        case ID_FLAME_PRE_OY: flameVal = coefs.oy; break;
-        case ID_FLAME_PRE_XX: flameVal = coefs.xx; break;
-        case ID_FLAME_PRE_XY: flameVal = coefs.xy; break;
-        case ID_FLAME_PRE_YX: flameVal = coefs.yx; break;
-        case ID_FLAME_PRE_YY: flameVal = coefs.yy; break;
-        default: return true;
+    double flameVal;
+    if (coefId / 6 == 0) {
+        flameVal = flame->xforms.get(0)->coefs.getValue().getValueByIndex(coefId % 6);
+    } else {
+        flameVal = flame->xforms.get(0)->post.getValue().getValueByIndex(coefId % 6);
     }
     return std::to_string(flameVal) == text;
 }
 
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
-    auto affine = flame->xforms.get(0)->coefs.getValue();
-    preOXtextCtrl->ChangeValue(to_string(affine.ox));
-    preOYtextCtrl->ChangeValue(to_string(affine.oy));
-    preXXtextCtrl->ChangeValue(to_string(affine.xx));
-    preXYtextCtrl->ChangeValue(to_string(affine.xy));
-    preYXtextCtrl->ChangeValue(to_string(affine.yx));
-    preYYtextCtrl->ChangeValue(to_string(affine.yy));
+    auto coefs = flame->xforms.get(0)->coefs.getValue();
+    auto post = flame->xforms.get(0)->post.getValue();
+    for (int i=0; i<6; i++) {
+        textCtrls[i]->ChangeValue(to_string(coefs.getValueByIndex(i)));
+        textCtrls[i+6]->ChangeValue(to_string(post.getValueByIndex(i)));
+    }
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {
@@ -148,9 +167,7 @@ void AevusFrame::onFileOpen(wxCommandEvent& event) {
     }
     flame->deserialize(inputStream);
     fclose(inputStream);
-    wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
-    flameUpdateEvent.SetEventObject(this);
-    ProcessWindowEvent(flameUpdateEvent);
+    fireFlameUpdateEvent();
 }
 
 AevusFrame::~AevusFrame() { }

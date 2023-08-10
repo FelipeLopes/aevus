@@ -17,6 +17,7 @@ public:
     ~AevusFrame();
 private:
     std::shared_ptr<core::Flame> flame;
+    std::vector<wxTextCtrl*> textCtrls;
     int editingId;
 
     void onFileOpen(wxCommandEvent& event);
@@ -27,7 +28,9 @@ private:
     void onFocusFlameEdit(wxFocusEvent& event);
     void onFlameUpdate(wxCommandEvent& event);
 
+    void fireFlameUpdateEvent();
     bool flameTextEqual(int textCtrlId);
+    int getCoefIndexByTextCtrlId(int textCtrlId);
     bool tryChangeAndUpdate(int textCtrlId);
 };
 
