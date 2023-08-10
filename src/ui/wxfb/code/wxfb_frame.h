@@ -25,6 +25,8 @@
 #include <wx/valtext.h>
 #include <wx/button.h>
 #include <wx/gbsizer.h>
+#include <wx/wrapsizer.h>
+#include <wx/scrolwin.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
 #include <wx/frame.h>
@@ -48,7 +50,14 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_YY,
 			ID_FLAME_PRE_OX,
 			ID_FLAME_PRE_OY,
-			ID_FLAME_PRE_RESET
+			ID_FLAME_PRE_RESET,
+			ID_FLAME_POST_XX,
+			ID_FLAME_POST_XY,
+			ID_FLAME_POST_YX,
+			ID_FLAME_POST_YY,
+			ID_FLAME_POST_OX,
+			ID_FLAME_POST_OY,
+			ID_FLAME_POST_RESET
 		};
 
 		wxMenuBar* m_menubar1;
@@ -58,7 +67,7 @@ class WxfbFrame : public wxFrame
 		wxSplitterWindow* m_splitter1;
 		wxPanel* m_panel1;
 		wxSplitterWindow* m_splitter2;
-		wxPanel* m_panel11;
+		wxScrolledWindow* m_scrolledWindow1;
 		wxStaticText* m_staticText17;
 		wxStaticText* m_staticText19;
 		wxStaticText* m_staticText20;
@@ -72,7 +81,20 @@ class WxfbFrame : public wxFrame
 		wxTextCtrl* preOXtextCtrl;
 		wxTextCtrl* preOYtextCtrl;
 		wxButton* m_button5;
-		wxPanel* m_panel13;
+		wxStaticText* m_staticText171;
+		wxStaticText* m_staticText191;
+		wxStaticText* m_staticText201;
+		wxStaticText* m_staticText141;
+		wxTextCtrl* postXXtextCtrl1;
+		wxTextCtrl* postXYtextCtrl1;
+		wxStaticText* m_staticText151;
+		wxTextCtrl* postYXtextCtrl1;
+		wxTextCtrl* postYYtextCtrl1;
+		wxStaticText* m_staticText161;
+		wxTextCtrl* postOXtextCtrl1;
+		wxTextCtrl* postOYtextCtrl1;
+		wxButton* m_button51;
+		wxPanel* m_panel11;
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel5;
@@ -88,12 +110,18 @@ class WxfbFrame : public wxFrame
 
 
 	public:
-		wxString textXX;
-		wxString textXY;
-		wxString textYX;
-		wxString textYY;
-		wxString textOX;
-		wxString textOY;
+		wxString textPreXX;
+		wxString textPreXY;
+		wxString textPreYX;
+		wxString textPreYY;
+		wxString textPreOX;
+		wxString textPreOY;
+		wxString textPostXX;
+		wxString textPostXY;
+		wxString textPostYX;
+		wxString textPostYY;
+		wxString textPostOX;
+		wxString textPostOY;
 
 		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Aevus"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 1366,768 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 
@@ -101,13 +129,13 @@ class WxfbFrame : public wxFrame
 
 		void m_splitter1OnIdle( wxIdleEvent& )
 		{
-			m_splitter1->SetSashPosition( 350 );
+			m_splitter1->SetSashPosition( 600 );
 			m_splitter1->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter1OnIdle ), NULL, this );
 		}
 
 		void m_splitter2OnIdle( wxIdleEvent& )
 		{
-			m_splitter2->SetSashPosition( 350 );
+			m_splitter2->SetSashPosition( 300 );
 			m_splitter2->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter2OnIdle ), NULL, this );
 		}
 

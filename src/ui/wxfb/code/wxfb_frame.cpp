@@ -60,13 +60,20 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	m_splitter2->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 
-	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_scrolledWindow1 = new wxScrolledWindow( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
+	m_scrolledWindow1->SetScrollRate( 0, 5 );
+	wxBoxSizer* bSizer23;
+	bSizer23 = new wxBoxSizer( wxVERTICAL );
+
+	wxWrapSizer* wSizer1;
+	wSizer1 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
+
 	wxGridBagSizer* gbSizer1;
 	gbSizer1 = new wxGridBagSizer( 0, 0 );
 	gbSizer1->SetFlexibleDirection( wxBOTH );
 	gbSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
 
-	m_staticText17 = new wxStaticText( m_panel11, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText17 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText17->Wrap( -1 );
 	gbSizer1->Add( m_staticText17, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
@@ -76,7 +83,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText19 = new wxStaticText( m_panel11, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText19->Wrap( -1 );
 	bSizer9->Add( m_staticText19, 0, wxALL, 5 );
 
@@ -92,7 +99,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText20 = new wxStaticText( m_panel11, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText20->Wrap( -1 );
 	bSizer10->Add( m_staticText20, 0, wxALL, 5 );
 
@@ -108,7 +115,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText14 = new wxStaticText( m_panel11, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText14 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText14->Wrap( -1 );
 	bSizer5->Add( m_staticText14, 0, wxALL, 5 );
 
@@ -118,13 +125,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer5, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	preXXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_XX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preXXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textXX ) );
+	preXXtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_XX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preXXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreXX ) );
 
 	gbSizer1->Add( preXXtextCtrl, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	preXYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_XY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preXYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textXY ) );
+	preXYtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_XY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preXYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreXY ) );
 
 	gbSizer1->Add( preXYtextCtrl, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
@@ -134,7 +141,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText15 = new wxStaticText( m_panel11, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText15->Wrap( -1 );
 	bSizer6->Add( m_staticText15, 0, wxALL, 5 );
 
@@ -144,13 +151,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer6, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	preYXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_YX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preYXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textYX ) );
+	preYXtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_YX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preYXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreYX ) );
 
 	gbSizer1->Add( preYXtextCtrl, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	preYYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_YY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preYYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textYY ) );
+	preYYtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_YY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preYYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreYY ) );
 
 	gbSizer1->Add( preYYtextCtrl, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
@@ -160,7 +167,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_staticText16 = new wxStaticText( m_panel11, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText16 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText16->Wrap( -1 );
 	bSizer7->Add( m_staticText16, 0, wxALL, 5 );
 
@@ -170,31 +177,168 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	gbSizer1->Add( bSizer7, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
 
-	preOXtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_OX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preOXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textOX ) );
+	preOXtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_OX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preOXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreOX ) );
 
 	gbSizer1->Add( preOXtextCtrl, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	preOYtextCtrl = new wxTextCtrl( m_panel11, ID_FLAME_PRE_OY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	preOYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textOY ) );
+	preOYtextCtrl = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_PRE_OY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	preOYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPreOY ) );
 
 	gbSizer1->Add( preOYtextCtrl, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_button5 = new wxButton( m_panel11, ID_FLAME_PRE_RESET, wxT("Reset pre transform"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button5 = new wxButton( m_scrolledWindow1, ID_FLAME_PRE_RESET, wxT("Reset pre transform"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer17->Add( m_button5, 1, wxALL, 5 );
 
 
 	gbSizer1->Add( bSizer17, wxGBPosition( 4, 0 ), wxGBSpan( 1, 3 ), wxEXPAND, 5 );
 
 
-	m_panel11->SetSizer( gbSizer1 );
-	m_panel11->Layout();
-	gbSizer1->Fit( m_panel11 );
-	m_panel13 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_splitter2->SplitHorizontally( m_panel11, m_panel13, 350 );
+	wSizer1->Add( gbSizer1, 0, wxEXPAND, 5 );
+
+	wxGridBagSizer* gbSizer11;
+	gbSizer11 = new wxGridBagSizer( 0, 0 );
+	gbSizer11->SetFlexibleDirection( wxBOTH );
+	gbSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	m_staticText171 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText171->Wrap( -1 );
+	gbSizer11->Add( m_staticText171, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	wxBoxSizer* bSizer91;
+	bSizer91 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer91->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText191 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText191->Wrap( -1 );
+	bSizer91->Add( m_staticText191, 0, wxALL, 5 );
+
+
+	bSizer91->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	gbSizer11->Add( bSizer91, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer101;
+	bSizer101 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer101->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText201 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText201->Wrap( -1 );
+	bSizer101->Add( m_staticText201, 0, wxALL, 5 );
+
+
+	bSizer101->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	gbSizer11->Add( bSizer101, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer51;
+	bSizer51 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText141 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText141->Wrap( -1 );
+	bSizer51->Add( m_staticText141, 0, wxALL, 5 );
+
+
+	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	gbSizer11->Add( bSizer51, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+
+	postXXtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_XX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postXXtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostXX ) );
+
+	gbSizer11->Add( postXXtextCtrl1, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	postXYtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_XY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postXYtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostXY ) );
+
+	gbSizer11->Add( postXYtextCtrl1, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	wxBoxSizer* bSizer61;
+	bSizer61 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText151 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText151->Wrap( -1 );
+	bSizer61->Add( m_staticText151, 0, wxALL, 5 );
+
+
+	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	gbSizer11->Add( bSizer61, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+
+	postYXtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_YX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postYXtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostYX ) );
+
+	gbSizer11->Add( postYXtextCtrl1, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	postYYtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_YY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postYYtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostYY ) );
+
+	gbSizer11->Add( postYYtextCtrl1, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	wxBoxSizer* bSizer71;
+	bSizer71 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText161 = new wxStaticText( m_scrolledWindow1, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText161->Wrap( -1 );
+	bSizer71->Add( m_staticText161, 0, wxALL, 5 );
+
+
+	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	gbSizer11->Add( bSizer71, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+
+	postOXtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_OX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postOXtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostOX ) );
+
+	gbSizer11->Add( postOXtextCtrl1, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	postOYtextCtrl1 = new wxTextCtrl( m_scrolledWindow1, ID_FLAME_POST_OY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	postOYtextCtrl1->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostOY ) );
+
+	gbSizer11->Add( postOYtextCtrl1, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+
+	wxBoxSizer* bSizer171;
+	bSizer171 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_button51 = new wxButton( m_scrolledWindow1, ID_FLAME_POST_RESET, wxT("Reset post transform"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer171->Add( m_button51, 1, wxALL, 5 );
+
+
+	gbSizer11->Add( bSizer171, wxGBPosition( 4, 0 ), wxGBSpan( 1, 3 ), wxEXPAND, 5 );
+
+
+	wSizer1->Add( gbSizer11, 0, wxEXPAND, 5 );
+
+
+	bSizer23->Add( wSizer1, 1, wxEXPAND, 5 );
+
+
+	m_scrolledWindow1->SetSizer( bSizer23 );
+	m_scrolledWindow1->Layout();
+	bSizer23->Fit( m_scrolledWindow1 );
+	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_splitter2->SplitHorizontally( m_scrolledWindow1, m_panel11, 300 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
 
 
@@ -226,7 +370,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_panel2->SetSizer( bSizer3 );
 	m_panel2->Layout();
 	bSizer3->Fit( m_panel2 );
-	m_splitter1->SplitVertically( m_panel1, m_panel2, 350 );
+	m_splitter1->SplitVertically( m_panel1, m_panel2, 600 );
 	bSizer1->Add( m_splitter1, 1, wxEXPAND, 5 );
 
 
@@ -253,6 +397,20 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	preOYtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	m_button5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	m_button5->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXXtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXXtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postXYtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXYtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postYXtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postYXtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postYYtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postYYtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postOXtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postOXtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postOYtextCtrl1->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postOYtextCtrl1->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	m_button51->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 }
 
 WxfbFrame::~WxfbFrame()
@@ -272,5 +430,19 @@ WxfbFrame::~WxfbFrame()
 	preOYtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	m_button5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	m_button5->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXXtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXXtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postXYtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postXYtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postYXtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postYXtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postYYtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postYYtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postOXtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postOXtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	postOYtextCtrl1->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postOYtextCtrl1->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	m_button51->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 
 }

@@ -10,7 +10,7 @@ new_local_repository(
 new_local_repository(
     name = "wxheaders",
     build_file = "wxheaders.BUILD",
-    path = "/usr/include/wx-3.0",
+    path = "/usr/include/wx-3.2",
 )
 
 new_local_repository(
