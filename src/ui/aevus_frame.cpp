@@ -1,7 +1,6 @@
 #include "aevus_frame.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 using std::to_string;
@@ -27,7 +26,7 @@ void AevusFrame::onEnterFlameUpdate(wxCommandEvent& event) {
 
 void AevusFrame::onFocusFlameEdit(wxFocusEvent& event) {
     int focusId = event.GetId();
-    if (editingId != focusId && editingId != -1) {
+    if (editingId != focusId) {
         if (!flameTextEqual(editingId)) {
             printf("Focus flame update\n");
         }
@@ -44,7 +43,7 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
         case ID_FLAME_PRE_XY: text = preXYtextCtrl->GetValue(); break;
         case ID_FLAME_PRE_YX: text = preYXtextCtrl->GetValue(); break;
         case ID_FLAME_PRE_YY: text = preYYtextCtrl->GetValue(); break;
-        default: throw std::invalid_argument("Unrecognized ID");
+        default: return true;
     }
     if (flame->xforms.size() == 0) {
         return text == "";
@@ -58,7 +57,7 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
         case ID_FLAME_PRE_XY: flameVal = coefs.xy; break;
         case ID_FLAME_PRE_YX: flameVal = coefs.yx; break;
         case ID_FLAME_PRE_YY: flameVal = coefs.yy; break;
-        default: throw std::invalid_argument("Unrecognized ID");
+        default: return true;
     }
     return std::to_string(flameVal) == text;
 }
