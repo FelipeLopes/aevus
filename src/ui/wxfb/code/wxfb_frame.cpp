@@ -62,9 +62,6 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	m_scrolledWindow1 = new wxScrolledWindow( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
 	m_scrolledWindow1->SetScrollRate( 0, 5 );
-	wxBoxSizer* bSizer23;
-	bSizer23 = new wxBoxSizer( wxVERTICAL );
-
 	wxWrapSizer* wSizer1;
 	wSizer1 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
@@ -331,12 +328,9 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wSizer1->Add( gbSizer11, 0, wxEXPAND, 5 );
 
 
-	bSizer23->Add( wSizer1, 1, wxEXPAND, 5 );
-
-
-	m_scrolledWindow1->SetSizer( bSizer23 );
+	m_scrolledWindow1->SetSizer( wSizer1 );
 	m_scrolledWindow1->Layout();
-	bSizer23->Fit( m_scrolledWindow1 );
+	wSizer1->Fit( m_scrolledWindow1 );
 	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_splitter2->SplitHorizontally( m_scrolledWindow1, m_panel11, 300 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
