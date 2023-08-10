@@ -23,10 +23,12 @@ private:
     void onExit(wxCommandEvent& event);
     void onAbout(wxCommandEvent& event);
     void onEnterFlameUpdate(wxCommandEvent& event);
+    void onResetFlameUpdate(wxCommandEvent& event);
     void onFocusFlameEdit(wxFocusEvent& event);
     void onFlameUpdate(wxCommandEvent& event);
 
     bool flameTextEqual(int textCtrlId);
+    bool tryChangeAndUpdate(int textCtrlId);
 };
 
 wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);

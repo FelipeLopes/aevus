@@ -183,7 +183,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxBoxSizer* bSizer17;
 	bSizer17 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_button5 = new wxButton( m_panel11, wxID_ANY, wxT("Reset pre transform"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button5 = new wxButton( m_panel11, ID_FLAME_PRE_RESET, wxT("Reset pre transform"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer17->Add( m_button5, 1, wxALL, 5 );
 
 
@@ -251,6 +251,8 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	preOXtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	preOYtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	preOYtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	m_button5->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	m_button5->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 }
 
 WxfbFrame::~WxfbFrame()
@@ -268,5 +270,7 @@ WxfbFrame::~WxfbFrame()
 	preOXtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	preOYtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	preOYtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	m_button5->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	m_button5->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 
 }

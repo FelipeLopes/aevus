@@ -47,7 +47,8 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_YX,
 			ID_FLAME_PRE_YY,
 			ID_FLAME_PRE_OX,
-			ID_FLAME_PRE_OY
+			ID_FLAME_PRE_OY,
+			ID_FLAME_PRE_RESET
 		};
 
 		wxMenuBar* m_menubar1;
@@ -83,6 +84,7 @@ class WxfbFrame : public wxFrame
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

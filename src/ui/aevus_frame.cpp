@@ -1,8 +1,10 @@
 #include "aevus_frame.hpp"
 #include "wxfb/code/wxfb_frame.h"
+#include <exception>
 #include <memory>
 #include <string>
 
+using std::string;
 using std::to_string;
 
 namespace ui {
@@ -17,10 +19,22 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     editingId = -1;
 }
 
+void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
+    core::CoefsAffine coefs;
+    if (flame->xforms.size() == 0) {
+        return;
+    }
+    flame->xforms.get(0)->coefs.setValue(coefs);
+
+    wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
+    flameUpdateEvent.SetEventObject(this);
+    ProcessWindowEvent(flameUpdateEvent);
+}
+
 void AevusFrame::onEnterFlameUpdate(wxCommandEvent& event) {
     int enterId = event.GetId();
     if (!flameTextEqual(enterId)) {
-        printf("Enter flame update\n");
+        tryChangeAndUpdate(enterId);
     }
 }
 
@@ -28,14 +42,52 @@ void AevusFrame::onFocusFlameEdit(wxFocusEvent& event) {
     int focusId = event.GetId();
     if (editingId != focusId) {
         if (!flameTextEqual(editingId)) {
-            printf("Focus flame update\n");
+            tryChangeAndUpdate(editingId);
         }
     }
     editingId = focusId;
 }
 
+bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
+    string text;
+    switch (textCtrlId) {
+        case ID_FLAME_PRE_OX: text = preOXtextCtrl->GetValue(); break;
+        case ID_FLAME_PRE_OY: text = preOYtextCtrl->GetValue(); break;
+        case ID_FLAME_PRE_XX: text = preXXtextCtrl->GetValue(); break;
+        case ID_FLAME_PRE_XY: text = preXYtextCtrl->GetValue(); break;
+        case ID_FLAME_PRE_YX: text = preYXtextCtrl->GetValue(); break;
+        case ID_FLAME_PRE_YY: text = preYYtextCtrl->GetValue(); break;
+        default: return false;
+    }
+    try {
+        double val = std::stod(text);
+        if (flame->xforms.size() == 0) {
+            return false;
+        }
+        auto coefs = flame->xforms.get(0)->coefs.getValue();
+        switch (textCtrlId) {
+            case ID_FLAME_PRE_OX: coefs.ox = val; break;
+            case ID_FLAME_PRE_OY: coefs.oy = val; break;
+            case ID_FLAME_PRE_XX: coefs.xx = val; break;
+            case ID_FLAME_PRE_XY: coefs.xy = val; break;
+            case ID_FLAME_PRE_YX: coefs.yx = val; break;
+            case ID_FLAME_PRE_YY: coefs.yy = val; break;
+            default: return false;
+        }
+        flame->xforms.get(0)->coefs.setValue(coefs);
+
+        wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
+        flameUpdateEvent.SetEventObject(this);
+        ProcessWindowEvent(flameUpdateEvent);
+
+        return true;
+    } catch (std::exception& e) {
+        return false;
+    }
+}
+
 bool AevusFrame::flameTextEqual(int textCtrlId) {
-    std::string text;
+    string text;
     switch (textCtrlId) {
         case ID_FLAME_PRE_OX: text = preOXtextCtrl->GetValue(); break;
         case ID_FLAME_PRE_OY: text = preOYtextCtrl->GetValue(); break;
