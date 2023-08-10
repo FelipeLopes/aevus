@@ -22,6 +22,7 @@
 #include <wx/stattext.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/valtext.h>
 #include <wx/button.h>
 #include <wx/gbsizer.h>
 #include <wx/panel.h>
@@ -35,21 +36,18 @@
 ///////////////////////////////////////////////////////////////////////////////
 class WxfbFrame : public wxFrame
 {
-	DECLARE_EVENT_TABLE()
 	private:
-
-		// Private event handlers
-		void _wxFB_onFileOpen( wxCommandEvent& event ){ onFileOpen( event ); }
-		void _wxFB_onExit( wxCommandEvent& event ){ onExit( event ); }
-		void _wxFB_onAbout( wxCommandEvent& event ){ onAbout( event ); }
-		void _wxFB_onTextFlameUpdate( wxCommandEvent& event ){ onTextFlameUpdate( event ); }
-
 
 	protected:
 		enum
 		{
 			ID_FILE_OPEN = 1000,
-			ID_FLAME_UPDATE
+			ID_FLAME_PRE_XX,
+			ID_FLAME_PRE_XY,
+			ID_FLAME_PRE_YX,
+			ID_FLAME_PRE_YY,
+			ID_FLAME_PRE_OX,
+			ID_FLAME_PRE_OY
 		};
 
 		wxMenuBar* m_menubar1;
@@ -83,10 +81,17 @@ class WxfbFrame : public wxFrame
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onTextFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
+		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
+		wxString textXX;
+		wxString textXY;
+		wxString textYX;
+		wxString textYY;
+		wxString textOX;
+		wxString textOY;
 
 		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Aevus"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 1366,768 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 

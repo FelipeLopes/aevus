@@ -10,7 +10,7 @@
         <property name="disconnect_python_events">0</property>
         <property name="embedded_files_path">res</property>
         <property name="encoding">UTF-8</property>
-        <property name="event_generation">table</property>
+        <property name="event_generation">connect</property>
         <property name="file">wxfb_frame</property>
         <property name="first_id">1000</property>
         <property name="help_provider">none</property>
@@ -788,7 +788,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_XX</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -811,15 +811,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textXX</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
-                                                                <event name="OnTextEnter">onTextFlameUpdate</event>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
@@ -856,7 +857,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_XY</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -879,14 +880,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textXY</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
@@ -1018,7 +1021,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_YX</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -1041,14 +1044,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textYX</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
@@ -1085,7 +1090,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_YY</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -1108,14 +1113,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textYY</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
@@ -1247,7 +1254,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_OX</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -1270,14 +1277,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textOX</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
@@ -1314,7 +1323,7 @@
                                                                 <property name="font"></property>
                                                                 <property name="gripper">0</property>
                                                                 <property name="hidden">0</property>
-                                                                <property name="id">ID_FLAME_UPDATE</property>
+                                                                <property name="id">ID_FLAME_PRE_OY</property>
                                                                 <property name="max_size"></property>
                                                                 <property name="maximize_button">0</property>
                                                                 <property name="maximum_size"></property>
@@ -1337,14 +1346,16 @@
                                                                 <property name="subclass">; ; forward_declare</property>
                                                                 <property name="toolbar_pane">0</property>
                                                                 <property name="tooltip"></property>
-                                                                <property name="validator_data_type"></property>
-                                                                <property name="validator_style">wxFILTER_NONE</property>
-                                                                <property name="validator_type">wxDefaultValidator</property>
-                                                                <property name="validator_variable"></property>
+                                                                <property name="validator_data_type">wxString</property>
+                                                                <property name="validator_style">wxFILTER_NUMERIC</property>
+                                                                <property name="validator_type">wxTextValidator</property>
+                                                                <property name="validator_variable">textOY</property>
                                                                 <property name="value"></property>
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnSetFocus">onFocusFlameEdit</event>
+                                                                <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                             </object>
                                                         </object>
                                                         <object class="gbsizeritem" expanded="0">
