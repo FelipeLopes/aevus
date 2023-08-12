@@ -24,6 +24,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         postXXtextCtrl, postXYtextCtrl, postYXtextCtrl,
         postYYtextCtrl, postOXtextCtrl, postOYtextCtrl
     };
+    fireFlameUpdateEvent();
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
@@ -135,12 +136,17 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
 }
 
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
+    if (flame->xforms.size() == 0) {
+        transformsScrolledWindow->Disable();
+        return;
+    }
     auto coefs = flame->xforms.get(0)->coefs.getValue();
     auto post = flame->xforms.get(0)->post.getValue();
     for (int i=0; i<6; i++) {
         textCtrls[i]->ChangeValue(to_string(coefs.getValueByIndex(i)));
         textCtrls[i+6]->ChangeValue(to_string(post.getValueByIndex(i)));
     }
+    transformsScrolledWindow->Enable();
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

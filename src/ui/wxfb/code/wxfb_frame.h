@@ -67,7 +67,7 @@ class WxfbFrame : public wxFrame
 		wxSplitterWindow* m_splitter1;
 		wxPanel* m_panel1;
 		wxSplitterWindow* m_splitter2;
-		wxScrolledWindow* m_scrolledWindow1;
+		wxScrolledWindow* transformsScrolledWindow;
 		wxStaticText* m_staticText17;
 		wxStaticText* m_staticText19;
 		wxStaticText* m_staticText20;

@@ -378,7 +378,7 @@
                                                     <property name="minimize_button">0</property>
                                                     <property name="minimum_size"></property>
                                                     <property name="moveable">1</property>
-                                                    <property name="name">m_scrolledWindow1</property>
+                                                    <property name="name">transformsScrolledWindow</property>
                                                     <property name="pane_border">1</property>
                                                     <property name="pane_position"></property>
                                                     <property name="pane_size"></property>
@@ -2429,14 +2429,14 @@
                                                                         <event name="OnTextEnter">onEnterFlameUpdate</event>
                                                                     </object>
                                                                 </object>
-                                                                <object class="gbsizeritem" expanded="0">
+                                                                <object class="gbsizeritem" expanded="1">
                                                                     <property name="border">5</property>
                                                                     <property name="colspan">3</property>
                                                                     <property name="column">0</property>
                                                                     <property name="flag">wxEXPAND</property>
                                                                     <property name="row">4</property>
                                                                     <property name="rowspan">1</property>
-                                                                    <object class="wxBoxSizer" expanded="0">
+                                                                    <object class="wxBoxSizer" expanded="1">
                                                                         <property name="minimum_size"></property>
                                                                         <property name="name">bSizer171</property>
                                                                         <property name="orient">wxHORIZONTAL</property>
