@@ -21,7 +21,7 @@ XMLElementClass::XMLElementClass(XMLElementClass& parent, string tag_): tag(tag_
 void XMLElementClass::serialize(FILE* fp) {
     XMLDocument xmlDoc;
     nodeSerialize(xmlDoc, &xmlDoc);
-    xmlDoc.SaveFile(stdout);
+    xmlDoc.SaveFile(fp);
 }
 
 void XMLElementClass::deserialize(FILE* fp) {

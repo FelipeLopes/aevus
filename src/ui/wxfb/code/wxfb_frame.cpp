@@ -16,8 +16,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_menubar1 = new wxMenuBar( 0 );
 	m_menu1 = new wxMenu();
 	wxMenuItem* m_menuItem1;
-	m_menuItem1 = new wxMenuItem( m_menu1, ID_FILE_OPEN, wxString( wxT("&Open flame") ) + wxT('\t') + wxT("Ctrl-O"), wxT("Open flame parameters from a file"), wxITEM_NORMAL );
+	m_menuItem1 = new wxMenuItem( m_menu1, wxID_OPEN, wxString( wxT("&Open flame...") ) + wxT('\t') + wxT("Ctrl-O"), wxT("Open flame parameters from a file"), wxITEM_NORMAL );
 	m_menu1->Append( m_menuItem1 );
+
+	m_menu1->AppendSeparator();
+
+	wxMenuItem* m_menuItem4;
+	m_menuItem4 = new wxMenuItem( m_menu1, wxID_SAVEAS, wxString( wxT("Save &As...") ) + wxT('\t') + wxT("F12"), wxEmptyString, wxITEM_NORMAL );
+	m_menu1->Append( m_menuItem4 );
 
 	m_menu1->AppendSeparator();
 
@@ -375,6 +381,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	// Connect Events
 	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onFileOpen ), this, m_menuItem1->GetId());
+	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onFileSaveAs ), this, m_menuItem4->GetId());
 	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onExit ), this, m_menuItem2->GetId());
 	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onAbout ), this, m_menuItem3->GetId());
 	preXXtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );

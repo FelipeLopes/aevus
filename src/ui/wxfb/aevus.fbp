@@ -87,9 +87,9 @@
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help">Open flame parameters from a file</property>
-                        <property name="id">ID_FILE_OPEN</property>
+                        <property name="id">wxID_OPEN</property>
                         <property name="kind">wxITEM_NORMAL</property>
-                        <property name="label">&amp;Open flame</property>
+                        <property name="label">&amp;Open flame...</property>
                         <property name="name">m_menuItem1</property>
                         <property name="permission">none</property>
                         <property name="shortcut">Ctrl-O</property>
@@ -98,6 +98,24 @@
                     </object>
                     <object class="separator" expanded="0">
                         <property name="name">m_separator1</property>
+                        <property name="permission">none</property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_SAVEAS</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Save &amp;As...</property>
+                        <property name="name">m_menuItem4</property>
+                        <property name="permission">none</property>
+                        <property name="shortcut">F12</property>
+                        <property name="unchecked_bitmap"></property>
+                        <event name="OnMenuSelection">onFileSaveAs</event>
+                    </object>
+                    <object class="separator" expanded="1">
+                        <property name="name">m_separator2</property>
                         <property name="permission">none</property>
                     </object>
                     <object class="wxMenuItem" expanded="0">

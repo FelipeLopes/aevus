@@ -4,6 +4,8 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <wx-3.2/wx/filedlg.h>
+#include <wx-3.2/wx/gtk/filedlg.h>
 
 using std::string;
 using std::to_string;
@@ -95,11 +97,11 @@ bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
         return false;
     }
     text = textCtrls[coefId]->GetValue();
+    if (flame->xforms.size() == 0) {
+        throw std::invalid_argument("No xforms found");
+    }
     try {
         double val = std::stod(text);
-        if (flame->xforms.size() == 0) {
-            return false;
-        }
         if (coefId / 6 == 0) {
             auto coefs = flame->xforms.get(0)->coefs.getValue();
             coefs.setValueByIndex(coefId % 6, val);
@@ -124,7 +126,7 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
     }
     text = textCtrls[coefId]->GetValue();
     if (flame->xforms.size() == 0) {
-        return text == "";
+        return true;
     }
     double flameVal;
     if (coefId / 6 == 0) {
@@ -174,6 +176,22 @@ void AevusFrame::onFileOpen(wxCommandEvent& event) {
     flame->deserialize(inputStream);
     fclose(inputStream);
     fireFlameUpdateEvent();
+}
+
+void AevusFrame::onFileSaveAs(wxCommandEvent& event) {
+    wxFileDialog saveFileDialog(this, "Save flame file", "", "",
+        "XML files (*.xml)|*.xml", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    auto filename = saveFileDialog.GetPath().ToStdString();
+    FILE* outputStream = fopen(filename.c_str(), "w");
+    if (outputStream == NULL) {
+        printf("Error on opening file: %s\n", filename.c_str());
+        return;
+    }
+    flame->serialize(outputStream);
+    fclose(outputStream);
 }
 
 AevusFrame::~AevusFrame() { }

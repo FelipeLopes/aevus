@@ -43,8 +43,7 @@ class WxfbFrame : public wxFrame
 	protected:
 		enum
 		{
-			ID_FILE_OPEN = 1000,
-			ID_FLAME_PRE_XX,
+			ID_FLAME_PRE_XX = 1000,
 			ID_FLAME_PRE_XY,
 			ID_FLAME_PRE_YX,
 			ID_FLAME_PRE_YY,
@@ -102,6 +101,7 @@ class WxfbFrame : public wxFrame
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onFileSaveAs( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }

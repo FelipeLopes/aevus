@@ -21,6 +21,7 @@ private:
     int editingId;
 
     void onFileOpen(wxCommandEvent& event);
+    void onFileSaveAs(wxCommandEvent& event);
     void onExit(wxCommandEvent& event);
     void onAbout(wxCommandEvent& event);
     void onEnterFlameUpdate(wxCommandEvent& event);
