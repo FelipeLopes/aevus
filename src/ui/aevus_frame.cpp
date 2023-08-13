@@ -4,6 +4,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <wx-3.2/wx/event.h>
 #include <wx-3.2/wx/filedlg.h>
 #include <wx-3.2/wx/gtk/filedlg.h>
 
@@ -26,7 +27,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         postXXtextCtrl, postXYtextCtrl, postYXtextCtrl,
         postYYtextCtrl, postOXtextCtrl, postOYtextCtrl
     };
-    fireFlameUpdateEvent();
+    editingTransform = -1;
+    loadFile("../in.xml");
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
@@ -44,6 +46,14 @@ int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
     case ID_FLAME_POST_OX: return 10;
     case ID_FLAME_POST_OY: return 11;
     default: return -1;
+    }
+}
+
+void AevusFrame::onTransformChosen(wxCommandEvent& event) {
+    int chosen = transformChoice->GetSelection();
+    if (chosen != editingTransform) {
+        editingTransform = chosen;
+        fireFlameUpdateEvent();
     }
 }
 
@@ -103,13 +113,13 @@ bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
     try {
         double val = std::stod(text);
         if (coefId / 6 == 0) {
-            auto coefs = flame->xforms.get(0)->coefs.getValue();
+            auto coefs = flame->xforms.get(editingTransform)->coefs.getValue();
             coefs.setValueByIndex(coefId % 6, val);
-            flame->xforms.get(0)->coefs.setValue(coefs);
+            flame->xforms.get(editingTransform)->coefs.setValue(coefs);
         } else {
-            auto post = flame->xforms.get(0)->post.getValue();
+            auto post = flame->xforms.get(editingTransform)->post.getValue();
             post.setValueByIndex(coefId % 6, val);
-            flame->xforms.get(0)->post.setValue(post);
+            flame->xforms.get(editingTransform)->post.setValue(post);
         }
         fireFlameUpdateEvent();
         return true;
@@ -130,9 +140,9 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
     }
     double flameVal;
     if (coefId / 6 == 0) {
-        flameVal = flame->xforms.get(0)->coefs.getValue().getValueByIndex(coefId % 6);
+        flameVal = flame->xforms.get(editingTransform)->coefs.getValue().getValueByIndex(coefId % 6);
     } else {
-        flameVal = flame->xforms.get(0)->post.getValue().getValueByIndex(coefId % 6);
+        flameVal = flame->xforms.get(editingTransform)->post.getValue().getValueByIndex(coefId % 6);
     }
     return std::to_string(flameVal) == text;
 }
@@ -142,8 +152,8 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         transformsScrolledWindow->Disable();
         return;
     }
-    auto coefs = flame->xforms.get(0)->coefs.getValue();
-    auto post = flame->xforms.get(0)->post.getValue();
+    auto coefs = flame->xforms.get(editingTransform)->coefs.getValue();
+    auto post = flame->xforms.get(editingTransform)->post.getValue();
     for (int i=0; i<6; i++) {
         textCtrls[i]->ChangeValue(to_string(coefs.getValueByIndex(i)));
         textCtrls[i+6]->ChangeValue(to_string(post.getValueByIndex(i)));
@@ -160,6 +170,22 @@ void AevusFrame::onAbout(wxCommandEvent& event) {
         "About Hello World", wxOK | wxICON_INFORMATION);
 }
 
+void AevusFrame::loadFile(std::string filename) {
+    FILE* inputStream = fopen(filename.c_str(), "r");
+    if (inputStream == NULL) {
+        printf("Error on opening file: %s\n", filename.c_str());
+        return;
+    }
+    flame->deserialize(inputStream);
+    fclose(inputStream);
+    for (int i=0; i<flame->xforms.size(); i++) {
+        transformChoice->Append(to_string(i+1));
+    }
+    editingTransform = 0;
+    transformChoice->SetSelection(0);
+    fireFlameUpdateEvent();
+}
+
 void AevusFrame::onFileOpen(wxCommandEvent& event) {
     wxFileDialog openFileDialog(this, "Open flame file", "", "",
         "Flame files (*.flame)|*.flame|XML files|*.xml",
@@ -168,14 +194,7 @@ void AevusFrame::onFileOpen(wxCommandEvent& event) {
         return;
     }
     auto filename = openFileDialog.GetPath().ToStdString();
-    FILE* inputStream = fopen(filename.c_str(), "r");
-    if (inputStream == NULL) {
-        printf("Error on opening file: %s\n", filename.c_str());
-        return;
-    }
-    flame->deserialize(inputStream);
-    fclose(inputStream);
-    fireFlameUpdateEvent();
+    loadFile(filename);
 }
 
 void AevusFrame::onFileSaveAs(wxCommandEvent& event) {

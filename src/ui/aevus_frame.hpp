@@ -15,10 +15,12 @@ class AevusFrame: public WxfbFrame {
 public:
     AevusFrame(std::shared_ptr<core::Flame> flame);
     ~AevusFrame();
+    void loadFile(std::string filename);
 private:
     std::shared_ptr<core::Flame> flame;
     std::vector<wxTextCtrl*> textCtrls;
     int editingId;
+    int editingTransform;
 
     void onFileOpen(wxCommandEvent& event);
     void onFileSaveAs(wxCommandEvent& event);
@@ -27,6 +29,7 @@ private:
     void onEnterFlameUpdate(wxCommandEvent& event);
     void onResetFlameUpdate(wxCommandEvent& event);
     void onFocusFlameEdit(wxFocusEvent& event);
+    void onTransformChosen(wxCommandEvent& event);
     void onFlameUpdate(wxCommandEvent& event);
 
     void fireFlameUpdateEvent();

@@ -101,7 +101,7 @@ class WxfbFrame : public wxFrame
 		wxPanel* m_panel5;
 		wxScrolledWindow* m_scrolledWindow2;
 		wxStaticText* m_staticText13;
-		wxChoice* m_choice1;
+		wxChoice* transformChoice;
 		wxStaticText* m_staticText142;
 		wxTextCtrl* m_textCtrl13;
 		wxBitmapButton* m_bpButton4;
@@ -116,6 +116,7 @@ class WxfbFrame : public wxFrame
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

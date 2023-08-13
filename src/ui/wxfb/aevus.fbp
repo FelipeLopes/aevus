@@ -2605,7 +2605,7 @@
                                                     <property name="aui_position"></property>
                                                     <property name="aui_row"></property>
                                                     <property name="best_size"></property>
-                                                    <property name="bg">220,0,255</property>
+                                                    <property name="bg">0,0,0</property>
                                                     <property name="caption"></property>
                                                     <property name="caption_visible">1</property>
                                                     <property name="center_pane">0</property>
@@ -2827,7 +2827,7 @@
                                                                         </object>
                                                                         <object class="sizeritem" expanded="0">
                                                                             <property name="border">5</property>
-                                                                            <property name="flag">wxALL</property>
+                                                                            <property name="flag">wxALL|wxEXPAND</property>
                                                                             <property name="proportion">0</property>
                                                                             <object class="wxChoice" expanded="0">
                                                                                 <property name="BottomDockable">1</property>
@@ -2865,7 +2865,7 @@
                                                                                 <property name="minimize_button">0</property>
                                                                                 <property name="minimum_size"></property>
                                                                                 <property name="moveable">1</property>
-                                                                                <property name="name">m_choice1</property>
+                                                                                <property name="name">transformChoice</property>
                                                                                 <property name="pane_border">1</property>
                                                                                 <property name="pane_position"></property>
                                                                                 <property name="pane_size"></property>
@@ -2887,6 +2887,7 @@
                                                                                 <property name="window_extra_style"></property>
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
+                                                                                <event name="OnChoice">onTransformChosen</event>
                                                                             </object>
                                                                         </object>
                                                                         <object class="sizeritem" expanded="0">
