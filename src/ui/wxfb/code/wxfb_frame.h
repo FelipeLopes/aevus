@@ -58,7 +58,8 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_POST_YY,
 			ID_FLAME_POST_OX,
 			ID_FLAME_POST_OY,
-			ID_FLAME_POST_RESET
+			ID_FLAME_POST_RESET,
+			ID_FLAME_WEIGHT
 		};
 
 		wxMenuBar* m_menubar1;
@@ -103,7 +104,7 @@ class WxfbFrame : public wxFrame
 		wxStaticText* m_staticText13;
 		wxChoice* transformChoice;
 		wxStaticText* m_staticText142;
-		wxTextCtrl* m_textCtrl13;
+		wxTextCtrl* weightTextCtrl;
 		wxBitmapButton* m_bpButton4;
 		wxBitmapButton* m_bpButton5;
 		wxBitmapButton* m_bpButton6;

@@ -89,17 +89,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer1->Add( m_staticText20, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer5;
-	bSizer5 = new wxBoxSizer( wxVERTICAL );
+	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText14 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText14->Wrap( -1 );
-	bSizer5->Add( m_staticText14, 0, wxALL, 5 );
-
-
-	bSizer5->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer5->Add( m_staticText14, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer1->Add( bSizer5, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -115,17 +112,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer1->Add( preXYtextCtrl, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxVERTICAL );
+	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText15 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText15->Wrap( -1 );
-	bSizer6->Add( m_staticText15, 0, wxALL, 5 );
-
-
-	bSizer6->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer6->Add( m_staticText15, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer1->Add( bSizer6, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -141,17 +135,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer1->Add( preYYtextCtrl, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer( wxVERTICAL );
+	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText16 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText16->Wrap( -1 );
-	bSizer7->Add( m_staticText16, 0, wxALL, 5 );
-
-
-	bSizer7->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer7->Add( m_staticText16, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer1->Add( bSizer7, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -196,17 +187,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer11->Add( m_staticText201, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxVERTICAL );
+	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText141 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText141->Wrap( -1 );
-	bSizer51->Add( m_staticText141, 0, wxALL, 5 );
-
-
-	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer51->Add( m_staticText141, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer11->Add( bSizer51, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -222,17 +210,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer11->Add( postXYtextCtrl, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer61;
-	bSizer61 = new wxBoxSizer( wxVERTICAL );
+	bSizer61 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText151 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText151->Wrap( -1 );
-	bSizer61->Add( m_staticText151, 0, wxALL, 5 );
-
-
-	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer61->Add( m_staticText151, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer11->Add( bSizer61, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -248,17 +233,14 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	gbSizer11->Add( postYYtextCtrl, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
 	wxBoxSizer* bSizer71;
-	bSizer71 = new wxBoxSizer( wxVERTICAL );
+	bSizer71 = new wxBoxSizer( wxHORIZONTAL );
 
 
 	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_staticText161 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText161->Wrap( -1 );
-	bSizer71->Add( m_staticText161, 0, wxALL, 5 );
-
-
-	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer71->Add( m_staticText161, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
 
 	gbSizer11->Add( bSizer71, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
@@ -362,8 +344,8 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	fgSizer1->Add( bSizer18, 1, wxEXPAND, 5 );
 
-	m_textCtrl13 = new wxTextCtrl( m_scrolledWindow2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	fgSizer1->Add( m_textCtrl13, 0, wxALL|wxEXPAND, 5 );
+	weightTextCtrl = new wxTextCtrl( m_scrolledWindow2, ID_FLAME_WEIGHT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	fgSizer1->Add( weightTextCtrl, 0, wxALL|wxEXPAND, 5 );
 
 
 	bSizer19->Add( fgSizer1, 0, wxEXPAND, 5 );
@@ -455,6 +437,8 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	m_button51->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	transformChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
+	weightTextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	weightTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 }
 
 WxfbFrame::~WxfbFrame()
@@ -489,5 +473,7 @@ WxfbFrame::~WxfbFrame()
 	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	m_button51->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	transformChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
+	weightTextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	weightTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 
 }

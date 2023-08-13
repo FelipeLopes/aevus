@@ -104,6 +104,15 @@ bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
     string text;
     int coefId = getCoefIndexByTextCtrlId(textCtrlId);
     if (coefId == -1) {
+        if (textCtrlId == ID_FLAME_WEIGHT) {
+            try {
+                double val = std::stod(weightTextCtrl->GetValue().ToStdString());
+                flame->xforms.get(editingTransform)->weight.setValue(val);
+                fireFlameUpdateEvent();
+            } catch (std::exception& e) {
+                return false;
+            }
+        }
         return false;
     }
     text = textCtrls[coefId]->GetValue();
@@ -132,6 +141,9 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
     string text;
     int coefId = getCoefIndexByTextCtrlId(textCtrlId);
     if (coefId == -1) {
+        if (textCtrlId == ID_FLAME_WEIGHT) {
+            return text == weightTextCtrl->GetValue();
+        }
         return true;
     }
     text = textCtrls[coefId]->GetValue();
@@ -159,6 +171,8 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         textCtrls[i+6]->ChangeValue(to_string(post.getValueByIndex(i)));
     }
     transformsScrolledWindow->Enable();
+    double weight = flame->xforms.get(editingTransform)->weight.getValue();
+    weightTextCtrl->ChangeValue(to_string(weight));
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {
