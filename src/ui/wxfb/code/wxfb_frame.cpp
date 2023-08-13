@@ -383,6 +383,30 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	wSizer3->Add( bSizer19, 1, wxEXPAND, 5 );
 
+	wxBoxSizer* bSizer22;
+	bSizer22 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer23;
+	bSizer23 = new wxBoxSizer( wxHORIZONTAL );
+
+	m_staticText24 = new wxStaticText( m_scrolledWindow2, wxID_ANY, wxT("Add:"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText24->Wrap( -1 );
+	bSizer23->Add( m_staticText24, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
+
+	m_comboBox1 = new wxComboBox( m_scrolledWindow2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, 0 );
+	bSizer23->Add( m_comboBox1, 1, wxALL, 5 );
+
+
+	bSizer22->Add( bSizer23, 0, wxEXPAND, 5 );
+
+	variationCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 200,-1 ), 0 );
+	m_dataViewListColumn1 = variationCtrl->AppendTextColumn( wxT("Variation"), wxDATAVIEW_CELL_INERT, 140, static_cast<wxAlignment>(wxALIGN_LEFT), 0 );
+	m_dataViewListColumn2 = variationCtrl->AppendTextColumn( wxT("Value"), wxDATAVIEW_CELL_EDITABLE, 20, static_cast<wxAlignment>(wxALIGN_LEFT), 0 );
+	bSizer22->Add( variationCtrl, 1, wxALL|wxEXPAND, 5 );
+
+
+	wSizer3->Add( bSizer22, 1, wxEXPAND, 5 );
+
 
 	m_scrolledWindow2->SetSizer( wSizer3 );
 	m_scrolledWindow2->Layout();
