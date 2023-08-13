@@ -29,6 +29,8 @@
 #include <wx/scrolwin.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
+#include <wx/choice.h>
+#include <wx/bmpbuttn.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -97,7 +99,14 @@ class WxfbFrame : public wxFrame
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel5;
-		wxPanel* m_panel6;
+		wxScrolledWindow* m_scrolledWindow2;
+		wxStaticText* m_staticText13;
+		wxChoice* m_choice1;
+		wxStaticText* m_staticText142;
+		wxTextCtrl* m_textCtrl13;
+		wxBitmapButton* m_bpButton4;
+		wxBitmapButton* m_bpButton5;
+		wxBitmapButton* m_bpButton6;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }

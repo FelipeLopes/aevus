@@ -80,37 +80,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText17->Wrap( -1 );
 	gbSizer1->Add( m_staticText17, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	wxBoxSizer* bSizer9;
-	bSizer9 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText19 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText19 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText19->Wrap( -1 );
-	bSizer9->Add( m_staticText19, 0, wxALL, 5 );
+	gbSizer1->Add( m_staticText19, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
-
-	bSizer9->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	gbSizer1->Add( bSizer9, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer10;
-	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText20 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText20 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText20->Wrap( -1 );
-	bSizer10->Add( m_staticText20, 0, wxALL, 5 );
-
-
-	bSizer10->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	gbSizer1->Add( bSizer10, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+	gbSizer1->Add( m_staticText20, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
@@ -211,37 +187,13 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText171->Wrap( -1 );
 	gbSizer11->Add( m_staticText171, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
 
-	wxBoxSizer* bSizer91;
-	bSizer91 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer91->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText191 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText191 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText191->Wrap( -1 );
-	bSizer91->Add( m_staticText191, 0, wxALL, 5 );
+	gbSizer11->Add( m_staticText191, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
-
-	bSizer91->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	gbSizer11->Add( bSizer91, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer101;
-	bSizer101 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer101->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText201 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText201 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
 	m_staticText201->Wrap( -1 );
-	bSizer101->Add( m_staticText201, 0, wxALL, 5 );
-
-
-	bSizer101->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	gbSizer11->Add( bSizer101, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
+	gbSizer11->Add( m_staticText201, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer( wxVERTICAL );
@@ -360,10 +312,100 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_panel5 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_panel5->SetBackgroundColour( wxColour( 220, 0, 255 ) );
 
-	m_panel6 = new wxPanel( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_panel6->SetBackgroundColour( wxColour( 255, 255, 0 ) );
+	m_scrolledWindow2 = new wxScrolledWindow( m_splitter3, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL );
+	m_scrolledWindow2->SetScrollRate( 0, 5 );
+	wxWrapSizer* wSizer3;
+	wSizer3 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
-	m_splitter3->SplitHorizontally( m_panel5, m_panel6, 450 );
+	wxBoxSizer* bSizer19;
+	bSizer19 = new wxBoxSizer( wxVERTICAL );
+
+	wxFlexGridSizer* fgSizer1;
+	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
+	fgSizer1->SetFlexibleDirection( wxBOTH );
+	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+
+	wxBoxSizer* bSizer172;
+	bSizer172 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer172->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText13 = new wxStaticText( m_scrolledWindow2, wxID_ANY, wxT("Transform:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_staticText13->Wrap( -1 );
+	bSizer172->Add( m_staticText13, 0, wxALL, 5 );
+
+
+	bSizer172->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer1->Add( bSizer172, 1, wxEXPAND, 5 );
+
+	wxArrayString m_choice1Choices;
+	m_choice1 = new wxChoice( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choice1Choices, 0 );
+	m_choice1->SetSelection( 0 );
+	fgSizer1->Add( m_choice1, 0, wxALL, 5 );
+
+	wxBoxSizer* bSizer18;
+	bSizer18 = new wxBoxSizer( wxVERTICAL );
+
+
+	bSizer18->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_staticText142 = new wxStaticText( m_scrolledWindow2, wxID_ANY, wxT("Weight:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
+	m_staticText142->Wrap( -1 );
+	bSizer18->Add( m_staticText142, 0, wxALL|wxEXPAND, 5 );
+
+
+	bSizer18->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	fgSizer1->Add( bSizer18, 1, wxEXPAND, 5 );
+
+	m_textCtrl13 = new wxTextCtrl( m_scrolledWindow2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	fgSizer1->Add( m_textCtrl13, 0, wxALL|wxEXPAND, 5 );
+
+
+	bSizer19->Add( fgSizer1, 0, wxEXPAND, 5 );
+
+
+	bSizer19->Add( 0, 10, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer20;
+	bSizer20 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_bpButton4 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
+	bSizer20->Add( m_bpButton4, 0, wxALL, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_bpButton5 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
+	bSizer20->Add( m_bpButton5, 0, wxALL, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	m_bpButton6 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
+	bSizer20->Add( m_bpButton6, 0, wxALL, 5 );
+
+
+	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
+
+
+	bSizer19->Add( bSizer20, 1, wxEXPAND, 5 );
+
+
+	wSizer3->Add( bSizer19, 1, wxEXPAND, 5 );
+
+
+	m_scrolledWindow2->SetSizer( wSizer3 );
+	m_scrolledWindow2->Layout();
+	wSizer3->Fit( m_scrolledWindow2 );
+	m_splitter3->SplitHorizontally( m_panel5, m_scrolledWindow2, 450 );
 	bSizer3->Add( m_splitter3, 1, wxEXPAND, 5 );
 
 
