@@ -4,9 +4,6 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <wx-3.2/wx/event.h>
-#include <wx-3.2/wx/filedlg.h>
-#include <wx-3.2/wx/gtk/filedlg.h>
 
 using std::string;
 using std::to_string;
@@ -29,6 +26,11 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     };
     editingTransform = -1;
     loadFile("../in.xml");
+    wxArrayString choices;
+    for (auto el: core::Variation::variationNames.right) {
+        choices.push_back(el.first);
+    }
+    variationTextCtrl->AutoComplete(choices);
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
@@ -173,6 +175,18 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     transformsScrolledWindow->Enable();
     double weight = flame->xforms.get(editingTransform)->weight.getValue();
     weightTextCtrl->ChangeValue(to_string(weight));
+    auto varMap = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
+    variationListCtrl->DeleteAllItems();
+    for (auto el: varMap) {
+        wxVector<wxVariant> item;
+        auto varNameIt = core::Variation::variationNames.left.find(el.first);
+        if (varNameIt == core::Variation::variationNames.left.end()) {
+            throw std::invalid_argument("Unknown variation ID");
+        }
+        item.push_back(wxVariant(varNameIt->second));
+        item.push_back(wxVariant(to_string(el.second)));
+        variationListCtrl->AppendItem(item);
+    }
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

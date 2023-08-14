@@ -31,7 +31,6 @@
 #include <wx/splitter.h>
 #include <wx/choice.h>
 #include <wx/bmpbuttn.h>
-#include <wx/combobox.h>
 #include <wx/dataview.h>
 #include <wx/frame.h>
 
@@ -111,8 +110,8 @@ class WxfbFrame : public wxFrame
 		wxBitmapButton* m_bpButton5;
 		wxBitmapButton* m_bpButton6;
 		wxStaticText* m_staticText24;
-		wxComboBox* m_comboBox1;
-		wxDataViewListCtrl* variationCtrl;
+		wxTextCtrl* variationTextCtrl;
+		wxDataViewListCtrl* variationListCtrl;
 		wxDataViewColumn* m_dataViewListColumn1;
 		wxDataViewColumn* m_dataViewListColumn2;
 
