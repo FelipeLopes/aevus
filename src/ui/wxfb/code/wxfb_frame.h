@@ -60,7 +60,8 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_POST_OX,
 			ID_FLAME_POST_OY,
 			ID_FLAME_POST_RESET,
-			ID_FLAME_WEIGHT
+			ID_FLAME_WEIGHT,
+			ID_FLAME_VARIATION_ADD
 		};
 
 		wxMenuBar* m_menubar1;
@@ -124,6 +125,7 @@ class WxfbFrame : public wxFrame
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:

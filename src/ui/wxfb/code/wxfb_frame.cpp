@@ -393,7 +393,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText24->Wrap( -1 );
 	bSizer23->Add( m_staticText24, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	variationTextCtrl = new wxTextCtrl( m_scrolledWindow2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	variationTextCtrl = new wxTextCtrl( m_scrolledWindow2, ID_FLAME_VARIATION_ADD, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	bSizer23->Add( variationTextCtrl, 1, wxALL, 5 );
 
 
@@ -463,6 +463,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	transformChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	variationTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 }
 
 WxfbFrame::~WxfbFrame()
@@ -499,5 +500,6 @@ WxfbFrame::~WxfbFrame()
 	transformChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
+	variationTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 
 }

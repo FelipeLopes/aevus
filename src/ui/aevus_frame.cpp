@@ -1,11 +1,13 @@
 #include "aevus_frame.hpp"
 #include "wxfb/code/wxfb_frame.h"
+#include <algorithm>
 #include <exception>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
 using std::string;
+using std::vector;
 using std::to_string;
 
 namespace ui {
@@ -26,11 +28,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     };
     editingTransform = -1;
     loadFile("../in.xml");
-    wxArrayString choices;
-    for (auto el: core::Variation::variationNames.right) {
-        choices.push_back(el.first);
-    }
-    variationTextCtrl->AutoComplete(choices);
+    variationTextCtrl->AutoComplete(new VariationTextCompleter);
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
@@ -82,6 +80,25 @@ void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
     } else {
         throw std::invalid_argument("Unrecognized ID");
     }
+    fireFlameUpdateEvent();
+}
+
+void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
+    string text = variationTextCtrl->GetValue().ToStdString();
+    auto validNames = core::Variation::variationNames.right;
+    auto nameIt = validNames.find(text);
+    if (nameIt == validNames.end()) {
+        return;
+    }
+    auto id = nameIt->second;
+    auto vars = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
+    if (vars.find(id) != vars.end()) {
+        return;
+    }
+    vars[id] = 1.0;
+    core::VariationMap newVarMap;
+    newVarMap.variations = vars;
+    flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
     fireFlameUpdateEvent();
 }
 
@@ -249,6 +266,29 @@ bool Aevus::OnInit()
     AevusFrame* frame = new AevusFrame(flame);
     frame->Show();
     return true;
+}
+
+VariationTextCompleter::VariationTextCompleter() {
+    for (auto el: core::Variation::variationNames.right) {
+        validStrings.insert(el.first);
+    }
+}
+
+void VariationTextCompleter::GetCompletions(const wxString& prefix, wxArrayString& res) {
+    vector<string> ans;
+    string pref = prefix.ToStdString();
+    if (pref.size() == 0) {
+        return;
+    }
+    std::copy_if(validStrings.begin(), validStrings.end(), std::back_inserter(ans), [&](string s) {
+        return s.starts_with(pref);
+    });
+    if (ans.size() == 1 && pref.compare(ans[0]) == 0) {
+        ans.clear();
+    }
+    for (auto el: ans) {
+        res.push_back(el);
+    }
 }
 
 }

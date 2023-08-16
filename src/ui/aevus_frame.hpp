@@ -1,6 +1,8 @@
 #pragma once
 
+#include <set>
 #include <wx/wx.h>
+#include <wx/textcompleter.h>
 #include "wxfb/code/wxfb_frame.h"
 #include "../core/flame.hpp"
 
@@ -31,6 +33,7 @@ private:
     void onFocusFlameEdit(wxFocusEvent& event);
     void onTransformChosen(wxCommandEvent& event);
     void onFlameUpdate(wxCommandEvent& event);
+    void onVariationAddEnter(wxCommandEvent& event);
 
     void fireFlameUpdateEvent();
     bool flameTextEqual(int textCtrlId);
@@ -39,5 +42,13 @@ private:
 };
 
 wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
+
+class VariationTextCompleter: public wxTextCompleterSimple {
+public:
+    VariationTextCompleter();
+    void GetCompletions(const wxString& prefix, wxArrayString& res) override;
+private:
+    std::set<std::string> validStrings;
+};
 
 }
