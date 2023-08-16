@@ -99,6 +99,7 @@ void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
     core::VariationMap newVarMap;
     newVarMap.variations = vars;
     flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
+    variationTextCtrl->ChangeValue("");
     fireFlameUpdateEvent();
 }
 
@@ -204,6 +205,14 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         item.push_back(wxVariant(to_string(el.second)));
         variationListCtrl->AppendItem(item);
     }
+}
+
+void AevusFrame::onVariationTableSelection(wxDataViewEvent& event) {
+    printf("selection event\n");
+}
+
+void AevusFrame::onVariationTableEdited(wxDataViewEvent& event) {
+    printf("edit event\n");
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

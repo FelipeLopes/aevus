@@ -24,16 +24,19 @@ private:
     int editingId;
     int editingTransform;
 
-    void onFileOpen(wxCommandEvent& event);
-    void onFileSaveAs(wxCommandEvent& event);
-    void onExit(wxCommandEvent& event);
-    void onAbout(wxCommandEvent& event);
-    void onEnterFlameUpdate(wxCommandEvent& event);
-    void onResetFlameUpdate(wxCommandEvent& event);
-    void onFocusFlameEdit(wxFocusEvent& event);
-    void onTransformChosen(wxCommandEvent& event);
+    void onFileOpen(wxCommandEvent& event) override;
+    void onFileSaveAs(wxCommandEvent& event) override;
+    void onExit(wxCommandEvent& event) override;
+    void onAbout(wxCommandEvent& event) override;
+    void onEnterFlameUpdate(wxCommandEvent& event) override;
+    void onResetFlameUpdate(wxCommandEvent& event) override;
+    void onFocusFlameEdit(wxFocusEvent& event) override;
+    void onTransformChosen(wxCommandEvent& event) override;
+    void onVariationAddEnter(wxCommandEvent& event) override;
+    void onVariationTableEdited(wxDataViewEvent& event) override;
+	void onVariationTableSelection(wxDataViewEvent& event) override;
+
     void onFlameUpdate(wxCommandEvent& event);
-    void onVariationAddEnter(wxCommandEvent& event);
 
     void fireFlameUpdateEvent();
     bool flameTextEqual(int textCtrlId);
