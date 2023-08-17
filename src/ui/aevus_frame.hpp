@@ -33,8 +33,7 @@ private:
     void onFocusFlameEdit(wxFocusEvent& event) override;
     void onTransformChosen(wxCommandEvent& event) override;
     void onVariationAddEnter(wxCommandEvent& event) override;
-    void onVariationTableEdited(wxDataViewEvent& event) override;
-	void onVariationTableSelection(wxDataViewEvent& event) override;
+    void onVariationValueChanged(wxDataViewEvent& event) override;
 
     void onFlameUpdate(wxCommandEvent& event);
 

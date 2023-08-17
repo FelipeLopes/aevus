@@ -3443,8 +3443,7 @@
                                                                         <property name="window_extra_style"></property>
                                                                         <property name="window_name"></property>
                                                                         <property name="window_style"></property>
-                                                                        <event name="OnDataViewListCtrlItemValueChanged">onVariationTableEdited</event>
-                                                                        <event name="OnDataViewListCtrlSelectionChanged">onVariationTableSelection</event>
+                                                                        <event name="OnDataViewListCtrlItemValueChanged">onVariationValueChanged</event>
                                                                         <object class="dataViewListColumn" expanded="0">
                                                                             <property name="align">wxALIGN_LEFT</property>
                                                                             <property name="ellipsize"></property>

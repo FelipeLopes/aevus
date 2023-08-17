@@ -120,6 +120,34 @@ void AevusFrame::onFocusFlameEdit(wxFocusEvent& event) {
     editingId = focusId;
 }
 
+void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
+    auto item = event.GetItem();
+    int row = variationListCtrl->ItemToRow(item);
+    string variation = variationListCtrl->GetTextValue(row, 0).ToStdString();
+    string text = variationListCtrl->GetTextValue(row, 1).ToStdString();
+    auto vars = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
+    auto it = core::Variation::variationNames.right.find(variation);
+    if (it == core::Variation::variationNames.right.end()) {
+        throw std::invalid_argument("Invalid variation name");
+    }
+    auto id = it->second;
+    try {
+        double value = std::stod(text);
+        if (value == 0.0) {
+            vars.erase(id);
+        } else {
+            vars[id] = value;
+        }
+        core::VariationMap newVarMap;
+        newVarMap.variations = vars;
+        flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
+        fireFlameUpdateEvent();
+    } catch (std::invalid_argument& e) {
+        double val = vars[id];
+        variationListCtrl->SetValue(to_string(val), row, 1);
+    }
+}
+
 bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
     string text;
     int coefId = getCoefIndexByTextCtrlId(textCtrlId);
@@ -210,14 +238,6 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         item.push_back(wxVariant(to_string(el.second)));
         variationListCtrl->AppendItem(item);
     }
-}
-
-void AevusFrame::onVariationTableSelection(wxDataViewEvent& event) {
-    printf("selection event\n");
-}
-
-void AevusFrame::onVariationTableEdited(wxDataViewEvent& event) {
-    printf("edit event\n");
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

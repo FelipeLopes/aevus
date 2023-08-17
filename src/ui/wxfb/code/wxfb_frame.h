@@ -126,8 +126,7 @@ class WxfbFrame : public wxFrame
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onVariationTableEdited( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void onVariationTableSelection( wxDataViewEvent& event ) { event.Skip(); }
+		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 
 
 	public:
