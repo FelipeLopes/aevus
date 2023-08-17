@@ -194,7 +194,12 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     double weight = flame->xforms.get(editingTransform)->weight.getValue();
     weightTextCtrl->ChangeValue(to_string(weight));
     auto varMap = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
-    variationListCtrl->DeleteAllItems();
+    // HACK: we delete each item individually instead of calling DeleteAllItems()
+    // because DeleteAllItems seems to be bugged, it changes the configuration
+    // of the data view ctrl to enable the search textbox in Ubuntu, and we don't want it.
+    for (int i=variationListCtrl->GetItemCount(); i>0; i--) {
+        variationListCtrl->DeleteItem(i-1);
+    }
     for (auto el: varMap) {
         wxVector<wxVariant> item;
         auto varNameIt = core::Variation::variationNames.left.find(el.first);
