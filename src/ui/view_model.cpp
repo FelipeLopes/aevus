@@ -31,6 +31,7 @@ void ViewModel::clearCtrl() {
 }
 
 void ViewModel::updateCtrl() {
+    int row = dvListCtrl->GetSelectedRow();
     clearCtrl();
     int numCols = dvListCtrl->GetColumnCount();
     int numRows = getCount();
@@ -40,6 +41,9 @@ void ViewModel::updateCtrl() {
             data.push_back(getValue(i, j));
         }
         dvListCtrl->AppendItem(data);
+    }
+    if (row != wxNOT_FOUND) {
+        dvListCtrl->SelectRow(row);
     }
 }
 

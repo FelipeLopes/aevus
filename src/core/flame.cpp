@@ -21,11 +21,11 @@ Flame::Flame(): XMLElementClass("flame"),
 
 FlameCL Flame::getFlameCL() const {
     FlameCL flameCL;
-    flameCL.cx = center.getValue().x;
-    flameCL.cy = center.getValue().y;
+    flameCL.cx = center.value().x;
+    flameCL.cy = center.value().y;
     flameCL.scale = scale.getValue();
-    flameCL.width = size.getValue().width;
-    flameCL.height = size.getValue().height;
+    flameCL.width = size.value().width;
+    flameCL.height = size.value().height;
     return flameCL;
 }
 
@@ -59,7 +59,7 @@ void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
         double acc = 0;
         std::vector<double> densities;
         for (int j=0; j<xforms.size(); j++) {
-            acc += xforms.get(i)->chaos.getValue().getXaos(j) *
+            acc += xforms.get(i)->chaos.value().getXaos(j) *
                 xforms.get(j)->weight.getValue();
             densities.push_back(acc);
         }

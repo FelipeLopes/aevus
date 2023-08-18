@@ -463,6 +463,7 @@
                                                                                 <property name="window_extra_style"></property>
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
+                                                                                <event name="OnDataViewListCtrlItemValueChanged">onTransformValueChanged</event>
                                                                                 <object class="dataViewListColumn" expanded="1">
                                                                                     <property name="align">wxALIGN_CENTER_HORIZONTAL</property>
                                                                                     <property name="ellipsize"></property>

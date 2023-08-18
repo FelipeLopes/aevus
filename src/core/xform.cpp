@@ -18,7 +18,7 @@ XForm::XForm(): XMLElementClass("xform"),
 XFormCL XForm::toXFormCL() const {
     XFormCL xf;
 
-    auto pre = coefs.getValue();
+    auto pre = coefs.value();
 
     xf.a = pre.xx;
     xf.b = -pre.yx;
@@ -27,7 +27,7 @@ XFormCL XForm::toXFormCL() const {
     xf.e = pre.yy;
     xf.f = -pre.oy;
 
-    auto pst = post.getValue();
+    auto pst = post.value();
 
     xf.pa = pst.xx;
     xf.pb = -pst.yx;

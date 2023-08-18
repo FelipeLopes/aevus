@@ -126,6 +126,7 @@ class WxfbFrame : public wxFrame
 		virtual void onFileSaveAs( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }

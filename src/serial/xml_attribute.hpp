@@ -100,11 +100,11 @@ public:
         }
         val.fromString(opt);
     }
-    T getValue() const {
-        return val;
+    T* get() {
+        return &val;
     }
-    void setValue(T value) {
-        val = value;
+    T value() const {
+        return val;
     }
 private:
     T val;

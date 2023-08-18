@@ -36,6 +36,7 @@ private:
     void onTransformChosen(wxCommandEvent& event) override;
     void onVariationAddEnter(wxCommandEvent& event) override;
     void onVariationValueChanged(wxDataViewEvent& event) override;
+    void onTransformValueChanged(wxDataViewEvent& event) override;
 
     void onFlameUpdate(wxCommandEvent& event);
 
