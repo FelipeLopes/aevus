@@ -30,7 +30,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     editingTransform = -1;
     loadFile("../in.xml");
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
-    transformModel = std::make_shared<TransformModel>(this, transformDataViewCtrl);
+    transformModel = std::make_shared<TransformModel>(flame, this, transformDataViewCtrl);
     transformModel->update();
 }
 
@@ -215,7 +215,6 @@ bool AevusFrame::flameTextEqual(int textCtrlId) {
 }
 
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
-    printf("Event received!\n");
     if (flame->xforms.size() == 0) {
         transformsScrolledWindow->Disable();
         return;

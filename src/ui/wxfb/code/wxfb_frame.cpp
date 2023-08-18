@@ -86,7 +86,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	bSizer24->Add( bSizer181, 1, wxEXPAND, 5 );
 
-	m_button4 = new wxButton( transformsScrolledWindow, wxID_ANY, wxT("Reset pre transform"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	m_button4 = new wxButton( transformsScrolledWindow, wxID_ANY, wxT("Reset pre transform"), wxDefaultPosition, wxSize( 230,-1 ), 0 );
 	bSizer24->Add( m_button4, 0, wxALL, 5 );
 
 

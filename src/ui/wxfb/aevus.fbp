@@ -560,7 +560,7 @@
                                                                         <property name="pressed"></property>
                                                                         <property name="resize">Resizable</property>
                                                                         <property name="show">1</property>
-                                                                        <property name="size">-1,-1</property>
+                                                                        <property name="size">230,-1</property>
                                                                         <property name="style"></property>
                                                                         <property name="subclass">; ; forward_declare</property>
                                                                         <property name="toolbar_pane">0</property>

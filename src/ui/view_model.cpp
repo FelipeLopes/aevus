@@ -16,7 +16,7 @@ void ViewModel::receiveValueChangedEvent(wxDataViewEvent &event) {
     auto item = event.GetItem();
     int row = dvListCtrl->ItemToRow(item);
     int col = event.GetColumn();
-    auto value = event.GetValue();
+    auto value = dvListCtrl->GetTextValue(row, col);
     setValue(value, row, col);
     updateCtrl();
 }
