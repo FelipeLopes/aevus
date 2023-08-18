@@ -9,7 +9,20 @@ ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_) {
 ViewModel::~ViewModel() { }
 
 void ViewModel::update() {
-    updateCtrl();
+    int row = dvListCtrl->GetSelectedRow();
+    clearCtrl();
+    int numCols = dvListCtrl->GetColumnCount();
+    int numRows = getCount();
+    for (int i=0; i<numRows; i++) {
+        wxVector<wxVariant> data;
+        for (int j=0; j<numCols; j++) {
+            data.push_back(getValue(i, j));
+        }
+        dvListCtrl->AppendItem(data);
+    }
+    if (row != wxNOT_FOUND) {
+        dvListCtrl->SelectRow(row);
+    }
 }
 
 void ViewModel::handleValueChangedEvent(wxDataViewEvent &event) {
@@ -26,23 +39,6 @@ void ViewModel::clearCtrl() {
     // of the data view ctrl to enable the search textbox in Ubuntu, and we don't want it.
     for (int i=dvListCtrl->GetItemCount(); i>0; i--) {
         dvListCtrl->DeleteItem(i-1);
-    }
-}
-
-void ViewModel::updateCtrl() {
-    int row = dvListCtrl->GetSelectedRow();
-    clearCtrl();
-    int numCols = dvListCtrl->GetColumnCount();
-    int numRows = getCount();
-    for (int i=0; i<numRows; i++) {
-        wxVector<wxVariant> data;
-        for (int j=0; j<numCols; j++) {
-            data.push_back(getValue(i, j));
-        }
-        dvListCtrl->AppendItem(data);
-    }
-    if (row != wxNOT_FOUND) {
-        dvListCtrl->SelectRow(row);
     }
 }
 

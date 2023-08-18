@@ -18,7 +18,6 @@ protected:
 private:
     wxDataViewListCtrl* dvListCtrl;
     void clearCtrl();
-    void updateCtrl();
 };
 
 }
