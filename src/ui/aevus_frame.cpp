@@ -1,10 +1,13 @@
 #include "aevus_frame.hpp"
+#include "transform_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <algorithm>
 #include <exception>
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <wx-3.2/wx/variant.h>
+#include <wx-3.2/wx/vector.h>
 
 using std::string;
 using std::vector;
@@ -29,6 +32,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     editingTransform = -1;
     loadFile("../in.xml");
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
+    transformModel = std::make_shared<TransformModel>(transformDataViewCtrl);
+    transformModel->update();
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {

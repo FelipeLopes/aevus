@@ -3,6 +3,7 @@
 #include <set>
 #include <wx/wx.h>
 #include <wx/textcompleter.h>
+#include "transform_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include "../core/flame.hpp"
 
@@ -20,6 +21,7 @@ public:
     void loadFile(std::string filename);
 private:
     std::shared_ptr<core::Flame> flame;
+    std::shared_ptr<TransformModel> transformModel;
     std::vector<wxTextCtrl*> textCtrls;
     int editingId;
     int editingTransform;

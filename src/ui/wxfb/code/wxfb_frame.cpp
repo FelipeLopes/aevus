@@ -71,6 +71,27 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxWrapSizer* wSizer1;
 	wSizer1 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
+	wxBoxSizer* bSizer24;
+	bSizer24 = new wxBoxSizer( wxVERTICAL );
+
+	wxBoxSizer* bSizer181;
+	bSizer181 = new wxBoxSizer( wxHORIZONTAL );
+
+	transformDataViewCtrl = new wxDataViewListCtrl( transformsScrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
+	m_dataViewListColumn9 = transformDataViewCtrl->AppendTextColumn( wxEmptyString, wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn10 = transformDataViewCtrl->AppendTextColumn( wxT("X"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn11 = transformDataViewCtrl->AppendTextColumn( wxT("Y"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	bSizer181->Add( transformDataViewCtrl, 1, wxALL|wxEXPAND, 5 );
+
+
+	bSizer24->Add( bSizer181, 1, wxEXPAND, 5 );
+
+	m_button4 = new wxButton( transformsScrolledWindow, wxID_ANY, wxT("Reset pre transform"), wxDefaultPosition, wxSize( -1,-1 ), 0 );
+	bSizer24->Add( m_button4, 0, wxALL, 5 );
+
+
+	wSizer1->Add( bSizer24, 1, wxEXPAND, 5 );
+
 	wxGridBagSizer* gbSizer1;
 	gbSizer1 = new wxGridBagSizer( 0, 0 );
 	gbSizer1->SetFlexibleDirection( wxBOTH );

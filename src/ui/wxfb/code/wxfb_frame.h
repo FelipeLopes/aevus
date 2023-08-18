@@ -19,11 +19,12 @@
 #include <wx/colour.h>
 #include <wx/settings.h>
 #include <wx/statusbr.h>
-#include <wx/stattext.h>
+#include <wx/dataview.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/valtext.h>
-#include <wx/button.h>
 #include <wx/gbsizer.h>
 #include <wx/wrapsizer.h>
 #include <wx/scrolwin.h>
@@ -31,7 +32,6 @@
 #include <wx/splitter.h>
 #include <wx/choice.h>
 #include <wx/bmpbuttn.h>
-#include <wx/dataview.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -72,6 +72,11 @@ class WxfbFrame : public wxFrame
 		wxPanel* m_panel1;
 		wxSplitterWindow* m_splitter2;
 		wxScrolledWindow* transformsScrolledWindow;
+		wxDataViewListCtrl* transformDataViewCtrl;
+		wxDataViewColumn* m_dataViewListColumn9;
+		wxDataViewColumn* m_dataViewListColumn10;
+		wxDataViewColumn* m_dataViewListColumn11;
+		wxButton* m_button4;
 		wxStaticText* m_staticText17;
 		wxStaticText* m_staticText19;
 		wxStaticText* m_staticText20;
