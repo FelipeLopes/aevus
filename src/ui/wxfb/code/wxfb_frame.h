@@ -46,13 +46,7 @@ class WxfbFrame : public wxFrame
 	protected:
 		enum
 		{
-			ID_FLAME_PRE_XX = 1000,
-			ID_FLAME_PRE_XY,
-			ID_FLAME_PRE_YX,
-			ID_FLAME_PRE_YY,
-			ID_FLAME_PRE_OX,
-			ID_FLAME_PRE_OY,
-			ID_FLAME_PRE_RESET,
+			ID_FLAME_PRE_RESET = 1000,
 			ID_FLAME_POST_XX,
 			ID_FLAME_POST_XY,
 			ID_FLAME_POST_YX,
@@ -77,19 +71,6 @@ class WxfbFrame : public wxFrame
 		wxDataViewColumn* m_dataViewListColumn10;
 		wxDataViewColumn* m_dataViewListColumn11;
 		wxButton* m_button4;
-		wxStaticText* m_staticText17;
-		wxStaticText* m_staticText19;
-		wxStaticText* m_staticText20;
-		wxStaticText* m_staticText14;
-		wxTextCtrl* preXXtextCtrl;
-		wxTextCtrl* preXYtextCtrl;
-		wxStaticText* m_staticText15;
-		wxTextCtrl* preYXtextCtrl;
-		wxTextCtrl* preYYtextCtrl;
-		wxStaticText* m_staticText16;
-		wxTextCtrl* preOXtextCtrl;
-		wxTextCtrl* preOYtextCtrl;
-		wxButton* m_button5;
 		wxStaticText* m_staticText171;
 		wxStaticText* m_staticText191;
 		wxStaticText* m_staticText201;
@@ -127,21 +108,15 @@ class WxfbFrame : public wxFrame
 		virtual void onExit( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
+		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 
 
 	public:
-		wxString textPreXX;
-		wxString textPreXY;
-		wxString textPreYX;
-		wxString textPreYY;
-		wxString textPreOX;
-		wxString textPreOY;
 		wxString textPostXX;
 		wxString textPostXY;
 		wxString textPostYX;

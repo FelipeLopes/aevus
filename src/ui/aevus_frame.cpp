@@ -14,38 +14,33 @@ using std::to_string;
 namespace ui {
 
 wxDEFINE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
+wxDEFINE_EVENT(FLAME_XFORM_CHANGE_EVENT, wxCommandEvent);
 
 AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     flame(flame_)
 {
     SetStatusText("Welcome to Aevus!");
     Bind(FLAME_UPDATE_EVENT, &AevusFrame::onFlameUpdate, this, wxID_ANY);
+    Bind(FLAME_XFORM_CHANGE_EVENT, &AevusFrame::onFlameXformChange, this, wxID_ANY);
     editingId = -1;
     textCtrls = {
-        preXXtextCtrl, preXYtextCtrl, preYXtextCtrl,
-        preYYtextCtrl, preOXtextCtrl, preOYtextCtrl,
+        NULL, NULL, NULL,
+        NULL, NULL, NULL,
         postXXtextCtrl, postXYtextCtrl, postYXtextCtrl,
         postYYtextCtrl, postOXtextCtrl, postOYtextCtrl
     };
     editingTransform = -1;
-    loadFile("../in.xml");
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
     transformModel = std::make_shared<TransformModel>(flame, this, transformDataViewCtrl);
-    transformModel->update();
+    loadFile("../in.xml");
 }
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
-    transformModel->receiveValueChangedEvent(event);
+    transformModel->handleValueChangedEvent(event);
 }
 
 int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
     switch (textCtrlId) {
-        case ID_FLAME_PRE_XX: return 0;
-        case ID_FLAME_PRE_XY: return 1;
-        case ID_FLAME_PRE_YX: return 2;
-        case ID_FLAME_PRE_YY: return 3;
-        case ID_FLAME_PRE_OX: return 4;
-        case ID_FLAME_PRE_OY: return 5;
         case ID_FLAME_POST_XX: return 6;
         case ID_FLAME_POST_XY: return 7;
         case ID_FLAME_POST_YX: return 8;
@@ -61,6 +56,7 @@ void AevusFrame::onTransformChosen(wxCommandEvent& event) {
     if (chosen != editingTransform) {
         editingTransform = chosen;
         fireFlameUpdateEvent();
+        fireFlameXformChangeEvent();
     }
 }
 
@@ -68,6 +64,13 @@ void AevusFrame::fireFlameUpdateEvent() {
     wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
     flameUpdateEvent.SetEventObject(this);
     ProcessWindowEvent(flameUpdateEvent);
+}
+
+void AevusFrame::fireFlameXformChangeEvent() {
+    wxCommandEvent flameXformChangeEvent(FLAME_XFORM_CHANGE_EVENT, wxID_ANY);
+    flameXformChangeEvent.SetEventObject(this);
+    flameXformChangeEvent.SetInt(editingTransform);
+    ProcessWindowEvent(flameXformChangeEvent);
 }
 
 void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
@@ -219,10 +222,8 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         transformsScrolledWindow->Disable();
         return;
     }
-    auto coefs = flame->xforms.get(editingTransform)->coefs.get();
     auto post = flame->xforms.get(editingTransform)->post.get();
     for (int i=0; i<6; i++) {
-        textCtrls[i]->ChangeValue(to_string(coefs->getValueByIndex(i)));
         textCtrls[i+6]->ChangeValue(to_string(post->getValueByIndex(i)));
     }
     transformsScrolledWindow->Enable();
@@ -245,6 +246,11 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         item.push_back(wxVariant(to_string(el.second)));
         variationListCtrl->AppendItem(item);
     }
+    transformModel->update();
+}
+
+void AevusFrame::onFlameXformChange(wxCommandEvent& event) {
+    transformModel->handleActiveFormChangedEvent(event);
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

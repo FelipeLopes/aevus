@@ -12,13 +12,12 @@ void ViewModel::update() {
     updateCtrl();
 }
 
-void ViewModel::receiveValueChangedEvent(wxDataViewEvent &event) {
+void ViewModel::handleValueChangedEvent(wxDataViewEvent &event) {
     auto item = event.GetItem();
     int row = dvListCtrl->ItemToRow(item);
     int col = event.GetColumn();
     auto value = dvListCtrl->GetTextValue(row, col);
     setValue(value, row, col);
-    updateCtrl();
 }
 
 void ViewModel::clearCtrl() {

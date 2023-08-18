@@ -8,7 +8,7 @@ namespace ui {
 class ViewModel {
 public:
     ViewModel(wxDataViewListCtrl* dvListCtrl);
-    void receiveValueChangedEvent(wxDataViewEvent& event);
+    void handleValueChangedEvent(wxDataViewEvent& event);
     void update();
     virtual ~ViewModel();
 protected:

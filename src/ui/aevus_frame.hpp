@@ -39,14 +39,17 @@ private:
     void onTransformValueChanged(wxDataViewEvent& event) override;
 
     void onFlameUpdate(wxCommandEvent& event);
+    void onFlameXformChange(wxCommandEvent& event);
 
     void fireFlameUpdateEvent();
+    void fireFlameXformChangeEvent();
     bool flameTextEqual(int textCtrlId);
     int getCoefIndexByTextCtrlId(int textCtrlId);
     bool tryChangeAndUpdate(int textCtrlId);
 };
 
 wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
+wxDECLARE_EVENT(FLAME_XFORM_CHANGE_EVENT, wxCommandEvent);
 
 class VariationTextCompleter: public wxTextCompleterSimple {
 public:

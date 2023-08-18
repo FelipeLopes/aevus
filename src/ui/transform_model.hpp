@@ -11,6 +11,7 @@ class TransformModel: public ViewModel {
 public:
     TransformModel(std::shared_ptr<core::Flame> flame,
         wxWindow* eventHandler, wxDataViewListCtrl* transformCtrl);
+    void handleActiveFormChangedEvent(wxCommandEvent& event);
 private:
     int getCount() const override;
     wxVariant getValue(int row, int col) const override;

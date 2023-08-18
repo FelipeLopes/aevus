@@ -17,6 +17,11 @@ TransformModel::TransformModel(shared_ptr<Flame> flame_, wxWindow* eventHandler_
     activeTransform = 0;
 }
 
+void TransformModel::handleActiveFormChangedEvent(wxCommandEvent& event) {
+    activeTransform = event.GetInt();
+    update();
+}
+
 int TransformModel::getCount() const {
     return 3;
 }
