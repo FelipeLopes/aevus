@@ -22,15 +22,13 @@
 #include <wx/dataview.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/valtext.h>
-#include <wx/gbsizer.h>
 #include <wx/wrapsizer.h>
 #include <wx/scrolwin.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
+#include <wx/stattext.h>
 #include <wx/choice.h>
+#include <wx/textctrl.h>
 #include <wx/bmpbuttn.h>
 #include <wx/frame.h>
 
@@ -46,13 +44,9 @@ class WxfbFrame : public wxFrame
 	protected:
 		enum
 		{
-			ID_FLAME_PRE_RESET = 1000,
-			ID_FLAME_POST_XX,
-			ID_FLAME_POST_XY,
-			ID_FLAME_POST_YX,
-			ID_FLAME_POST_YY,
-			ID_FLAME_POST_OX,
-			ID_FLAME_POST_OY,
+			ID_FLAME_PRE_DV = 1000,
+			ID_FLAME_PRE_RESET,
+			ID_FLAME_POST_DV,
 			ID_FLAME_POST_RESET,
 			ID_FLAME_WEIGHT,
 			ID_FLAME_VARIATION_ADD
@@ -66,24 +60,16 @@ class WxfbFrame : public wxFrame
 		wxPanel* m_panel1;
 		wxSplitterWindow* m_splitter2;
 		wxScrolledWindow* transformsScrolledWindow;
-		wxDataViewListCtrl* transformDataViewCtrl;
+		wxDataViewListCtrl* preTransformDataViewCtrl;
 		wxDataViewColumn* m_dataViewListColumn9;
 		wxDataViewColumn* m_dataViewListColumn10;
 		wxDataViewColumn* m_dataViewListColumn11;
 		wxButton* m_button4;
-		wxStaticText* m_staticText171;
-		wxStaticText* m_staticText191;
-		wxStaticText* m_staticText201;
-		wxStaticText* m_staticText141;
-		wxTextCtrl* postXXtextCtrl;
-		wxTextCtrl* postXYtextCtrl;
-		wxStaticText* m_staticText151;
-		wxTextCtrl* postYXtextCtrl;
-		wxTextCtrl* postYYtextCtrl;
-		wxStaticText* m_staticText161;
-		wxTextCtrl* postOXtextCtrl;
-		wxTextCtrl* postOYtextCtrl;
-		wxButton* m_button51;
+		wxDataViewListCtrl* postTransformDataViewCtrl;
+		wxDataViewColumn* m_dataViewListColumn91;
+		wxDataViewColumn* m_dataViewListColumn101;
+		wxDataViewColumn* m_dataViewListColumn111;
+		wxButton* m_button41;
 		wxPanel* m_panel11;
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
@@ -109,20 +95,14 @@ class WxfbFrame : public wxFrame
 		virtual void onAbout( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 
 
 	public:
-		wxString textPostXX;
-		wxString textPostXY;
-		wxString textPostYX;
-		wxString textPostYY;
-		wxString textPostOX;
-		wxString textPostOY;
 
 		WxfbFrame( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("Aevus"), const wxPoint& pos = wxPoint( -1,-1 ), const wxSize& size = wxSize( 1366,768 ), long style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
 

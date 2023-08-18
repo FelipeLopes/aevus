@@ -77,11 +77,11 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxBoxSizer* bSizer181;
 	bSizer181 = new wxBoxSizer( wxHORIZONTAL );
 
-	transformDataViewCtrl = new wxDataViewListCtrl( transformsScrolledWindow, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0 );
-	m_dataViewListColumn9 = transformDataViewCtrl->AppendTextColumn( wxEmptyString, wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
-	m_dataViewListColumn10 = transformDataViewCtrl->AppendTextColumn( wxT("X"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
-	m_dataViewListColumn11 = transformDataViewCtrl->AppendTextColumn( wxT("Y"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
-	bSizer181->Add( transformDataViewCtrl, 1, wxALL|wxEXPAND, 5 );
+	preTransformDataViewCtrl = new wxDataViewListCtrl( transformsScrolledWindow, ID_FLAME_PRE_DV, wxDefaultPosition, wxSize( -1,150 ), 0 );
+	m_dataViewListColumn9 = preTransformDataViewCtrl->AppendTextColumn( wxEmptyString, wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn10 = preTransformDataViewCtrl->AppendTextColumn( wxT("X"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn11 = preTransformDataViewCtrl->AppendTextColumn( wxT("Y"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	bSizer181->Add( preTransformDataViewCtrl, 1, wxALL|wxEXPAND, 5 );
 
 
 	bSizer24->Add( bSizer181, 1, wxEXPAND, 5 );
@@ -92,103 +92,26 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	wSizer1->Add( bSizer24, 1, wxEXPAND, 5 );
 
-	wxGridBagSizer* gbSizer11;
-	gbSizer11 = new wxGridBagSizer( 0, 0 );
-	gbSizer11->SetFlexibleDirection( wxBOTH );
-	gbSizer11->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
+	wxBoxSizer* bSizer241;
+	bSizer241 = new wxBoxSizer( wxVERTICAL );
 
-	m_staticText171 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText171->Wrap( -1 );
-	gbSizer11->Add( m_staticText171, wxGBPosition( 0, 0 ), wxGBSpan( 1, 1 ), wxALL, 5 );
+	wxBoxSizer* bSizer1811;
+	bSizer1811 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText191 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
-	m_staticText191->Wrap( -1 );
-	gbSizer11->Add( m_staticText191, wxGBPosition( 0, 1 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
-
-	m_staticText201 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTER_HORIZONTAL );
-	m_staticText201->Wrap( -1 );
-	gbSizer11->Add( m_staticText201, wxGBPosition( 0, 2 ), wxGBSpan( 1, 1 ), wxALL|wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
+	postTransformDataViewCtrl = new wxDataViewListCtrl( transformsScrolledWindow, ID_FLAME_POST_DV, wxDefaultPosition, wxSize( -1,150 ), 0 );
+	m_dataViewListColumn91 = postTransformDataViewCtrl->AppendTextColumn( wxEmptyString, wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn101 = postTransformDataViewCtrl->AppendTextColumn( wxT("X"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn111 = postTransformDataViewCtrl->AppendTextColumn( wxT("Y"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	bSizer1811->Add( postTransformDataViewCtrl, 1, wxALL|wxEXPAND, 5 );
 
 
-	bSizer51->Add( 0, 0, 1, wxEXPAND, 5 );
+	bSizer241->Add( bSizer1811, 1, wxEXPAND, 5 );
 
-	m_staticText141 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("X:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText141->Wrap( -1 );
-	bSizer51->Add( m_staticText141, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	gbSizer11->Add( bSizer51, wxGBPosition( 1, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
-
-	postXXtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_XX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postXXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostXX ) );
-
-	gbSizer11->Add( postXXtextCtrl, wxGBPosition( 1, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	postXYtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_XY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postXYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostXY ) );
-
-	gbSizer11->Add( postXYtextCtrl, wxGBPosition( 1, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	wxBoxSizer* bSizer61;
-	bSizer61 = new wxBoxSizer( wxHORIZONTAL );
+	m_button41 = new wxButton( transformsScrolledWindow, ID_FLAME_POST_RESET, wxT("Reset post transform"), wxDefaultPosition, wxSize( 230,-1 ), 0 );
+	bSizer241->Add( m_button41, 0, wxALL, 5 );
 
 
-	bSizer61->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText151 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("Y:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText151->Wrap( -1 );
-	bSizer61->Add( m_staticText151, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	gbSizer11->Add( bSizer61, wxGBPosition( 2, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
-
-	postYXtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_YX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postYXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostYX ) );
-
-	gbSizer11->Add( postYXtextCtrl, wxGBPosition( 2, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	postYYtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_YY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postYYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostYY ) );
-
-	gbSizer11->Add( postYYtextCtrl, wxGBPosition( 2, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	wxBoxSizer* bSizer71;
-	bSizer71 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer71->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText161 = new wxStaticText( transformsScrolledWindow, wxID_ANY, wxT("O:"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText161->Wrap( -1 );
-	bSizer71->Add( m_staticText161, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-
-	gbSizer11->Add( bSizer71, wxGBPosition( 3, 0 ), wxGBSpan( 1, 1 ), wxEXPAND, 5 );
-
-	postOXtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_OX, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postOXtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostOX ) );
-
-	gbSizer11->Add( postOXtextCtrl, wxGBPosition( 3, 1 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	postOYtextCtrl = new wxTextCtrl( transformsScrolledWindow, ID_FLAME_POST_OY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	postOYtextCtrl->SetValidator( wxTextValidator( wxFILTER_NUMERIC, &textPostOY ) );
-
-	gbSizer11->Add( postOYtextCtrl, wxGBPosition( 3, 2 ), wxGBSpan( 1, 1 ), wxALL, 5 );
-
-	wxBoxSizer* bSizer171;
-	bSizer171 = new wxBoxSizer( wxHORIZONTAL );
-
-	m_button51 = new wxButton( transformsScrolledWindow, ID_FLAME_POST_RESET, wxT("Reset post transform"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer171->Add( m_button51, 1, wxALL, 5 );
-
-
-	gbSizer11->Add( bSizer171, wxGBPosition( 4, 0 ), wxGBSpan( 1, 3 ), wxEXPAND, 5 );
-
-
-	wSizer1->Add( gbSizer11, 0, wxEXPAND, 5 );
+	wSizer1->Add( bSizer241, 1, wxEXPAND, 5 );
 
 
 	transformsScrolledWindow->SetSizer( wSizer1 );
@@ -355,22 +278,10 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onFileSaveAs ), this, m_menuItem4->GetId());
 	m_menu1->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onExit ), this, m_menuItem2->GetId());
 	m_menu2->Bind(wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( WxfbFrame::onAbout ), this, m_menuItem3->GetId());
-	transformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
+	preTransformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	m_button4->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	postXXtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postXXtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postXYtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postXYtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postYXtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postYXtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postYYtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postYYtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postOXtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postOXtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postOYtextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postOYtextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	m_button51->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	m_button51->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postTransformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
+	m_button41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	transformChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
@@ -381,22 +292,10 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 WxfbFrame::~WxfbFrame()
 {
 	// Disconnect Events
-	transformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
+	preTransformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	m_button4->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	postXXtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postXXtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postXYtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postXYtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postYXtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postYXtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postYYtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postYYtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postOXtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postOXtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	postOYtextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	postOYtextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
-	m_button51->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	m_button51->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
+	postTransformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
+	m_button41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	transformChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );

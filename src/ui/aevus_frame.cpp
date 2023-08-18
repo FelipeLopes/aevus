@@ -23,31 +23,19 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     Bind(FLAME_UPDATE_EVENT, &AevusFrame::onFlameUpdate, this, wxID_ANY);
     Bind(FLAME_XFORM_CHANGE_EVENT, &AevusFrame::onFlameXformChange, this, wxID_ANY);
     editingId = -1;
-    textCtrls = {
-        NULL, NULL, NULL,
-        NULL, NULL, NULL,
-        postXXtextCtrl, postXYtextCtrl, postYXtextCtrl,
-        postYYtextCtrl, postOXtextCtrl, postOYtextCtrl
-    };
     editingTransform = -1;
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
-    transformModel = std::make_shared<TransformModel>(flame, this, transformDataViewCtrl);
+    preTransformModel =
+        std::make_shared<TransformModel>(flame, this, preTransformDataViewCtrl, true);
+    postTransformModel =
+        std::make_shared<TransformModel>(flame, this, postTransformDataViewCtrl, false);
     loadFile("../in.xml");
 }
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
-    transformModel->handleValueChangedEvent(event);
-}
-
-int AevusFrame::getCoefIndexByTextCtrlId(int textCtrlId) {
-    switch (textCtrlId) {
-        case ID_FLAME_POST_XX: return 6;
-        case ID_FLAME_POST_XY: return 7;
-        case ID_FLAME_POST_YX: return 8;
-        case ID_FLAME_POST_YY: return 9;
-        case ID_FLAME_POST_OX: return 10;
-        case ID_FLAME_POST_OY: return 11;
-        default: return -1;
+    switch (event.GetId()) {
+        case ID_FLAME_PRE_DV: preTransformModel->handleValueChangedEvent(event); break;
+        case ID_FLAME_POST_DV: postTransformModel->handleValueChangedEvent(event); break;
     }
 }
 
@@ -115,23 +103,6 @@ void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
     fireFlameUpdateEvent();
 }
 
-void AevusFrame::onEnterFlameUpdate(wxCommandEvent& event) {
-    int enterId = event.GetId();
-    if (!flameTextEqual(enterId)) {
-        tryChangeAndUpdate(enterId);
-    }
-}
-
-void AevusFrame::onFocusFlameEdit(wxFocusEvent& event) {
-    int focusId = event.GetId();
-    if (editingId != focusId) {
-        if (!flameTextEqual(editingId)) {
-            tryChangeAndUpdate(editingId);
-        }
-    }
-    editingId = focusId;
-}
-
 void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
     auto item = event.GetItem();
     int row = variationListCtrl->ItemToRow(item);
@@ -160,71 +131,10 @@ void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
     }
 }
 
-bool AevusFrame::tryChangeAndUpdate(int textCtrlId) {
-    string text;
-    int coefId = getCoefIndexByTextCtrlId(textCtrlId);
-    if (coefId == -1) {
-        if (textCtrlId == ID_FLAME_WEIGHT) {
-            try {
-                double val = std::stod(weightTextCtrl->GetValue().ToStdString());
-                flame->xforms.get(editingTransform)->weight.setValue(val);
-                fireFlameUpdateEvent();
-            } catch (std::exception& e) {
-                return false;
-            }
-        }
-        return false;
-    }
-    text = textCtrls[coefId]->GetValue();
-    if (flame->xforms.size() == 0) {
-        throw std::invalid_argument("No xforms found");
-    }
-    try {
-        double val = std::stod(text);
-        if (coefId / 6 == 0) {
-            auto coefs = flame->xforms.get(editingTransform)->coefs.get();
-            coefs->setValueByIndex(coefId % 6, val);
-        } else {
-            auto post = flame->xforms.get(editingTransform)->post.get();
-            post->setValueByIndex(coefId % 6, val);
-        }
-        fireFlameUpdateEvent();
-        return true;
-    } catch (std::exception& e) {
-        return false;
-    }
-}
-
-bool AevusFrame::flameTextEqual(int textCtrlId) {
-    string text;
-    int coefId = getCoefIndexByTextCtrlId(textCtrlId);
-    if (coefId == -1) {
-        if (textCtrlId == ID_FLAME_WEIGHT) {
-            return text == weightTextCtrl->GetValue();
-        }
-        return true;
-    }
-    text = textCtrls[coefId]->GetValue();
-    if (flame->xforms.size() == 0) {
-        return true;
-    }
-    double flameVal;
-    if (coefId / 6 == 0) {
-        flameVal = flame->xforms.get(editingTransform)->coefs.get()->getValueByIndex(coefId % 6);
-    } else {
-        flameVal = flame->xforms.get(editingTransform)->post.get()->getValueByIndex(coefId % 6);
-    }
-    return std::to_string(flameVal) == text;
-}
-
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     if (flame->xforms.size() == 0) {
         transformsScrolledWindow->Disable();
         return;
-    }
-    auto post = flame->xforms.get(editingTransform)->post.get();
-    for (int i=0; i<6; i++) {
-        textCtrls[i+6]->ChangeValue(to_string(post->getValueByIndex(i)));
     }
     transformsScrolledWindow->Enable();
     double weight = flame->xforms.get(editingTransform)->weight.getValue();
@@ -246,11 +156,13 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         item.push_back(wxVariant(to_string(el.second)));
         variationListCtrl->AppendItem(item);
     }
-    transformModel->update();
+    preTransformModel->update();
+    postTransformModel->update();
 }
 
 void AevusFrame::onFlameXformChange(wxCommandEvent& event) {
-    transformModel->handleActiveFormChangedEvent(event);
+    preTransformModel->handleActiveFormChangedEvent(event);
+    postTransformModel->handleActiveFormChangedEvent(event);
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

@@ -9,8 +9,8 @@ namespace ui {
 
 class TransformModel: public ViewModel {
 public:
-    TransformModel(std::shared_ptr<core::Flame> flame,
-        wxWindow* eventHandler, wxDataViewListCtrl* transformCtrl);
+    TransformModel(std::shared_ptr<core::Flame> flame, wxWindow* eventHandler,
+        wxDataViewListCtrl* transformCtrl, bool accessCoefs);
     void handleActiveFormChangedEvent(wxCommandEvent& event);
 private:
     int getCount() const override;
@@ -20,6 +20,7 @@ private:
     std::shared_ptr<core::Flame> flame;
     int activeTransform;
     wxWindow* eventHandler;
+    bool accessCoefs;
     void fireFlameUpdateEvent();
 };
 

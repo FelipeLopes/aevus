@@ -21,8 +21,8 @@ public:
     void loadFile(std::string filename);
 private:
     std::shared_ptr<core::Flame> flame;
-    std::shared_ptr<TransformModel> transformModel;
-    std::vector<wxTextCtrl*> textCtrls;
+    std::shared_ptr<TransformModel> preTransformModel;
+    std::shared_ptr<TransformModel> postTransformModel;
     int editingId;
     int editingTransform;
 
@@ -30,9 +30,7 @@ private:
     void onFileSaveAs(wxCommandEvent& event) override;
     void onExit(wxCommandEvent& event) override;
     void onAbout(wxCommandEvent& event) override;
-    void onEnterFlameUpdate(wxCommandEvent& event) override;
     void onResetFlameUpdate(wxCommandEvent& event) override;
-    void onFocusFlameEdit(wxFocusEvent& event) override;
     void onTransformChosen(wxCommandEvent& event) override;
     void onVariationAddEnter(wxCommandEvent& event) override;
     void onVariationValueChanged(wxDataViewEvent& event) override;
@@ -43,9 +41,6 @@ private:
 
     void fireFlameUpdateEvent();
     void fireFlameXformChangeEvent();
-    bool flameTextEqual(int textCtrlId);
-    int getCoefIndexByTextCtrlId(int textCtrlId);
-    bool tryChangeAndUpdate(int textCtrlId);
 };
 
 wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
