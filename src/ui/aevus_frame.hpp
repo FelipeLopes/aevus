@@ -33,10 +33,10 @@ private:
     void onExit(wxCommandEvent& event) override;
     void onAbout(wxCommandEvent& event) override;
     void onResetFlameUpdate(wxCommandEvent& event) override;
-    void onTransformChosen(wxCommandEvent& event) override;
     void onVariationAddEnter(wxCommandEvent& event) override;
     void onVariationValueChanged(wxDataViewEvent& event) override;
     void onTransformValueChanged(wxDataViewEvent& event) override;
+    void onTransformSelected(wxDataViewEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
 
     void onFlameUpdate(wxCommandEvent& event);

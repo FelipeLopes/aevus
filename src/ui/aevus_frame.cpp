@@ -29,8 +29,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         std::make_shared<TransformModel>(flame, this, preTransformDataViewCtrl, true);
     postTransformModel =
         std::make_shared<TransformModel>(flame, this, postTransformDataViewCtrl, false);
-    weightsModel = std::make_shared<WeightsModel>(weightsDataViewCtrl);
+    weightsModel = std::make_shared<WeightsModel>(flame, this, weightsDataViewCtrl);
     loadFile("../in.xml");
+    trianglePanel->SetFocus();
 }
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
@@ -40,13 +41,8 @@ void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
     }
 }
 
-void AevusFrame::onTransformChosen(wxCommandEvent& event) {
-    int chosen = transformChoice->GetSelection();
-    if (chosen != editingTransform) {
-        editingTransform = chosen;
-        fireFlameUpdateEvent();
-        fireFlameXformChangeEvent();
-    }
+void AevusFrame::onTransformSelected(wxDataViewEvent& event) {
+    weightsModel->handleSelectionEvent(event);
 }
 
 void AevusFrame::fireFlameUpdateEvent() {

@@ -2,13 +2,16 @@
 
 namespace ui {
 
-ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_) {
+ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_),
+    updateOngoing(false)
+{
     clearCtrl();
 }
 
 ViewModel::~ViewModel() { }
 
 void ViewModel::update() {
+    updateOngoing = true;
     int row = dvListCtrl->GetSelectedRow();
     clearCtrl();
     int numCols = dvListCtrl->GetColumnCount();
@@ -21,6 +24,11 @@ void ViewModel::update() {
         dvListCtrl->AppendItem(data);
     }
     afterUpdate(row);
+    updateOngoing = false;
+}
+
+bool ViewModel::updating() {
+    return updateOngoing;
 }
 
 void ViewModel::afterUpdate(int selectedRow) { }
@@ -32,7 +40,13 @@ void ViewModel::setValue(const wxVariant& value, int row, int col) {
 void ViewModel::selectRow(int row) {
     if (row != wxNOT_FOUND) {
         dvListCtrl->SelectRow(row);
+    } else if (getCount() > 0) {
+        dvListCtrl->SelectRow(0);
     }
+}
+
+int ViewModel::getSelectedRow() {
+    return dvListCtrl->GetSelectedRow();
 }
 
 void ViewModel::handleValueChangedEvent(wxDataViewEvent &event) {

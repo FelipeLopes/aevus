@@ -18,8 +18,11 @@ protected:
     virtual void setValue(const wxVariant& value, int row, int col);
     virtual void afterUpdate(int selectedRow);
     void selectRow(int row);
+    int getSelectedRow();
+    bool updating();
 private:
     wxDataViewListCtrl* dvListCtrl;
+    bool updateOngoing;
     void clearCtrl();
 };
 

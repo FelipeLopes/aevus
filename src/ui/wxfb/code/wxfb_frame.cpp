@@ -117,8 +117,8 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	transformsScrolledWindow->SetSizer( wSizer1 );
 	transformsScrolledWindow->Layout();
 	wSizer1->Fit( transformsScrolledWindow );
-	m_panel11 = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
-	m_splitter2->SplitHorizontally( transformsScrolledWindow, m_panel11, 300 );
+	trianglePanel = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_splitter2->SplitHorizontally( transformsScrolledWindow, trianglePanel, 300 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
 
 
@@ -145,7 +145,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxWrapSizer* wSizer3;
 	wSizer3 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
-	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 180,-1 ), 0 );
+	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, ID_FLAME_WEIGHTS, wxDefaultPosition, wxSize( 180,-1 ), 0 );
 	m_dataViewListColumn92 = weightsDataViewCtrl->AppendTextColumn( wxT("Xform"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
 	m_dataViewListColumn102 = weightsDataViewCtrl->AppendTextColumn( wxT("Weight"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
 	wSizer3->Add( weightsDataViewCtrl, 0, wxALL|wxEXPAND, 5 );
@@ -289,7 +289,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	postTransformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Connect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	transformChoice->Connect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
+	weightsDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	variationTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
@@ -305,7 +305,7 @@ WxfbFrame::~WxfbFrame()
 	postTransformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Disconnect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
-	transformChoice->Disconnect( wxEVT_COMMAND_CHOICE_SELECTED, wxCommandEventHandler( WxfbFrame::onTransformChosen ), NULL, this );
+	weightsDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
 	weightTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	variationTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );

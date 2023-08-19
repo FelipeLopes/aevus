@@ -48,6 +48,7 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_RESET,
 			ID_FLAME_POST_DV,
 			ID_FLAME_POST_RESET,
+			ID_FLAME_WEIGHTS,
 			ID_FLAME_WEIGHT,
 			ID_FLAME_VARIATION_ADD
 		};
@@ -70,7 +71,7 @@ class WxfbFrame : public wxFrame
 		wxDataViewColumn* m_dataViewListColumn101;
 		wxDataViewColumn* m_dataViewListColumn111;
 		wxButton* m_button41;
-		wxPanel* m_panel11;
+		wxPanel* trianglePanel;
 		wxPanel* m_panel2;
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel5;
@@ -99,7 +100,7 @@ class WxfbFrame : public wxFrame
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onDataViewLostFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
-		virtual void onTransformChosen( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onTransformSelected( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
