@@ -131,6 +131,13 @@ void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
     }
 }
 
+void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
+    switch (event.GetId()) {
+        case ID_FLAME_PRE_DV: preTransformModel->handleKillFocusEvent(event); break;
+        case ID_FLAME_POST_DV: postTransformModel->handleKillFocusEvent(event); break;
+    }
+}
+
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     if (flame->xforms.size() == 0) {
         transformsScrolledWindow->Disable();

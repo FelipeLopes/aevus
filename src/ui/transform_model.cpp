@@ -1,6 +1,5 @@
 #include "transform_model.hpp"
 #include "aevus_frame.hpp"
-#include "view_model.hpp"
 #include <stdexcept>
 #include <string>
 

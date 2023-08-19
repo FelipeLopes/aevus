@@ -9,6 +9,7 @@ class ViewModel {
 public:
     ViewModel(wxDataViewListCtrl* dvListCtrl);
     void handleValueChangedEvent(wxDataViewEvent& event);
+    virtual void handleKillFocusEvent(wxFocusEvent& event);
     void update();
     virtual ~ViewModel();
 protected:

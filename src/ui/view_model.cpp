@@ -9,7 +9,6 @@ ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_) {
 ViewModel::~ViewModel() { }
 
 void ViewModel::update() {
-    int row = dvListCtrl->GetSelectedRow();
     clearCtrl();
     int numCols = dvListCtrl->GetColumnCount();
     int numRows = getCount();
@@ -20,9 +19,6 @@ void ViewModel::update() {
         }
         dvListCtrl->AppendItem(data);
     }
-    if (row != wxNOT_FOUND) {
-        dvListCtrl->SelectRow(row);
-    }
 }
 
 void ViewModel::handleValueChangedEvent(wxDataViewEvent &event) {
@@ -31,6 +27,13 @@ void ViewModel::handleValueChangedEvent(wxDataViewEvent &event) {
     int col = event.GetColumn();
     auto value = dvListCtrl->GetTextValue(row, col);
     setValue(value, row, col);
+}
+
+void ViewModel::handleKillFocusEvent(wxFocusEvent& event) {
+    int row = dvListCtrl->GetSelectedRow();
+    if (row != wxNOT_FOUND) {
+        dvListCtrl->UnselectRow(row);
+    }
 }
 
 void ViewModel::clearCtrl() {
