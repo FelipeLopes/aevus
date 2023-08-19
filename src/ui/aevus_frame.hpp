@@ -6,6 +6,7 @@
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
 #include "transform_model.hpp"
+#include "variation_model.hpp"
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include "../core/flame.hpp"
@@ -27,6 +28,7 @@ private:
     std::shared_ptr<TransformModel> preTransformModel;
     std::shared_ptr<TransformModel> postTransformModel;
     std::shared_ptr<WeightsModel> weightsModel;
+    std::shared_ptr<VariationModel> variationModel;
     int editingId;
     int editingTransform;
 
@@ -52,13 +54,5 @@ private:
 
 wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
 wxDECLARE_EVENT(FLAME_XFORM_CHANGE_EVENT, wxCommandEvent);
-
-class VariationTextCompleter: public wxTextCompleterSimple {
-public:
-    VariationTextCompleter();
-    void GetCompletions(const wxString& prefix, wxArrayString& res) override;
-private:
-    std::set<std::string> validStrings;
-};
 
 }

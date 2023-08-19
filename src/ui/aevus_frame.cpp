@@ -1,5 +1,5 @@
 #include "aevus_frame.hpp"
-#include "transform_model.hpp"
+#include "variation_text_completer.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <algorithm>
 #include <exception>
@@ -11,7 +11,6 @@ using namespace boost::signals2;
 using boost::bind;
 
 using std::string;
-using std::vector;
 using std::to_string;
 
 namespace ui {
@@ -33,11 +32,15 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     postTransformModel =
         std::make_shared<TransformModel>(flame, this, postTransformDataViewCtrl, false);
     weightsModel = std::make_shared<WeightsModel>(flame, this, weightsDataViewCtrl);
+    variationModel = std::make_shared<VariationModel>(variationListCtrl);
 
     fileLoaded.connect(bind(&TransformModel::update, preTransformModel));
     fileLoaded.connect(bind(&TransformModel::update, postTransformModel));
     fileLoaded.connect(bind(&WeightsModel::update, weightsModel));
     loadFile("../in.xml");
+
+    variationModel->update();
+
     trianglePanel->SetFocus();
 }
 
@@ -148,8 +151,6 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
         return;
     }
     transformsScrolledWindow->Enable();
-    double weight = flame->xforms.get(editingTransform)->weight.getValue();
-    weightTextCtrl->ChangeValue(to_string(weight));
     auto varMap = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
     // HACK: we delete each item individually instead of calling DeleteAllItems()
     // because DeleteAllItems seems to be bugged, it changes the configuration
@@ -194,11 +195,7 @@ void AevusFrame::loadFile(std::string filename) {
     }
     flame->deserialize(inputStream);
     fclose(inputStream);
-    for (int i=0; i<flame->xforms.size(); i++) {
-        transformChoice->Append(to_string(i+1));
-    }
     editingTransform = 0;
-    transformChoice->SetSelection(0);
     fileLoaded();
 }
 
@@ -237,29 +234,6 @@ bool Aevus::OnInit()
     AevusFrame* frame = new AevusFrame(flame);
     frame->Show();
     return true;
-}
-
-VariationTextCompleter::VariationTextCompleter() {
-    for (auto el: core::Variation::variationNames.right) {
-        validStrings.insert(el.first);
-    }
-}
-
-void VariationTextCompleter::GetCompletions(const wxString& prefix, wxArrayString& res) {
-    vector<string> ans;
-    string pref = prefix.ToStdString();
-    if (pref.size() == 0) {
-        return;
-    }
-    std::copy_if(validStrings.begin(), validStrings.end(), std::back_inserter(ans), [&](string s) {
-        return s.starts_with(pref);
-    });
-    if (ans.size() == 1 && pref.compare(ans[0]) == 0) {
-        ans.clear();
-    }
-    for (auto el: ans) {
-        res.push_back(el);
-    }
 }
 
 }

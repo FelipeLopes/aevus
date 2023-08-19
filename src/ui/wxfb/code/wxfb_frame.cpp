@@ -145,94 +145,10 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxWrapSizer* wSizer3;
 	wSizer3 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
-	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, ID_FLAME_WEIGHTS, wxDefaultPosition, wxSize( 180,-1 ), 0 );
+	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 180,150 ), 0 );
 	m_dataViewListColumn92 = weightsDataViewCtrl->AppendTextColumn( wxT("Xform"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
 	m_dataViewListColumn102 = weightsDataViewCtrl->AppendTextColumn( wxT("Weight"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
 	wSizer3->Add( weightsDataViewCtrl, 0, wxALL|wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer19;
-	bSizer19 = new wxBoxSizer( wxVERTICAL );
-
-	wxFlexGridSizer* fgSizer1;
-	fgSizer1 = new wxFlexGridSizer( 2, 2, 0, 0 );
-	fgSizer1->SetFlexibleDirection( wxBOTH );
-	fgSizer1->SetNonFlexibleGrowMode( wxFLEX_GROWMODE_SPECIFIED );
-
-	wxBoxSizer* bSizer172;
-	bSizer172 = new wxBoxSizer( wxVERTICAL );
-
-
-	bSizer172->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText13 = new wxStaticText( m_scrolledWindow2, wxID_ANY, wxT("Transform:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_staticText13->Wrap( -1 );
-	bSizer172->Add( m_staticText13, 0, wxALL, 5 );
-
-
-	bSizer172->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	fgSizer1->Add( bSizer172, 1, wxEXPAND, 5 );
-
-	wxArrayString transformChoiceChoices;
-	transformChoice = new wxChoice( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxDefaultSize, transformChoiceChoices, 0 );
-	transformChoice->SetSelection( 0 );
-	fgSizer1->Add( transformChoice, 0, wxALL|wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer18;
-	bSizer18 = new wxBoxSizer( wxVERTICAL );
-
-
-	bSizer18->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_staticText142 = new wxStaticText( m_scrolledWindow2, wxID_ANY, wxT("Weight:"), wxDefaultPosition, wxDefaultSize, wxALIGN_RIGHT );
-	m_staticText142->Wrap( -1 );
-	bSizer18->Add( m_staticText142, 0, wxALL|wxEXPAND, 5 );
-
-
-	bSizer18->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	fgSizer1->Add( bSizer18, 1, wxEXPAND, 5 );
-
-	weightTextCtrl = new wxTextCtrl( m_scrolledWindow2, ID_FLAME_WEIGHT, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
-	fgSizer1->Add( weightTextCtrl, 0, wxALL|wxEXPAND, 5 );
-
-
-	bSizer19->Add( fgSizer1, 0, wxEXPAND, 5 );
-
-
-	bSizer19->Add( 0, 10, 0, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer20;
-	bSizer20 = new wxBoxSizer( wxHORIZONTAL );
-
-
-	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_bpButton4 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
-	bSizer20->Add( m_bpButton4, 0, wxALL, 5 );
-
-
-	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_bpButton5 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
-	bSizer20->Add( m_bpButton5, 0, wxALL, 5 );
-
-
-	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
-
-	m_bpButton6 = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW|0 );
-	bSizer20->Add( m_bpButton6, 0, wxALL, 5 );
-
-
-	bSizer20->Add( 0, 0, 1, wxEXPAND, 5 );
-
-
-	bSizer19->Add( bSizer20, 1, wxEXPAND, 5 );
-
-
-	wSizer3->Add( bSizer19, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer22;
 	bSizer22 = new wxBoxSizer( wxVERTICAL );
@@ -290,8 +206,6 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	postTransformDataViewCtrl->Connect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	weightsDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
-	weightTextCtrl->Connect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	weightTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	variationTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 	variationListCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onVariationValueChanged ), NULL, this );
 }
@@ -306,8 +220,6 @@ WxfbFrame::~WxfbFrame()
 	postTransformDataViewCtrl->Disconnect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
 	weightsDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
-	weightTextCtrl->Disconnect( wxEVT_SET_FOCUS, wxFocusEventHandler( WxfbFrame::onFocusFlameEdit ), NULL, this );
-	weightTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onEnterFlameUpdate ), NULL, this );
 	variationTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 	variationListCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onVariationValueChanged ), NULL, this );
 

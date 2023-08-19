@@ -27,9 +27,7 @@
 #include <wx/panel.h>
 #include <wx/splitter.h>
 #include <wx/stattext.h>
-#include <wx/choice.h>
 #include <wx/textctrl.h>
-#include <wx/bmpbuttn.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -48,8 +46,6 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_RESET,
 			ID_FLAME_POST_DV,
 			ID_FLAME_POST_RESET,
-			ID_FLAME_WEIGHTS,
-			ID_FLAME_WEIGHT,
 			ID_FLAME_VARIATION_ADD
 		};
 
@@ -79,13 +75,6 @@ class WxfbFrame : public wxFrame
 		wxDataViewListCtrl* weightsDataViewCtrl;
 		wxDataViewColumn* m_dataViewListColumn92;
 		wxDataViewColumn* m_dataViewListColumn102;
-		wxStaticText* m_staticText13;
-		wxChoice* transformChoice;
-		wxStaticText* m_staticText142;
-		wxTextCtrl* weightTextCtrl;
-		wxBitmapButton* m_bpButton4;
-		wxBitmapButton* m_bpButton5;
-		wxBitmapButton* m_bpButton6;
 		wxStaticText* m_staticText24;
 		wxTextCtrl* variationTextCtrl;
 		wxDataViewListCtrl* variationListCtrl;
@@ -101,8 +90,6 @@ class WxfbFrame : public wxFrame
 		virtual void onDataViewLostFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onTransformSelected( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void onFocusFlameEdit( wxFocusEvent& event ) { event.Skip(); }
-		virtual void onEnterFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 
