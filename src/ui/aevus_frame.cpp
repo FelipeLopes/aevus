@@ -7,6 +7,9 @@
 #include <stdexcept>
 #include <string>
 
+using namespace boost::signals2;
+using boost::bind;
+
 using std::string;
 using std::vector;
 using std::to_string;
@@ -30,6 +33,10 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     postTransformModel =
         std::make_shared<TransformModel>(flame, this, postTransformDataViewCtrl, false);
     weightsModel = std::make_shared<WeightsModel>(flame, this, weightsDataViewCtrl);
+
+    fileLoaded.connect(bind(&TransformModel::update, preTransformModel));
+    fileLoaded.connect(bind(&TransformModel::update, postTransformModel));
+    fileLoaded.connect(bind(&WeightsModel::update, weightsModel));
     loadFile("../in.xml");
     trianglePanel->SetFocus();
 }
@@ -192,7 +199,7 @@ void AevusFrame::loadFile(std::string filename) {
     }
     editingTransform = 0;
     transformChoice->SetSelection(0);
-    fireFlameUpdateEvent();
+    fileLoaded();
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {

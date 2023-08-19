@@ -3,6 +3,8 @@
 #include <set>
 #include <wx/wx.h>
 #include <wx/textcompleter.h>
+#include <boost/signals2.hpp>
+#include <boost/bind.hpp>
 #include "transform_model.hpp"
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
@@ -27,6 +29,8 @@ private:
     std::shared_ptr<WeightsModel> weightsModel;
     int editingId;
     int editingTransform;
+
+    boost::signals2::signal<void ()> fileLoaded;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;
