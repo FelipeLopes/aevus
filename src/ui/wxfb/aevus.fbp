@@ -464,7 +464,6 @@
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
                                                                                 <event name="OnDataViewListCtrlItemValueChanged">onTransformValueChanged</event>
-                                                                                <event name="OnDataViewListCtrlSelectionChanged">onDataViewSelection</event>
                                                                                 <event name="OnKillFocus">onDataViewLostFocus</event>
                                                                                 <object class="dataViewListColumn" expanded="1">
                                                                                     <property name="align">wxALIGN_CENTER_HORIZONTAL</property>
