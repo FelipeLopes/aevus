@@ -75,6 +75,9 @@ class WxfbFrame : public wxFrame
 		wxSplitterWindow* m_splitter3;
 		wxPanel* m_panel5;
 		wxScrolledWindow* m_scrolledWindow2;
+		wxDataViewListCtrl* weightsDataViewCtrl;
+		wxDataViewColumn* m_dataViewListColumn92;
+		wxDataViewColumn* m_dataViewListColumn102;
 		wxStaticText* m_staticText13;
 		wxChoice* transformChoice;
 		wxStaticText* m_staticText142;

@@ -15,7 +15,9 @@ public:
 protected:
     virtual int getCount() const = 0;
     virtual wxVariant getValue(int row, int col) const = 0;
-    virtual void setValue(const wxVariant& value, int row, int col) = 0;
+    virtual void setValue(const wxVariant& value, int row, int col);
+    virtual void afterUpdate(int selectedRow);
+    void selectRow(int row);
 private:
     wxDataViewListCtrl* dvListCtrl;
     void clearCtrl();

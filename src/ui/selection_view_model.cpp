@@ -6,4 +6,8 @@ SelectionViewModel::SelectionViewModel(wxDataViewListCtrl* dvListCtrl): ViewMode
 
 void SelectionViewModel::handleKillFocusEvent(wxFocusEvent &event) { }
 
+void SelectionViewModel::afterUpdate(int selectedRow) {
+    selectRow(selectedRow);
+}
+
 }

@@ -9,6 +9,7 @@ ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_) {
 ViewModel::~ViewModel() { }
 
 void ViewModel::update() {
+    int row = dvListCtrl->GetSelectedRow();
     clearCtrl();
     int numCols = dvListCtrl->GetColumnCount();
     int numRows = getCount();
@@ -18,6 +19,19 @@ void ViewModel::update() {
             data.push_back(getValue(i, j));
         }
         dvListCtrl->AppendItem(data);
+    }
+    afterUpdate(row);
+}
+
+void ViewModel::afterUpdate(int selectedRow) { }
+
+void ViewModel::setValue(const wxVariant& value, int row, int col) {
+    update();
+}
+
+void ViewModel::selectRow(int row) {
+    if (row != wxNOT_FOUND) {
+        dvListCtrl->SelectRow(row);
     }
 }
 

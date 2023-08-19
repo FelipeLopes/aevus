@@ -29,6 +29,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         std::make_shared<TransformModel>(flame, this, preTransformDataViewCtrl, true);
     postTransformModel =
         std::make_shared<TransformModel>(flame, this, postTransformDataViewCtrl, false);
+    weightsModel = std::make_shared<WeightsModel>(weightsDataViewCtrl);
     loadFile("../in.xml");
 }
 
@@ -165,6 +166,7 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     }
     preTransformModel->update();
     postTransformModel->update();
+    weightsModel->update();
 }
 
 void AevusFrame::onFlameXformChange(wxCommandEvent& event) {

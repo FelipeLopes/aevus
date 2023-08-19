@@ -145,6 +145,11 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxWrapSizer* wSizer3;
 	wSizer3 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
+	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 180,-1 ), 0 );
+	m_dataViewListColumn92 = weightsDataViewCtrl->AppendTextColumn( wxT("Xform"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn102 = weightsDataViewCtrl->AppendTextColumn( wxT("Weight"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
+	wSizer3->Add( weightsDataViewCtrl, 0, wxALL|wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer19;
 	bSizer19 = new wxBoxSizer( wxVERTICAL );
 
