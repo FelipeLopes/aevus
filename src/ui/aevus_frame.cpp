@@ -106,8 +106,8 @@ void AevusFrame::onExit(wxCommandEvent& event) {
 }
 
 void AevusFrame::onAbout(wxCommandEvent& event) {
-    wxMessageBox("This is a wxWidgets' Hello world sample",
-        "About Hello World", wxOK | wxICON_INFORMATION);
+    wxMessageBox("This is an early alpha of the Aevus fractal flame editor.",
+        "About Aevus", wxOK | wxICON_INFORMATION);
 }
 
 void AevusFrame::loadFile(std::string filename) {
