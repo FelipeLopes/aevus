@@ -5,6 +5,7 @@
 #include <wx/textcompleter.h>
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
+#include "event_broker.hpp"
 #include "transform_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
@@ -25,6 +26,8 @@ public:
     void loadFile(std::string filename);
 private:
     std::shared_ptr<core::Flame> flame;
+    std::shared_ptr<EventBroker> eventBroker;
+
     std::shared_ptr<TransformModel> preTransformModel;
     std::shared_ptr<TransformModel> postTransformModel;
     std::shared_ptr<WeightsModel> weightsModel;

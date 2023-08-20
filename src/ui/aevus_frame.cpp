@@ -1,4 +1,6 @@
 #include "aevus_frame.hpp"
+#include "event_broker.hpp"
+#include "transform_model.hpp"
 #include "variation_text_completer.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <algorithm>
@@ -27,6 +29,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     editingId = -1;
     editingTransform = -1;
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
+    eventBroker = std::make_shared<EventBroker>();
     preTransformModel =
         std::make_shared<TransformModel>(flame, this, preTransformDataViewCtrl, true);
     postTransformModel =
@@ -37,6 +40,17 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     fileLoaded.connect(bind(&TransformModel::update, preTransformModel));
     fileLoaded.connect(bind(&TransformModel::update, postTransformModel));
     fileLoaded.connect(bind(&WeightsModel::update, weightsModel));
+
+    preTransformModel->transformValueChanged
+        .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
+    postTransformModel->transformValueChanged
+        .connect(bind(&EventBroker::postTransformValueChanged, eventBroker));
+
+    eventBroker->activeXformValueChanged
+        .connect(bind(&TransformModel::update, preTransformModel));
+    eventBroker->activeXformValueChanged
+        .connect(bind(&TransformModel::update, postTransformModel));
+
     loadFile("../in.xml");
 
     variationModel->update();
@@ -70,24 +84,10 @@ void AevusFrame::fireFlameXformChangeEvent() {
 
 void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
     int eventId = event.GetId();
-    if (eventId == ID_FLAME_PRE_RESET) {
-        core::CoefsAffine coefs;
-        if (flame->xforms.size() == 0) {
-            return;
-        }
-        auto flameCoefs = flame->xforms.get(0)->coefs.get();
-        *flameCoefs = coefs;
-    } else if (eventId == ID_FLAME_POST_RESET) {
-        core::PostAffine post;
-        if (flame->xforms.size() == 0) {
-            return;
-        }
-        auto flamePost = flame->xforms.get(0)->post.get();
-        *flamePost = post;
-    } else {
-        throw std::invalid_argument("Unrecognized ID");
+    switch (eventId) {
+        case ID_FLAME_PRE_RESET: preTransformModel->handleReset(); break;
+        case ID_FLAME_POST_RESET: postTransformModel->handleReset(); break;
     }
-    fireFlameUpdateEvent();
 }
 
 void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {

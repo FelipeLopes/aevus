@@ -22,6 +22,31 @@ void TransformModel::handleActiveFormChangedEvent(wxCommandEvent& event) {
     update();
 }
 
+void TransformModel::handleReset() {
+    bool changing = false;
+    core::Affine* aff = NULL;
+    if (accessCoefs) {
+        aff = flame->xforms.get(activeTransform)->coefs.get();
+    } else {
+        aff = flame->xforms.get(activeTransform)->post.get();
+    }
+    changing |= (aff->xx != 1);
+    changing |= (aff->xy != 0);
+    changing |= (aff->yx != 0);
+    changing |= (aff->yy != 1);
+    changing |= (aff->ox != 0);
+    changing |= (aff->oy != 0);
+    if (changing) {
+        aff->xx = 1;
+        aff->xy = 0;
+        aff->yx = 0;
+        aff->yy = 1;
+        aff->ox = 0;
+        aff->oy = 0;
+        transformValueChanged();
+    }
+}
+
 int TransformModel::getCount() const {
     return 3;
 }
@@ -71,16 +96,19 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
         aff = flame->xforms.get(activeTransform)->post.get();
     }
     int num = 2*row + col - 1;
+    double oldVal = 0;
     switch (num) {
-        case 0: aff->xx = value; break;
-        case 1: aff->xy = value; break;
-        case 2: aff->yx = value; break;
-        case 3: aff->yy = value; break;
-        case 4: aff->ox = value; break;
-        case 5: aff->oy = value; break;
+        case 0: oldVal = aff->xx; aff->xx = value; break;
+        case 1: oldVal = aff->xy; aff->xy = value; break;
+        case 2: oldVal = aff->yx; aff->yx = value; break;
+        case 3: oldVal = aff->yy; aff->yy = value; break;
+        case 4: oldVal = aff->ox; aff->ox = value; break;
+        case 5: oldVal = aff->oy; aff->oy = value; break;
         default: throw std::invalid_argument("Invalid cell");
     }
-    fireFlameUpdateEvent();
+    if (oldVal != value) {
+        transformValueChanged();
+    }
 }
 
 void TransformModel::fireFlameUpdateEvent() {

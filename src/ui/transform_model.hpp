@@ -4,6 +4,7 @@
 #include "../core/flame.hpp"
 #include <memory>
 #include <wx/dataview.h>
+#include <boost/signals2.hpp>
 
 namespace ui {
 
@@ -12,6 +13,8 @@ public:
     TransformModel(std::shared_ptr<core::Flame> flame, wxWindow* eventHandler,
         wxDataViewListCtrl* transformCtrl, bool accessCoefs);
     void handleActiveFormChangedEvent(wxCommandEvent& event);
+    void handleReset();
+    boost::signals2::signal<void ()> transformValueChanged;
 private:
     int getCount() const override;
     wxVariant getValue(int row, int col) const override;
