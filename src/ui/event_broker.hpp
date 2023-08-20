@@ -9,9 +9,13 @@ public:
     EventBroker();
 
     boost::signals2::signal<void ()> activeXformValueChanged;
+    boost::signals2::signal<void (int)> activeXformChanged;
+    boost::signals2::signal<void ()> flameWeightsChanged;
 
     void preTransformValueChanged();
     void postTransformValueChanged();
+    void xformSelectedOnWeights(int id);
+    void weightValueChanged();
 };
 
 }

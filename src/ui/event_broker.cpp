@@ -12,4 +12,12 @@ void EventBroker::postTransformValueChanged() {
     activeXformValueChanged();
 }
 
+void EventBroker::xformSelectedOnWeights(int id) {
+    activeXformChanged(id);
+}
+
+void EventBroker::weightValueChanged() {
+    flameWeightsChanged();
+}
+
 }

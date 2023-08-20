@@ -1055,6 +1055,7 @@
                                                                 <property name="window_extra_style"></property>
                                                                 <property name="window_name"></property>
                                                                 <property name="window_style"></property>
+                                                                <event name="OnDataViewListCtrlItemValueChanged">onWeightEdited</event>
                                                                 <event name="OnDataViewListCtrlSelectionChanged">onTransformSelected</event>
                                                                 <object class="dataViewListColumn" expanded="1">
                                                                     <property name="align">wxALIGN_CENTER_HORIZONTAL</property>
@@ -1072,7 +1073,7 @@
                                                                     <property name="ellipsize"></property>
                                                                     <property name="flags">wxDATAVIEW_COL_RESIZABLE</property>
                                                                     <property name="label">Weight</property>
-                                                                    <property name="mode">wxDATAVIEW_CELL_INERT</property>
+                                                                    <property name="mode">wxDATAVIEW_CELL_EDITABLE</property>
                                                                     <property name="name">m_dataViewListColumn102</property>
                                                                     <property name="permission">protected</property>
                                                                     <property name="type">Text</property>

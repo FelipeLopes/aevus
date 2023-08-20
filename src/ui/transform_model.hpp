@@ -10,9 +10,9 @@ namespace ui {
 
 class TransformModel: public ViewModel {
 public:
-    TransformModel(std::shared_ptr<core::Flame> flame, wxWindow* eventHandler,
-        wxDataViewListCtrl* transformCtrl, bool accessCoefs);
-    void handleActiveFormChangedEvent(wxCommandEvent& event);
+    TransformModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* transformCtrl,
+        bool accessCoefs);
+    void handleActiveFormChanged(int id);
     void handleReset();
     boost::signals2::signal<void ()> transformValueChanged;
 private:
@@ -22,9 +22,7 @@ private:
 
     std::shared_ptr<core::Flame> flame;
     int activeTransform;
-    wxWindow* eventHandler;
     bool accessCoefs;
-    void fireFlameUpdateEvent();
 };
 
 }

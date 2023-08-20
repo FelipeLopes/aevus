@@ -1,5 +1,4 @@
 #include "transform_model.hpp"
-#include "aevus_frame.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -9,16 +8,14 @@ using std::to_string;
 
 namespace ui {
 
-TransformModel::TransformModel(shared_ptr<Flame> flame_, wxWindow* eventHandler_,
-    wxDataViewListCtrl* transformCtrl, bool accessCoefs_):
-    ViewModel(transformCtrl), flame(flame_),
-    eventHandler(eventHandler_), accessCoefs(accessCoefs_)
+TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* transformCtrl,
+    bool accessCoefs_): ViewModel(transformCtrl), flame(flame_), accessCoefs(accessCoefs_)
 {
     activeTransform = 0;
 }
 
-void TransformModel::handleActiveFormChangedEvent(wxCommandEvent& event) {
-    activeTransform = event.GetInt();
+void TransformModel::handleActiveFormChanged(int id) {
+    activeTransform = id;
     update();
 }
 
@@ -109,12 +106,6 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
     if (oldVal != value) {
         transformValueChanged();
     }
-}
-
-void TransformModel::fireFlameUpdateEvent() {
-    wxCommandEvent flameUpdateEvent(FLAME_UPDATE_EVENT, wxID_ANY);
-    flameUpdateEvent.SetEventObject(eventHandler);
-    eventHandler->ProcessWindowEvent(flameUpdateEvent);
 }
 
 }

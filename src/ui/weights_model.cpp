@@ -1,29 +1,21 @@
 #include "weights_model.hpp"
-#include "aevus_frame.hpp"
 #include "selection_view_model.hpp"
 #include <string>
 
 using core::Flame;
 using std::shared_ptr;
+using std::string;
 using std::to_string;
 
 namespace ui {
 
-WeightsModel::WeightsModel(shared_ptr<Flame> flame_, wxWindow* eventHandler_,
-    wxDataViewListCtrl* weightsListCtrl): SelectionViewModel(weightsListCtrl),
-    flame(flame_), eventHandler(eventHandler_) { }
+WeightsModel::WeightsModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* weightsListCtrl):
+    SelectionViewModel(weightsListCtrl), flame(flame_) { }
 
 void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     if (!updating()) {
-        fireFlameXformChangeEvent();
+        xformSelected(getSelectedRow());
     }
-}
-
-void WeightsModel::fireFlameXformChangeEvent() {
-    wxCommandEvent flameXformChangeEvent(FLAME_XFORM_CHANGE_EVENT, wxID_ANY);
-    flameXformChangeEvent.SetEventObject(eventHandler);
-    flameXformChangeEvent.SetInt(getSelectedRow());
-    eventHandler->ProcessWindowEvent(flameXformChangeEvent);
 }
 
 int WeightsModel::getCount() const {
@@ -38,7 +30,23 @@ wxVariant WeightsModel::getValue(int row, int col) const {
 }
 
 void WeightsModel::setValue(const wxVariant& val, int row, int col) {
-    update();
+    if (col == 0) {
+        return;
+    }
+    double oldValue = flame->xforms.get(row)->weight.getValue();
+    string text = val.GetString().ToStdString();
+    if (text == to_string(oldValue)) {
+        return;
+    }
+    double newValue = 0;
+    try {
+        newValue = std::stod(val.GetString().ToStdString());
+    } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    flame->xforms.get(row)->weight.setValue(newValue);
+    weightsChanged();
 }
 
 }

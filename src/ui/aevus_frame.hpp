@@ -46,16 +46,10 @@ private:
     void onVariationValueChanged(wxDataViewEvent& event) override;
     void onTransformValueChanged(wxDataViewEvent& event) override;
     void onTransformSelected(wxDataViewEvent& event) override;
+    void onWeightEdited(wxDataViewEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
 
     void onFlameUpdate(wxCommandEvent& event);
-    void onFlameXformChange(wxCommandEvent& event);
-
-    void fireFlameUpdateEvent();
-    void fireFlameXformChangeEvent();
 };
-
-wxDECLARE_EVENT(FLAME_UPDATE_EVENT, wxCommandEvent);
-wxDECLARE_EVENT(FLAME_XFORM_CHANGE_EVENT, wxCommandEvent);
 
 }
