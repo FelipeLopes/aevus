@@ -160,7 +160,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_staticText24->Wrap( -1 );
 	bSizer23->Add( m_staticText24, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-	variationTextCtrl = new wxTextCtrl( m_scrolledWindow2, ID_FLAME_VARIATION_ADD, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
+	variationTextCtrl = new wxTextCtrl( m_scrolledWindow2, ID_FLAME_VARIATION_ADD, wxEmptyString, wxDefaultPosition, wxSize( 180,-1 ), wxTE_PROCESS_ENTER );
 	bSizer23->Add( variationTextCtrl, 1, wxALL, 5 );
 
 

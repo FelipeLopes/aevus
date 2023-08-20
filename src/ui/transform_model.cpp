@@ -71,6 +71,7 @@ void TransformModel::getValues(vector<wxVector<wxVariant>>& data) const {
 
 void TransformModel::setValue(const wxVariant& val, int row, int col) {
     if (col == 0) {
+        update();
         return;
     }
     int num = 2*row + col - 1;
@@ -91,13 +92,14 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
         default: throw std::invalid_argument("Invalid cell");
     }
     string text = val.GetString().ToStdString();
-    if (text == to_string(oldValue)) {
-        return;
-    }
     double newValue = 0;
     try {
-        newValue = std::stod(val.GetString().ToStdString());
+        newValue = std::stod(text);
     } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    if (newValue == oldValue) {
         update();
         return;
     }

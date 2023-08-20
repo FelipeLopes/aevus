@@ -1,6 +1,7 @@
 #include "aevus_frame.hpp"
 #include "event_broker.hpp"
 #include "transform_model.hpp"
+#include "variation_model.hpp"
 #include "variation_text_completer.hpp"
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
@@ -39,7 +40,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     weightsModel->weightsChanged
         .connect(bind(&EventBroker::weightValueChanged, eventBroker));
     weightsModel->xformSelected
-        .connect(bind(&EventBroker::xformSelectedOnWeights, eventBroker, _1));
+        .connect(bind(&EventBroker::xformSelected, eventBroker, _1));
+    variationModel->variationDataChanged
+        .connect(bind(&EventBroker::variationValueChanged, eventBroker));
 
     eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
@@ -51,10 +54,12 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(bind(&TransformModel::handleActiveXformChanged, preTransformModel, _1));
     eventBroker->activeXformChanged
         .connect(bind(&TransformModel::handleActiveXformChanged, postTransformModel, _1));
+    eventBroker->activeXformChanged
+        .connect(bind(&VariationModel::handleActiveXformChanged, variationModel, _1));
+    eventBroker->variationParamsChanged
+        .connect(bind(&VariationModel::update, variationModel));
 
     loadFile("../in.xml");
-
-    variationModel->update();
 
     trianglePanel->SetFocus();
 }
@@ -103,31 +108,7 @@ void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
 }
 
 void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
-    /*
-    auto item = event.GetItem();
-    int row = variationListCtrl->ItemToRow(item);
-    string variation = variationListCtrl->GetTextValue(row, 0).ToStdString();
-    string text = variationListCtrl->GetTextValue(row, 1).ToStdString();
-    auto vars = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
-    auto it = core::Variation::variationNames.right.find(variation);
-    if (it == core::Variation::variationNames.right.end()) {
-        throw std::invalid_argument("Invalid variation name");
-    }
-    auto id = it->second;
-    try {
-        double value = std::stod(text);
-        if (value == 0.0) {
-            vars.erase(id);
-        } else {
-            vars[id] = value;
-        }
-        core::VariationMap newVarMap;
-        newVarMap.variations = vars;
-        flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
-    } catch (std::invalid_argument& e) {
-        double val = vars[id];
-        variationListCtrl->SetValue(to_string(val), row, 1);
-    }*/
+    variationModel->handleValueChangedEvent(event);
 }
 
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
@@ -135,35 +116,6 @@ void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
         case ID_FLAME_PRE_DV: preTransformModel->handleKillFocusEvent(event); break;
         case ID_FLAME_POST_DV: postTransformModel->handleKillFocusEvent(event); break;
     }
-}
-
-void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
-    /*
-    if (flame->xforms.size() == 0) {
-        transformsScrolledWindow->Disable();
-        return;
-    }
-    transformsScrolledWindow->Enable();
-    auto varMap = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
-    // HACK: we delete each item individually instead of calling DeleteAllItems()
-    // because DeleteAllItems seems to be bugged, it changes the configuration
-    // of the data view ctrl to enable the search textbox in Ubuntu, and we don't want it.
-    for (int i=variationListCtrl->GetItemCount(); i>0; i--) {
-        variationListCtrl->DeleteItem(i-1);
-    }
-    for (auto el: varMap) {
-        wxVector<wxVariant> item;
-        auto varNameIt = core::Variation::variationNames.left.find(el.first);
-        if (varNameIt == core::Variation::variationNames.left.end()) {
-            throw std::invalid_argument("Unknown variation ID");
-        }
-        item.push_back(wxVariant(varNameIt->second));
-        item.push_back(wxVariant(to_string(el.second)));
-        variationListCtrl->AppendItem(item);
-    }
-    preTransformModel->update();
-    postTransformModel->update();
-    weightsModel->update();*/
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {

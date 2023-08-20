@@ -1,6 +1,7 @@
 #include "variation_model.hpp"
 
 using std::shared_ptr;
+using std::string;
 using std::to_string;
 using std::vector;
 using core::Flame;
@@ -24,6 +25,37 @@ void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
         row.push_back(to_string(el.second));
         data.push_back(row);
     }
+}
+
+void VariationModel::setValue(const wxVariant& val, int row, int col) {
+    if (col == 0) {
+        update();
+        return;
+    }
+    auto varMap = &flame->xforms.get(activeTransform)->variationMap.get()->variations;
+    auto it = varMap->begin();
+    for (int i=0; i<row; i++) {
+        ++it;
+    }
+    double oldValue = it->second;
+    string text = val.GetString().ToStdString();
+    double newValue = 0;
+    try {
+        newValue = std::stod(text);
+    } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    if (newValue == oldValue) {
+        update();
+        return;
+    }
+    if (newValue == 0.0) {
+        varMap->erase(it->first);
+    } else {
+        (*varMap)[it->first] = newValue;
+    }
+    variationDataChanged();
 }
 
 }

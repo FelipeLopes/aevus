@@ -12,12 +12,16 @@ void EventBroker::postTransformValueChanged() {
     activeXformCoordsChanged();
 }
 
-void EventBroker::xformSelectedOnWeights(int id) {
+void EventBroker::xformSelected(int id) {
     activeXformChanged(id);
 }
 
 void EventBroker::weightValueChanged() {
     flameWeightsChanged();
+}
+
+void EventBroker::variationValueChanged() {
+    variationParamsChanged();
 }
 
 }

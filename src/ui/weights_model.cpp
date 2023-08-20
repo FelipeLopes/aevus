@@ -31,17 +31,19 @@ void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
 
 void WeightsModel::setValue(const wxVariant& val, int row, int col) {
     if (col == 0) {
+        update();
         return;
     }
     double oldValue = flame->xforms.get(row)->weight.getValue();
     string text = val.GetString().ToStdString();
-    if (text == to_string(oldValue)) {
-        return;
-    }
     double newValue = 0;
     try {
-        newValue = std::stod(val.GetString().ToStdString());
+        newValue = std::stod(text);
     } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    if (newValue == oldValue) {
         update();
         return;
     }
