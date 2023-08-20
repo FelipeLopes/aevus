@@ -32,10 +32,6 @@ private:
     std::shared_ptr<TransformModel> postTransformModel;
     std::shared_ptr<WeightsModel> weightsModel;
     std::shared_ptr<VariationModel> variationModel;
-    int editingId;
-    int editingTransform;
-
-    boost::signals2::signal<void ()> fileLoaded;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;

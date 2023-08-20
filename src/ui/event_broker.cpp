@@ -5,11 +5,11 @@ namespace ui {
 EventBroker::EventBroker() { }
 
 void EventBroker::preTransformValueChanged() {
-    activeXformValueChanged();
+    activeXformCoordsChanged();
 }
 
 void EventBroker::postTransformValueChanged() {
-    activeXformValueChanged();
+    activeXformCoordsChanged();
 }
 
 void EventBroker::xformSelectedOnWeights(int id) {

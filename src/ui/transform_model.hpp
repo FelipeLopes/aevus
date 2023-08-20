@@ -21,8 +21,8 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
 
     std::shared_ptr<core::Flame> flame;
-    int activeTransform;
     bool accessCoefs;
+    int activeTransform;
 };
 
 }

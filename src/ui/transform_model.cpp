@@ -9,10 +9,8 @@ using std::to_string;
 namespace ui {
 
 TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* transformCtrl,
-    bool accessCoefs_): ViewModel(transformCtrl), flame(flame_), accessCoefs(accessCoefs_)
-{
-    activeTransform = 0;
-}
+    bool accessCoefs_): ViewModel(transformCtrl), flame(flame_), accessCoefs(accessCoefs_),
+    activeTransform(0) { }
 
 void TransformModel::handleActiveFormChanged(int id) {
     activeTransform = id;

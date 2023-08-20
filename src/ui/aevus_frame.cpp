@@ -14,7 +14,6 @@ using namespace boost::signals2;
 using boost::bind;
 
 using std::string;
-using std::to_string;
 
 namespace ui {
 
@@ -22,8 +21,6 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     flame(flame_)
 {
     SetStatusText("Welcome to Aevus!");
-    editingId = -1;
-    editingTransform = -1;
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
     eventBroker = std::make_shared<EventBroker>();
     preTransformModel =
@@ -32,10 +29,6 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         std::make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
     variationModel = std::make_shared<VariationModel>(variationListCtrl);
-
-    fileLoaded.connect(bind(&TransformModel::update, preTransformModel));
-    fileLoaded.connect(bind(&TransformModel::update, postTransformModel));
-    fileLoaded.connect(bind(&WeightsModel::update, weightsModel));
 
     preTransformModel->transformValueChanged
         .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
@@ -46,9 +39,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     weightsModel->xformSelected
         .connect(bind(&EventBroker::xformSelectedOnWeights, eventBroker, _1));
 
-    eventBroker->activeXformValueChanged
+    eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
-    eventBroker->activeXformValueChanged
+    eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, postTransformModel));
     eventBroker->flameWeightsChanged
         .connect(bind(&WeightsModel::update, weightsModel));
@@ -88,6 +81,7 @@ void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
 }
 
 void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
+    /*
     string text = variationTextCtrl->GetValue().ToStdString();
     auto validNames = core::Variation::variationNames.right;
     auto nameIt = validNames.find(text);
@@ -103,10 +97,11 @@ void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
     core::VariationMap newVarMap;
     newVarMap.variations = vars;
     flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
-    variationTextCtrl->ChangeValue("");
+    variationTextCtrl->ChangeValue("");*/
 }
 
 void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
+    /*
     auto item = event.GetItem();
     int row = variationListCtrl->ItemToRow(item);
     string variation = variationListCtrl->GetTextValue(row, 0).ToStdString();
@@ -130,7 +125,7 @@ void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {
     } catch (std::invalid_argument& e) {
         double val = vars[id];
         variationListCtrl->SetValue(to_string(val), row, 1);
-    }
+    }*/
 }
 
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
@@ -141,6 +136,7 @@ void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
 }
 
 void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
+    /*
     if (flame->xforms.size() == 0) {
         transformsScrolledWindow->Disable();
         return;
@@ -165,7 +161,7 @@ void AevusFrame::onFlameUpdate(wxCommandEvent& event) {
     }
     preTransformModel->update();
     postTransformModel->update();
-    weightsModel->update();
+    weightsModel->update();*/
 }
 
 void AevusFrame::onExit(wxCommandEvent& event) {
@@ -185,8 +181,8 @@ void AevusFrame::loadFile(std::string filename) {
     }
     flame->deserialize(inputStream);
     fclose(inputStream);
-    editingTransform = 0;
-    fileLoaded();
+    eventBroker->activeXformChanged(0);
+    eventBroker->flameWeightsChanged();
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {
