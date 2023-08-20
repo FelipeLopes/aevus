@@ -2,7 +2,6 @@
 #include "event_broker.hpp"
 #include "transform_model.hpp"
 #include "variation_model.hpp"
-#include "variation_text_completer.hpp"
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include <algorithm>
@@ -22,7 +21,6 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     flame(flame_)
 {
     SetStatusText("Welcome to Aevus!");
-    variationTextCtrl->AutoComplete(new VariationTextCompleter);
 
     eventBroker = std::make_shared<EventBroker>();
 
@@ -31,7 +29,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     postTransformModel =
         std::make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
-    variationModel = std::make_shared<VariationModel>(flame, variationListCtrl);
+    variationModel =
+        std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
 
     preTransformModel->transformCoordsChanged
         .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
@@ -88,23 +87,7 @@ void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
 }
 
 void AevusFrame::onVariationAddEnter(wxCommandEvent& event) {
-    /*
-    string text = variationTextCtrl->GetValue().ToStdString();
-    auto validNames = core::Variation::variationNames.right;
-    auto nameIt = validNames.find(text);
-    if (nameIt == validNames.end()) {
-        return;
-    }
-    auto id = nameIt->second;
-    auto vars = flame->xforms.get(editingTransform)->variationMap.getValue().variations;
-    if (vars.find(id) != vars.end()) {
-        return;
-    }
-    vars[id] = 1.0;
-    core::VariationMap newVarMap;
-    newVarMap.variations = vars;
-    flame->xforms.get(editingTransform)->variationMap.setValue(newVarMap);
-    variationTextCtrl->ChangeValue("");*/
+    variationModel->handleVariationAdd();
 }
 
 void AevusFrame::onVariationValueChanged(wxDataViewEvent& event) {

@@ -1,4 +1,6 @@
 #include "variation_model.hpp"
+#include "variation_text_completer.hpp"
+#include <stdexcept>
 
 using std::shared_ptr;
 using std::string;
@@ -8,12 +10,34 @@ using core::Flame;
 
 namespace ui {
 
-VariationModel::VariationModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* variationCtrl):
-    ViewModel(variationCtrl), flame(flame_) { }
+VariationModel::VariationModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* variationCtrl,
+    wxTextCtrl* variationAddCtrl_): ViewModel(variationCtrl),
+    flame(flame_), variationAddCtrl(variationAddCtrl_)
+{
+    variationAddCtrl->AutoComplete(new VariationTextCompleter);
+}
 
 void VariationModel::handleActiveXformChanged(int id) {
     activeTransform = id;
     update();
+}
+
+void VariationModel::handleVariationAdd() {
+    string text = variationAddCtrl->GetValue().ToStdString();
+    auto varLookup = core::VariationLookup::getInstance();
+    try {
+        auto id = varLookup->nameToId(text);
+        auto varMap = &flame->xforms.get(activeTransform)->variationMap.get()->variations;
+        if (varMap->find(id) != varMap->end()) {
+            variationAddCtrl->ChangeValue("");
+            return;
+        }
+        (*varMap)[id] = 1.0;
+        variationAddCtrl->ChangeValue("");
+        variationDataChanged();
+    } catch (std::invalid_argument& e) {
+        return;
+    }
 }
 
 void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {

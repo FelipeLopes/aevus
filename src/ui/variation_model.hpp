@@ -9,8 +9,10 @@ namespace ui {
 
 class VariationModel: public ViewModel {
 public:
-    VariationModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* variationCtrl);
+    VariationModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* variationCtrl,
+        wxTextCtrl* variationAddCtrl);
     void handleActiveXformChanged(int id);
+    void handleVariationAdd();
     boost::signals2::signal<void ()> variationDataChanged;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
@@ -18,6 +20,7 @@ private:
 
     std::shared_ptr<core::Flame> flame;
     int activeTransform;
+    wxTextCtrl* variationAddCtrl;
 };
 
 }
