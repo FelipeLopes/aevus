@@ -1,5 +1,6 @@
 #include "variation.hpp"
 #include <boost/assign.hpp>
+#include <stdexcept>
 
 using boost::assign::list_of;
 using boost::bimap;
@@ -42,6 +43,24 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
         }
         variations[it->second] = stod(kv.second);
     }
+}
+
+VariationLookup::VariationLookup() { }
+
+string VariationLookup::idToName(Variation::VariationID id) const {
+    auto it = Variation::variationNames.left.find(id);
+    if (it == Variation::variationNames.left.end()) {
+        throw std::invalid_argument("Invalid variation ID");
+    }
+    return it->second;
+}
+
+Variation::VariationID VariationLookup::nameToId(string name) const {
+    auto it = Variation::variationNames.right.find(name);
+    if (it == Variation::variationNames.right.end()) {
+        throw std::invalid_argument("Invalid variation name");
+    }
+    return it->second;
 }
 
 }

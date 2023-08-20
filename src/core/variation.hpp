@@ -29,4 +29,18 @@ public:
     std::map<Variation::VariationID, double> variations;
 };
 
+class VariationLookup {
+public:
+    static const VariationLookup* const getInstance() {
+        static const VariationLookup instance;
+        return &instance;
+    }
+    std::string idToName(Variation::VariationID) const;
+    Variation::VariationID nameToId(std::string name) const;
+private:
+    VariationLookup();
+    VariationLookup(VariationLookup const&) = delete;
+    void operator= (VariationLookup const&) = delete;
+};
+
 }

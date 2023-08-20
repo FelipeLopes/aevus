@@ -6,6 +6,7 @@ using core::Flame;
 using std::shared_ptr;
 using std::string;
 using std::to_string;
+using std::vector;
 
 namespace ui {
 
@@ -13,7 +14,7 @@ TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* tra
     bool accessCoefs_): ViewModel(transformCtrl), flame(flame_), accessCoefs(accessCoefs_),
     activeTransform(0) { }
 
-void TransformModel::handleActiveFormChanged(int id) {
+void TransformModel::handleActiveXformChanged(int id) {
     activeTransform = id;
     update();
 }
@@ -43,35 +44,29 @@ void TransformModel::handleReset() {
     }
 }
 
-int TransformModel::getCount() const {
-    return 3;
-}
-
-wxVariant TransformModel::getValue(int row, int col) const {
-    if (col == 0) {
-        switch (row) {
-            case 0: return "X";
-            case 1: return "Y";
-            case 2: return "O";
-            default: throw std::invalid_argument("Invalid row");
-        }
-    }
+void TransformModel::getValues(vector<wxVector<wxVariant>>& data) const {
     core::Affine* aff = NULL;
     if (accessCoefs) {
         aff = flame->xforms.get(activeTransform)->coefs.get();
     } else {
         aff = flame->xforms.get(activeTransform)->post.get();
     }
-    int num = 2*row + col - 1;
-    switch (num) {
-        case 0: return to_string(aff->xx);
-        case 1: return to_string(aff->xy);
-        case 2: return to_string(aff->yx);
-        case 3: return to_string(aff->yy);
-        case 4: return to_string(aff->ox);
-        case 5: return to_string(aff->oy);
-        default: throw std::invalid_argument("Invalid cell");
-    }
+    wxVector<wxVariant> firstRow;
+    firstRow.push_back("X");
+    firstRow.push_back(to_string(aff->xx));
+    firstRow.push_back(to_string(aff->xy));
+    wxVector<wxVariant> secondRow;
+    secondRow.push_back("Y");
+    secondRow.push_back(to_string(aff->yx));
+    secondRow.push_back(to_string(aff->yy));
+    wxVector<wxVariant> thirdRow;
+    thirdRow.push_back("O");
+    thirdRow.push_back(to_string(aff->ox));
+    thirdRow.push_back(to_string(aff->oy));
+
+    data.push_back(firstRow);
+    data.push_back(secondRow);
+    data.push_back(thirdRow);
 }
 
 void TransformModel::setValue(const wxVariant& val, int row, int col) {

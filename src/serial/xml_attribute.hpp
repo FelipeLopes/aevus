@@ -143,11 +143,11 @@ public:
         }
         val.fromStringMap(stringMap);
     }
-    T getValue() const {
+    T value() const {
         return val;
     }
-    void setValue(T value) {
-        val = value;
+    T* get() {
+        return &val;
     }
 private:
     T val;

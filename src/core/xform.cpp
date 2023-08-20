@@ -37,7 +37,7 @@ XFormCL XForm::toXFormCL() const {
     xf.pf = -pst.oy;
 
     int sz = 0;
-    for (auto kv: variationMap.getValue().variations) {
+    for (auto kv: variationMap.value().variations) {
         xf.varData[sz].id = kv.first;
         xf.varData[sz].weight = kv.second;
         sz++;
@@ -45,7 +45,7 @@ XFormCL XForm::toXFormCL() const {
     xf.varData[sz].id = Variation::NO_VARIATION;
 
     xf.color = color.getValue();
-    xf.colorSpeed = colorSpeed.getValue().colorSpeed;
+    xf.colorSpeed = colorSpeed.value().colorSpeed;
 
     return xf;
 }

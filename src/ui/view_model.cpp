@@ -1,4 +1,7 @@
 #include "view_model.hpp"
+#include <wx-3.2/wx/variant.h>
+
+using std::vector;
 
 namespace ui {
 
@@ -14,14 +17,10 @@ void ViewModel::update() {
     updateOngoing = true;
     int row = dvListCtrl->GetSelectedRow();
     clearCtrl();
-    int numCols = dvListCtrl->GetColumnCount();
-    int numRows = getCount();
-    for (int i=0; i<numRows; i++) {
-        wxVector<wxVariant> data;
-        for (int j=0; j<numCols; j++) {
-            data.push_back(getValue(i, j));
-        }
-        dvListCtrl->AppendItem(data);
+    vector<wxVector<wxVariant>> data;
+    getValues(data);
+    for (int i=0; i<data.size(); i++) {
+        dvListCtrl->AppendItem(data[i]);
     }
     afterUpdate(row);
     updateOngoing = false;
@@ -33,6 +32,8 @@ bool ViewModel::updating() {
 
 void ViewModel::afterUpdate(int selectedRow) { }
 
+void ViewModel::getValues(vector<wxVector<wxVariant>>& data) const { }
+
 void ViewModel::setValue(const wxVariant& value, int row, int col) {
     update();
 }
@@ -40,7 +41,7 @@ void ViewModel::setValue(const wxVariant& value, int row, int col) {
 void ViewModel::selectRow(int row) {
     if (row != wxNOT_FOUND) {
         dvListCtrl->SelectRow(row);
-    } else if (getCount() > 0) {
+    } else if (dvListCtrl->GetItemCount() > 0) {
         dvListCtrl->SelectRow(0);
     }
 }

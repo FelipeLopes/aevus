@@ -13,8 +13,7 @@ public:
     void update();
     virtual ~ViewModel();
 protected:
-    virtual int getCount() const = 0;
-    virtual wxVariant getValue(int row, int col) const = 0;
+    virtual void getValues(std::vector<wxVector<wxVariant>>& data) const;
     virtual void setValue(const wxVariant& value, int row, int col);
     virtual void afterUpdate(int selectedRow);
     void selectRow(int row);

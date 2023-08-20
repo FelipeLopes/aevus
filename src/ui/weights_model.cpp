@@ -6,6 +6,7 @@ using core::Flame;
 using std::shared_ptr;
 using std::string;
 using std::to_string;
+using std::vector;
 
 namespace ui {
 
@@ -18,15 +19,14 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     }
 }
 
-int WeightsModel::getCount() const {
-    return flame->xforms.size();
-}
-
-wxVariant WeightsModel::getValue(int row, int col) const {
-    if (col == 0) {
-        return to_string(row + 1);
+void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
+    int sz = flame->xforms.size();
+    for (int i=0; i<sz; i++) {
+        wxVector<wxVariant> row;
+        row.push_back(to_string(i+1));
+        row.push_back(to_string(flame->xforms.get(i)->weight.getValue()));
+        data.push_back(row);
     }
-    return to_string(flame->xforms.get(row)->weight.getValue());
 }
 
 void WeightsModel::setValue(const wxVariant& val, int row, int col) {

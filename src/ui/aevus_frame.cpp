@@ -30,7 +30,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     postTransformModel =
         std::make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
-    variationModel = std::make_shared<VariationModel>(variationListCtrl);
+    variationModel = std::make_shared<VariationModel>(flame, variationListCtrl);
 
     preTransformModel->transformCoordsChanged
         .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
@@ -48,9 +48,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     eventBroker->flameWeightsChanged
         .connect(bind(&WeightsModel::update, weightsModel));
     eventBroker->activeXformChanged
-        .connect(bind(&TransformModel::handleActiveFormChanged, preTransformModel, _1));
+        .connect(bind(&TransformModel::handleActiveXformChanged, preTransformModel, _1));
     eventBroker->activeXformChanged
-        .connect(bind(&TransformModel::handleActiveFormChanged, postTransformModel, _1));
+        .connect(bind(&TransformModel::handleActiveXformChanged, postTransformModel, _1));
 
     loadFile("../in.xml");
 
