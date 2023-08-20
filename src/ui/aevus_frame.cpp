@@ -22,7 +22,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
 {
     SetStatusText("Welcome to Aevus!");
     variationTextCtrl->AutoComplete(new VariationTextCompleter);
+
     eventBroker = std::make_shared<EventBroker>();
+
     preTransformModel =
         std::make_shared<TransformModel>(flame, preTransformDataViewCtrl, true);
     postTransformModel =
@@ -30,9 +32,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
     variationModel = std::make_shared<VariationModel>(variationListCtrl);
 
-    preTransformModel->transformValueChanged
+    preTransformModel->transformCoordsChanged
         .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
-    postTransformModel->transformValueChanged
+    postTransformModel->transformCoordsChanged
         .connect(bind(&EventBroker::postTransformValueChanged, eventBroker));
     weightsModel->weightsChanged
         .connect(bind(&EventBroker::weightValueChanged, eventBroker));

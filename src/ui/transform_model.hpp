@@ -14,7 +14,7 @@ public:
         bool accessCoefs);
     void handleActiveFormChanged(int id);
     void handleReset();
-    boost::signals2::signal<void ()> transformValueChanged;
+    boost::signals2::signal<void ()> transformCoordsChanged;
 private:
     int getCount() const override;
     wxVariant getValue(int row, int col) const override;

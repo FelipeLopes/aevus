@@ -4,6 +4,7 @@
 
 using core::Flame;
 using std::shared_ptr;
+using std::string;
 using std::to_string;
 
 namespace ui {
@@ -38,7 +39,7 @@ void TransformModel::handleReset() {
         aff->yy = 1;
         aff->ox = 0;
         aff->oy = 0;
-        transformValueChanged();
+        transformCoordsChanged();
     }
 }
 
@@ -77,33 +78,44 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
     if (col == 0) {
         return;
     }
-    double value = 0;
-    try {
-        value = std::stod(val.GetString().ToStdString());
-    } catch (std::invalid_argument& e) {
-        update();
-        return;
-    }
+    int num = 2*row + col - 1;
+    double oldValue = 0;
     core::Affine* aff = NULL;
     if (accessCoefs) {
         aff = flame->xforms.get(activeTransform)->coefs.get();
     } else {
         aff = flame->xforms.get(activeTransform)->post.get();
     }
-    int num = 2*row + col - 1;
-    double oldVal = 0;
     switch (num) {
-        case 0: oldVal = aff->xx; aff->xx = value; break;
-        case 1: oldVal = aff->xy; aff->xy = value; break;
-        case 2: oldVal = aff->yx; aff->yx = value; break;
-        case 3: oldVal = aff->yy; aff->yy = value; break;
-        case 4: oldVal = aff->ox; aff->ox = value; break;
-        case 5: oldVal = aff->oy; aff->oy = value; break;
+        case 0: oldValue = aff->xx; break;
+        case 1: oldValue = aff->xy; break;
+        case 2: oldValue = aff->yx; break;
+        case 3: oldValue = aff->yy; break;
+        case 4: oldValue = aff->ox; break;
+        case 5: oldValue = aff->oy; break;
         default: throw std::invalid_argument("Invalid cell");
     }
-    if (oldVal != value) {
-        transformValueChanged();
+    string text = val.GetString().ToStdString();
+    if (text == to_string(oldValue)) {
+        return;
     }
+    double newValue = 0;
+    try {
+        newValue = std::stod(val.GetString().ToStdString());
+    } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    switch (num) {
+        case 0: aff->xx = newValue; break;
+        case 1: aff->xy = newValue; break;
+        case 2: aff->yx = newValue; break;
+        case 3: aff->yy = newValue; break;
+        case 4: aff->ox = newValue; break;
+        case 5: aff->oy = newValue; break;
+        default: throw std::invalid_argument("Invalid cell");
+    }
+    transformCoordsChanged();
 }
 
 }
