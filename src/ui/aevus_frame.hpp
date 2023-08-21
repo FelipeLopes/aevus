@@ -5,6 +5,7 @@
 #include <wx/textcompleter.h>
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
+#include "color_model.hpp"
 #include "event_broker.hpp"
 #include "transform_model.hpp"
 #include "variation_model.hpp"
@@ -32,6 +33,7 @@ private:
     std::shared_ptr<TransformModel> postTransformModel;
     std::shared_ptr<WeightsModel> weightsModel;
     std::shared_ptr<VariationModel> variationModel;
+    std::shared_ptr<ColorModel> colorModel;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;

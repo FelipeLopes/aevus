@@ -174,11 +174,25 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 
 	wSizer3->Add( bSizer22, 1, wxEXPAND, 5 );
 
+	wxBoxSizer* bSizer10;
+	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
+
+	colorListCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 150,-1 ), 0 );
+	m_dataViewListColumn112 = colorListCtrl->AppendTextColumn( wxT("Color"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_LEFT), wxDATAVIEW_COL_RESIZABLE );
+	m_dataViewListColumn12 = colorListCtrl->AppendTextColumn( wxT("Value"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_LEFT), wxDATAVIEW_COL_RESIZABLE );
+	bSizer10->Add( colorListCtrl, 1, wxALL|wxEXPAND, 5 );
+
+	paletteBitmap = new wxStaticBitmap( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( 25,256 ), 0 );
+	bSizer10->Add( paletteBitmap, 0, wxBOTTOM|wxEXPAND|wxRIGHT|wxTOP, 5 );
+
+
+	wSizer3->Add( bSizer10, 1, wxEXPAND, 5 );
+
 
 	m_scrolledWindow2->SetSizer( wSizer3 );
 	m_scrolledWindow2->Layout();
 	wSizer3->Fit( m_scrolledWindow2 );
-	m_splitter3->SplitHorizontally( m_panel5, m_scrolledWindow2, 450 );
+	m_splitter3->SplitHorizontally( m_panel5, m_scrolledWindow2, 375 );
 	bSizer3->Add( m_splitter3, 1, wxEXPAND, 5 );
 
 

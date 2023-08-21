@@ -28,6 +28,7 @@
 #include <wx/splitter.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/statbmp.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -80,6 +81,10 @@ class WxfbFrame : public wxFrame
 		wxDataViewListCtrl* variationListCtrl;
 		wxDataViewColumn* m_dataViewListColumn1;
 		wxDataViewColumn* m_dataViewListColumn2;
+		wxDataViewListCtrl* colorListCtrl;
+		wxDataViewColumn* m_dataViewListColumn112;
+		wxDataViewColumn* m_dataViewListColumn12;
+		wxStaticBitmap* paletteBitmap;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }
@@ -115,7 +120,7 @@ class WxfbFrame : public wxFrame
 
 		void m_splitter3OnIdle( wxIdleEvent& )
 		{
-			m_splitter3->SetSashPosition( 450 );
+			m_splitter3->SetSashPosition( 375 );
 			m_splitter3->Disconnect( wxEVT_IDLE, wxIdleEventHandler( WxfbFrame::m_splitter3OnIdle ), NULL, this );
 		}
 

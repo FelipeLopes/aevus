@@ -37,6 +37,14 @@ string PaletteColors::hexAt(int pos) const {
     return std::string(s);
 }
 
+Color PaletteColors::colorAt(int pos) const {
+    return Color(
+        paletteData[3*pos],
+        paletteData[3*pos+1],
+        paletteData[3*pos+2]
+    );
+}
+
 void PaletteColors::readColorCLArray(vector<ColorCL>& arr) const {
     arr.resize(PALETTE_WIDTH);
     for (int i=0; i<PALETTE_WIDTH; i++) {
@@ -88,7 +96,7 @@ Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),
 }
 
 void Palette::readColorCLArray(vector<ColorCL>& arr) const {
-    colors.getValue().readColorCLArray(arr);
+    colors.value().readColorCLArray(arr);
 }
 
 }

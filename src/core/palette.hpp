@@ -11,6 +11,7 @@ class PaletteColors: public serial::StringSerializable {
 public:
     PaletteColors();
     std::string hexAt(int pos) const;
+    Color colorAt(int pos) const;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);

@@ -9,6 +9,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <wx/rawbmp.h>
 
 using namespace boost::signals2;
 using boost::bind;
@@ -31,6 +32,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
     variationModel =
         std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
+    colorModel = std::make_shared<ColorModel>(flame, colorListCtrl, paletteBitmap);
 
     preTransformModel->transformCoordsChanged
         .connect(eventBroker->activeXformCoordsChanged);
@@ -59,6 +61,9 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(bind(&VariationModel::update, variationModel));
 
     loadFile("../in.xml");
+
+    colorModel->update();
+    colorModel->drawPalette();
 
     trianglePanel->SetFocus();
 }
