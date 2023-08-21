@@ -33,15 +33,15 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
 
     preTransformModel->transformCoordsChanged
-        .connect(bind(&EventBroker::preTransformValueChanged, eventBroker));
+        .connect(eventBroker->activeXformCoordsChanged);
     postTransformModel->transformCoordsChanged
-        .connect(bind(&EventBroker::postTransformValueChanged, eventBroker));
+        .connect(eventBroker->activeXformCoordsChanged);
     weightsModel->weightsChanged
-        .connect(bind(&EventBroker::weightValueChanged, eventBroker));
+        .connect(eventBroker->flameWeightsChanged);
     weightsModel->xformSelected
-        .connect(bind(&EventBroker::xformSelected, eventBroker, _1));
+        .connect(eventBroker->activeXformChanged);
     variationModel->variationDataChanged
-        .connect(bind(&EventBroker::variationValueChanged, eventBroker));
+        .connect(eventBroker->variationParamsChanged);
 
     eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
