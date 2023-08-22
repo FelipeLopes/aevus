@@ -19,11 +19,14 @@ public:
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
+    void afterUpdate(int selectedRow) override;
 
     std::shared_ptr<core::Flame> flame;
     wxPanel* palettePanel;
     int paletteWidth;
     wxBitmap paletteBitmap;
+    wxBitmap blackLineBitmap;
+    wxBitmap whiteLineBitmap;
     int activeTransform;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);
