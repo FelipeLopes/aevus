@@ -33,7 +33,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
     variationModel =
         std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
-    colorModel = std::make_shared<ColorModel>(flame, colorListCtrl, paletteBitmap);
+    colorModel = std::make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
 
     preTransformModel->transformCoordsChanged
         .connect(eventBroker->activeXformCoordsChanged);
@@ -63,7 +63,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     eventBroker->variationParamsChanged
         .connect(bind(&VariationModel::update, variationModel));
     eventBroker->paletteChanged
-        .connect(bind(&ColorModel::drawPalette, colorModel));
+        .connect(bind(&ColorModel::setupPalette, colorModel));
 
     loadFile("../in.xml");
 
@@ -107,6 +107,10 @@ void AevusFrame::onColorValueChanged(wxDataViewEvent& event) {
     colorModel->handleValueChangedEvent(event);
 }
 
+void AevusFrame::onPalettePaint(wxPaintEvent& event) {
+    colorModel->handlePaint();
+}
+
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PRE_DV: preTransformModel->handleKillFocusEvent(event); break;
@@ -131,9 +135,9 @@ void AevusFrame::loadFile(std::string filename) {
     }
     flame->deserialize(inputStream);
     fclose(inputStream);
+    eventBroker->paletteChanged();
     eventBroker->activeXformChanged(0);
     eventBroker->flameWeightsChanged();
-    eventBroker->paletteChanged();
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {

@@ -46,6 +46,7 @@ private:
     void onTransformSelected(wxDataViewEvent& event) override;
     void onWeightEdited(wxDataViewEvent& event) override;
     void onColorValueChanged(wxDataViewEvent& event) override;
+    void onPalettePaint(wxPaintEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
 };
 

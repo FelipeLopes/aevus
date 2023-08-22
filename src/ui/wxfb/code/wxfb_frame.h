@@ -28,7 +28,6 @@
 #include <wx/splitter.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/statbmp.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -84,7 +83,7 @@ class WxfbFrame : public wxFrame
 		wxDataViewListCtrl* colorListCtrl;
 		wxDataViewColumn* m_dataViewListColumn112;
 		wxDataViewColumn* m_dataViewListColumn12;
-		wxStaticBitmap* paletteBitmap;
+		wxPanel* palettePanel;
 
 		// Virtual event handlers, override them in your derived class
 		virtual void onFileOpen( wxCommandEvent& event ) { event.Skip(); }
@@ -99,6 +98,7 @@ class WxfbFrame : public wxFrame
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onColorValueChanged( wxDataViewEvent& event ) { event.Skip(); }
+		virtual void onPalettePaint( wxPaintEvent& event ) { event.Skip(); }
 
 
 	public:

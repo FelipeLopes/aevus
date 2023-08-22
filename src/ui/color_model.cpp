@@ -1,28 +1,36 @@
 #include "color_model.hpp"
 #include "view_model.hpp"
+#include <algorithm>
 #include <wx/rawbmp.h>
+#include <wx/graphics.h>
+#include <wx/dcbuffer.h>
 
 using std::shared_ptr;
 using std::to_string;
 using std::vector;
+using core::Color;
 using core::Flame;
 
 namespace ui {
 
 ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCtrl,
-    wxStaticBitmap* paletteBitmap_): ViewModel(colorListCtrl), flame(flame_),
-    paletteBitmap(paletteBitmap_), activeTransform(0) { }
+    wxPanel* palettePanel_): ViewModel(colorListCtrl), flame(flame_),
+    palettePanel(palettePanel_),
+    paletteWidth(palettePanel->GetSize().GetWidth()),
+    paletteBitmap(paletteWidth, 256),
+    activeTransform(0)
+{
+    palettePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+}
 
-void ColorModel::drawPalette() {
+void ColorModel::setupPalette() {
     auto flamePalette = flame->palette.colors.value();
-    int width =  paletteBitmap->GetSize().GetWidth();
-    wxBitmap palette(width, 256);
-    wxNativePixelData data(palette);
+    wxNativePixelData data(paletteBitmap);
     wxNativePixelData::Iterator p(data);
     for (int y=0; y<256; y++) {
         wxNativePixelData::Iterator row = p;
-        for (int x=0; x<width; x++) {
-            core::Color color = flamePalette.colorAt(255-y);
+        for (int x=0; x<paletteWidth; x++) {
+            Color color = flamePalette.colorAt(255-y);
             p.Red() = color.r;
             p.Green() = color.g;
             p.Blue() = color.b;
@@ -31,12 +39,20 @@ void ColorModel::drawPalette() {
         p = row;
         p.OffsetY(data, 1);
     }
-    paletteBitmap->SetBitmap(palette);
 }
 
 void ColorModel::handleActiveXformChanged(int id) {
     activeTransform = id;
     update();
+}
+
+void ColorModel::handlePaint() {
+    wxAutoBufferedPaintDC dc(palettePanel);
+    wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
+    if (gc) {
+        gc->DrawBitmap(paletteBitmap, 0, 0, paletteWidth, 256);
+        delete gc;
+    }
 }
 
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
