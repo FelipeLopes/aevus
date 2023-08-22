@@ -11,6 +11,7 @@ class ColorModel: public ViewModel {
 public:
     ColorModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* colorListCtrl,
         wxStaticBitmap* paletteBitmap);
+    void handleActiveXformChanged(int id);
     void drawPalette();
     boost::signals2::signal<void ()> colorChanged;
 private:

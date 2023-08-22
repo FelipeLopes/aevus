@@ -34,6 +34,11 @@ void ColorModel::drawPalette() {
     paletteBitmap->SetBitmap(palette);
 }
 
+void ColorModel::handleActiveXformChanged(int id) {
+    activeTransform = id;
+    update();
+}
+
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
     wxVector<wxVariant> firstRow;
     firstRow.push_back("position");
@@ -47,6 +52,7 @@ void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
 }
 
 void ColorModel::setValue(const wxVariant& val, int row, int col) {
+    printf("setValue called\n");
     update();
 }
 

@@ -1313,6 +1313,7 @@
                                                                         <property name="window_extra_style"></property>
                                                                         <property name="window_name"></property>
                                                                         <property name="window_style"></property>
+                                                                        <event name="OnDataViewListCtrlItemValueChanged">onColorValueChanged</event>
                                                                         <object class="dataViewListColumn" expanded="1">
                                                                             <property name="align">wxALIGN_LEFT</property>
                                                                             <property name="ellipsize"></property>
@@ -1329,7 +1330,7 @@
                                                                             <property name="ellipsize"></property>
                                                                             <property name="flags">wxDATAVIEW_COL_RESIZABLE</property>
                                                                             <property name="label">Value</property>
-                                                                            <property name="mode">wxDATAVIEW_CELL_INERT</property>
+                                                                            <property name="mode">wxDATAVIEW_CELL_EDITABLE</property>
                                                                             <property name="name">m_dataViewListColumn12</property>
                                                                             <property name="permission">protected</property>
                                                                             <property name="type">Text</property>
