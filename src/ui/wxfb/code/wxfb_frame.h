@@ -84,6 +84,9 @@ class WxfbFrame : public wxFrame
 		wxDataViewListCtrl* colorListCtrl;
 		wxDataViewColumn* m_dataViewListColumn112;
 		wxDataViewColumn* m_dataViewListColumn12;
+		wxDataViewListCtrl* frameListCtrl;
+		wxDataViewColumn* m_dataViewListColumn13;
+		wxDataViewColumn* m_dataViewListColumn14;
 		wxPanel* palettePanel;
 
 		// Virtual event handlers, override them in your derived class
@@ -99,7 +102,6 @@ class WxfbFrame : public wxFrame
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onColorValueChanged( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void onMouseLeave( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseUp( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseMove( wxMouseEvent& event ) { event.Skip(); }

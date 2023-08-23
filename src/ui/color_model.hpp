@@ -14,7 +14,6 @@ public:
         wxPanel* palettePanel);
     void handleActiveXformChanged(int id);
     void handlePaint();
-    void handleMouseLeave(wxMouseEvent& event);
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
@@ -32,7 +31,7 @@ private:
     wxBitmap blackLineBitmap;
     wxBitmap whiteLineBitmap;
     int activeTransform;
-    int count;
+    bool dragging;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);
 };

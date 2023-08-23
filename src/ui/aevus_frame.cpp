@@ -122,12 +122,6 @@ void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
     }
 }
 
-void AevusFrame::onMouseLeave(wxMouseEvent& event) {
-    switch (event.GetId()) {
-        case ID_FLAME_PALETTE_PANEL: colorModel->handleMouseLeave(event); break;
-    }
-}
-
 void AevusFrame::onMouseDown(wxMouseEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PALETTE_PANEL: colorModel->handleMouseDown(event); break;

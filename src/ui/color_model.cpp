@@ -21,7 +21,8 @@ ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCt
     paletteBitmap(paletteWidth, 256),
     blackLineBitmap(paletteWidth, 1),
     whiteLineBitmap(paletteWidth, 1),
-    activeTransform(0)
+    activeTransform(0),
+    dragging(false)
 {
     palettePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
     wxNativePixelData blackData(blackLineBitmap);
@@ -40,7 +41,6 @@ ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCt
         q.Blue() = 255;
         ++q;
     }
-    count = 0;
 }
 
 void ColorModel::setupPalette() {
@@ -132,20 +132,21 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     colorChanged();
 }
 
-void ColorModel::handleMouseLeave(wxMouseEvent& event) {
-    printf("mouseLeave %d\n", count++);
-}
-
 void ColorModel::handleMouseUp(wxMouseEvent& event) {
-    printf("mouseUp %d\n", count++);
+    dragging = false;
 }
 
 void ColorModel::handleMouseDown(wxMouseEvent& event) {
-    printf("mouseDown %d\n", count++);
+    dragging = true;
+    auto cursorPos = event.GetPosition();
+    setValue(1.0-cursorPos.y/255.0, 0, 1);
 }
 
 void ColorModel::handleMouseMove(wxMouseEvent& event) {
-    printf("mouseMove %d\n", count++);
+    if (dragging) {
+        auto cursorPos = event.GetPosition();
+        setValue(1.0-cursorPos.y/255.0, 0, 1);
+    }
 }
 
 }
