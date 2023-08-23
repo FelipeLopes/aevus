@@ -83,6 +83,7 @@ public:
     }
 
     virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) {
+        clear();
         while (true) {
             if (node == NULL) {
                 break;
