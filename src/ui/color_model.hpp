@@ -14,6 +14,10 @@ public:
         wxPanel* palettePanel);
     void handleActiveXformChanged(int id);
     void handlePaint();
+    void handleMouseLeave(wxMouseEvent& event);
+    void handleMouseUp(wxMouseEvent& event);
+    void handleMouseDown(wxMouseEvent& event);
+    void handleMouseMove(wxMouseEvent& event);
     void setupPalette();
     boost::signals2::signal<void ()> colorChanged;
 private:
@@ -28,6 +32,7 @@ private:
     wxBitmap blackLineBitmap;
     wxBitmap whiteLineBitmap;
     int activeTransform;
+    int count;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);
 };

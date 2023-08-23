@@ -46,7 +46,8 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_RESET,
 			ID_FLAME_POST_DV,
 			ID_FLAME_POST_RESET,
-			ID_FLAME_VARIATION_ADD
+			ID_FLAME_VARIATION_ADD,
+			ID_FLAME_PALETTE_PANEL
 		};
 
 		wxMenuBar* m_menubar1;
@@ -98,6 +99,10 @@ class WxfbFrame : public wxFrame
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onColorValueChanged( wxDataViewEvent& event ) { event.Skip(); }
+		virtual void onMouseLeave( wxMouseEvent& event ) { event.Skip(); }
+		virtual void onMouseDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void onMouseUp( wxMouseEvent& event ) { event.Skip(); }
+		virtual void onMouseMove( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onPalettePaint( wxPaintEvent& event ) { event.Skip(); }
 
 

@@ -1369,7 +1369,7 @@
                                                                         <property name="font"></property>
                                                                         <property name="gripper">0</property>
                                                                         <property name="hidden">0</property>
-                                                                        <property name="id">wxID_ANY</property>
+                                                                        <property name="id">ID_FLAME_PALETTE_PANEL</property>
                                                                         <property name="max_size"></property>
                                                                         <property name="maximize_button">0</property>
                                                                         <property name="maximum_size"></property>
@@ -1393,6 +1393,10 @@
                                                                         <property name="window_extra_style"></property>
                                                                         <property name="window_name"></property>
                                                                         <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                                        <event name="OnLeaveWindow">onMouseLeave</event>
+                                                                        <event name="OnLeftDown">onMouseDown</event>
+                                                                        <event name="OnLeftUp">onMouseUp</event>
+                                                                        <event name="OnMotion">onMouseMove</event>
                                                                         <event name="OnPaint">onPalettePaint</event>
                                                                     </object>
                                                                 </object>

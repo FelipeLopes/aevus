@@ -40,6 +40,7 @@ ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCt
         q.Blue() = 255;
         ++q;
     }
+    count = 0;
 }
 
 void ColorModel::setupPalette() {
@@ -129,6 +130,22 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
         case 1: flame->xforms.get(activeTransform)->colorSpeed.get()->colorSpeed = newValue; break;
     }
     colorChanged();
+}
+
+void ColorModel::handleMouseLeave(wxMouseEvent& event) {
+    printf("mouseLeave %d\n", count++);
+}
+
+void ColorModel::handleMouseUp(wxMouseEvent& event) {
+    printf("mouseUp %d\n", count++);
+}
+
+void ColorModel::handleMouseDown(wxMouseEvent& event) {
+    printf("mouseDown %d\n", count++);
+}
+
+void ColorModel::handleMouseMove(wxMouseEvent& event) {
+    printf("mouseMove %d\n", count++);
 }
 
 }

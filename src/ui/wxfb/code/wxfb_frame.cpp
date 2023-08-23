@@ -182,7 +182,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	m_dataViewListColumn12 = colorListCtrl->AppendTextColumn( wxT("Value"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_LEFT), wxDATAVIEW_COL_RESIZABLE );
 	bSizer10->Add( colorListCtrl, 1, wxALL|wxEXPAND, 5 );
 
-	palettePanel = new wxPanel( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 25,256 ), wxTAB_TRAVERSAL );
+	palettePanel = new wxPanel( m_scrolledWindow2, ID_FLAME_PALETTE_PANEL, wxDefaultPosition, wxSize( 25,256 ), wxTAB_TRAVERSAL );
 	bSizer10->Add( palettePanel, 0, wxBOTTOM|wxEXPAND|wxRIGHT|wxTOP, 5 );
 
 
@@ -224,6 +224,10 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	variationTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 	variationListCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onVariationValueChanged ), NULL, this );
 	colorListCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onColorValueChanged ), NULL, this );
+	palettePanel->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( WxfbFrame::onMouseLeave ), NULL, this );
+	palettePanel->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( WxfbFrame::onMouseDown ), NULL, this );
+	palettePanel->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( WxfbFrame::onMouseUp ), NULL, this );
+	palettePanel->Connect( wxEVT_MOTION, wxMouseEventHandler( WxfbFrame::onMouseMove ), NULL, this );
 	palettePanel->Connect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPalettePaint ), NULL, this );
 }
 
@@ -241,6 +245,10 @@ WxfbFrame::~WxfbFrame()
 	variationTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
 	variationListCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onVariationValueChanged ), NULL, this );
 	colorListCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onColorValueChanged ), NULL, this );
+	palettePanel->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( WxfbFrame::onMouseLeave ), NULL, this );
+	palettePanel->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( WxfbFrame::onMouseDown ), NULL, this );
+	palettePanel->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( WxfbFrame::onMouseUp ), NULL, this );
+	palettePanel->Disconnect( wxEVT_MOTION, wxMouseEventHandler( WxfbFrame::onMouseMove ), NULL, this );
 	palettePanel->Disconnect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPalettePaint ), NULL, this );
 
 }
