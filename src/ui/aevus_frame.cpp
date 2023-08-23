@@ -45,6 +45,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(eventBroker->activeXformChanged);
     variationModel->variationDataChanged
         .connect(eventBroker->variationParamsChanged);
+    colorModel->colorChanged
+        .connect(eventBroker->colorParamsChanged);
 
     eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
@@ -64,6 +66,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(bind(&VariationModel::update, variationModel));
     eventBroker->paletteChanged
         .connect(bind(&ColorModel::setupPalette, colorModel));
+    eventBroker->colorParamsChanged
+        .connect(bind(&ColorModel::update, colorModel));
 
     loadFile("../in.xml");
 

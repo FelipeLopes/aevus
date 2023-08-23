@@ -6,6 +6,7 @@
 #include <wx/dcbuffer.h>
 
 using std::shared_ptr;
+using std::string;
 using std::to_string;
 using std::vector;
 using core::Color;
@@ -101,8 +102,33 @@ void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
 }
 
 void ColorModel::setValue(const wxVariant& val, int row, int col) {
-    printf("setValue called\n");
-    update();
+    if (col == 0) {
+        update();
+        return;
+    }
+    double oldValue = 0;
+    switch (row) {
+        case 0: oldValue = flame->xforms.get(activeTransform)->color.getValue(); break;
+        case 1: oldValue = flame->xforms.get(activeTransform)->colorSpeed.value().colorSpeed; break;
+    }
+    string text = val.GetString().ToStdString();
+    double newValue = 0;
+    try {
+        newValue = std::stod(text);
+    } catch (std::invalid_argument& e) {
+        update();
+        return;
+    }
+    newValue = std::clamp(newValue, 0.0, 1.0);
+    if (newValue == oldValue) {
+        update();
+        return;
+    }
+    switch (row) {
+        case 0: flame->xforms.get(activeTransform)->color.setValue(newValue); break;
+        case 1: flame->xforms.get(activeTransform)->colorSpeed.get()->colorSpeed = newValue; break;
+    }
+    colorChanged();
 }
 
 }

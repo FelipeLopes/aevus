@@ -12,6 +12,7 @@ public:
     boost::signals2::signal<void (int)> activeXformChanged;
     boost::signals2::signal<void ()> flameWeightsChanged;
     boost::signals2::signal<void ()> variationParamsChanged;
+    boost::signals2::signal<void ()> colorParamsChanged;
     boost::signals2::signal<void ()> paletteChanged;
 };
 
