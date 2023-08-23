@@ -7,6 +7,7 @@
 #include <boost/bind.hpp>
 #include "color_model.hpp"
 #include "event_broker.hpp"
+#include "frame_model.hpp"
 #include "transform_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
@@ -34,6 +35,7 @@ private:
     std::shared_ptr<WeightsModel> weightsModel;
     std::shared_ptr<VariationModel> variationModel;
     std::shared_ptr<ColorModel> colorModel;
+    std::shared_ptr<FrameModel> frameModel;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;
@@ -46,6 +48,7 @@ private:
     void onTransformSelected(wxDataViewEvent& event) override;
     void onWeightEdited(wxDataViewEvent& event) override;
     void onColorValueChanged(wxDataViewEvent& event) override;
+    void onFrameValueChanged(wxDataViewEvent& event) override;
     void onPalettePaint(wxPaintEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
     void onMouseDown(wxMouseEvent& event) override;

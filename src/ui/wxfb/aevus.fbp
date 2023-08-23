@@ -1365,13 +1365,14 @@
                                                                                 <property name="name">frameListCtrl</property>
                                                                                 <property name="permission">protected</property>
                                                                                 <property name="pos"></property>
-                                                                                <property name="size"></property>
+                                                                                <property name="size">-1,150</property>
                                                                                 <property name="style"></property>
                                                                                 <property name="subclass">; ; forward_declare</property>
                                                                                 <property name="tooltip"></property>
                                                                                 <property name="window_extra_style"></property>
                                                                                 <property name="window_name"></property>
                                                                                 <property name="window_style"></property>
+                                                                                <event name="OnDataViewListCtrlItemValueChanged">onFrameValueChanged</event>
                                                                                 <object class="dataViewListColumn" expanded="1">
                                                                                     <property name="align">wxALIGN_LEFT</property>
                                                                                     <property name="ellipsize"></property>
@@ -1384,11 +1385,11 @@
                                                                                     <property name="width">-2</property>
                                                                                 </object>
                                                                                 <object class="dataViewListColumn" expanded="1">
-                                                                                    <property name="align">wxALIGN_LEFT</property>
+                                                                                    <property name="align">wxALIGN_CENTER_HORIZONTAL</property>
                                                                                     <property name="ellipsize"></property>
                                                                                     <property name="flags">wxDATAVIEW_COL_RESIZABLE</property>
                                                                                     <property name="label">Value</property>
-                                                                                    <property name="mode">wxDATAVIEW_CELL_INERT</property>
+                                                                                    <property name="mode">wxDATAVIEW_CELL_EDITABLE</property>
                                                                                     <property name="name">m_dataViewListColumn14</property>
                                                                                     <property name="permission">protected</property>
                                                                                     <property name="type">Text</property>

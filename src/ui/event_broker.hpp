@@ -14,6 +14,7 @@ public:
     boost::signals2::signal<void ()> variationParamsChanged;
     boost::signals2::signal<void ()> colorParamsChanged;
     boost::signals2::signal<void ()> paletteChanged;
+    boost::signals2::signal<void ()> frameParamsChanged;
 };
 
 }
