@@ -117,7 +117,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	transformsScrolledWindow->SetSizer( wSizer1 );
 	transformsScrolledWindow->Layout();
 	wSizer1->Fit( transformsScrolledWindow );
-	trianglePanel = new wxPanel( m_splitter2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	trianglePanel = new wxPanel( m_splitter2, ID_FLAME_TRIANGLE_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	m_splitter2->SplitHorizontally( transformsScrolledWindow, trianglePanel, 300 );
 	bSizer2->Add( m_splitter2, 1, wxEXPAND, 5 );
 
@@ -230,6 +230,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	postTransformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Connect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	trianglePanel->Connect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 	weightsDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onWeightEdited ), NULL, this );
 	weightsDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
 	variationTextCtrl->Connect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
@@ -239,7 +240,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	palettePanel->Connect( wxEVT_LEFT_DOWN, wxMouseEventHandler( WxfbFrame::onMouseDown ), NULL, this );
 	palettePanel->Connect( wxEVT_LEFT_UP, wxMouseEventHandler( WxfbFrame::onMouseUp ), NULL, this );
 	palettePanel->Connect( wxEVT_MOTION, wxMouseEventHandler( WxfbFrame::onMouseMove ), NULL, this );
-	palettePanel->Connect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPalettePaint ), NULL, this );
+	palettePanel->Connect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 }
 
 WxfbFrame::~WxfbFrame()
@@ -251,6 +252,7 @@ WxfbFrame::~WxfbFrame()
 	postTransformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Disconnect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	trianglePanel->Disconnect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 	weightsDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onWeightEdited ), NULL, this );
 	weightsDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformSelected ), NULL, this );
 	variationTextCtrl->Disconnect( wxEVT_COMMAND_TEXT_ENTER, wxCommandEventHandler( WxfbFrame::onVariationAddEnter ), NULL, this );
@@ -260,6 +262,6 @@ WxfbFrame::~WxfbFrame()
 	palettePanel->Disconnect( wxEVT_LEFT_DOWN, wxMouseEventHandler( WxfbFrame::onMouseDown ), NULL, this );
 	palettePanel->Disconnect( wxEVT_LEFT_UP, wxMouseEventHandler( WxfbFrame::onMouseUp ), NULL, this );
 	palettePanel->Disconnect( wxEVT_MOTION, wxMouseEventHandler( WxfbFrame::onMouseMove ), NULL, this );
-	palettePanel->Disconnect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPalettePaint ), NULL, this );
+	palettePanel->Disconnect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 
 }

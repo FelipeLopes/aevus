@@ -9,6 +9,7 @@
 #include "event_broker.hpp"
 #include "frame_model.hpp"
 #include "transform_model.hpp"
+#include "triangle_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
@@ -36,6 +37,7 @@ private:
     std::shared_ptr<VariationModel> variationModel;
     std::shared_ptr<ColorModel> colorModel;
     std::shared_ptr<FrameModel> frameModel;
+    std::shared_ptr<TriangleModel> triangleModel;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;
@@ -49,7 +51,7 @@ private:
     void onWeightEdited(wxDataViewEvent& event) override;
     void onColorValueChanged(wxDataViewEvent& event) override;
     void onFrameValueChanged(wxDataViewEvent& event) override;
-    void onPalettePaint(wxPaintEvent& event) override;
+    void onPaint(wxPaintEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
     void onMouseDown(wxMouseEvent& event) override;
     void onMouseUp(wxMouseEvent& event) override;

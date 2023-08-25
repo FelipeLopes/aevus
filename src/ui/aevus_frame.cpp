@@ -35,6 +35,7 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
     colorModel = std::make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
     frameModel = std::make_shared<FrameModel>(flame, frameListCtrl);
+    triangleModel = std::make_shared<TriangleModel>(flame, trianglePanel);
 
     preTransformModel->transformCoordsChanged
         .connect(eventBroker->activeXformCoordsChanged);
@@ -118,8 +119,12 @@ void AevusFrame::onFrameValueChanged(wxDataViewEvent& event) {
     frameModel->handleValueChangedEvent(event);
 }
 
-void AevusFrame::onPalettePaint(wxPaintEvent& event) {
-    colorModel->handlePaint();
+void AevusFrame::onPaint(wxPaintEvent& event) {
+    switch (event.GetId()) {
+        case ID_FLAME_PALETTE_PANEL: colorModel->handlePaint(); break;
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handlePaint(); break;
+
+    }
 }
 
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {

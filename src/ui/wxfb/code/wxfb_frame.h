@@ -46,6 +46,7 @@ class WxfbFrame : public wxFrame
 			ID_FLAME_PRE_RESET,
 			ID_FLAME_POST_DV,
 			ID_FLAME_POST_RESET,
+			ID_FLAME_TRIANGLE_PANEL,
 			ID_FLAME_VARIATION_ADD,
 			ID_FLAME_PALETTE_PANEL
 		};
@@ -97,6 +98,7 @@ class WxfbFrame : public wxFrame
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onDataViewLostFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onPaint( wxPaintEvent& event ) { event.Skip(); }
 		virtual void onWeightEdited( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onTransformSelected( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onVariationAddEnter( wxCommandEvent& event ) { event.Skip(); }
@@ -106,7 +108,6 @@ class WxfbFrame : public wxFrame
 		virtual void onMouseDown( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseUp( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseMove( wxMouseEvent& event ) { event.Skip(); }
-		virtual void onPalettePaint( wxPaintEvent& event ) { event.Skip(); }
 
 
 	public:
