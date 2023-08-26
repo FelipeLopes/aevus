@@ -1,9 +1,14 @@
 #include "triangle_model.hpp"
+#include <algorithm>
+#include <iterator>
+#include <vector>
+#include <wx-3.2/wx/geometry.h>
 #include <wx/affinematrix2dbase.h>
 #include <wx/gdicmn.h>
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
+using std::vector;
 using std::shared_ptr;
 using core::Flame;
 
@@ -11,9 +16,25 @@ namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), gridColor("#333333"),
-    unitTriangleColor("#808080")
+    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+}
+
+void TriangleModel::setupAffine() {
+    wxMatrix2D identity;
+    wxPoint2DDouble origin;
+    affineTransform.Set(identity, origin);
+    auto sz = trianglePanel->GetSize();
+    double width = sz.GetWidth();
+    double height = sz.GetHeight();
+    affineTransform.Translate(width/2, height/2);
+    double sc = 50*pow(zoomFactor, zoomLevel);
+    affineTransform.Scale(sc, -sc);
+    gridLowX = floor(-width/(2*sc));
+    gridHighX = ceil(width/(2*sc));
+    gridLowY = floor(-height/(2*sc));
+    gridHighY = ceil(height/(2*sc));
 }
 
 void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
@@ -28,10 +49,20 @@ void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, doub
     gc->StrokeLine(tp1.m_x, tp1.m_y, tp2.m_x, tp2.m_y);
 }
 
+void TriangleModel::strokeLines(wxGraphicsContext* gc, const vector<wxPoint2DDouble>& arr) {
+    vector<wxPoint2DDouble> transformedArr;
+    std::transform(arr.begin(), arr.end(), std::back_inserter(transformedArr),
+        [this](wxPoint2DDouble pt) {
+            return affineTransform.TransformPoint(pt);
+        });
+    gc->StrokeLines(transformedArr.size(), transformedArr.data());
+}
+
 void TriangleModel::handlePaint() {
     wxAutoBufferedPaintDC dc(trianglePanel);
     dc.SetBackground(*wxBLACK_BRUSH);
     dc.Clear();
+    setupAffine();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
         gc->SetPen(gridColor);
@@ -45,23 +76,26 @@ void TriangleModel::handlePaint() {
             double y = gridLowY + i;
             strokeLine(gc, gridLowX, y, gridHighX, y);
         }
+        gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
+        vector<wxPoint2DDouble> unitTriangle = {
+            {0, 0}, {1, 0}, {0, 1}, {0, 0}
+        };
+        strokeLines(gc, unitTriangle);
     }
     delete gc;
 }
 
 void TriangleModel::handleResize(wxSizeEvent& event) {
-    wxMatrix2D identity;
-    wxPoint2DDouble origin;
-    affineTransform.Set(identity, origin);
-    auto sz = event.GetSize();
-    double width = sz.GetWidth();
-    double height = sz.GetHeight();
-    affineTransform.Translate(width/2, height/2);
-    affineTransform.Scale(50, -50);
-    gridLowX = floor(-width/100);
-    gridHighX = ceil(width/100);
-    gridLowY = floor(-height/100);
-    gridHighY = ceil(height/100);
+    setupAffine();
+}
+
+void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
+    if (event.GetWheelRotation() > 0 && zoomLevel < MAX_ZOOM_LEVEL) {
+        zoomLevel++;
+    } else if (event.GetWheelRotation() < 0 && zoomLevel > -MAX_ZOOM_LEVEL) {
+        zoomLevel--;
+    }
+    trianglePanel->Refresh();
 }
 
 }

@@ -230,6 +230,7 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	postTransformDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Connect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	trianglePanel->Connect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( WxfbFrame::onMouseWheel ), NULL, this );
 	trianglePanel->Connect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 	trianglePanel->Connect( wxEVT_SIZE, wxSizeEventHandler( WxfbFrame::onResize ), NULL, this );
 	weightsDataViewCtrl->Connect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onWeightEdited ), NULL, this );
@@ -253,6 +254,7 @@ WxfbFrame::~WxfbFrame()
 	postTransformDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onTransformValueChanged ), NULL, this );
 	postTransformDataViewCtrl->Disconnect( wxEVT_KILL_FOCUS, wxFocusEventHandler( WxfbFrame::onDataViewLostFocus ), NULL, this );
 	m_button41->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( WxfbFrame::onResetFlameUpdate ), NULL, this );
+	trianglePanel->Disconnect( wxEVT_MOUSEWHEEL, wxMouseEventHandler( WxfbFrame::onMouseWheel ), NULL, this );
 	trianglePanel->Disconnect( wxEVT_PAINT, wxPaintEventHandler( WxfbFrame::onPaint ), NULL, this );
 	trianglePanel->Disconnect( wxEVT_SIZE, wxSizeEventHandler( WxfbFrame::onResize ), NULL, this );
 	weightsDataViewCtrl->Disconnect( wxEVT_COMMAND_DATAVIEW_ITEM_VALUE_CHANGED, wxDataViewEventHandler( WxfbFrame::onWeightEdited ), NULL, this );

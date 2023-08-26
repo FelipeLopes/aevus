@@ -98,6 +98,7 @@ class WxfbFrame : public wxFrame
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onDataViewLostFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onMouseWheel( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onPaint( wxPaintEvent& event ) { event.Skip(); }
 		virtual void onResize( wxSizeEvent& event ) { event.Skip(); }
 		virtual void onWeightEdited( wxDataViewEvent& event ) { event.Skip(); }

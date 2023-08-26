@@ -158,6 +158,12 @@ void AevusFrame::onMouseMove(wxMouseEvent& event) {
     }
 }
 
+void AevusFrame::onMouseWheel(wxMouseEvent& event) {
+    switch (event.GetId()) {
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handleMouseWheel(event); break;
+    }
+}
+
 void AevusFrame::onExit(wxCommandEvent& event) {
     Close(true);
 }

@@ -57,6 +57,7 @@ private:
     void onMouseDown(wxMouseEvent& event) override;
     void onMouseUp(wxMouseEvent& event) override;
     void onMouseMove(wxMouseEvent& event) override;
+    void onMouseWheel(wxMouseEvent& event) override;
 };
 
 }
