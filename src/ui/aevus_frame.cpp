@@ -127,6 +127,12 @@ void AevusFrame::onPaint(wxPaintEvent& event) {
     }
 }
 
+void AevusFrame::onResize(wxSizeEvent& event) {
+    switch (event.GetId()) {
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handleResize(event); break;
+    }
+}
+
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PRE_DV: preTransformModel->handleKillFocusEvent(event); break;

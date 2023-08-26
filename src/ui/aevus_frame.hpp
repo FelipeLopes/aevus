@@ -52,6 +52,7 @@ private:
     void onColorValueChanged(wxDataViewEvent& event) override;
     void onFrameValueChanged(wxDataViewEvent& event) override;
     void onPaint(wxPaintEvent& event) override;
+    void onResize(wxSizeEvent& event) override;
     void onDataViewLostFocus(wxFocusEvent& event) override;
     void onMouseDown(wxMouseEvent& event) override;
     void onMouseUp(wxMouseEvent& event) override;
