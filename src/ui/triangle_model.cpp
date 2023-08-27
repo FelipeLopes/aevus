@@ -8,6 +8,7 @@
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
+using std::map;
 using std::vector;
 using std::shared_ptr;
 using core::Flame;
@@ -21,7 +22,20 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
-void TriangleModel::setupAffine() {
+double TriangleModel::calcStepForScale(double sc) {
+    map<double, double> multiplier {
+        {0.4, 1},
+        {0.7, 0.5},
+        {0.9, 0.2},
+        {1.0, 0.1}
+    };
+    double logarithm = log10(sc);
+    double periodBegin = floor(logarithm);
+    double frac = logarithm - periodBegin;
+    return pow(10, -periodBegin)*multiplier.lower_bound(frac)->second;
+}
+
+void TriangleModel::setupGrid() {
     wxMatrix2D identity;
     wxPoint2DDouble origin;
     affineTransform.Set(identity, origin);
@@ -29,13 +43,14 @@ void TriangleModel::setupAffine() {
     double width = sz.GetWidth();
     double height = sz.GetHeight();
     affineTransform.Translate(width/2, height/2);
-    double sc = 50*pow(zoomFactor, zoomLevel);
-    affineTransform.Scale(sc, -sc);
+    double sc = pow(zoomFactor, zoomLevel);
+    affineTransform.Scale(50*sc, -50*sc);
+    step = calcStepForScale(sc);
     affineTransform.Translate(-center.m_x, -center.m_y);
-    gridLowX = floor(-width/(2*sc) + center.m_x);
-    gridHighX = ceil(width/(2*sc) + center.m_x);
-    gridLowY = floor(-height/(2*sc) + center.m_y);
-    gridHighY = ceil(height/(2*sc) + center.m_y);
+    gridLowX = step*floor((-width/(2*sc) + center.m_x)/step);
+    gridHighX = step*ceil((width/(2*sc) + center.m_x)/step);
+    gridLowY = step*floor((-height/(2*sc) + center.m_y)/step);
+    gridHighY = step*ceil((height/(2*sc) + center.m_y)/step);
 }
 
 void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
@@ -63,18 +78,17 @@ void TriangleModel::handlePaint() {
     wxAutoBufferedPaintDC dc(trianglePanel);
     dc.SetBackground(*wxBLACK_BRUSH);
     dc.Clear();
-    setupAffine();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
         gc->SetPen(gridColor);
-        int nx = gridHighX - gridLowX;
-        int ny = gridHighY - gridLowY;
+        int nx = (gridHighX - gridLowX)/step;
+        int ny = (gridHighY - gridLowY)/step;
         for (int i=0; i<=nx; i++) {
-            double x = gridLowX + i;
+            double x = gridLowX + step*i;
             strokeLine(gc, x, gridLowY, x, gridHighY);
         }
         for (int i=0; i<=ny; i++) {
-            double y = gridLowY + i;
+            double y = gridLowY + step*i;
             strokeLine(gc, gridLowX, y, gridHighX, y);
         }
         gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
@@ -87,7 +101,7 @@ void TriangleModel::handlePaint() {
 }
 
 void TriangleModel::handleResize(wxSizeEvent& event) {
-    trianglePanel->Refresh();
+    setupGrid();
 }
 
 void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
@@ -96,6 +110,7 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
     } else if (event.GetWheelRotation() < 0 && zoomLevel > -MAX_ZOOM_LEVEL) {
         zoomLevel--;
     }
+    setupGrid();
     trianglePanel->Refresh();
 }
 
@@ -119,6 +134,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
         center = centerDragStart + dragBegin - dragEnd;
+        setupGrid();
         trianglePanel->Refresh();
     }
 }

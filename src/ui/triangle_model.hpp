@@ -19,7 +19,8 @@ public:
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
 private:
-    void setupAffine();
+    double calcStepForScale(double sc);
+    void setupGrid();
     void strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2);
     void strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr);
 
@@ -30,6 +31,7 @@ private:
     wxColour gridColor, unitTriangleColor;
     double gridLowX, gridHighX;
     double gridLowY, gridHighY;
+    double step;
     int zoomLevel;
     const double zoomFactor;
     static const int MAX_ZOOM_LEVEL = 400;
