@@ -68,6 +68,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(bind(&VariationModel::handleActiveXformChanged, variationModel, _1));
     eventBroker->activeXformChanged
         .connect(bind(&ColorModel::handleActiveXformChanged, colorModel, _1));
+    eventBroker->activeXformChanged
+        .connect(bind(&TriangleModel::handleActiveXformChanged, triangleModel, _1));
     eventBroker->variationParamsChanged
         .connect(bind(&VariationModel::update, variationModel));
     eventBroker->paletteChanged

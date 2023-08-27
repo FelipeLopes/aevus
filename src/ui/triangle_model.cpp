@@ -10,23 +10,31 @@
 using std::map;
 using std::vector;
 using std::shared_ptr;
+using std::string;
 using core::Flame;
 
 namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), center(0,0), gridColor("#333333"),
-    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1), dragging(false),
+    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0), center(0,0),
+    gridColor("#333333"), unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1),
+    dragging(false),
     xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
-    })
+    }),
+    dotLabels({"O", "X", "Y"})
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
 void TriangleModel::update() {
     trianglePanel->Refresh();
+}
+
+void TriangleModel::handleActiveXformChanged(int id) {
+    activeTransform = id;
+    update();
 }
 
 double TriangleModel::calcStepForScale(double sc) {
@@ -58,6 +66,28 @@ void TriangleModel::setupGrid() {
     gridHighX = step*ceil((width/(2*sc) + center.m_x)/step);
     gridLowY = step*floor((-height/(2*sc) + center.m_y)/step);
     gridHighY = step*ceil((height/(2*sc) + center.m_y)/step);
+}
+
+void TriangleModel::drawDot(wxGraphicsContext* gc, double x, double y, string label) {
+    wxPoint2DDouble p(x, y);
+    auto tp = affineTransform.TransformPoint(p);
+    gc->DrawEllipse(tp.m_x - 4, tp.m_y - 4, 8, 8);
+    gc->DrawText(label, tp.m_x + 2, tp.m_y + 2);
+}
+
+void TriangleModel::drawTriangleDots(wxGraphicsContext* gc, wxColour color,
+    const vector<wxPoint2DDouble>& triangle)
+{
+    gc->SetPen(color);
+    gc->SetBrush(*wxBLACK_BRUSH);
+    auto panelFont = trianglePanel->GetFont();
+    panelFont.SetPointSize(9);
+    auto font = gc->CreateFont(panelFont, color);
+    gc->SetFont(font);
+    for (int j=0; j<3; j++) {
+        auto p = triangle[j];
+        drawDot(gc, p.m_x, p.m_y, dotLabels[j]);
+    }
 }
 
 void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
@@ -104,6 +134,9 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     int sz = flame->xforms.size();
     int numXformColors = xformColors.size();
     for (int i=0; i<sz; i++) {
+        if (i == activeTransform) {
+            continue;
+        }
         auto coefs = flame->xforms.get(i)->coefs.value();
         vector<wxPoint2DDouble> triangle = {
             {coefs.ox, coefs.oy},
@@ -111,9 +144,32 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
             {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
             {coefs.ox, coefs.oy}
         };
-        gc->SetPen(wxPen(xformColors[i%numXformColors], 1, wxPENSTYLE_SHORT_DASH));
+        auto color = xformColors[i%numXformColors];
+        gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
         strokeLines(gc, triangle);
+        drawTriangleDots(gc, color, triangle);
     }
+    auto color = xformColors[activeTransform%numXformColors];
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    vector<wxPoint2DDouble> triangle = {
+        {coefs.ox, coefs.oy},
+        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
+        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
+    };
+    vector<wxPoint2DDouble> fullPath = {
+        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
+        {coefs.ox, coefs.oy},
+        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
+    };
+    vector<wxPoint2DDouble> dashedPath = {
+        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
+        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
+    };
+    gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
+    strokeLines(gc, dashedPath);
+    gc->SetPen(color);
+    strokeLines(gc, fullPath);
+    drawTriangleDots(gc, color, triangle);
 }
 
 void TriangleModel::handlePaint() {

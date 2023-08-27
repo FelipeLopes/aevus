@@ -13,6 +13,7 @@ class TriangleModel {
 public:
     TriangleModel(std::shared_ptr<core::Flame> flame, wxPanel* trianglePanel);
     void update();
+    void handleActiveXformChanged(int id);
     void handlePaint();
     void handleResize(wxSizeEvent& event);
     void handleMouseWheel(wxMouseEvent& event);
@@ -24,11 +25,15 @@ private:
     void setupGrid();
     void drawGrid(wxGraphicsContext* gc);
     void drawXformTriangles(wxGraphicsContext* gc);
+    void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
+        const std::vector<wxPoint2DDouble>& triangle);
+    void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
     void strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2);
     void strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr);
 
     std::shared_ptr<core::Flame> flame;
     wxPanel* trianglePanel;
+    int activeTransform;
     wxAffineMatrix2D affineTransform;
     wxPoint2DDouble center;
     wxColour gridColor, unitTriangleColor;
@@ -42,6 +47,7 @@ private:
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
     std::vector<wxColour> xformColors;
+    std::vector<std::string> dotLabels;
 };
 
 }
