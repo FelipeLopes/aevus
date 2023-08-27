@@ -16,7 +16,7 @@ namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), gridColor("#333333"),
-    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1)
+    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1), dragging(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -86,7 +86,7 @@ void TriangleModel::handlePaint() {
 }
 
 void TriangleModel::handleResize(wxSizeEvent& event) {
-    setupAffine();
+    trianglePanel->Refresh();
 }
 
 void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
@@ -96,6 +96,23 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
         zoomLevel--;
     }
     trianglePanel->Refresh();
+}
+
+void TriangleModel::handleMouseUp(wxMouseEvent& event) {
+    dragging = false;
+}
+
+void TriangleModel::handleMouseDown(wxMouseEvent& event) {
+    dragging = true;
+}
+
+void TriangleModel::handleMouseMove(wxMouseEvent& event) {
+    if (dragging) {
+        auto cursorPos = event.GetPosition();
+        cursorPos.x = std::clamp(cursorPos.x, 0, trianglePanel->GetSize().GetWidth());
+        cursorPos.y = std::clamp(cursorPos.y, 0, trianglePanel->GetSize().GetHeight());
+        printf("%d %d\n", cursorPos.x, cursorPos.y);
+    }
 }
 
 }

@@ -98,6 +98,9 @@ class WxfbFrame : public wxFrame
 		virtual void onTransformValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onDataViewLostFocus( wxFocusEvent& event ) { event.Skip(); }
 		virtual void onResetFlameUpdate( wxCommandEvent& event ) { event.Skip(); }
+		virtual void onMouseDown( wxMouseEvent& event ) { event.Skip(); }
+		virtual void onMouseUp( wxMouseEvent& event ) { event.Skip(); }
+		virtual void onMouseMove( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onMouseWheel( wxMouseEvent& event ) { event.Skip(); }
 		virtual void onPaint( wxPaintEvent& event ) { event.Skip(); }
 		virtual void onResize( wxSizeEvent& event ) { event.Skip(); }
@@ -107,9 +110,6 @@ class WxfbFrame : public wxFrame
 		virtual void onVariationValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onColorValueChanged( wxDataViewEvent& event ) { event.Skip(); }
 		virtual void onFrameValueChanged( wxDataViewEvent& event ) { event.Skip(); }
-		virtual void onMouseDown( wxMouseEvent& event ) { event.Skip(); }
-		virtual void onMouseUp( wxMouseEvent& event ) { event.Skip(); }
-		virtual void onMouseMove( wxMouseEvent& event ) { event.Skip(); }
 
 
 	public:

@@ -16,6 +16,9 @@ public:
     void handlePaint();
     void handleResize(wxSizeEvent& event);
     void handleMouseWheel(wxMouseEvent& event);
+    void handleMouseUp(wxMouseEvent& event);
+    void handleMouseDown(wxMouseEvent& event);
+    void handleMouseMove(wxMouseEvent& event);
 private:
     void setupAffine();
     void strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2);
@@ -30,6 +33,7 @@ private:
     int zoomLevel;
     const double zoomFactor;
     static const int MAX_ZOOM_LEVEL = 400;
+    bool dragging;
 };
 
 }

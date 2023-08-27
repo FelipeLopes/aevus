@@ -791,6 +791,9 @@
                                                     <property name="window_extra_style"></property>
                                                     <property name="window_name"></property>
                                                     <property name="window_style">wxTAB_TRAVERSAL</property>
+                                                    <event name="OnLeftDown">onMouseDown</event>
+                                                    <event name="OnLeftUp">onMouseUp</event>
+                                                    <event name="OnMotion">onMouseMove</event>
                                                     <event name="OnMouseWheel">onMouseWheel</event>
                                                     <event name="OnPaint">onPaint</event>
                                                     <event name="OnSize">onResize</event>

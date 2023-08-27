@@ -143,18 +143,21 @@ void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
 void AevusFrame::onMouseDown(wxMouseEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PALETTE_PANEL: colorModel->handleMouseDown(event); break;
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handleMouseDown(event); break;
     }
 }
 
 void AevusFrame::onMouseUp(wxMouseEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PALETTE_PANEL: colorModel->handleMouseUp(event); break;
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handleMouseUp(event); break;
     }
 }
 
 void AevusFrame::onMouseMove(wxMouseEvent& event) {
     switch (event.GetId()) {
         case ID_FLAME_PALETTE_PANEL: colorModel->handleMouseMove(event); break;
+        case ID_FLAME_TRIANGLE_PANEL: triangleModel->handleMouseMove(event); break;
     }
 }
 
