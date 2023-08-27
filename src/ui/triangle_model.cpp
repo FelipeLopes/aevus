@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <wx-3.2/wx/geometry.h>
 #include <wx/affinematrix2dbase.h>
 #include <wx/gdicmn.h>
 #include <wx/graphics.h>
@@ -17,14 +16,22 @@ namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), center(0,0), gridColor("#333333"),
-    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1), dragging(false)
+    unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1), dragging(false),
+    xformColors({
+        "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
+        "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
+    })
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
+void TriangleModel::update() {
+    trianglePanel->Refresh();
+}
+
 double TriangleModel::calcStepForScale(double sc) {
     map<double, double> multiplier {
-        {0.4, 1},
+        {0.4, 1.0},
         {0.7, 0.5},
         {0.9, 0.2},
         {1.0, 0.1}
@@ -74,28 +81,49 @@ void TriangleModel::strokeLines(wxGraphicsContext* gc, const vector<wxPoint2DDou
     gc->StrokeLines(transformedArr.size(), transformedArr.data());
 }
 
+void TriangleModel::drawGrid(wxGraphicsContext* gc) {
+    gc->SetPen(gridColor);
+    int nx = (gridHighX - gridLowX)/step;
+    int ny = (gridHighY - gridLowY)/step;
+    for (int i=0; i<=nx; i++) {
+        double x = gridLowX + step*i;
+        strokeLine(gc, x, gridLowY, x, gridHighY);
+    }
+    for (int i=0; i<=ny; i++) {
+        double y = gridLowY + step*i;
+        strokeLine(gc, gridLowX, y, gridHighX, y);
+    }
+    gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
+    vector<wxPoint2DDouble> unitTriangle = {
+        {0, 0}, {1, 0}, {0, 1}, {0, 0}
+    };
+    strokeLines(gc, unitTriangle);
+}
+
+void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
+    int sz = flame->xforms.size();
+    int numXformColors = xformColors.size();
+    for (int i=0; i<sz; i++) {
+        auto coefs = flame->xforms.get(i)->coefs.value();
+        vector<wxPoint2DDouble> triangle = {
+            {coefs.ox, coefs.oy},
+            {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
+            {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
+            {coefs.ox, coefs.oy}
+        };
+        gc->SetPen(wxPen(xformColors[i%numXformColors], 1, wxPENSTYLE_SHORT_DASH));
+        strokeLines(gc, triangle);
+    }
+}
+
 void TriangleModel::handlePaint() {
     wxAutoBufferedPaintDC dc(trianglePanel);
     dc.SetBackground(*wxBLACK_BRUSH);
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
-        gc->SetPen(gridColor);
-        int nx = (gridHighX - gridLowX)/step;
-        int ny = (gridHighY - gridLowY)/step;
-        for (int i=0; i<=nx; i++) {
-            double x = gridLowX + step*i;
-            strokeLine(gc, x, gridLowY, x, gridHighY);
-        }
-        for (int i=0; i<=ny; i++) {
-            double y = gridLowY + step*i;
-            strokeLine(gc, gridLowX, y, gridHighX, y);
-        }
-        gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
-        vector<wxPoint2DDouble> unitTriangle = {
-            {0, 0}, {1, 0}, {0, 1}, {0, 0}
-        };
-        strokeLines(gc, unitTriangle);
+        drawGrid(gc);
+        drawXformTriangles(gc);
     }
     delete gc;
 }

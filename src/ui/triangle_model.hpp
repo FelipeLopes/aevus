@@ -12,6 +12,7 @@ namespace ui {
 class TriangleModel {
 public:
     TriangleModel(std::shared_ptr<core::Flame> flame, wxPanel* trianglePanel);
+    void update();
     void handlePaint();
     void handleResize(wxSizeEvent& event);
     void handleMouseWheel(wxMouseEvent& event);
@@ -21,6 +22,8 @@ public:
 private:
     double calcStepForScale(double sc);
     void setupGrid();
+    void drawGrid(wxGraphicsContext* gc);
+    void drawXformTriangles(wxGraphicsContext* gc);
     void strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2);
     void strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr);
 
@@ -38,6 +41,7 @@ private:
     bool dragging;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
+    std::vector<wxColour> xformColors;
 };
 
 }
