@@ -15,7 +15,7 @@ using core::Flame;
 namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), gridColor("#333333"),
+    flame(flame_), trianglePanel(trianglePanel_), center(0,0), gridColor("#333333"),
     unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1), dragging(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -31,10 +31,11 @@ void TriangleModel::setupAffine() {
     affineTransform.Translate(width/2, height/2);
     double sc = 50*pow(zoomFactor, zoomLevel);
     affineTransform.Scale(sc, -sc);
-    gridLowX = floor(-width/(2*sc));
-    gridHighX = ceil(width/(2*sc));
-    gridLowY = floor(-height/(2*sc));
-    gridHighY = ceil(height/(2*sc));
+    affineTransform.Translate(-center.m_x, -center.m_y);
+    gridLowX = floor(-width/(2*sc) + center.m_x);
+    gridHighX = ceil(width/(2*sc) + center.m_x);
+    gridLowY = floor(-height/(2*sc) + center.m_y);
+    gridHighY = ceil(height/(2*sc) + center.m_y);
 }
 
 void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
@@ -104,14 +105,21 @@ void TriangleModel::handleMouseUp(wxMouseEvent& event) {
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     dragging = true;
+    auto pos = event.GetPosition();
+    dragInverseAffine = affineTransform;
+    dragInverseAffine.Invert();
+    dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+    centerDragStart = center;
 }
 
 void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     if (dragging) {
-        auto cursorPos = event.GetPosition();
-        cursorPos.x = std::clamp(cursorPos.x, 0, trianglePanel->GetSize().GetWidth());
-        cursorPos.y = std::clamp(cursorPos.y, 0, trianglePanel->GetSize().GetHeight());
-        printf("%d %d\n", cursorPos.x, cursorPos.y);
+        auto pos = event.GetPosition();
+        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
+        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
+        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        center = centerDragStart + dragBegin - dragEnd;
+        trianglePanel->Refresh();
     }
 }
 

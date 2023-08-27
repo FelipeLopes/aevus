@@ -2,7 +2,6 @@
 
 #include <memory>
 #include "../core/flame.hpp"
-#include <wx-3.2/wx/geometry.h>
 #include <wx/graphics.h>
 #include <wx/event.h>
 #include <wx/affinematrix2d.h>
@@ -27,6 +26,7 @@ private:
     std::shared_ptr<core::Flame> flame;
     wxPanel* trianglePanel;
     wxAffineMatrix2D affineTransform;
+    wxPoint2DDouble center;
     wxColour gridColor, unitTriangleColor;
     double gridLowX, gridHighX;
     double gridLowY, gridHighY;
@@ -34,6 +34,8 @@ private:
     const double zoomFactor;
     static const int MAX_ZOOM_LEVEL = 400;
     bool dragging;
+    wxAffineMatrix2D dragInverseAffine;
+    wxPoint2DDouble dragBegin, centerDragStart;
 };
 
 }
