@@ -23,6 +23,7 @@ public:
     void handleMouseMove(wxMouseEvent& event);
 
     boost::signals2::signal<void (int)> xformSelected;
+    boost::signals2::signal<void ()> transformCoordsChanged;
 private:
     double calcStepForScale(double sc);
     void setupGrid();
@@ -57,6 +58,8 @@ private:
     std::vector<wxColour> xformColors;
     std::vector<std::string> dotLabels;
     int highlightedTriangle;
+    bool draggingTriangle;
+    wxPoint2DDouble originDragStart;
 };
 
 }

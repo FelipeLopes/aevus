@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <wx-3.2/wx/gdicmn.h>
 #include <wx/affinematrix2dbase.h>
 #include <wx/gdicmn.h>
 #include <wx/graphics.h>
@@ -24,7 +23,7 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }),
-    dotLabels({"O", "X", "Y"}), highlightedTriangle(-1)
+    dotLabels({"O", "X", "Y"}), highlightedTriangle(-1), draggingTriangle(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -233,6 +232,7 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
     draggingGrid = false;
+    draggingTriangle = false;
 }
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
@@ -248,6 +248,12 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
         if (triangle != activeTransform) {
             xformSelected(triangle);
         }
+        draggingTriangle = true;
+        dragInverseAffine = affineTransform;
+        dragInverseAffine.Invert();
+        dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+        originDragStart = wxPoint2DDouble(coefs.ox, coefs.oy);
     }
 }
 
@@ -281,6 +287,15 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         center = centerDragStart + dragBegin - dragEnd;
         setupGrid();
         update();
+    } else if (draggingTriangle) {
+        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
+        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
+        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        auto newOrigin = originDragStart + dragEnd - dragBegin;
+        auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+        coefs->ox = newOrigin.m_x;
+        coefs->oy = newOrigin.m_y;
+        transformCoordsChanged();
     } else {
         int newHighlight = getCollidingTriangle(pos);
         if (newHighlight != highlightedTriangle) {

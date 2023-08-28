@@ -53,6 +53,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(eventBroker->frameParamsChanged);
     triangleModel->xformSelected
         .connect(eventBroker->activeXformChanged);
+    triangleModel->transformCoordsChanged
+        .connect(eventBroker->activeXformCoordsChanged);
 
     eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
