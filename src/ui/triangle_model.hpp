@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "../core/flame.hpp"
-#include <wx-3.2/wx/geometry.h>
+#include <boost/signals2.hpp>
 #include <wx/graphics.h>
 #include <wx/event.h>
 #include <wx/affinematrix2d.h>
@@ -21,6 +21,8 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
+
+    boost::signals2::signal<void (int)> xformSelected;
 private:
     double calcStepForScale(double sc);
     void setupGrid();
@@ -35,6 +37,7 @@ private:
     void highlightTriangle(wxGraphicsContext* gc, int i);
     bool pointInsideTriangle(wxPoint2DDouble p, int idx);
     double sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3);
+    int getCollidingTriangle(wxPoint pos);
 
     std::shared_ptr<core::Flame> flame;
     wxPanel* trianglePanel;
@@ -48,7 +51,7 @@ private:
     int zoomLevel;
     const double zoomFactor;
     static const int MAX_ZOOM_LEVEL = 400;
-    bool dragging;
+    bool draggingGrid;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
     std::vector<wxColour> xformColors;

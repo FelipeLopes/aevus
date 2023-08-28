@@ -51,6 +51,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(eventBroker->colorParamsChanged);
     frameModel->frameChanged
         .connect(eventBroker->frameParamsChanged);
+    triangleModel->xformSelected
+        .connect(eventBroker->activeXformChanged);
 
     eventBroker->activeXformCoordsChanged
         .connect(bind(&TransformModel::update, preTransformModel));
@@ -64,6 +66,8 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
         .connect(bind(&TransformModel::handleActiveXformChanged, preTransformModel, _1));
     eventBroker->activeXformChanged
         .connect(bind(&TransformModel::handleActiveXformChanged, postTransformModel, _1));
+    eventBroker->activeXformChanged
+        .connect(bind(&WeightsModel::handleActiveXformChanged, weightsModel, _1));
     eventBroker->activeXformChanged
         .connect(bind(&VariationModel::handleActiveXformChanged, variationModel, _1));
     eventBroker->activeXformChanged
@@ -189,8 +193,8 @@ void AevusFrame::loadFile(std::string filename) {
     flame->deserialize(inputStream);
     fclose(inputStream);
     eventBroker->paletteChanged();
-    eventBroker->activeXformChanged(0);
     eventBroker->flameWeightsChanged();
+    eventBroker->activeXformChanged(0);
     eventBroker->frameParamsChanged();
 }
 

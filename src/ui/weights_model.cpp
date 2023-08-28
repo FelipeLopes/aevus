@@ -11,12 +11,18 @@ using std::vector;
 namespace ui {
 
 WeightsModel::WeightsModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* weightsListCtrl):
-    SelectionViewModel(weightsListCtrl), flame(flame_) { }
+    SelectionViewModel(weightsListCtrl), flame(flame_), blockSelectionEvents(false) { }
 
 void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
-    if (!updating()) {
+    if (!updating() && !blockSelectionEvents) {
         xformSelected(getSelectedRow());
     }
+}
+
+void WeightsModel::handleActiveXformChanged(int id) {
+    blockSelectionEvents = true;
+    selectRow(id);
+    blockSelectionEvents = false;
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {

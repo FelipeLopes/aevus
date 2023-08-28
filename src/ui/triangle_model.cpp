@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
+#include <wx-3.2/wx/gdicmn.h>
 #include <wx/affinematrix2dbase.h>
 #include <wx/gdicmn.h>
 #include <wx/graphics.h>
@@ -18,7 +19,7 @@ namespace ui {
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), activeTransform(0), center(0,0),
     gridColor("#333333"), unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1),
-    dragging(false),
+    draggingGrid(false),
     xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
@@ -231,21 +232,49 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 }
 
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
-    dragging = false;
+    draggingGrid = false;
 }
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
-    dragging = true;
     auto pos = event.GetPosition();
-    dragInverseAffine = affineTransform;
-    dragInverseAffine.Invert();
-    dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-    centerDragStart = center;
+    int triangle = getCollidingTriangle(pos);
+    if (triangle == -1) {
+        draggingGrid = true;
+        dragInverseAffine = affineTransform;
+        dragInverseAffine.Invert();
+        dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        centerDragStart = center;
+    } else {
+        if (triangle != activeTransform) {
+            xformSelected(triangle);
+        }
+    }
+}
+
+int TriangleModel::getCollidingTriangle(wxPoint pos) {
+    auto inverseAffine = affineTransform;
+    inverseAffine.Invert();
+    auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+    int ans = -1;
+    if (pointInsideTriangle(tp, activeTransform)) {
+        ans = activeTransform;
+    } else {
+        for (int i=0; i<flame->xforms.size(); i++) {
+            if (i == activeTransform) {
+                continue;
+            }
+            if (pointInsideTriangle(tp, i)) {
+                ans = i;
+                break;
+            }
+        }
+    }
+    return ans;
 }
 
 void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     auto pos = event.GetPosition();
-    if (dragging) {
+    if (draggingGrid) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
@@ -253,23 +282,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         setupGrid();
         update();
     } else {
-        auto inverseAffine = affineTransform;
-        inverseAffine.Invert();
-        auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        int newHighlight = -1;
-        if (pointInsideTriangle(tp, activeTransform)) {
-            newHighlight = activeTransform;
-        } else {
-            for (int i=0; i<flame->xforms.size(); i++) {
-                if (i == activeTransform) {
-                    continue;
-                }
-                if (pointInsideTriangle(tp, i)) {
-                    newHighlight = i;
-                    break;
-                }
-            }
-        }
+        int newHighlight = getCollidingTriangle(pos);
         if (newHighlight != highlightedTriangle) {
             highlightedTriangle = newHighlight;
             update();

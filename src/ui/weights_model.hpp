@@ -11,6 +11,7 @@ class WeightsModel: public SelectionViewModel {
 public:
     WeightsModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* weightsListCtrl);
     void handleSelectionEvent(wxDataViewEvent& event);
+    void handleActiveXformChanged(int id);
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> weightsChanged;
 private:
@@ -18,6 +19,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
 
     std::shared_ptr<core::Flame> flame;
+    bool blockSelectionEvents;
 };
 
 }
