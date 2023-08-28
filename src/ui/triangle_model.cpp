@@ -23,7 +23,7 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }),
-    dotLabels({"O", "X", "Y"})
+    dotLabels({"O", "X", "Y"}), highlightedTriangle(-1)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -137,13 +137,7 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
         if (i == activeTransform) {
             continue;
         }
-        auto coefs = flame->xforms.get(i)->coefs.value();
-        vector<wxPoint2DDouble> triangle = {
-            {coefs.ox, coefs.oy},
-            {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-            {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
-            {coefs.ox, coefs.oy}
-        };
+        auto triangle = getXformTriangle(i);
         auto color = xformColors[i%numXformColors];
         gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
         strokeLines(gc, triangle);
@@ -151,11 +145,7 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     }
     auto color = xformColors[activeTransform%numXformColors];
     auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-    vector<wxPoint2DDouble> triangle = {
-        {coefs.ox, coefs.oy},
-        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
-    };
+    auto triangle = getXformTriangle(activeTransform);
     vector<wxPoint2DDouble> fullPath = {
         {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
         {coefs.ox, coefs.oy},
@@ -169,6 +159,48 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     strokeLines(gc, dashedPath);
     gc->SetPen(color);
     strokeLines(gc, fullPath);
+    drawTriangleDots(gc, color, triangle);
+    if (highlightedTriangle != -1) {
+        highlightTriangle(gc, highlightedTriangle);
+    }
+}
+
+bool TriangleModel::pointInsideTriangle(wxPoint2DDouble p, int idx) {
+    auto v = getXformTriangle(idx);
+    double d1 = sign(p, v[0], v[1]);
+    double d2 = sign(p, v[1], v[2]);
+    double d3 = sign(p, v[2], v[0]);
+    bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+    return !(hasNeg && hasPos);
+}
+
+double TriangleModel::sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3) {
+    return (p1.m_x-p3.m_x)*(p2.m_y-p3.m_y)-(p2.m_x-p3.m_x)*(p1.m_y-p3.m_y);
+}
+
+vector<wxPoint2DDouble> TriangleModel::getXformTriangle(int i) {
+    auto coefs = flame->xforms.get(i)->coefs.value();
+    vector<wxPoint2DDouble> triangle = {
+        {coefs.ox, coefs.oy},
+        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
+        {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
+        {coefs.ox, coefs.oy}
+    };
+    return triangle;
+}
+
+void TriangleModel::highlightTriangle(wxGraphicsContext* gc, int i) {
+    auto triangle = getXformTriangle(i);
+    int numXformColors = xformColors.size();
+    auto color = xformColors[i % numXformColors];
+    auto path = gc->CreatePath();
+    for (int i=0; i<3; i++) {
+        auto tp = affineTransform.TransformPoint(triangle[i]);
+        path.AddLineToPoint(tp);
+    }
+    gc->SetBrush(wxColour(color.Red(), color.Green(), color.Blue(), 127));
+    gc->FillPath(path);
     drawTriangleDots(gc, color, triangle);
 }
 
@@ -212,14 +244,36 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
 }
 
 void TriangleModel::handleMouseMove(wxMouseEvent& event) {
+    auto pos = event.GetPosition();
     if (dragging) {
-        auto pos = event.GetPosition();
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
         center = centerDragStart + dragBegin - dragEnd;
         setupGrid();
-        trianglePanel->Refresh();
+        update();
+    } else {
+        auto inverseAffine = affineTransform;
+        inverseAffine.Invert();
+        auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        int newHighlight = -1;
+        if (pointInsideTriangle(tp, activeTransform)) {
+            newHighlight = activeTransform;
+        } else {
+            for (int i=0; i<flame->xforms.size(); i++) {
+                if (i == activeTransform) {
+                    continue;
+                }
+                if (pointInsideTriangle(tp, i)) {
+                    newHighlight = i;
+                    break;
+                }
+            }
+        }
+        if (newHighlight != highlightedTriangle) {
+            highlightedTriangle = newHighlight;
+            update();
+        }
     }
 }
 
