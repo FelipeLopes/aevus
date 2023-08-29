@@ -1,6 +1,8 @@
 #include "triangle_model.hpp"
+#include "triangle_grid.hpp"
 #include <algorithm>
 #include <iterator>
+#include <memory>
 #include <vector>
 #include <wx/affinematrix2dbase.h>
 #include <wx/gdicmn.h>
@@ -28,6 +30,10 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     rotatingTriangle(false), scalingTriangle(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+    auto sz = trianglePanel->GetSize();
+    double width = sz.GetWidth();
+    double height = sz.GetHeight();
+    triangleGrid = std::make_shared<TriangleGrid>(width, height);
 }
 
 void TriangleModel::update() {

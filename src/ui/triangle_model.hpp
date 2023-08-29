@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "../core/flame.hpp"
+#include "triangle_grid.hpp"
 #include <boost/signals2.hpp>
 #include <wx/graphics.h>
 #include <wx/event.h>
@@ -65,6 +66,7 @@ private:
     void highlightEdge(wxGraphicsContext* gc, int triangle, int edge);
 
     std::shared_ptr<core::Flame> flame;
+    std::shared_ptr<TriangleGrid> triangleGrid;
     wxPanel* trianglePanel;
     int activeTransform;
     wxAffineMatrix2D affineTransform;
