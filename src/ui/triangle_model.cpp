@@ -24,7 +24,7 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }),
     dotLabels({"O", "X", "Y"}), highlightedTriangle(-1), draggingTriangle(false),
-    highlightType(NO_COLLISION)
+    highlightType(NO_COLLISION), draggingX(false), draggingY(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -264,27 +264,55 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
     draggingGrid = false;
     draggingTriangle = false;
+    draggingX = false;
+    draggingY = false;
 }
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     auto pos = event.GetPosition();
-    int triangle = getCollision(pos).triangleId;
-    if (triangle == -1) {
+    auto coll = getCollision(pos);
+    if (coll.type == NO_COLLISION) {
         draggingGrid = true;
         dragInverseAffine = affineTransform;
         dragInverseAffine.Invert();
         dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
         centerDragStart = center;
     } else {
-        if (triangle != activeTransform) {
-            xformSelected(triangle);
+        if (coll.triangleId != activeTransform) {
+            xformSelected(coll.triangleId);
         }
-        draggingTriangle = true;
-        dragInverseAffine = affineTransform;
-        dragInverseAffine.Invert();
-        dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-        originDragStart = wxPoint2DDouble(coefs.ox, coefs.oy);
+        switch (coll.type) {
+            case VERTEX_O:
+            case TRIANGLE_BODY: {
+                draggingTriangle = true;
+                dragInverseAffine = affineTransform;
+                dragInverseAffine.Invert();
+                dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+                auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+                originDragStart = wxPoint2DDouble(coefs.ox, coefs.oy);
+                break;
+            }
+            case VERTEX_X: {
+                draggingX = true;
+                dragInverseAffine = affineTransform;
+                dragInverseAffine.Invert();
+                dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+                auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+                xDragStart = wxPoint2DDouble(coefs.xx, coefs.xy);
+                break;
+            }
+            case VERTEX_Y: {
+                draggingY = true;
+                dragInverseAffine = affineTransform;
+                dragInverseAffine.Invert();
+                dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+                auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+                yDragStart = wxPoint2DDouble(coefs.yx, coefs.yy);
+                break;
+            }
+            default:
+                break;
+        }
     }
 }
 
@@ -392,6 +420,24 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         auto coefs = flame->xforms.get(activeTransform)->coefs.get();
         coefs->ox = newOrigin.m_x;
         coefs->oy = newOrigin.m_y;
+        transformCoordsChanged();
+    } else if (draggingX) {
+        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
+        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
+        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        auto newX = xDragStart + dragEnd - dragBegin;
+        auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+        coefs->xx = newX.m_x;
+        coefs->xy = newX.m_y;
+        transformCoordsChanged();
+    } else if (draggingY) {
+        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
+        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
+        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+        auto newY = yDragStart + dragEnd - dragBegin;
+        auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+        coefs->yx = newY.m_x;
+        coefs->yy = newY.m_y;
         transformCoordsChanged();
     } else {
         auto coll = getCollision(pos);

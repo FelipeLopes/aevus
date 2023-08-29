@@ -84,6 +84,8 @@ private:
     bool draggingTriangle;
     wxPoint2DDouble originDragStart;
     CollisionType highlightType;
+    bool draggingX, draggingY;
+    wxPoint2DDouble xDragStart, yDragStart;
 };
 
 }
