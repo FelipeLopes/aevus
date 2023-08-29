@@ -55,6 +55,7 @@ private:
     void highlightTriangle(wxGraphicsContext* gc, int i);
     bool pointInsideTriangle(wxPoint2DDouble p, int idx);
     double distancePointSegment(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
+    double distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
     double sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3);
     Collision getCollision(wxPoint pos);
     CollisionType getCollisionType(wxPoint pos, int triangle);
@@ -84,7 +85,7 @@ private:
     bool draggingTriangle;
     wxPoint2DDouble originDragStart;
     CollisionType highlightType;
-    bool draggingX, draggingY;
+    bool draggingX, draggingY, rotatingTriangle, scalingTriangle;
     wxPoint2DDouble xDragStart, yDragStart;
 };
 
