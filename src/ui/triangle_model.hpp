@@ -47,8 +47,6 @@ private:
     void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
         const std::vector<wxPoint2DDouble>& triangle);
     void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
-    void strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2);
-    void strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr);
     std::vector<wxPoint2DDouble> getXformTriangle(int i);
     void highlightTriangle(wxGraphicsContext* gc, int i);
     bool pointInsideTriangle(wxPoint2DDouble p, int idx);

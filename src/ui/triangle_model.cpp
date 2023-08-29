@@ -64,27 +64,6 @@ void TriangleModel::drawTriangleDots(wxGraphicsContext* gc, wxColour color,
     }
 }
 
-void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
-    // We implement our own strokeLine wrapper that accesses the affine
-    // transform directly instead of using the builtin wxWidgets constructions.
-    // The reason for this is that when stroking a line, the minimum pen width is 1,
-    // and wxWidgets scales this width in the final custom control, making their
-    // builtin methods useless for our purposes.
-    wxPoint2DDouble p1(x1, y1), p2(x2, y2);
-    auto tp1 = triangleGrid->getAffineMatrix().TransformPoint(p1);
-    auto tp2 = triangleGrid->getAffineMatrix().TransformPoint(p2);
-    gc->StrokeLine(tp1.m_x, tp1.m_y, tp2.m_x, tp2.m_y);
-}
-
-void TriangleModel::strokeLines(wxGraphicsContext* gc, const vector<wxPoint2DDouble>& arr) {
-    vector<wxPoint2DDouble> transformedArr;
-    std::transform(arr.begin(), arr.end(), std::back_inserter(transformedArr),
-        [this](wxPoint2DDouble pt) {
-            return triangleGrid->getAffineMatrix().TransformPoint(pt);
-        });
-    gc->StrokeLines(transformedArr.size(), transformedArr.data());
-}
-
 void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int vertex) {
     auto tri = getXformTriangle(triangle);
     auto p = triangleGrid->getAffineMatrix().TransformPoint(tri[vertex]);
@@ -116,7 +95,7 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
         auto triangle = getXformTriangle(i);
         auto color = xformColors[i%numXformColors];
         gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
-        strokeLines(gc, triangle);
+        triangleGrid->strokeLines(gc, triangle);
         drawTriangleDots(gc, color, triangle);
     }
     auto color = xformColors[activeTransform%numXformColors];
@@ -132,9 +111,9 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
         {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
     };
     gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
-    strokeLines(gc, dashedPath);
+    triangleGrid->strokeLines(gc, dashedPath);
     gc->SetPen(color);
-    strokeLines(gc, fullPath);
+    triangleGrid->strokeLines(gc, fullPath);
     drawTriangleDots(gc, color, triangle);
     if (highlightedTriangle != -1) {
         highlightTriangle(gc, highlightedTriangle);
