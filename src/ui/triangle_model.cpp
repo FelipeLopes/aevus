@@ -44,7 +44,7 @@ void TriangleModel::handleActiveXformChanged(int id) {
 
 void TriangleModel::drawDot(wxGraphicsContext* gc, double x, double y, string label) {
     wxPoint2DDouble p(x, y);
-    auto tp = triangleGrid->getAffineMatrix().TransformPoint(p);
+    auto tp = triangleGrid->transformToWindow(p);
     gc->DrawEllipse(tp.m_x - 4, tp.m_y - 4, 8, 8);
     gc->DrawText(label, tp.m_x + 2, tp.m_y + 2);
 }
@@ -66,7 +66,7 @@ void TriangleModel::drawTriangleDots(wxGraphicsContext* gc, wxColour color,
 
 void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int vertex) {
     auto tri = getXformTriangle(triangle);
-    auto p = triangleGrid->getAffineMatrix().TransformPoint(tri[vertex]);
+    auto p = triangleGrid->transformToWindow(tri[vertex]);
     int numXformColors = xformColors.size();
     auto color = xformColors[triangle % numXformColors];
     gc->SetBrush(color);
@@ -76,8 +76,8 @@ void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int ver
 
 void TriangleModel::highlightEdge(wxGraphicsContext* gc, int triangle, int edge) {
     auto tri = getXformTriangle(triangle);
-    auto s1 = triangleGrid->getAffineMatrix().TransformPoint(tri[edge]);
-    auto s2 = triangleGrid->getAffineMatrix().TransformPoint(tri[edge+1]);
+    auto s1 = triangleGrid->transformToWindow(tri[edge]);
+    auto s2 = triangleGrid->transformToWindow(tri[edge+1]);
     int numXformColors = xformColors.size();
     auto c = xformColors[triangle % numXformColors];
     gc->SetPen(wxPen(wxColour(c.Red(), c.Green(), c.Blue(), 127), 5));
@@ -160,7 +160,7 @@ void TriangleModel::highlightTriangle(wxGraphicsContext* gc, int i) {
     auto color = xformColors[i % numXformColors];
     auto path = gc->CreatePath();
     for (int i=0; i<3; i++) {
-        auto tp = triangleGrid->getAffineMatrix().TransformPoint(triangle[i]);
+        auto tp = triangleGrid->transformToWindow(triangle[i]);
         path.AddLineToPoint(tp);
     }
     gc->SetBrush(wxColour(color.Red(), color.Green(), color.Blue(), 127));
@@ -279,7 +279,7 @@ int TriangleModel::checkVertexCollision(wxPoint p, int idx) {
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
     for (int i=1; i<4; i++) {
-        auto tp = triangleGrid->getAffineMatrix().TransformPoint(triangle[i]);
+        auto tp = triangleGrid->transformToWindow(triangle[i]);
         if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 5) {
             return i;
         }
@@ -315,8 +315,8 @@ int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
-        auto s1 = triangleGrid->getAffineMatrix().TransformPoint(triangle[(i+2)%3]);
-        auto s2 = triangleGrid->getAffineMatrix().TransformPoint(triangle[i%3]);
+        auto s1 = triangleGrid->transformToWindow(triangle[(i+2)%3]);
+        auto s2 = triangleGrid->transformToWindow(triangle[i%3]);
         if (distancePointSegment(pc, s1, s2) < 3) {
             return (i+2)%3;
         }
@@ -327,9 +327,7 @@ int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
 TriangleModel::CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
     auto ans = NO_COLLISION;
     int vertex = checkVertexCollision(pos, triangle);
-    auto inverseAffine = triangleGrid->getAffineMatrix();
-    inverseAffine.Invert();
-    auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
+    auto tp = triangleGrid->transformToGrid(wxPoint2DDouble(pos.x, pos.y));
     if (vertex != -1) {
         switch (vertex) {
             case 1: ans = VERTEX_X; break;
