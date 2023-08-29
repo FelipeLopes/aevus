@@ -23,7 +23,8 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }),
-    dotLabels({"O", "X", "Y"}), highlightedTriangle(-1), draggingTriangle(false)
+    dotLabels({"O", "X", "Y"}), highlightedTriangle(-1), draggingTriangle(false),
+    highlightType(NO_COLLISION)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -130,6 +131,16 @@ void TriangleModel::drawGrid(wxGraphicsContext* gc) {
     strokeLines(gc, unitTriangle);
 }
 
+void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int vertex) {
+    auto tri = getXformTriangle(triangle);
+    auto p = affineTransform.TransformPoint(tri[vertex]);
+    int numXformColors = xformColors.size();
+    auto color = xformColors[triangle % numXformColors];
+    gc->SetBrush(color);
+    gc->SetPen(color);
+    gc->DrawEllipse(p.m_x - 2, p.m_y - 2, 4, 4);
+}
+
 void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     int sz = flame->xforms.size();
     int numXformColors = xformColors.size();
@@ -162,6 +173,12 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     drawTriangleDots(gc, color, triangle);
     if (highlightedTriangle != -1) {
         highlightTriangle(gc, highlightedTriangle);
+        switch (highlightType) {
+            case VERTEX_O: highlightVertex(gc, highlightedTriangle, 0); break;
+            case VERTEX_X: highlightVertex(gc, highlightedTriangle, 1); break;
+            case VERTEX_Y: highlightVertex(gc, highlightedTriangle, 2); break;
+            default: break;
+        }
     }
 }
 
@@ -237,7 +254,7 @@ void TriangleModel::handleMouseUp(wxMouseEvent& event) {
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     auto pos = event.GetPosition();
-    int triangle = getCollidingTriangle(pos);
+    int triangle = getCollision(pos).triangleId;
     if (triangle == -1) {
         draggingGrid = true;
         dragInverseAffine = affineTransform;
@@ -257,20 +274,45 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     }
 }
 
-int TriangleModel::getCollidingTriangle(wxPoint pos) {
+int TriangleModel::checkVertexCollision(wxPoint p, int idx) {
+    auto triangle = getXformTriangle(idx);
+    // We check in order X -> Y -> O, because the X and Y vertices
+    // are better when the triangle collapses to a point.
+    for (int i=1; i<4; i++) {
+        auto tp = affineTransform.TransformPoint(triangle[i]);
+        if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 4) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+TriangleModel::Collision TriangleModel::getCollision(wxPoint pos) {
+    TriangleModel::Collision ans;
+    ans.type = NO_COLLISION;
     auto inverseAffine = affineTransform;
     inverseAffine.Invert();
     auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-    int ans = -1;
-    if (pointInsideTriangle(tp, activeTransform)) {
-        ans = activeTransform;
+    ans.triangleId = -1;
+    int vertex = checkVertexCollision(pos, activeTransform);
+    if (vertex != -1) {
+        ans.triangleId = activeTransform;
+        switch (vertex) {
+            case 1: ans.type = VERTEX_X; break;
+            case 2: ans.type = VERTEX_Y; break;
+            case 3: ans.type = VERTEX_O; break;
+        }
+    } else if (pointInsideTriangle(tp, activeTransform)) {
+        ans.triangleId = activeTransform;
+        ans.type = TRIANGLE_BODY;
     } else {
         for (int i=0; i<flame->xforms.size(); i++) {
             if (i == activeTransform) {
                 continue;
             }
             if (pointInsideTriangle(tp, i)) {
-                ans = i;
+                ans.triangleId = i;
+                ans.type = TRIANGLE_BODY;
                 break;
             }
         }
@@ -297,9 +339,10 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         coefs->oy = newOrigin.m_y;
         transformCoordsChanged();
     } else {
-        int newHighlight = getCollidingTriangle(pos);
-        if (newHighlight != highlightedTriangle) {
-            highlightedTriangle = newHighlight;
+        auto coll = getCollision(pos);
+        if (coll.triangleId != highlightedTriangle || coll.type != highlightType) {
+            highlightedTriangle = coll.triangleId;
+            highlightType = coll.type;
             update();
         }
     }

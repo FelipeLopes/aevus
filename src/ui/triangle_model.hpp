@@ -25,6 +25,23 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
+
+    enum CollisionType {
+        NO_COLLISION,
+        TRIANGLE_BODY,
+        VERTEX_O,
+        VERTEX_X,
+        VERTEX_Y,
+        EDGE_OX,
+        EDGE_OY,
+        EDGE_XY
+    };
+
+    struct Collision {
+        int triangleId;
+        CollisionType type;
+    };
+
     double calcStepForScale(double sc);
     void setupGrid();
     void drawGrid(wxGraphicsContext* gc);
@@ -38,7 +55,9 @@ private:
     void highlightTriangle(wxGraphicsContext* gc, int i);
     bool pointInsideTriangle(wxPoint2DDouble p, int idx);
     double sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3);
-    int getCollidingTriangle(wxPoint pos);
+    Collision getCollision(wxPoint pos);
+    int checkVertexCollision(wxPoint p, int idx);
+    void highlightVertex(wxGraphicsContext* gc, int triangle, int vertex);
 
     std::shared_ptr<core::Flame> flame;
     wxPanel* trianglePanel;
@@ -60,6 +79,7 @@ private:
     int highlightedTriangle;
     bool draggingTriangle;
     wxPoint2DDouble originDragStart;
+    CollisionType highlightType;
 };
 
 }
