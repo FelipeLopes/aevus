@@ -9,7 +9,6 @@
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
-using std::map;
 using std::vector;
 using std::shared_ptr;
 using std::string;
@@ -18,9 +17,7 @@ using core::Flame;
 namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0), center(0,0),
-    gridColor("#333333"), unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1),
-    draggingGrid(false),
+    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0), draggingGrid(false),
     xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
@@ -45,40 +42,9 @@ void TriangleModel::handleActiveXformChanged(int id) {
     update();
 }
 
-double TriangleModel::calcStepForScale(double sc) {
-    map<double, double> multiplier {
-        {0.4, 1.0},
-        {0.7, 0.5},
-        {0.9, 0.2},
-        {1.0, 0.1}
-    };
-    double logarithm = log10(sc);
-    double periodBegin = floor(logarithm);
-    double frac = logarithm - periodBegin;
-    return pow(10, -periodBegin)*multiplier.lower_bound(frac)->second;
-}
-
-void TriangleModel::setupGrid() {
-    wxMatrix2D identity;
-    wxPoint2DDouble origin;
-    affineTransform.Set(identity, origin);
-    auto sz = trianglePanel->GetSize();
-    double width = sz.GetWidth();
-    double height = sz.GetHeight();
-    affineTransform.Translate(width/2, height/2);
-    double sc = pow(zoomFactor, zoomLevel);
-    affineTransform.Scale(50*sc, -50*sc);
-    step = calcStepForScale(sc);
-    affineTransform.Translate(-center.m_x, -center.m_y);
-    gridLowX = step*floor((-width/(2*sc) + center.m_x)/step);
-    gridHighX = step*ceil((width/(2*sc) + center.m_x)/step);
-    gridLowY = step*floor((-height/(2*sc) + center.m_y)/step);
-    gridHighY = step*ceil((height/(2*sc) + center.m_y)/step);
-}
-
 void TriangleModel::drawDot(wxGraphicsContext* gc, double x, double y, string label) {
     wxPoint2DDouble p(x, y);
-    auto tp = affineTransform.TransformPoint(p);
+    auto tp = triangleGrid->getAffineMatrix().TransformPoint(p);
     gc->DrawEllipse(tp.m_x - 4, tp.m_y - 4, 8, 8);
     gc->DrawText(label, tp.m_x + 2, tp.m_y + 2);
 }
@@ -105,8 +71,8 @@ void TriangleModel::strokeLine(wxGraphicsContext* gc, double x1, double y1, doub
     // and wxWidgets scales this width in the final custom control, making their
     // builtin methods useless for our purposes.
     wxPoint2DDouble p1(x1, y1), p2(x2, y2);
-    auto tp1 = affineTransform.TransformPoint(p1);
-    auto tp2 = affineTransform.TransformPoint(p2);
+    auto tp1 = triangleGrid->getAffineMatrix().TransformPoint(p1);
+    auto tp2 = triangleGrid->getAffineMatrix().TransformPoint(p2);
     gc->StrokeLine(tp1.m_x, tp1.m_y, tp2.m_x, tp2.m_y);
 }
 
@@ -114,33 +80,14 @@ void TriangleModel::strokeLines(wxGraphicsContext* gc, const vector<wxPoint2DDou
     vector<wxPoint2DDouble> transformedArr;
     std::transform(arr.begin(), arr.end(), std::back_inserter(transformedArr),
         [this](wxPoint2DDouble pt) {
-            return affineTransform.TransformPoint(pt);
+            return triangleGrid->getAffineMatrix().TransformPoint(pt);
         });
     gc->StrokeLines(transformedArr.size(), transformedArr.data());
 }
 
-void TriangleModel::drawGrid(wxGraphicsContext* gc) {
-    gc->SetPen(gridColor);
-    int nx = (gridHighX - gridLowX)/step;
-    int ny = (gridHighY - gridLowY)/step;
-    for (int i=0; i<=nx; i++) {
-        double x = gridLowX + step*i;
-        strokeLine(gc, x, gridLowY, x, gridHighY);
-    }
-    for (int i=0; i<=ny; i++) {
-        double y = gridLowY + step*i;
-        strokeLine(gc, gridLowX, y, gridHighX, y);
-    }
-    gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
-    vector<wxPoint2DDouble> unitTriangle = {
-        {0, 0}, {1, 0}, {0, 1}, {0, 0}
-    };
-    strokeLines(gc, unitTriangle);
-}
-
 void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int vertex) {
     auto tri = getXformTriangle(triangle);
-    auto p = affineTransform.TransformPoint(tri[vertex]);
+    auto p = triangleGrid->getAffineMatrix().TransformPoint(tri[vertex]);
     int numXformColors = xformColors.size();
     auto color = xformColors[triangle % numXformColors];
     gc->SetBrush(color);
@@ -150,8 +97,8 @@ void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int ver
 
 void TriangleModel::highlightEdge(wxGraphicsContext* gc, int triangle, int edge) {
     auto tri = getXformTriangle(triangle);
-    auto s1 = affineTransform.TransformPoint(tri[edge]);
-    auto s2 = affineTransform.TransformPoint(tri[edge+1]);
+    auto s1 = triangleGrid->getAffineMatrix().TransformPoint(tri[edge]);
+    auto s2 = triangleGrid->getAffineMatrix().TransformPoint(tri[edge+1]);
     int numXformColors = xformColors.size();
     auto c = xformColors[triangle % numXformColors];
     gc->SetPen(wxPen(wxColour(c.Red(), c.Green(), c.Blue(), 127), 5));
@@ -234,7 +181,7 @@ void TriangleModel::highlightTriangle(wxGraphicsContext* gc, int i) {
     auto color = xformColors[i % numXformColors];
     auto path = gc->CreatePath();
     for (int i=0; i<3; i++) {
-        auto tp = affineTransform.TransformPoint(triangle[i]);
+        auto tp = triangleGrid->getAffineMatrix().TransformPoint(triangle[i]);
         path.AddLineToPoint(tp);
     }
     gc->SetBrush(wxColour(color.Red(), color.Green(), color.Blue(), 127));
@@ -248,23 +195,23 @@ void TriangleModel::handlePaint() {
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
-        drawGrid(gc);
+        triangleGrid->drawGrid(gc);
         drawXformTriangles(gc);
     }
     delete gc;
 }
 
 void TriangleModel::handleResize(wxSizeEvent& event) {
-    setupGrid();
+    auto sz = trianglePanel->GetSize();
+    triangleGrid->updateWindowSize(sz.GetWidth(), sz.GetHeight());
 }
 
 void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
-    if (event.GetWheelRotation() > 0 && zoomLevel < MAX_ZOOM_LEVEL) {
-        zoomLevel++;
-    } else if (event.GetWheelRotation() < 0 && zoomLevel > -MAX_ZOOM_LEVEL) {
-        zoomLevel--;
+    if (event.GetWheelRotation() > 0) {
+        triangleGrid->zoomIn();
+    } else if (event.GetWheelRotation()) {
+        triangleGrid->zoomOut();
     }
-    setupGrid();
     trianglePanel->Refresh();
 }
 
@@ -282,10 +229,10 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     auto coll = getCollision(pos);
     if (coll.type == NO_COLLISION) {
         draggingGrid = true;
-        dragInverseAffine = affineTransform;
+        dragInverseAffine = triangleGrid->getAffineMatrix();
         dragInverseAffine.Invert();
         dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        centerDragStart = center;
+        centerDragStart = triangleGrid->getCenter();
     } else {
         if (coll.triangleId != activeTransform) {
             xformSelected(coll.triangleId);
@@ -294,7 +241,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
             case VERTEX_O:
             case TRIANGLE_BODY: {
                 draggingTriangle = true;
-                dragInverseAffine = affineTransform;
+                dragInverseAffine = triangleGrid->getAffineMatrix();
                 dragInverseAffine.Invert();
                 dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
                 auto coefs = flame->xforms.get(activeTransform)->coefs.value();
@@ -303,7 +250,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
             }
             case VERTEX_X: {
                 draggingX = true;
-                dragInverseAffine = affineTransform;
+                dragInverseAffine = triangleGrid->getAffineMatrix();
                 dragInverseAffine.Invert();
                 dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
                 auto coefs = flame->xforms.get(activeTransform)->coefs.value();
@@ -312,7 +259,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
             }
             case VERTEX_Y: {
                 draggingY = true;
-                dragInverseAffine = affineTransform;
+                dragInverseAffine = triangleGrid->getAffineMatrix();
                 dragInverseAffine.Invert();
                 dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
                 auto coefs = flame->xforms.get(activeTransform)->coefs.value();
@@ -322,7 +269,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
             case EDGE_OX:
             case EDGE_OY: {
                 rotatingTriangle = true;
-                dragInverseAffine = affineTransform;
+                dragInverseAffine = triangleGrid->getAffineMatrix();
                 dragInverseAffine.Invert();
                 dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
                 auto coefs = flame->xforms.get(activeTransform)->coefs.value();
@@ -333,7 +280,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
             }
             case EDGE_XY: {
                 scalingTriangle = true;
-                dragInverseAffine = affineTransform;
+                dragInverseAffine = triangleGrid->getAffineMatrix();
                 dragInverseAffine.Invert();
                 dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
                 auto coefs = flame->xforms.get(activeTransform)->coefs.value();
@@ -353,7 +300,7 @@ int TriangleModel::checkVertexCollision(wxPoint p, int idx) {
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
     for (int i=1; i<4; i++) {
-        auto tp = affineTransform.TransformPoint(triangle[i]);
+        auto tp = triangleGrid->getAffineMatrix().TransformPoint(triangle[i]);
         if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 5) {
             return i;
         }
@@ -389,8 +336,8 @@ int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
-        auto s1 = affineTransform.TransformPoint(triangle[(i+2)%3]);
-        auto s2 = affineTransform.TransformPoint(triangle[i%3]);
+        auto s1 = triangleGrid->getAffineMatrix().TransformPoint(triangle[(i+2)%3]);
+        auto s2 = triangleGrid->getAffineMatrix().TransformPoint(triangle[i%3]);
         if (distancePointSegment(pc, s1, s2) < 3) {
             return (i+2)%3;
         }
@@ -401,7 +348,7 @@ int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
 TriangleModel::CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
     auto ans = NO_COLLISION;
     int vertex = checkVertexCollision(pos, triangle);
-    auto inverseAffine = affineTransform;
+    auto inverseAffine = triangleGrid->getAffineMatrix();
     inverseAffine.Invert();
     auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
     if (vertex != -1) {
@@ -452,8 +399,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        center = centerDragStart + dragBegin - dragEnd;
-        setupGrid();
+        triangleGrid->updateCenter(centerDragStart + dragBegin - dragEnd);
         update();
     } else if (draggingTriangle) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());

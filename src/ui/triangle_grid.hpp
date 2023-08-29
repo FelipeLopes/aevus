@@ -14,16 +14,20 @@ public:
     void strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr);
     void drawGrid(wxGraphicsContext* gc);
     void updateWindowSize(int width, int height);
+    void updateCenter(wxPoint2DDouble center);
     wxPoint2DDouble transformToGrid(wxPoint2DDouble windowPoint);
     wxPoint2DDouble transformToWindow(wxPoint2DDouble gridPoint);
     void zoomIn();
     void zoomOut();
-    wxAffineMatrix2D affineMatrix();
+    wxAffineMatrix2D getAffineMatrix();
+    wxPoint2DDouble getCenter();
 private:
+    void updateGrid();
     double calcStepForScale(double sc);
 
     wxAffineMatrix2D affineTransform;
     wxPoint2DDouble center;
+    int width, height;
     wxColour gridColor, unitTriangleColor;
     double gridLowX, gridHighX;
     double gridLowY, gridHighY;

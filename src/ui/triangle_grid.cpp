@@ -8,7 +8,7 @@ using std::vector;
 
 namespace ui {
 
-TriangleGrid::TriangleGrid(int width, int height): center(0,0),
+TriangleGrid::TriangleGrid(int width_, int height_): center(0,0), width(width_), height(height_),
     gridColor("#333333"), unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1)
 {
     updateWindowSize(width, height);
@@ -54,19 +54,15 @@ void TriangleGrid::drawGrid(wxGraphicsContext* gc) {
     strokeLines(gc, unitTriangle);
 }
 
-void TriangleGrid::updateWindowSize(int width, int height) {
-    wxMatrix2D identity;
-    wxPoint2DDouble origin;
-    affineTransform.Set(identity, origin);
-    affineTransform.Translate(width/2.0, height/2.0);
-    double sc = pow(zoomFactor, zoomLevel);
-    affineTransform.Scale(50*sc, -50*sc);
-    step = calcStepForScale(sc);
-    affineTransform.Translate(-center.m_x, -center.m_y);
-    gridLowX = step*floor((-width/(2*sc) + center.m_x)/step);
-    gridHighX = step*ceil((width/(2*sc) + center.m_x)/step);
-    gridLowY = step*floor((-height/(2*sc) + center.m_y)/step);
-    gridHighY = step*ceil((height/(2*sc) + center.m_y)/step);
+void TriangleGrid::updateWindowSize(int width_, int height_) {
+    width = width_;
+    height = height_;
+    updateGrid();
+}
+
+void TriangleGrid::updateCenter(wxPoint2DDouble center_) {
+    center = center_;
+    updateGrid();
 }
 
 wxPoint2DDouble TriangleGrid::transformToGrid(wxPoint2DDouble windowPoint) {
@@ -80,15 +76,40 @@ wxPoint2DDouble TriangleGrid::transformToWindow(wxPoint2DDouble gridPoint) {
 }
 
 void TriangleGrid::zoomIn() {
-    zoomLevel++;
+    if (zoomLevel < MAX_ZOOM_LEVEL) {
+        zoomLevel++;
+        updateGrid();
+    }
 }
 
 void TriangleGrid::zoomOut() {
-    zoomLevel--;
+    if (zoomLevel > -MAX_ZOOM_LEVEL) {
+        zoomLevel--;
+        updateGrid();
+    }
 }
 
-wxAffineMatrix2D TriangleGrid::affineMatrix() {
+wxAffineMatrix2D TriangleGrid::getAffineMatrix() {
     return affineTransform;
+}
+
+wxPoint2DDouble TriangleGrid::getCenter() {
+    return center;
+}
+
+void TriangleGrid::updateGrid() {
+    wxMatrix2D identity;
+    wxPoint2DDouble origin;
+    affineTransform.Set(identity, origin);
+    affineTransform.Translate(width/2.0, height/2.0);
+    double sc = pow(zoomFactor, zoomLevel);
+    affineTransform.Scale(50*sc, -50*sc);
+    step = calcStepForScale(sc);
+    affineTransform.Translate(-center.m_x, -center.m_y);
+    gridLowX = step*floor((-width/(2*sc) + center.m_x)/step);
+    gridHighX = step*ceil((width/(2*sc) + center.m_x)/step);
+    gridLowY = step*floor((-height/(2*sc) + center.m_y)/step);
+    gridHighY = step*ceil((height/(2*sc) + center.m_y)/step);
 }
 
 double TriangleGrid::calcStepForScale(double sc) {

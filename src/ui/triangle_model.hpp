@@ -43,9 +43,6 @@ private:
         CollisionType type;
     };
 
-    double calcStepForScale(double sc);
-    void setupGrid();
-    void drawGrid(wxGraphicsContext* gc);
     void drawXformTriangles(wxGraphicsContext* gc);
     void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
         const std::vector<wxPoint2DDouble>& triangle);
@@ -69,15 +66,6 @@ private:
     std::shared_ptr<TriangleGrid> triangleGrid;
     wxPanel* trianglePanel;
     int activeTransform;
-    wxAffineMatrix2D affineTransform;
-    wxPoint2DDouble center;
-    wxColour gridColor, unitTriangleColor;
-    double gridLowX, gridHighX;
-    double gridLowY, gridHighY;
-    double step;
-    int zoomLevel;
-    const double zoomFactor;
-    static const int MAX_ZOOM_LEVEL = 400;
     bool draggingGrid;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
