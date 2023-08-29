@@ -141,6 +141,17 @@ void TriangleModel::highlightVertex(wxGraphicsContext* gc, int triangle, int ver
     gc->DrawEllipse(p.m_x - 2, p.m_y - 2, 4, 4);
 }
 
+void TriangleModel::highlightEdge(wxGraphicsContext* gc, int triangle, int edge) {
+    auto tri = getXformTriangle(triangle);
+    auto s1 = affineTransform.TransformPoint(tri[edge]);
+    auto s2 = affineTransform.TransformPoint(tri[edge+1]);
+    int numXformColors = xformColors.size();
+    auto c = xformColors[triangle % numXformColors];
+    gc->SetPen(wxPen(wxColour(c.Red(), c.Green(), c.Blue(), 127), 5));
+    gc->StrokeLine(s1.m_x, s1.m_y, s2.m_x, s2.m_y);
+    drawTriangleDots(gc, c, tri);
+}
+
 void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     int sz = flame->xforms.size();
     int numXformColors = xformColors.size();
@@ -177,6 +188,9 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
             case VERTEX_O: highlightVertex(gc, highlightedTriangle, 0); break;
             case VERTEX_X: highlightVertex(gc, highlightedTriangle, 1); break;
             case VERTEX_Y: highlightVertex(gc, highlightedTriangle, 2); break;
+            case EDGE_OX: highlightEdge(gc, highlightedTriangle, 0); break;
+            case EDGE_OY: highlightEdge(gc, highlightedTriangle, 2); break;
+            case EDGE_XY: highlightEdge(gc, highlightedTriangle, 1); break;
             default: break;
         }
     }
@@ -280,42 +294,83 @@ int TriangleModel::checkVertexCollision(wxPoint p, int idx) {
     // are better when the triangle collapses to a point.
     for (int i=1; i<4; i++) {
         auto tp = affineTransform.TransformPoint(triangle[i]);
-        if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 4) {
+        if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 5) {
             return i;
         }
     }
     return -1;
 }
 
-TriangleModel::Collision TriangleModel::getCollision(wxPoint pos) {
-    TriangleModel::Collision ans;
-    ans.type = NO_COLLISION;
+double TriangleModel::distancePointSegment(wxPoint2DDouble p, wxPoint2DDouble s1,
+    wxPoint2DDouble s2)
+{
+    double d2 = s1.GetDistanceSquare(s2);
+    if (d2 == 0.0) {
+        return p.GetDistance(s1);
+    }
+    double t = (p-s1).GetDotProduct(s2-s1)/d2;
+    t = std::clamp(t, 0.0, 1.0);
+    auto proj = s1 + t*(s2-s1);
+    return p.GetDistance(proj);
+}
+
+int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
+    auto triangle = getXformTriangle(idx);
+    auto pc = wxPoint2DDouble(p.x, p.y);
+    for (int i=0; i<3; i++) {
+        auto s1 = affineTransform.TransformPoint(triangle[i]);
+        auto s2 = affineTransform.TransformPoint(triangle[i+1]);
+        if (distancePointSegment(pc, s1, s2) < 3) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+TriangleModel::CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
+    auto ans = NO_COLLISION;
+    int vertex = checkVertexCollision(pos, triangle);
     auto inverseAffine = affineTransform;
     inverseAffine.Invert();
     auto tp = inverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-    ans.triangleId = -1;
-    int vertex = checkVertexCollision(pos, activeTransform);
     if (vertex != -1) {
-        ans.triangleId = activeTransform;
         switch (vertex) {
-            case 1: ans.type = VERTEX_X; break;
-            case 2: ans.type = VERTEX_Y; break;
-            case 3: ans.type = VERTEX_O; break;
+            case 1: ans = VERTEX_X; break;
+            case 2: ans = VERTEX_Y; break;
+            case 3: ans = VERTEX_O; break;
         }
-    } else if (pointInsideTriangle(tp, activeTransform)) {
-        ans.triangleId = activeTransform;
-        ans.type = TRIANGLE_BODY;
     } else {
+        int edge = checkEdgeCollision(pos, triangle);
+        if (edge != -1) {
+            switch (edge) {
+                case 0: ans = EDGE_OX; break;
+                case 1: ans = EDGE_XY; break;
+                case 2: ans = EDGE_OY; break;
+            }
+        } else if (pointInsideTriangle(tp, triangle)) {
+            ans = TRIANGLE_BODY;
+        }
+    }
+    return ans;
+}
+
+TriangleModel::Collision TriangleModel::getCollision(wxPoint pos) {
+    TriangleModel::Collision ans;
+    ans.triangleId = -1;
+    ans.type = getCollisionType(pos, activeTransform);
+    if (ans.type == NO_COLLISION) {
         for (int i=0; i<flame->xforms.size(); i++) {
             if (i == activeTransform) {
                 continue;
             }
-            if (pointInsideTriangle(tp, i)) {
+            ans.type = getCollisionType(pos, i);
+            if (ans.type != NO_COLLISION) {
                 ans.triangleId = i;
-                ans.type = TRIANGLE_BODY;
                 break;
             }
         }
+    } else {
+        ans.triangleId = activeTransform;
     }
     return ans;
 }
