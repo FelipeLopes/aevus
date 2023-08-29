@@ -380,11 +380,13 @@ double TriangleModel::distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, w
 int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
     auto triangle = getXformTriangle(idx);
     auto pc = wxPoint2DDouble(p.x, p.y);
+    // We check XY last to avoid problems when the triangle
+    // degenerates to a line.
     for (int i=0; i<3; i++) {
-        auto s1 = affineTransform.TransformPoint(triangle[i]);
-        auto s2 = affineTransform.TransformPoint(triangle[i+1]);
+        auto s1 = affineTransform.TransformPoint(triangle[(i+2)%3]);
+        auto s2 = affineTransform.TransformPoint(triangle[i%3]);
         if (distancePointSegment(pc, s1, s2) < 3) {
-            return i;
+            return (i+2)%3;
         }
     }
     return -1;
