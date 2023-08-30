@@ -29,8 +29,7 @@ public:
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
     double xx, xy, yx, yy, ox, oy;
-    double getValueByIndex(int idx);
-    void setValueByIndex(int idx, double val);
+    std::vector<std::pair<double, double>> triangle();
 private:
     bool serializeIdentity;
 };

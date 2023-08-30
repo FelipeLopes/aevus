@@ -9,6 +9,7 @@ public:
     GridPoint(): wxPoint2DDouble(0.0, 0.0) { }
     GridPoint(double x, double y): wxPoint2DDouble(x, y) { }
     GridPoint(wxPoint2DDouble p): wxPoint2DDouble(p.m_x, p.m_y) { }
+    GridPoint(std::pair<double, double> p): wxPoint2DDouble(p.first, p.second) { }
 };
 
 class WindowPoint: public wxPoint2DDouble {
@@ -16,6 +17,7 @@ public:
     WindowPoint(): wxPoint2DDouble(0.0, 0.0) { }
     WindowPoint(double x, double y): wxPoint2DDouble(x, y) { }
     WindowPoint(wxPoint2DDouble p): wxPoint2DDouble(p.m_x, p.m_y) { }
+    WindowPoint(std::pair<double, double> p): wxPoint2DDouble(p.first, p.second) { }
 };
 
 enum CollisionType {

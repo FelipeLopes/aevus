@@ -4,7 +4,6 @@
 #include <memory>
 
 using std::shared_ptr;
-using std::vector;
 using core::Flame;
 
 namespace ui {
@@ -44,9 +43,9 @@ CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) 
     auto tp = triangleGrid->transformToGrid(pos);
     if (vertex != -1) {
         switch (vertex) {
+            case 0: ans = VERTEX_O; break;
             case 1: ans = VERTEX_X; break;
             case 2: ans = VERTEX_Y; break;
-            case 3: ans = VERTEX_O; break;
         }
     } else {
         int edge = checkEdgeCollision(pos, triangle);
@@ -64,25 +63,25 @@ CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) 
 }
 
 int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
-    auto triangle = getXformTriangle(idx);
+    auto triangle = flame->xforms.get(idx)->coefs.value().triangle();
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
-    for (int i=1; i<4; i++) {
-        auto tp = triangleGrid->transformToWindow(triangle[i]);
+    for (int i=0; i<3; i++) {
+        auto tp = triangleGrid->transformToWindow(GridPoint(triangle[(i+1)%3]));
         if (tp.GetDistance(p) < 5) {
-            return i;
+            return (i+1)%3;
         }
     }
     return -1;
 }
 
 int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
-    auto triangle = getXformTriangle(idx);
+    auto triangle = flame->xforms.get(idx)->coefs.value().triangle();
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
-        auto s1 = triangleGrid->transformToWindow(triangle[(i+2)%3]);
-        auto s2 = triangleGrid->transformToWindow(triangle[i%3]);
+        auto s1 = triangleGrid->transformToWindow(GridPoint(triangle[(i+2)%3]));
+        auto s2 = triangleGrid->transformToWindow(GridPoint(triangle[i%3]));
         if (distancePointSegment(p, s1, s2) < 3) {
             return (i+2)%3;
         }
@@ -91,24 +90,13 @@ int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
 }
 
 bool TriangleCollider::pointInsideTriangle(GridPoint p, int idx) {
-    auto v = getXformTriangle(idx);
-    double d1 = sign(p, v[0], v[1]);
-    double d2 = sign(p, v[1], v[2]);
-    double d3 = sign(p, v[2], v[0]);
+    auto v = flame->xforms.get(idx)->coefs.value().triangle();
+    double d1 = sign(p, GridPoint(v[0]), GridPoint(v[1]));
+    double d2 = sign(p, GridPoint(v[1]), GridPoint(v[2]));
+    double d3 = sign(p, GridPoint(v[2]), GridPoint(v[0]));
     bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
     bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
     return !(hasNeg && hasPos);
-}
-
-vector<GridPoint> TriangleCollider::getXformTriangle(int i) {
-    auto coefs = flame->xforms.get(i)->coefs.value();
-    vector<GridPoint> triangle = {
-        {coefs.ox, coefs.oy},
-        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-        {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
-        {coefs.ox, coefs.oy}
-    };
-    return triangle;
 }
 
 double TriangleCollider::distancePointSegment(WindowPoint p, WindowPoint s1, WindowPoint s2) {

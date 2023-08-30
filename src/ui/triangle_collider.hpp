@@ -18,7 +18,6 @@ private:
     int checkVertexCollision(WindowPoint p, int idx);
     int checkEdgeCollision(WindowPoint p, int idx);
     bool pointInsideTriangle(GridPoint p, int idx);
-    std::vector<GridPoint> getXformTriangle(int i);
     double distancePointSegment(WindowPoint p, WindowPoint s1, WindowPoint s2);
     double sign(GridPoint p1, GridPoint p2, GridPoint p3);
 
