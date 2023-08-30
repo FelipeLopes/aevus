@@ -40,4 +40,14 @@ struct Collision {
     }
 };
 
+enum UpdaterState {
+    NO_UPDATE,
+    DRAGGING_GRID,
+    DRAGGING_TRIANGLE,
+    DRAGGING_X,
+    DRAGGING_Y,
+    ROTATING_TRIANGLE,
+    SCALING_TRIANGLE
+};
+
 }

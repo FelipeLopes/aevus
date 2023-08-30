@@ -6,6 +6,7 @@
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
+#include "triangle_updater.hpp"
 #include <boost/signals2.hpp>
 #include <wx/graphics.h>
 #include <wx/event.h>
@@ -35,6 +36,7 @@ private:
     std::shared_ptr<TriangleGrid> triangleGrid;
     std::shared_ptr<TriangleCollider> triangleCollider;
     std::shared_ptr<TriangleDrawer> triangleDrawer;
+    std::shared_ptr<TriangleUpdater> triangleUpdater;
     wxPanel* trianglePanel;
     int activeTransform;
     bool draggingGrid;

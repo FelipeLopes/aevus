@@ -30,6 +30,7 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     triangleCollider = std::make_shared<TriangleCollider>(flame, triangleGrid, activeTransform);
     triangleDrawer = std::make_shared<TriangleDrawer>(flame, triangleGrid,
         trianglePanel->GetFont(), activeTransform);
+    triangleUpdater = std::make_shared<TriangleUpdater>(flame, triangleGrid);
 }
 
 void TriangleModel::update() {
