@@ -29,15 +29,7 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
-    void drawXformTriangles(wxGraphicsContext* gc);
-    void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
-        const std::vector<GridPoint>& triangle);
-    void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
-    std::vector<GridPoint> getXformTriangle(int i);
-    void highlightTriangle(wxGraphicsContext* gc, int i);
     double distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
-    void highlightVertex(wxGraphicsContext* gc, int triangle, int vertex);
-    void highlightEdge(wxGraphicsContext* gc, int triangle, int edge);
 
     std::shared_ptr<core::Flame> flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
@@ -48,12 +40,8 @@ private:
     bool draggingGrid;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
-    std::vector<wxColour> xformColors;
-    std::vector<std::string> dotLabels;
-    int highlightedTriangle;
     bool draggingTriangle;
     wxPoint2DDouble originDragStart;
-    CollisionType highlightType;
     bool draggingX, draggingY, rotatingTriangle, scalingTriangle;
     wxPoint2DDouble xDragStart, yDragStart;
 };

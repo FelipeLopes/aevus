@@ -66,8 +66,14 @@ void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
     }
 }
 
-void TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
-    cursorCollision = cursorCollision_;
+bool TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
+    if (cursorCollision.triangleId != cursorCollision_.triangleId ||
+        cursorCollision.type != cursorCollision_.type)
+    {
+        cursorCollision = cursorCollision_;
+        return true;
+    }
+    return false;
 }
 
 void TriangleDrawer::drawTriangleDots(wxGraphicsContext* gc, wxColour color,

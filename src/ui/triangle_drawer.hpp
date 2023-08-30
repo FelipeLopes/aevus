@@ -13,7 +13,7 @@ public:
         wxFont font, int activeTransform);
     void handleActiveXformChanged(int id);
     void drawXformTriangles(wxGraphicsContext* gc);
-    void setCursorCollision(Collision cursorCollision);
+    bool setCursorCollision(Collision cursorCollision);
 private:
     void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
         const std::vector<GridPoint>& triangle);
