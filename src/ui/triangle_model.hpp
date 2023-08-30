@@ -39,7 +39,6 @@ private:
     std::shared_ptr<TriangleUpdater> triangleUpdater;
     wxPanel* trianglePanel;
     int activeTransform;
-    bool draggingGrid;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
     bool draggingTriangle;

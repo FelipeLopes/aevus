@@ -18,7 +18,7 @@ using core::Flame;
 namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0), draggingGrid(false),
+    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0),
     draggingTriangle(false), draggingX(false), draggingY(false),
     rotatingTriangle(false), scalingTriangle(false)
 {
@@ -71,7 +71,7 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 }
 
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
-    draggingGrid = false;
+    triangleUpdater->finishUpdate();
     draggingTriangle = false;
     draggingX = false;
     draggingY = false;
@@ -83,11 +83,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     auto pos = event.GetPosition();
     auto coll = triangleCollider->getCollision(WindowPoint(pos.x, pos.y));
     if (coll.type == NO_COLLISION) {
-        draggingGrid = true;
-        dragInverseAffine = triangleGrid->getAffineMatrix();
-        dragInverseAffine.Invert();
-        dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        centerDragStart = triangleGrid->getCenter();
+        triangleUpdater->startGridDrag(WindowPoint(pos.x, pos.y));
     } else {
         if (coll.triangleId != activeTransform) {
             xformSelected(coll.triangleId);
@@ -161,11 +157,10 @@ double TriangleModel::distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, w
 
 void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     auto pos = event.GetPosition();
-    if (draggingGrid) {
+    if (triangleUpdater->isUpdating()) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
-        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        triangleGrid->updateCenter(centerDragStart + dragBegin - dragEnd);
+        triangleUpdater->setUpdatePoint(WindowPoint(pos.x, pos.y));
         update();
     } else if (draggingTriangle) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
