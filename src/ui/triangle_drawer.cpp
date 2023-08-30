@@ -14,7 +14,7 @@ TriangleDrawer::TriangleDrawer(shared_ptr<Flame> flame_, shared_ptr<TriangleGrid
     font(font_), activeTransform(activeTransform_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
-    }), numXformColors(xformColors.size()), dotLabels({"O", "X", "Y"}) { }
+    }), dotLabels({"O", "X", "Y"}) { }
 
 void TriangleDrawer::handleActiveXformChanged(int id) {
     activeTransform = id;
@@ -25,7 +25,6 @@ void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
     drawActiveTriangle(gc);
     highlightTriangle(gc);
     highlightEdge(gc);
-    drawTriangleDots(gc);
     highlightVertex(gc);
 }
 
@@ -44,51 +43,43 @@ void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
     for (int i=0; i<sz; i++) {
         if (i != activeTransform) {
             auto triangle = getXformTriangle(i);
-            auto color = xformColors[i % numXformColors];
+            triangle.push_back(triangle[0]);
+            auto color = getXformColor(i);
             gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
             triangleGrid->strokeLines(gc, triangle);
+            drawTriangleDots(gc, i);
         }
     }
 }
 
 void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
-    auto color = xformColors[activeTransform%numXformColors];
+    auto color = getXformColor(activeTransform);
     auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-    auto triangle = getXformTriangle(activeTransform);
-    vector<GridPoint> fullPath = {
-        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-        {coefs.ox, coefs.oy},
-        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
-    };
-    vector<GridPoint> dashedPath = {
-        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-        {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
-    };
+    auto path = getXformTriangle(activeTransform);
+    auto ori = path[0];
+    path.erase(path.begin());
     gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
-    triangleGrid->strokeLines(gc, dashedPath);
+    triangleGrid->strokeLines(gc, path);
+    path.insert(path.begin()+1, ori);
     gc->SetPen(color);
-    triangleGrid->strokeLines(gc, fullPath);
+    triangleGrid->strokeLines(gc, path);
+    drawTriangleDots(gc, activeTransform);
 }
 
-void TriangleDrawer::drawTriangleDots(wxGraphicsContext* gc) {
-    int sz = flame->xforms.size();
-    for (int i=0; i<sz; i++) {
-        auto color = xformColors[i % numXformColors];
-        auto triangle = getXformTriangle(i);
-        gc->SetPen(color);
-        gc->SetBrush(*wxBLACK_BRUSH);
-        font.SetPointSize(9);
-        auto gcFont = gc->CreateFont(font, color);
-        gc->SetFont(gcFont);
-        for (int i=0; i<3; i++) {
-            auto p = triangle[i];
-            drawDot(gc, p.m_x, p.m_y, dotLabels[i]);
-        }
+void TriangleDrawer::drawTriangleDots(wxGraphicsContext* gc, int idx) {
+    auto color = getXformColor(idx);
+    auto triangle = getXformTriangle(idx);
+    gc->SetPen(color);
+    gc->SetBrush(*wxBLACK_BRUSH);
+    font.SetPointSize(9);
+    auto gcFont = gc->CreateFont(font, color);
+    gc->SetFont(gcFont);
+    for (int i=0; i<3; i++) {
+        drawDot(gc, triangle[i], dotLabels[i]);
     }
 }
 
-void TriangleDrawer::drawDot(wxGraphicsContext* gc, double x, double y, string label) {
-    wxPoint2DDouble p(x, y);
+void TriangleDrawer::drawDot(wxGraphicsContext* gc, GridPoint p, string label) {
     auto tp = triangleGrid->transformToWindow(p);
     gc->DrawEllipse(tp.m_x - 4, tp.m_y - 4, 8, 8);
     gc->DrawText(label, tp.m_x + 2, tp.m_y + 2);
@@ -98,7 +89,7 @@ void TriangleDrawer::highlightTriangle(wxGraphicsContext* gc) {
     int idx = cursorCollision.triangleId;
     if (idx != -1) {
         auto triangle = getXformTriangle(idx);
-        auto color = xformColors[idx % numXformColors];
+        auto color = getXformColor(idx);
         auto path = gc->CreatePath();
         for (int i=0; i<3; i++) {
             auto tp = triangleGrid->transformToWindow(triangle[i]);
@@ -106,6 +97,7 @@ void TriangleDrawer::highlightTriangle(wxGraphicsContext* gc) {
         }
         gc->SetBrush(wxColour(color.Red(), color.Green(), color.Blue(), 127));
         gc->FillPath(path);
+        drawTriangleDots(gc, idx);
     }
 }
 
@@ -122,7 +114,7 @@ void TriangleDrawer::highlightVertex(wxGraphicsContext* gc) {
         if (vertex != -1) {
             auto tri = getXformTriangle(idx);
             auto p = triangleGrid->transformToWindow(tri[vertex]);
-            auto color = xformColors[idx % numXformColors];
+            auto color = getXformColor(idx);
             gc->SetBrush(color);
             gc->SetPen(color);
             gc->DrawEllipse(p.m_x - 2, p.m_y - 2, 4, 4);
@@ -142,24 +134,26 @@ void TriangleDrawer::highlightEdge(wxGraphicsContext* gc) {
         }
         if (edge != -1) {
             auto tri = getXformTriangle(idx);
-            auto s1 = triangleGrid->transformToWindow(tri[edge]);
-            auto s2 = triangleGrid->transformToWindow(tri[edge+1]);
-            auto c = xformColors[idx % numXformColors];
+            auto c = getXformColor(idx);
             gc->SetPen(wxPen(wxColour(c.Red(), c.Green(), c.Blue(), 127), 5));
-            gc->StrokeLine(s1.m_x, s1.m_y, s2.m_x, s2.m_y);
+            triangleGrid->strokeLine(gc, tri[edge], tri[(edge+1)%3]);
+            drawTriangleDots(gc, idx);
         }
     }
 }
 
 vector<GridPoint> TriangleDrawer::getXformTriangle(int i) {
-    auto coefs = flame->xforms.get(i)->coefs.value();
-    vector<GridPoint> triangle = {
-        {coefs.ox, coefs.oy},
-        {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
-        {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
-        {coefs.ox, coefs.oy}
-    };
-    return triangle;
+    auto arr = flame->xforms.get(i)->coefs.value().triangle();
+    vector<GridPoint> ans;
+    std::transform(arr.begin(), arr.end(), std::back_inserter(ans),
+        [](auto pair) {
+            return GridPoint(pair);
+        });
+    return ans;
+}
+
+wxColour TriangleDrawer::getXformColor(int i) {
+    return xformColors[i % xformColors.size()];
 }
 
 }

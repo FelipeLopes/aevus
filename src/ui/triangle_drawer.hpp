@@ -17,19 +17,19 @@ public:
 private:
     void drawInactiveTriangles(wxGraphicsContext* gc);
     void drawActiveTriangle(wxGraphicsContext* gc);
-    void drawTriangleDots(wxGraphicsContext* gc);
-    void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
+    void drawTriangleDots(wxGraphicsContext* gc, int idx);
+    void drawDot(wxGraphicsContext* gc, GridPoint p, std::string label);
     void highlightTriangle(wxGraphicsContext* gc);
     void highlightVertex(wxGraphicsContext* gc);
     void highlightEdge(wxGraphicsContext* gc);
     std::vector<GridPoint> getXformTriangle(int i);
+    wxColour getXformColor(int i);
 
     std::shared_ptr<core::Flame> flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     wxFont font;
     int activeTransform;
     std::vector<wxColour> xformColors;
-    int numXformColors;
     std::vector<std::string> dotLabels;
     Collision cursorCollision;
 };
