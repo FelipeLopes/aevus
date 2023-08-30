@@ -3,6 +3,7 @@
 #include <memory>
 #include "../core/flame.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_types.hpp"
 #include <boost/signals2.hpp>
 #include <wx/graphics.h>
 #include <wx/event.h>
@@ -26,28 +27,11 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
-
-    enum CollisionType {
-        NO_COLLISION,
-        TRIANGLE_BODY,
-        VERTEX_O,
-        VERTEX_X,
-        VERTEX_Y,
-        EDGE_OX,
-        EDGE_OY,
-        EDGE_XY
-    };
-
-    struct Collision {
-        int triangleId;
-        CollisionType type;
-    };
-
     void drawXformTriangles(wxGraphicsContext* gc);
     void drawTriangleDots(wxGraphicsContext* gc, wxColour color,
-        const std::vector<wxPoint2DDouble>& triangle);
+        const std::vector<GridPoint>& triangle);
     void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
-    std::vector<wxPoint2DDouble> getXformTriangle(int i);
+    std::vector<GridPoint> getXformTriangle(int i);
     void highlightTriangle(wxGraphicsContext* gc, int i);
     bool pointInsideTriangle(wxPoint2DDouble p, int idx);
     double distancePointSegment(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);

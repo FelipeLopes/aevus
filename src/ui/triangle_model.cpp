@@ -1,5 +1,6 @@
 #include "triangle_model.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_types.hpp"
 #include <algorithm>
 #include <iterator>
 #include <memory>
@@ -50,7 +51,7 @@ void TriangleModel::drawDot(wxGraphicsContext* gc, double x, double y, string la
 }
 
 void TriangleModel::drawTriangleDots(wxGraphicsContext* gc, wxColour color,
-    const vector<wxPoint2DDouble>& triangle)
+    const vector<GridPoint>& triangle)
 {
     gc->SetPen(color);
     gc->SetBrush(*wxBLACK_BRUSH);
@@ -101,12 +102,12 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     auto color = xformColors[activeTransform%numXformColors];
     auto coefs = flame->xforms.get(activeTransform)->coefs.value();
     auto triangle = getXformTriangle(activeTransform);
-    vector<wxPoint2DDouble> fullPath = {
+    vector<GridPoint> fullPath = {
         {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
         {coefs.ox, coefs.oy},
         {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
     };
-    vector<wxPoint2DDouble> dashedPath = {
+    vector<GridPoint> dashedPath = {
         {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
         {coefs.ox + coefs.yx, coefs.oy + coefs.yy}
     };
@@ -143,9 +144,9 @@ double TriangleModel::sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDoub
     return (p1.m_x-p3.m_x)*(p2.m_y-p3.m_y)-(p2.m_x-p3.m_x)*(p1.m_y-p3.m_y);
 }
 
-vector<wxPoint2DDouble> TriangleModel::getXformTriangle(int i) {
+vector<GridPoint> TriangleModel::getXformTriangle(int i) {
     auto coefs = flame->xforms.get(i)->coefs.value();
-    vector<wxPoint2DDouble> triangle = {
+    vector<GridPoint> triangle = {
         {coefs.ox, coefs.oy},
         {coefs.ox + coefs.xx, coefs.oy + coefs.xy},
         {coefs.ox + coefs.yx, coefs.oy + coefs.yy},
@@ -324,7 +325,7 @@ int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
     return -1;
 }
 
-TriangleModel::CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
+CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
     auto ans = NO_COLLISION;
     int vertex = checkVertexCollision(pos, triangle);
     auto tp = triangleGrid->transformToGrid(wxPoint2DDouble(pos.x, pos.y));
@@ -349,8 +350,8 @@ TriangleModel::CollisionType TriangleModel::getCollisionType(wxPoint pos, int tr
     return ans;
 }
 
-TriangleModel::Collision TriangleModel::getCollision(wxPoint pos) {
-    TriangleModel::Collision ans;
+Collision TriangleModel::getCollision(wxPoint pos) {
+    Collision ans;
     ans.triangleId = -1;
     ans.type = getCollisionType(pos, activeTransform);
     if (ans.type == NO_COLLISION) {

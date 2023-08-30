@@ -1,4 +1,5 @@
 #include "triangle_grid.hpp"
+#include "triangle_types.hpp"
 #include <map>
 #include <vector>
 #include <wx/pen.h>
@@ -14,22 +15,21 @@ TriangleGrid::TriangleGrid(int width_, int height_): center(0,0), width(width_),
     updateWindowSize(width, height);
 }
 
-void TriangleGrid::strokeLine(wxGraphicsContext* gc, double x1, double y1, double x2, double y2) {
+void TriangleGrid::strokeLine(wxGraphicsContext* gc, GridPoint p1, GridPoint p2) {
     // We implement our own strokeLine wrapper that accesses the affine
     // transform directly instead of using the builtin wxWidgets constructions.
     // The reason for this is that when stroking a line, the minimum pen width is 1,
     // and wxWidgets scales this width in the final custom control, making their
     // builtin methods useless for our purposes.
-    wxPoint2DDouble p1(x1, y1), p2(x2, y2);
     auto tp1 = transformToWindow(p1);
     auto tp2 = transformToWindow(p2);
     gc->StrokeLine(tp1.m_x, tp1.m_y, tp2.m_x, tp2.m_y);
 }
 
-void TriangleGrid::strokeLines(wxGraphicsContext* gc, const std::vector<wxPoint2DDouble>& arr) {
-    vector<wxPoint2DDouble> transformedArr;
+void TriangleGrid::strokeLines(wxGraphicsContext* gc, const std::vector<GridPoint>& arr) {
+    vector<WindowPoint> transformedArr;
     std::transform(arr.begin(), arr.end(), std::back_inserter(transformedArr),
-        [this](wxPoint2DDouble pt) {
+        [this](GridPoint pt) {
             return transformToWindow(pt);
         });
     gc->StrokeLines(transformedArr.size(), transformedArr.data());
@@ -41,14 +41,14 @@ void TriangleGrid::drawGrid(wxGraphicsContext* gc) {
     int ny = (gridHighY - gridLowY)/step;
     for (int i=0; i<=nx; i++) {
         double x = gridLowX + step*i;
-        strokeLine(gc, x, gridLowY, x, gridHighY);
+        strokeLine(gc, GridPoint(x, gridLowY), GridPoint(x, gridHighY));
     }
     for (int i=0; i<=ny; i++) {
         double y = gridLowY + step*i;
-        strokeLine(gc, gridLowX, y, gridHighX, y);
+        strokeLine(gc, GridPoint(gridLowX, y), GridPoint(gridHighX, y));
     }
     gc->SetPen(wxPen(unitTriangleColor, 1, wxPENSTYLE_SHORT_DASH));
-    vector<wxPoint2DDouble> unitTriangle = {
+    vector<GridPoint> unitTriangle = {
         {0, 0}, {1, 0}, {0, 1}, {0, 0}
     };
     strokeLines(gc, unitTriangle);
@@ -60,19 +60,19 @@ void TriangleGrid::updateWindowSize(int width_, int height_) {
     updateGrid();
 }
 
-void TriangleGrid::updateCenter(wxPoint2DDouble center_) {
+void TriangleGrid::updateCenter(GridPoint center_) {
     center = center_;
     updateGrid();
 }
 
-wxPoint2DDouble TriangleGrid::transformToGrid(wxPoint2DDouble windowPoint) {
+GridPoint TriangleGrid::transformToGrid(WindowPoint windowPoint) {
     wxAffineMatrix2D inverseAffine = affineTransform;
     inverseAffine.Invert();
-    return inverseAffine.TransformPoint(windowPoint);
+    return GridPoint(inverseAffine.TransformPoint(windowPoint));
 }
 
-wxPoint2DDouble TriangleGrid::transformToWindow(wxPoint2DDouble gridPoint) {
-    return affineTransform.TransformPoint(gridPoint);
+WindowPoint TriangleGrid::transformToWindow(GridPoint gridPoint) {
+    return WindowPoint(affineTransform.TransformPoint(gridPoint));
 }
 
 void TriangleGrid::zoomIn() {
