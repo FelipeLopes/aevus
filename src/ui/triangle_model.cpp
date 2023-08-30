@@ -1,4 +1,5 @@
 #include "triangle_model.hpp"
+#include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 #include <algorithm>
@@ -33,6 +34,8 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     double height = sz.GetHeight();
     triangleGrid = std::make_shared<TriangleGrid>(width, height);
     triangleCollider = std::make_shared<TriangleCollider>(flame, triangleGrid, activeTransform);
+    triangleDrawer = std::make_shared<TriangleDrawer>(flame, triangleGrid,
+        trianglePanel->GetFont(), activeTransform);
 }
 
 void TriangleModel::update() {

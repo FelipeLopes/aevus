@@ -34,6 +34,10 @@ enum CollisionType {
 struct Collision {
     int triangleId;
     CollisionType type;
+    Collision() {
+        triangleId = -1;
+        type = NO_COLLISION;
+    }
 };
 
 }
