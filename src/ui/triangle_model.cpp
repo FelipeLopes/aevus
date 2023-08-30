@@ -41,6 +41,7 @@ void TriangleModel::update() {
 
 void TriangleModel::handleActiveXformChanged(int id) {
     activeTransform = id;
+    triangleCollider->handleActiveXformChanged(id);
     update();
 }
 
@@ -131,20 +132,6 @@ void TriangleModel::drawXformTriangles(wxGraphicsContext* gc) {
     }
 }
 
-bool TriangleModel::pointInsideTriangle(wxPoint2DDouble p, int idx) {
-    auto v = getXformTriangle(idx);
-    double d1 = sign(p, v[0], v[1]);
-    double d2 = sign(p, v[1], v[2]);
-    double d3 = sign(p, v[2], v[0]);
-    bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-    bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-    return !(hasNeg && hasPos);
-}
-
-double TriangleModel::sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3) {
-    return (p1.m_x-p3.m_x)*(p2.m_y-p3.m_y)-(p2.m_x-p3.m_x)*(p1.m_y-p3.m_y);
-}
-
 vector<GridPoint> TriangleModel::getXformTriangle(int i) {
     auto coefs = flame->xforms.get(i)->coefs.value();
     vector<GridPoint> triangle = {
@@ -207,7 +194,7 @@ void TriangleModel::handleMouseUp(wxMouseEvent& event) {
 
 void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     auto pos = event.GetPosition();
-    auto coll = getCollision(pos);
+    auto coll = triangleCollider->getCollision(WindowPoint(pos.x, pos.y));
     if (coll.type == NO_COLLISION) {
         draggingGrid = true;
         dragInverseAffine = triangleGrid->getAffineMatrix();
@@ -276,32 +263,6 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     }
 }
 
-int TriangleModel::checkVertexCollision(wxPoint p, int idx) {
-    auto triangle = getXformTriangle(idx);
-    // We check in order X -> Y -> O, because the X and Y vertices
-    // are better when the triangle collapses to a point.
-    for (int i=1; i<4; i++) {
-        auto tp = triangleGrid->transformToWindow(triangle[i]);
-        if (tp.GetDistance(wxPoint2DDouble(p.x, p.y)) < 5) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-double TriangleModel::distancePointSegment(wxPoint2DDouble p, wxPoint2DDouble s1,
-    wxPoint2DDouble s2)
-{
-    double d2 = s1.GetDistanceSquare(s2);
-    if (d2 == 0.0) {
-        return p.GetDistance(s1);
-    }
-    double t = (p-s1).GetDotProduct(s2-s1)/d2;
-    t = std::clamp(t, 0.0, 1.0);
-    auto proj = s1 + t*(s2-s1);
-    return p.GetDistance(proj);
-}
-
 double TriangleModel::distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2) {
     double d = s1.GetDistance(s2);
     if (d == 0) {
@@ -309,67 +270,6 @@ double TriangleModel::distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, w
     } else {
         return (s1-p).GetCrossProduct(s2-p)/d;
     }
-}
-
-int TriangleModel::checkEdgeCollision(wxPoint p, int idx) {
-    auto triangle = getXformTriangle(idx);
-    auto pc = wxPoint2DDouble(p.x, p.y);
-    // We check XY last to avoid problems when the triangle
-    // degenerates to a line.
-    for (int i=0; i<3; i++) {
-        auto s1 = triangleGrid->transformToWindow(triangle[(i+2)%3]);
-        auto s2 = triangleGrid->transformToWindow(triangle[i%3]);
-        if (distancePointSegment(pc, s1, s2) < 3) {
-            return (i+2)%3;
-        }
-    }
-    return -1;
-}
-
-CollisionType TriangleModel::getCollisionType(wxPoint pos, int triangle) {
-    auto ans = NO_COLLISION;
-    int vertex = checkVertexCollision(pos, triangle);
-    auto tp = triangleGrid->transformToGrid(wxPoint2DDouble(pos.x, pos.y));
-    if (vertex != -1) {
-        switch (vertex) {
-            case 1: ans = VERTEX_X; break;
-            case 2: ans = VERTEX_Y; break;
-            case 3: ans = VERTEX_O; break;
-        }
-    } else {
-        int edge = checkEdgeCollision(pos, triangle);
-        if (edge != -1) {
-            switch (edge) {
-                case 0: ans = EDGE_OX; break;
-                case 1: ans = EDGE_XY; break;
-                case 2: ans = EDGE_OY; break;
-            }
-        } else if (pointInsideTriangle(tp, triangle)) {
-            ans = TRIANGLE_BODY;
-        }
-    }
-    return ans;
-}
-
-Collision TriangleModel::getCollision(wxPoint pos) {
-    Collision ans;
-    ans.triangleId = -1;
-    ans.type = getCollisionType(pos, activeTransform);
-    if (ans.type == NO_COLLISION) {
-        for (int i=0; i<flame->xforms.size(); i++) {
-            if (i == activeTransform) {
-                continue;
-            }
-            ans.type = getCollisionType(pos, i);
-            if (ans.type != NO_COLLISION) {
-                ans.triangleId = i;
-                break;
-            }
-        }
-    } else {
-        ans.triangleId = activeTransform;
-    }
-    return ans;
 }
 
 void TriangleModel::handleMouseMove(wxMouseEvent& event) {
@@ -441,7 +341,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         coefs->yy = newY.m_y;
         transformCoordsChanged();
     } else {
-        auto coll = getCollision(pos);
+        auto coll = triangleCollider->getCollision(WindowPoint(pos.x, pos.y));
         if (coll.triangleId != highlightedTriangle || coll.type != highlightType) {
             highlightedTriangle = coll.triangleId;
             highlightType = coll.type;

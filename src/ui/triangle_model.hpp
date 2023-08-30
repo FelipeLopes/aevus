@@ -34,14 +34,7 @@ private:
     void drawDot(wxGraphicsContext* gc, double x, double y, std::string label);
     std::vector<GridPoint> getXformTriangle(int i);
     void highlightTriangle(wxGraphicsContext* gc, int i);
-    bool pointInsideTriangle(wxPoint2DDouble p, int idx);
-    double distancePointSegment(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
     double distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
-    double sign(wxPoint2DDouble p1, wxPoint2DDouble p2, wxPoint2DDouble p3);
-    Collision getCollision(wxPoint pos);
-    CollisionType getCollisionType(wxPoint pos, int triangle);
-    int checkVertexCollision(wxPoint p, int idx);
-    int checkEdgeCollision(wxPoint p, int idx);
     void highlightVertex(wxGraphicsContext* gc, int triangle, int vertex);
     void highlightEdge(wxGraphicsContext* gc, int triangle, int edge);
 
