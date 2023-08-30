@@ -32,6 +32,7 @@ TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     double width = sz.GetWidth();
     double height = sz.GetHeight();
     triangleGrid = std::make_shared<TriangleGrid>(width, height);
+    triangleCollider = std::make_shared<TriangleCollider>(flame, triangleGrid, activeTransform);
 }
 
 void TriangleModel::update() {

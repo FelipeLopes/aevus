@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "../core/flame.hpp"
+#include "triangle_collider.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 #include <boost/signals2.hpp>
@@ -46,6 +47,7 @@ private:
 
     std::shared_ptr<core::Flame> flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
+    std::shared_ptr<TriangleCollider> triangleCollider;
     wxPanel* trianglePanel;
     int activeTransform;
     bool draggingGrid;
