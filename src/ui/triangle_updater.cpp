@@ -30,15 +30,21 @@ void TriangleUpdater::startTriangleDrag(WindowPoint clickPoint) {
     state = DRAGGING_TRIANGLE;
     startPoint = triangleGrid->transformToGrid(clickPoint);
     auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-    startO = wxPoint2DDouble(coefs.ox, coefs.oy);
+    startO = GridPoint(coefs.ox, coefs.oy);
 }
 
 void TriangleUpdater::startXDrag(WindowPoint clickPoint) {
     state = DRAGGING_X;
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    startX = GridPoint(coefs.xx, coefs.xy);
 }
 
 void TriangleUpdater::startYDrag(WindowPoint clickPoint) {
     state = DRAGGING_Y;
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    startY = GridPoint(coefs.yx, coefs.yy);
 }
 
 void TriangleUpdater::startTriangleRotation(WindowPoint clickPoint) {
@@ -62,6 +68,22 @@ void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
             auto coefs = flame->xforms.get(activeTransform)->coefs.get();
             coefs->ox = newO.m_x;
             coefs->oy = newO.m_y;
+            break;
+        }
+        case DRAGGING_X: {
+            auto updatePoint = triangleGrid->transformToGrid(mousePoint);
+            auto newX = startX + updatePoint - startPoint;
+            auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            coefs->xx = newX.m_x;
+            coefs->xy = newX.m_y;
+            break;
+        }
+        case DRAGGING_Y: {
+            auto updatePoint = triangleGrid->transformToGrid(mousePoint);
+            auto newY = startY + updatePoint - startPoint;
+            auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            coefs->yx = newY.m_x;
+            coefs->yy = newY.m_y;
             break;
         }
         default: break;

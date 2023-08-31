@@ -19,7 +19,7 @@ namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), activeTransform(0),
-    draggingX(false), draggingY(false), rotatingTriangle(false), scalingTriangle(false)
+    rotatingTriangle(false), scalingTriangle(false)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
     auto sz = trianglePanel->GetSize();
@@ -72,8 +72,6 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
     triangleUpdater->finishUpdate();
-    draggingX = false;
-    draggingY = false;
     rotatingTriangle = false;
     scalingTriangle = false;
 }
@@ -94,21 +92,11 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
                 break;
             }
             case VERTEX_X: {
-                draggingX = true;
-                dragInverseAffine = triangleGrid->getAffineMatrix();
-                dragInverseAffine.Invert();
-                dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-                auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-                xDragStart = wxPoint2DDouble(coefs.xx, coefs.xy);
+                triangleUpdater->startXDrag(WindowPoint(pos.x, pos.y));
                 break;
             }
             case VERTEX_Y: {
-                draggingY = true;
-                dragInverseAffine = triangleGrid->getAffineMatrix();
-                dragInverseAffine.Invert();
-                dragBegin = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-                auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-                yDragStart = wxPoint2DDouble(coefs.yx, coefs.yy);
+                triangleUpdater->startYDrag(WindowPoint(pos.x, pos.y));
                 break;
             }
             case EDGE_OX:
@@ -159,7 +147,9 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
             update();
             break;
         }
-        case DRAGGING_TRIANGLE: {
+        case DRAGGING_TRIANGLE:
+        case DRAGGING_X:
+        case DRAGGING_Y: {
             pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
             pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
             triangleUpdater->setUpdatePoint(WindowPoint(pos.x, pos.y));
@@ -168,25 +158,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         }
         default: break;
     }
-    if (draggingX) {
-        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
-        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
-        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        auto newX = xDragStart + dragEnd - dragBegin;
-        auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-        coefs->xx = newX.m_x;
-        coefs->xy = newX.m_y;
-        transformCoordsChanged();
-    } else if (draggingY) {
-        pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
-        pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
-        auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));
-        auto newY = yDragStart + dragEnd - dragBegin;
-        auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-        coefs->yx = newY.m_x;
-        coefs->yy = newY.m_y;
-        transformCoordsChanged();
-    } else if (rotatingTriangle) {
+    if (rotatingTriangle) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         auto dragEnd = dragInverseAffine.TransformPoint(wxPoint2DDouble(pos.x, pos.y));

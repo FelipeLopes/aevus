@@ -27,7 +27,7 @@ private:
     int activeTransform;
     UpdateState state;
     wxAffineMatrix2D gridDragInverse;
-    wxPoint2DDouble startPoint, startO, startX, startY, startCenter;
+    GridPoint startPoint, startO, startX, startY, startCenter;
 };
 
 }
