@@ -1,8 +1,6 @@
 #pragma once
 
-#include <set>
-#include <wx/wx.h>
-#include <wx/textcompleter.h>
+#include <wx/app.h>
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
 #include "color_model.hpp"

@@ -57,6 +57,10 @@ void TriangleUpdater::startTriangleRotation(WindowPoint clickPoint) {
 
 void TriangleUpdater::startTriangleScaling(WindowPoint clickPoint) {
     state = SCALING_TRIANGLE;
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    startX = GridPoint(coefs.xx, coefs.xy);
+    startY = GridPoint(coefs.yx, coefs.yy);
 }
 
 void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
@@ -105,12 +109,37 @@ void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
             coefs->yy = newY.m_y;
             break;
         }
+        case SCALING_TRIANGLE: {
+            auto updatePoint = triangleGrid->transformToGrid(mousePoint);
+            auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            GridPoint origin(coefs->ox, coefs->oy);
+            double sc = distancePointLine(updatePoint, origin, origin+startX-startY)/
+                distancePointLine(startPoint, origin, origin+startX-startY);
+            auto newX = startX;
+            newX.SetVectorLength(startX.GetVectorLength()*sc);
+            auto newY = startY;
+            newY.SetVectorLength(startY.GetVectorLength()*sc);
+            coefs->xx = newX.m_x;
+            coefs->xy = newX.m_y;
+            coefs->yx = newY.m_x;
+            coefs->yy = newY.m_y;
+            break;
+        }
         default: break;
     }
 }
 
 void TriangleUpdater::finishUpdate() {
     state = NO_UPDATE;
+}
+
+double TriangleUpdater::distancePointLine(GridPoint p, GridPoint s1, GridPoint s2) {
+    double d = s1.GetDistance(s2);
+    if (d == 0) {
+        return p.GetDistance(s1);
+    } else {
+        return (s1-p).GetCrossProduct(s2-p)/d;
+    }
 }
 
 

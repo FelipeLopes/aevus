@@ -1,20 +1,10 @@
 #include "aevus_frame.hpp"
-#include "color_model.hpp"
-#include "event_broker.hpp"
-#include "transform_model.hpp"
-#include "variation_model.hpp"
-#include "weights_model.hpp"
-#include "wxfb/code/wxfb_frame.h"
-#include <algorithm>
-#include <exception>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <wx/rawbmp.h>
+#include <wx/filedlg.h>
+#include <wx/msgdlg.h>
 
 using namespace boost::signals2;
 using boost::bind;
-
+using std::make_shared;
 using std::string;
 
 namespace ui {
@@ -24,18 +14,18 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
 {
     SetStatusText("Welcome to Aevus!");
 
-    eventBroker = std::make_shared<EventBroker>();
+    eventBroker = make_shared<EventBroker>();
 
     preTransformModel =
-        std::make_shared<TransformModel>(flame, preTransformDataViewCtrl, true);
+        make_shared<TransformModel>(flame, preTransformDataViewCtrl, true);
     postTransformModel =
-        std::make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
-    weightsModel = std::make_shared<WeightsModel>(flame, weightsDataViewCtrl);
+        make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
+    weightsModel = make_shared<WeightsModel>(flame, weightsDataViewCtrl);
     variationModel =
-        std::make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
-    colorModel = std::make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
-    frameModel = std::make_shared<FrameModel>(flame, frameListCtrl);
-    triangleModel = std::make_shared<TriangleModel>(flame, trianglePanel);
+        make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
+    colorModel = make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
+    frameModel = make_shared<FrameModel>(flame, frameListCtrl);
+    triangleModel = make_shared<TriangleModel>(flame, trianglePanel);
 
     preTransformModel->transformCoordsChanged
         .connect(eventBroker->activeXformCoordsChanged);

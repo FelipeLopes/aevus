@@ -8,9 +8,6 @@
 #include "triangle_types.hpp"
 #include "triangle_updater.hpp"
 #include <boost/signals2.hpp>
-#include <wx/graphics.h>
-#include <wx/event.h>
-#include <wx/affinematrix2d.h>
 #include <wx/panel.h>
 
 namespace ui {
@@ -30,8 +27,6 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
-    double distancePointLine(wxPoint2DDouble p, wxPoint2DDouble s1, wxPoint2DDouble s2);
-
     std::shared_ptr<core::Flame> flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     std::shared_ptr<TriangleCollider> triangleCollider;
@@ -39,11 +34,6 @@ private:
     std::shared_ptr<TriangleUpdater> triangleUpdater;
     wxPanel* trianglePanel;
     int activeTransform;
-    wxAffineMatrix2D dragInverseAffine;
-    wxPoint2DDouble dragBegin, centerDragStart;
-    wxPoint2DDouble originDragStart;
-    bool scalingTriangle;
-    wxPoint2DDouble xDragStart, yDragStart;
 };
 
 }
