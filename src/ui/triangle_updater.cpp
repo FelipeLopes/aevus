@@ -6,11 +6,16 @@ using std::shared_ptr;
 
 namespace ui {
 
-TriangleUpdater::TriangleUpdater(shared_ptr<Flame> flame_, shared_ptr<TriangleGrid> triangleGrid_):
-    flame(flame_), triangleGrid(triangleGrid_), state(NO_UPDATE) { }
+TriangleUpdater::TriangleUpdater(shared_ptr<Flame> flame_, shared_ptr<TriangleGrid> triangleGrid_,
+    int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
+    activeTransform(activeTransform_), state(NO_UPDATE) { }
 
-bool TriangleUpdater::isUpdating() {
-    return state != NO_UPDATE;
+void TriangleUpdater::handleActiveXformChanged(int id) {
+    activeTransform = id;
+}
+
+UpdateState TriangleUpdater::getUpdateState() {
+    return state;
 }
 
 void TriangleUpdater::startGridDrag(WindowPoint clickPoint) {
@@ -23,6 +28,9 @@ void TriangleUpdater::startGridDrag(WindowPoint clickPoint) {
 
 void TriangleUpdater::startTriangleDrag(WindowPoint clickPoint) {
     state = DRAGGING_TRIANGLE;
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    startO = wxPoint2DDouble(coefs.ox, coefs.oy);
 }
 
 void TriangleUpdater::startXDrag(WindowPoint clickPoint) {
@@ -46,6 +54,14 @@ void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
         case DRAGGING_GRID: {
             auto updatePoint = gridDragInverse.TransformPoint(mousePoint);
             triangleGrid->updateCenter(startCenter + startPoint - updatePoint);
+            break;
+        }
+        case DRAGGING_TRIANGLE: {
+            auto updatePoint = triangleGrid->transformToGrid(mousePoint);
+            auto newO = startO + updatePoint - startPoint;
+            auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            coefs->ox = newO.m_x;
+            coefs->oy = newO.m_y;
             break;
         }
         default: break;

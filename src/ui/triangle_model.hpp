@@ -41,7 +41,6 @@ private:
     int activeTransform;
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
-    bool draggingTriangle;
     wxPoint2DDouble originDragStart;
     bool draggingX, draggingY, rotatingTriangle, scalingTriangle;
     wxPoint2DDouble xDragStart, yDragStart;

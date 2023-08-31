@@ -40,7 +40,7 @@ struct Collision {
     }
 };
 
-enum UpdaterState {
+enum UpdateState {
     NO_UPDATE,
     DRAGGING_GRID,
     DRAGGING_TRIANGLE,

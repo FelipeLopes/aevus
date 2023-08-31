@@ -9,8 +9,10 @@ namespace ui {
 
 class TriangleUpdater {
 public:
-    TriangleUpdater(std::shared_ptr<core::Flame> flame, std::shared_ptr<TriangleGrid> triangleGrid);
-    bool isUpdating();
+    TriangleUpdater(std::shared_ptr<core::Flame> flame, std::shared_ptr<TriangleGrid> triangleGrid,
+        int activeTransform);
+    void handleActiveXformChanged(int id);
+    UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);
     void startXDrag(WindowPoint clickPoint);
@@ -22,7 +24,8 @@ public:
 private:
     std::shared_ptr<core::Flame> flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
-    UpdaterState state;
+    int activeTransform;
+    UpdateState state;
     wxAffineMatrix2D gridDragInverse;
     wxPoint2DDouble startPoint, startO, startX, startY, startCenter;
 };
