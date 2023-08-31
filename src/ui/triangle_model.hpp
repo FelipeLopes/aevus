@@ -42,7 +42,7 @@ private:
     wxAffineMatrix2D dragInverseAffine;
     wxPoint2DDouble dragBegin, centerDragStart;
     wxPoint2DDouble originDragStart;
-    bool rotatingTriangle, scalingTriangle;
+    bool scalingTriangle;
     wxPoint2DDouble xDragStart, yDragStart;
 };
 

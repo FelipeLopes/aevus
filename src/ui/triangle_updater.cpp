@@ -49,6 +49,10 @@ void TriangleUpdater::startYDrag(WindowPoint clickPoint) {
 
 void TriangleUpdater::startTriangleRotation(WindowPoint clickPoint) {
     state = ROTATING_TRIANGLE;
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
+    startX = GridPoint(coefs.xx, coefs.xy);
+    startY = GridPoint(coefs.yx, coefs.yy);
 }
 
 void TriangleUpdater::startTriangleScaling(WindowPoint clickPoint) {
@@ -82,6 +86,21 @@ void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
             auto newY = startY + updatePoint - startPoint;
             auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            coefs->yx = newY.m_x;
+            coefs->yy = newY.m_y;
+            break;
+        }
+        case ROTATING_TRIANGLE: {
+            auto updatePoint = triangleGrid->transformToGrid(mousePoint);
+            auto coefs = flame->xforms.get(activeTransform)->coefs.get();
+            GridPoint origin(coefs->ox, coefs->oy);
+            double rot = (updatePoint-origin).GetVectorAngle()-(startPoint-origin).GetVectorAngle();
+            auto newX = startX;
+            newX.SetVectorAngle(startX.GetVectorAngle()+rot);
+            auto newY = startY;
+            newY.SetVectorAngle(startY.GetVectorAngle()+rot);
+            coefs->xx = newX.m_x;
+            coefs->xy = newX.m_y;
             coefs->yx = newY.m_x;
             coefs->yy = newY.m_y;
             break;
