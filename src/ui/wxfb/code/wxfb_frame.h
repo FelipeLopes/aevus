@@ -26,6 +26,7 @@
 #include <wx/scrolwin.h>
 #include <wx/panel.h>
 #include <wx/splitter.h>
+#include <wx/bmpbuttn.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/frame.h>
@@ -77,6 +78,8 @@ class WxfbFrame : public wxFrame
 		wxDataViewListCtrl* weightsDataViewCtrl;
 		wxDataViewColumn* m_dataViewListColumn92;
 		wxDataViewColumn* m_dataViewListColumn102;
+		wxBitmapButton* removeXformButton;
+		wxBitmapButton* addXformButton;
 		wxStaticText* m_staticText24;
 		wxTextCtrl* variationTextCtrl;
 		wxDataViewListCtrl* variationListCtrl;

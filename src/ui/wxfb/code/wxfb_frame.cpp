@@ -145,10 +145,31 @@ WxfbFrame::WxfbFrame( wxWindow* parent, wxWindowID id, const wxString& title, co
 	wxWrapSizer* wSizer3;
 	wSizer3 = new wxWrapSizer( wxHORIZONTAL, wxWRAPSIZER_DEFAULT_FLAGS );
 
+	wxBoxSizer* bSizer12;
+	bSizer12 = new wxBoxSizer( wxVERTICAL );
+
 	weightsDataViewCtrl = new wxDataViewListCtrl( m_scrolledWindow2, wxID_ANY, wxDefaultPosition, wxSize( 180,150 ), 0 );
 	m_dataViewListColumn92 = weightsDataViewCtrl->AppendTextColumn( wxT("Xform"), wxDATAVIEW_CELL_INERT, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
 	m_dataViewListColumn102 = weightsDataViewCtrl->AppendTextColumn( wxT("Weight"), wxDATAVIEW_CELL_EDITABLE, -2, static_cast<wxAlignment>(wxALIGN_CENTER_HORIZONTAL), wxDATAVIEW_COL_RESIZABLE );
-	wSizer3->Add( weightsDataViewCtrl, 0, wxALL|wxEXPAND, 5 );
+	bSizer12->Add( weightsDataViewCtrl, 1, wxALL|wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxHORIZONTAL );
+
+
+	bSizer13->Add( 0, 0, 1, wxEXPAND, 5 );
+
+	removeXformButton = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( 25,25 ), wxBU_AUTODRAW|wxBORDER_NONE );
+	bSizer13->Add( removeXformButton, 0, wxBOTTOM, 5 );
+
+	addXformButton = new wxBitmapButton( m_scrolledWindow2, wxID_ANY, wxNullBitmap, wxDefaultPosition, wxSize( 25,25 ), wxBU_AUTODRAW|wxBORDER_NONE );
+	bSizer13->Add( addXformButton, 0, wxBOTTOM|wxLEFT|wxRIGHT, 5 );
+
+
+	bSizer12->Add( bSizer13, 0, wxEXPAND, 5 );
+
+
+	wSizer3->Add( bSizer12, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer22;
 	bSizer22 = new wxBoxSizer( wxVERTICAL );

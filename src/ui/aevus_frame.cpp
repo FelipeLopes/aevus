@@ -1,4 +1,5 @@
 #include "aevus_frame.hpp"
+#include <wx-3.2/wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 
@@ -78,6 +79,18 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     loadFile("../in.xml");
 
     trianglePanel->SetFocus();
+
+    wxBitmap plusDefault("res/plus_default.png", wxBITMAP_TYPE_PNG);
+    wxBitmap plusSelected("res/plus_selected.png", wxBITMAP_TYPE_PNG);
+    wxBitmap minusDefault("res/minus_default.png", wxBITMAP_TYPE_PNG);
+    wxBitmap minusSelected("res/minus_selected.png", wxBITMAP_TYPE_PNG);
+    wxBitmap minusDisabled("res/minus_disabled.png", wxBITMAP_TYPE_PNG);
+
+    addXformButton->SetBitmap(plusDefault);
+    addXformButton->SetBitmapSelected(plusSelected);
+    removeXformButton->SetBitmap(minusDefault);
+    removeXformButton->SetBitmapSelected(minusSelected);
+    removeXformButton->SetBitmap(minusDisabled);
 }
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
