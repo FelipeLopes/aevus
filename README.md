@@ -1,6 +1,6 @@
 # Aevus
 
-Aevus is a highly experimental fractal flame renderer.
+Aevus is a highly experimental fractal flame editor.
 
 At the moment it has basic custom libraries for XML serialization and OpenCL kernel execution.
 Aevus can read and write flames in an Apophysis compatible XML format, and pass the parameters
@@ -34,17 +34,17 @@ git clone https://github.com/FelipeLopes/aevus.git
 cd aevus
 ```
 
-Then, on the conandeps folder, install the packages with conan:
+Build currently only works on Ubuntu. Install the following packages:
 
 ```
-cd conandeps
-conan install .
+sudo apt install ocl-icd-opencl-dev libboost-all-dev libtinyxml2-dev libwxgtk3.2-dev
 ```
 
-Finally, back on the aevus folder, run bazel to build the project:
+The version of wxWidgets must be 3.2, if your version of Ubuntu does not have that package available yet, you can download the DEB file from the newer repositories and install it directly with dpkg.
+
+On the aevus folder, run bazel to build the project:
 
 ```
-cd ..
 bazel build aevus
 ```
 

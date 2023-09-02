@@ -23,7 +23,7 @@ FlameCL Flame::getFlameCL() const {
     FlameCL flameCL;
     flameCL.cx = center.value().x;
     flameCL.cy = center.value().y;
-    flameCL.scale = scale.getValue();
+    flameCL.scale = scale.value();
     flameCL.width = size.value().width;
     flameCL.height = size.value().height;
     return flameCL;
@@ -60,7 +60,7 @@ void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
         std::vector<double> densities;
         for (int j=0; j<xforms.size(); j++) {
             acc += xforms.get(i)->chaos.value().getXaos(j) *
-                xforms.get(j)->weight.getValue();
+                xforms.get(j)->weight.value();
             densities.push_back(acc);
         }
         double step = acc / XFORM_DISTRIBUTION_GRAINS;

@@ -1,8 +1,0 @@
-[requires]
-tinyxml2/9.0.0
-boost/1.80.0
-opencl-headers/2022.09.30
-
-[generators]
-BazelToolchain
-BazelDeps

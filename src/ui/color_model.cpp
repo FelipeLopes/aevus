@@ -71,7 +71,7 @@ void ColorModel::handlePaint() {
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
-        float colorVal = flame->xforms.get(activeTransform)->color.getValue();
+        float colorVal = flame->xforms.get(activeTransform)->color.value();
         colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
         int palettePos = (int)(colorVal*256);
         Color c = flame->palette.colors.value().colorAt(palettePos);
@@ -93,7 +93,7 @@ void ColorModel::afterUpdate(int selectedRow) {
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
     wxVector<wxVariant> firstRow;
     firstRow.push_back("position");
-    firstRow.push_back(to_string(flame->xforms.get(activeTransform)->color.getValue()));
+    firstRow.push_back(to_string(flame->xforms.get(activeTransform)->color.value()));
     data.push_back(firstRow);
     wxVector<wxVariant> secondRow;
     secondRow.push_back("speed");
@@ -109,7 +109,7 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     }
     double oldValue = 0;
     switch (row) {
-        case 0: oldValue = flame->xforms.get(activeTransform)->color.getValue(); break;
+        case 0: oldValue = flame->xforms.get(activeTransform)->color.value(); break;
         case 1: oldValue = flame->xforms.get(activeTransform)->colorSpeed.value().colorSpeed; break;
     }
     string text = val.GetString().ToStdString();

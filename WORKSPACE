@@ -1,5 +1,26 @@
-load("@//conandeps:dependencies.bzl", "load_conan_dependencies")
-load_conan_dependencies()
+new_local_repository(
+    name = "tinyxml2",
+    build_file = "tinyxml2.BUILD",
+    path = "/usr/lib/x86_64-linux-gnu",
+)
+
+new_local_repository(
+    name = "tinyxml2-headers",
+    build_file = "tinyxml2-headers.BUILD",
+    path = "/usr/include",
+)
+
+new_local_repository(
+    name = "boost-headers",
+    build_file = "boost-headers.BUILD",
+    path = "/usr/include/boost",
+)
+
+new_local_repository(
+    name = "opencl-headers",
+    build_file = "opencl-headers.BUILD",
+    path = "/usr/include/CL",
+)
 
 new_local_repository(
     name = "opencl",

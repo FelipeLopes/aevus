@@ -30,7 +30,7 @@ void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
     for (int i=0; i<sz; i++) {
         wxVector<wxVariant> row;
         row.push_back(to_string(i+1));
-        row.push_back(to_string(flame->xforms.get(i)->weight.getValue()));
+        row.push_back(to_string(flame->xforms.get(i)->weight.value()));
         data.push_back(row);
     }
 }
@@ -40,7 +40,7 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
-    double oldValue = flame->xforms.get(row)->weight.getValue();
+    double oldValue = flame->xforms.get(row)->weight.value();
     string text = val.GetString().ToStdString();
     double newValue = 0;
     try {

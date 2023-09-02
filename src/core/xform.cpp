@@ -44,7 +44,7 @@ XFormCL XForm::toXFormCL() const {
     }
     xf.varData[sz].id = Variation::NO_VARIATION;
 
-    xf.color = color.getValue();
+    xf.color = color.value();
     xf.colorSpeed = colorSpeed.value().colorSpeed;
 
     return xf;

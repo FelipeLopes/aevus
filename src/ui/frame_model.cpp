@@ -32,7 +32,7 @@ void FrameModel::getValues(std::vector<wxVector<wxVariant>>& data) const {
     data.push_back(row);
     row.clear();
     row.push_back("scale");
-    row.push_back(to_string(flame->scale.getValue()));
+    row.push_back(to_string(flame->scale.value()));
     data.push_back(row);
 }
 
@@ -69,7 +69,7 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
         switch (row) {
             case 2: oldValue = flame->center.value().x; break;
             case 3: oldValue = flame->center.value().y; break;
-            case 4: oldValue = flame->scale.getValue(); break;
+            case 4: oldValue = flame->scale.value(); break;
         }
         double newValue = 0;
         try {

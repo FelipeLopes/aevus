@@ -30,7 +30,7 @@ public:
     XMLAttributeInt(XMLElementClass& parent, std::string name, int defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    int getValue() const;
+    int value() const;
     void setValue(int value);
 private:
     int val;
@@ -44,7 +44,7 @@ public:
     XMLAttributeDouble(XMLElementClass& parent, std::string name, double defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    double getValue() const;
+    double value() const;
     void setValue(double value);
 private:
     double val;
@@ -58,7 +58,7 @@ public:
     XMLAttributeString(XMLElementClass& parent, std::string name, std::string defaultValue);
     virtual std::map<std::string, std::string> serialize();
     virtual void deserialize(tinyxml2::XMLElement* element);
-    std::string getValue() const;
+    std::string value() const;
     void setValue(std::string value);
 private:
     std::string val;

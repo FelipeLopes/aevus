@@ -40,10 +40,6 @@ __pycache__/
 #bazel symlinks
 bazel-*
 
-#conan stuff except requirements
-conandeps/*
-!conandeps/conanfile.txt
-
 #vim temporary files
 *~
 

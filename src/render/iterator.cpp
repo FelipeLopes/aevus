@@ -12,12 +12,12 @@ namespace render {
 Iterator::Iterator(const CLQueuedContext& context_, shared_ptr<core::Flame> flame):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
-    width(flame->size.getValue().width),
-    height(flame->size.getValue().height),
-    scale(flame->scale.getValue()),
-    quality(flame->quality.getValue()),
-    brightness(flame->brightness.getValue()),
-    background(flame->background.getValue().toColorCL()),
+    width(flame->size.value().width),
+    height(flame->size.value().height),
+    scale(flame->scale.value()),
+    quality(flame->quality.value()),
+    brightness(flame->brightness.value()),
+    background(flame->background.value().toColorCL()),
     flameCL(kernel, 0, flame->getFlameCL()),
     stateArg(kernel, 1,
         [&flame] (auto& arr) {

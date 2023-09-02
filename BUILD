@@ -3,8 +3,9 @@ cc_library(
     srcs = glob(["src/serial/*.cpp"]),
     hdrs = glob(["src/serial/*.hpp"]),
     deps = [
+        "@tinyxml2-headers//:tinyxml2-headers",
         "@tinyxml2//:tinyxml2",
-        "@boost//:boost",
+        "@boost-headers//:boost-headers",
     ]
 )
 
@@ -22,7 +23,7 @@ cc_library(
     srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
     deps = [
-        "@boost//:boost",
+        "@boost-headers//:boost-headers",
         ":serial",
     ]
 )
@@ -69,6 +70,8 @@ cc_binary(
     name = "aevus",
     srcs = ["src/main.cpp"],
     deps = [
+        ":render",
         ":ui",
+        "@opencl//:opencl",
     ],
 )
