@@ -107,7 +107,7 @@ cc_library(
 
 cc_binary(
     name = "aevus",
-    srcs = ["src/main.cpp"],
+    srcs = ["src/aevus.cpp"],
     deps = [
         ":render",
         ":ui",

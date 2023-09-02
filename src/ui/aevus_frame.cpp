@@ -249,13 +249,4 @@ void AevusFrame::onFileSaveAs(wxCommandEvent& event) {
 
 AevusFrame::~AevusFrame() { }
 
-bool Aevus::OnInit()
-{
-    wxImage::AddHandler(new wxPNGHandler());
-    auto flame = std::make_shared<core::Flame>();
-    AevusFrame* frame = new AevusFrame(flame);
-    frame->Show();
-    return true;
-}
-
 }

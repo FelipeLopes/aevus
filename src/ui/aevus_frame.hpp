@@ -1,6 +1,5 @@
 #pragma once
 
-#include <wx/wx.h>
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
 #include "color_model.hpp"
@@ -25,11 +24,6 @@ extern char _binary_res_minus_disabled_png_start[];
 extern char _binary_res_minus_disabled_png_end[];
 
 namespace ui {
-
-class Aevus: public wxApp {
-public:
-    virtual bool OnInit();
-};
 
 class AevusFrame: public WxfbFrame {
 public:
