@@ -10,7 +10,7 @@
 #include "triangle_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
-#include "wxfb/code/wxfb_frame.h"
+#include "../wxfb/wxfb_frame.h"
 #include "../core/flame.hpp"
 
 extern char _binary_res_plus_default_png_start[];

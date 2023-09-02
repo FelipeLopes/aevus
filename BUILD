@@ -31,8 +31,8 @@ cc_library(
 
 cc_library(
     name = "serial",
-    srcs = glob(["src/serial/*.cpp"]),
     hdrs = glob(["src/serial/*.hpp"]),
+    srcs = glob(["src/serial/*.cpp"]),
     deps = [
         ":tinyxml2",
         ":boost",
@@ -41,8 +41,8 @@ cc_library(
 
 cc_library(
     name = "clwrap",
-    srcs = glob(["src/clwrap/*.cpp"]),
     hdrs = glob(["src/clwrap/*.hpp"]),
+    srcs = glob(["src/clwrap/*.cpp"]),
     deps = [
         ":opencl",
     ]
@@ -50,8 +50,8 @@ cc_library(
 
 cc_library(
     name = "core",
-    srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
+    srcs = glob(["src/core/*.cpp"]),
     deps = [
         ":boost",
         ":serial",
@@ -60,8 +60,8 @@ cc_library(
 
 cc_library(
     name = "render",
-    srcs = glob(["src/render/*.cpp"]),
     hdrs = glob(["src/render/*.hpp"]),
+    srcs = glob(["src/render/*.cpp"]),
     deps = [
         ":clwrap",
         ":core",
@@ -86,13 +86,22 @@ cc_library(
 )
 
 cc_library(
+    name = "wxfb",
+    hdrs = ["src/wxfb/wxfb_frame.h"],
+    srcs = ["src/wxfb/wxfb_frame.cpp"],
+    deps = [
+        ":wxwidgets",
+    ],
+)
+
+cc_library(
     name = "ui",
-    srcs = glob(["src/ui/*.cpp"]) + ["src/ui/wxfb/code/wxfb_frame.cpp"],
-    hdrs = glob(["src/ui/*.hpp"]) + ["src/ui/wxfb/code/wxfb_frame.h"],
+    srcs = glob(["src/ui/*.cpp"]),
+    hdrs = glob(["src/ui/*.hpp"]),
     deps = [
         ":core",
         ":images",
-        ":wxwidgets",
+        ":wxfb",
     ]
 )
 
