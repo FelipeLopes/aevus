@@ -1,4 +1,16 @@
 cc_library(
+   name = "tinyxml2",
+   srcs = ["libtinyxml2.so"],
+   visibility = ["//visibility:public"],
+)
+
+cc_library(
+   name = "opencl",
+   srcs = ["libOpenCL.so"],
+   visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "wxwidgets",
     srcs = [
         "libwx_gtk3u_xrc-3.2.so",
@@ -19,8 +31,5 @@ cc_library(
         "__WXGTK__",
     ],
     linkopts = ["-pthread"],
-    deps = [
-        "@wxheaders//:wxheaders",
-    ],
     visibility = ["//visibility:public"],
 )

@@ -1,11 +1,41 @@
 cc_library(
+    name = "tinyxml2",
+    deps = [
+        "@hdrs//:tinyxml2",
+        "@libs//:tinyxml2",
+    ],
+)
+
+cc_library(
+    name = "boost",
+    deps = [
+        "@hdrs//:boost",
+    ],
+)
+
+cc_library(
+    name = "opencl",
+    deps = [
+        "@hdrs//:opencl",
+        "@libs//:opencl",
+    ],
+)
+
+cc_library(
+    name = "wxwidgets",
+    deps = [
+        "@hdrs//:wxwidgets",
+        "@libs//:wxwidgets",
+    ],
+)
+
+cc_library(
     name = "serial",
     srcs = glob(["src/serial/*.cpp"]),
     hdrs = glob(["src/serial/*.hpp"]),
     deps = [
-        "@tinyxml2-headers//:tinyxml2-headers",
-        "@tinyxml2//:tinyxml2",
-        "@boost-headers//:boost-headers",
+        ":tinyxml2",
+        ":boost",
     ]
 )
 
@@ -14,7 +44,7 @@ cc_library(
     srcs = glob(["src/clwrap/*.cpp"]),
     hdrs = glob(["src/clwrap/*.hpp"]),
     deps = [
-        "@opencl-headers//:opencl-headers",
+        ":opencl",
     ]
 )
 
@@ -23,7 +53,7 @@ cc_library(
     srcs = glob(["src/core/*.cpp"]),
     hdrs = glob(["src/core/*.hpp"]),
     deps = [
-        "@boost-headers//:boost-headers",
+        ":boost",
         ":serial",
     ]
 )
@@ -62,7 +92,7 @@ cc_library(
     deps = [
         ":core",
         ":images",
-        "@wxwidgets//:wxwidgets",
+        ":wxwidgets",
     ]
 )
 
@@ -72,6 +102,6 @@ cc_binary(
     deps = [
         ":render",
         ":ui",
-        "@opencl//:opencl",
+        ":opencl",
     ],
 )
