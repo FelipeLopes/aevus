@@ -1,7 +1,8 @@
 #include "aevus_frame.hpp"
-#include <wx-3.2/wx/gdicmn.h>
+#include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
+#include <wx/mstream.h>
 
 using namespace boost::signals2;
 using boost::bind;
@@ -80,17 +81,33 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
 
     trianglePanel->SetFocus();
 
-    wxBitmap plusDefault("res/plus_default.png", wxBITMAP_TYPE_PNG);
-    wxBitmap plusSelected("res/plus_selected.png", wxBITMAP_TYPE_PNG);
-    wxBitmap minusDefault("res/minus_default.png", wxBITMAP_TYPE_PNG);
-    wxBitmap minusSelected("res/minus_selected.png", wxBITMAP_TYPE_PNG);
-    wxBitmap minusDisabled("res/minus_disabled.png", wxBITMAP_TYPE_PNG);
+    addXformButton->SetBitmap(loadEmbeddedPNG(
+        _binary_res_plus_default_png_start,
+        _binary_res_plus_default_png_end
+    ));
+    addXformButton->SetBitmapSelected(loadEmbeddedPNG(
+        _binary_res_plus_selected_png_start,
+        _binary_res_plus_selected_png_end
+    ));
+    removeXformButton->SetBitmap(loadEmbeddedPNG(
+        _binary_res_minus_default_png_start,
+        _binary_res_minus_default_png_end
+    ));
+    removeXformButton->SetBitmapSelected(loadEmbeddedPNG(
+        _binary_res_minus_selected_png_start,
+        _binary_res_minus_selected_png_end
+    ));
+    removeXformButton->SetBitmap(loadEmbeddedPNG(
+        _binary_res_minus_disabled_png_start,
+        _binary_res_minus_disabled_png_end
+    ));
+}
 
-    addXformButton->SetBitmap(plusDefault);
-    addXformButton->SetBitmapSelected(plusSelected);
-    removeXformButton->SetBitmap(minusDefault);
-    removeXformButton->SetBitmapSelected(minusSelected);
-    removeXformButton->SetBitmap(minusDisabled);
+wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
+    size_t sz = end - start;
+    wxMemoryInputStream stream(start, sz);
+    wxImage image(stream, wxBITMAP_TYPE_PNG);
+    return wxBitmap(image);
 }
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
@@ -234,6 +251,7 @@ AevusFrame::~AevusFrame() { }
 
 bool Aevus::OnInit()
 {
+    wxImage::AddHandler(new wxPNGHandler());
     auto flame = std::make_shared<core::Flame>();
     AevusFrame* frame = new AevusFrame(flame);
     frame->Show();

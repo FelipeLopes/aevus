@@ -37,12 +37,30 @@ cc_library(
     ]
 )
 
+filegroup(
+    name = "image_files",
+    srcs = glob(["res/*.png"]),
+)
+
+genrule(
+    name = "image_embed",
+    srcs = ["//:image_files"],
+    outs = ["images.o"],
+    cmd = "ld -r -b binary -o $@ $(locations //:image_files)",
+)
+
+cc_library(
+    name = "images",
+    srcs = ["//:image_embed"],
+)
+
 cc_library(
     name = "ui",
     srcs = glob(["src/ui/*.cpp"]) + ["src/ui/wxfb/code/wxfb_frame.cpp"],
     hdrs = glob(["src/ui/*.hpp"]) + ["src/ui/wxfb/code/wxfb_frame.h"],
     deps = [
         ":core",
+        ":images",
         "@wxwidgets//:wxwidgets",
     ]
 )

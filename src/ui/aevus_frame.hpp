@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wx/app.h>
+#include <wx/wx.h>
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
 #include "color_model.hpp"
@@ -12,6 +12,17 @@
 #include "weights_model.hpp"
 #include "wxfb/code/wxfb_frame.h"
 #include "../core/flame.hpp"
+
+extern char _binary_res_plus_default_png_start[];
+extern char _binary_res_plus_default_png_end[];
+extern char _binary_res_plus_selected_png_start[];
+extern char _binary_res_plus_selected_png_end[];
+extern char _binary_res_minus_default_png_start[];
+extern char _binary_res_minus_default_png_end[];
+extern char _binary_res_minus_selected_png_start[];
+extern char _binary_res_minus_selected_png_end[];
+extern char _binary_res_minus_disabled_png_start[];
+extern char _binary_res_minus_disabled_png_end[];
 
 namespace ui {
 
@@ -56,6 +67,8 @@ private:
     void onMouseUp(wxMouseEvent& event) override;
     void onMouseMove(wxMouseEvent& event) override;
     void onMouseWheel(wxMouseEvent& event) override;
+
+    wxBitmap loadEmbeddedPNG(char* start, char* end);
 };
 
 }
