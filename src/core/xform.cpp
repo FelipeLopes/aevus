@@ -13,7 +13,12 @@ XForm::XForm(): XMLElementClass("xform"),
     coefs(*this, "coefs"),
     post(*this, "post"),
     chaos(*this, "chaos"),
-    colorSpeed(*this, {"color_speed", "symmetry"}) { }
+    colorSpeed(*this, {"color_speed", "symmetry"})
+{
+    weight.setValue(0.5);
+    variationMap.get()->variations[Variation::VariationID::LINEAR] = 1.0;
+    colorSpeed.get()->colorSpeed = 0.5;
+}
 
 XFormCL XForm::toXFormCL() const {
     XFormCL xf;

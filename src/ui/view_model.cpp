@@ -39,10 +39,12 @@ void ViewModel::setValue(const wxVariant& value, int row, int col) {
 }
 
 void ViewModel::selectRow(int row) {
-    if (row != wxNOT_FOUND) {
-        dvListCtrl->SelectRow(row);
-    } else if (dvListCtrl->GetItemCount() > 0) {
-        dvListCtrl->SelectRow(0);
+    if (dvListCtrl->GetItemCount() > 0) {
+        if (row != wxNOT_FOUND) {
+            dvListCtrl->SelectRow(row);
+        } else {
+            dvListCtrl->SelectRow(0);
+        }
     }
 }
 

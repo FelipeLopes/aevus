@@ -45,6 +45,9 @@ void TransformModel::handleReset() {
 }
 
 void TransformModel::getValues(vector<wxVector<wxVariant>>& data) const {
+    if (activeTransform == -1) {
+        return;
+    }
     core::Affine* aff = NULL;
     if (accessCoefs) {
         aff = flame->xforms.get(activeTransform)->coefs.get();

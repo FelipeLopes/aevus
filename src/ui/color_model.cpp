@@ -71,16 +71,18 @@ void ColorModel::handlePaint() {
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
-        float colorVal = flame->xforms.get(activeTransform)->color.value();
-        colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
-        int palettePos = (int)(colorVal*256);
-        Color c = flame->palette.colors.value().colorAt(palettePos);
-        int highlightLine = 255 - palettePos;
         gc->DrawBitmap(paletteBitmap, 0, 0, paletteWidth, 256);
-        if ((c.r*0.299 + c.g*0.587 + c.b*0.114) > 149) {
-            gc->DrawBitmap(blackLineBitmap, 0, highlightLine, paletteWidth, 1);
-        } else {
-            gc->DrawBitmap(whiteLineBitmap, 0, highlightLine, paletteWidth, 1);
+        if (activeTransform != -1) {
+            float colorVal = flame->xforms.get(activeTransform)->color.value();
+            colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
+            int palettePos = (int)(colorVal*256);
+            Color c = flame->palette.colors.value().colorAt(palettePos);
+            int highlightLine = 255 - palettePos;
+            if ((c.r*0.299 + c.g*0.587 + c.b*0.114) > 149) {
+                gc->DrawBitmap(blackLineBitmap, 0, highlightLine, paletteWidth, 1);
+            } else {
+                gc->DrawBitmap(whiteLineBitmap, 0, highlightLine, paletteWidth, 1);
+            }
         }
         delete gc;
     }
@@ -91,6 +93,9 @@ void ColorModel::afterUpdate(int selectedRow) {
 }
 
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
+    if (activeTransform == -1) {
+        return;
+    }
     wxVector<wxVariant> firstRow;
     firstRow.push_back("position");
     firstRow.push_back(to_string(flame->xforms.get(activeTransform)->color.value()));

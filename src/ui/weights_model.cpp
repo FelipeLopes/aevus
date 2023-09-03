@@ -20,17 +20,29 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
 }
 
 void WeightsModel::handleActiveXformChanged(int id) {
-    blockSelectionEvents = true;
-    selectRow(id);
-    blockSelectionEvents = false;
+    if (id != -1) {
+        blockSelectionEvents = true;
+        selectRow(id);
+        blockSelectionEvents = false;
+    }
 }
 
 void WeightsModel::handleAddXform() {
-    printf("add xform\n");
+    int id = flame->xforms.size();
+    flame->xforms.append(std::make_shared<core::XForm>());
+    weightsChanged();
+    xformSelected(id);
 }
 
 void WeightsModel::handleRemoveXform() {
-    printf("remove xform\n");
+    int id = getSelectedRow();
+    int sz = flame->xforms.size();
+    flame->xforms.remove(id);
+    if (id == sz - 1) {
+        id--;
+    }
+    xformSelected(id);
+    weightsChanged();
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
