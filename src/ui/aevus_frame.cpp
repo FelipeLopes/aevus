@@ -125,11 +125,13 @@ void AevusFrame::onWeightEdited(wxDataViewEvent& event) {
     weightsModel->handleValueChangedEvent(event);
 }
 
-void AevusFrame::onResetFlameUpdate(wxCommandEvent& event) {
+void AevusFrame::onButtonClick(wxCommandEvent& event) {
     int eventId = event.GetId();
     switch (eventId) {
         case ID_FLAME_PRE_RESET: preTransformModel->handleReset(); break;
         case ID_FLAME_POST_RESET: postTransformModel->handleReset(); break;
+        case ID_FLAME_ADD_XFORM: weightsModel->handleAddXform(); break;
+        case ID_FLAME_REMOVE_XFORM: weightsModel->handleRemoveXform(); break;
     }
 }
 

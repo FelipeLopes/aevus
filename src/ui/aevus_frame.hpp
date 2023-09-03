@@ -46,7 +46,7 @@ private:
     void onFileSaveAs(wxCommandEvent& event) override;
     void onExit(wxCommandEvent& event) override;
     void onAbout(wxCommandEvent& event) override;
-    void onResetFlameUpdate(wxCommandEvent& event) override;
+    void onButtonClick(wxCommandEvent& event) override;
     void onVariationAddEnter(wxCommandEvent& event) override;
     void onVariationValueChanged(wxDataViewEvent& event) override;
     void onTransformValueChanged(wxDataViewEvent& event) override;

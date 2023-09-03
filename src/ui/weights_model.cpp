@@ -25,6 +25,14 @@ void WeightsModel::handleActiveXformChanged(int id) {
     blockSelectionEvents = false;
 }
 
+void WeightsModel::handleAddXform() {
+    printf("add xform\n");
+}
+
+void WeightsModel::handleRemoveXform() {
+    printf("remove xform\n");
+}
+
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
     int sz = flame->xforms.size();
     for (int i=0; i<sz; i++) {

@@ -12,6 +12,8 @@ public:
     WeightsModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* weightsListCtrl);
     void handleSelectionEvent(wxDataViewEvent& event);
     void handleActiveXformChanged(int id);
+    void handleAddXform();
+    void handleRemoveXform();
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> weightsChanged;
 private:
