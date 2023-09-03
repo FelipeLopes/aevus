@@ -37,10 +37,11 @@ cd aevus
 Build currently only works on Ubuntu. Install the following packages:
 
 ```
-sudo apt install ocl-icd-opencl-dev libboost-all-dev libtinyxml2-dev libwxgtk3.2-dev
+sudo apt install ocl-icd-opencl-dev libboost-all-dev libtinyxml2-dev libwxgtk3.2-dev xvfb wxformbuilder
 ```
 
 The version of wxWidgets must be 3.2, if your version of Ubuntu does not have that package available yet, you can download the DEB file from the newer repositories and install it directly with dpkg.
+Aevus uses wxformbuilder for code generation, and it requires an X server even when running in CLI mode, so we also use Xvfb instead of a real X server to provide more isolation for code generation.
 
 On the aevus folder, run bazel to build the project:
 
