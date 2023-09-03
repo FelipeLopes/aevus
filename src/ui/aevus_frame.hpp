@@ -2,6 +2,7 @@
 
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
+#include <wxfb_frame.h>
 #include "color_model.hpp"
 #include "event_broker.hpp"
 #include "frame_model.hpp"
@@ -9,7 +10,6 @@
 #include "triangle_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
-#include "../wxfb/wxfb_frame.h"
 #include "../core/flame.hpp"
 
 extern char _binary_res_plus_default_png_start[];

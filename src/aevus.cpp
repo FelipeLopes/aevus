@@ -7,8 +7,7 @@ public:
     bool OnInit() override;
 };
 
-bool Aevus::OnInit()
-{
+bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNGHandler());
     auto flame = std::make_shared<core::Flame>();
     ui::AevusFrame* frame = new ui::AevusFrame(flame);

@@ -85,13 +85,24 @@ cc_library(
     srcs = ["//:image_embed"],
 )
 
+genrule(
+    name = "wxfb_gen",
+    srcs = ["src/wxfb/aevus.fbp"],
+    outs = [
+        "src/wxfb/wxfb_frame.h",
+        "src/wxfb/wxfb_frame.cpp",
+    ],
+    cmd = """sh $(location src/wxfb/gen.sh) $(location src/wxfb/aevus.fbp) \
+        $(location src/wxfb/wxfb_frame.h) $(location src/wxfb/wxfb_frame.cpp)""",
+    tools = ["src/wxfb/gen.sh"],
+)
+
 cc_library(
     name = "wxfb",
-    hdrs = ["src/wxfb/wxfb_frame.h"],
-    srcs = ["src/wxfb/wxfb_frame.cpp"],
-    deps = [
-        ":wxwidgets",
-    ],
+    hdrs = ["//:wxfb_gen"],
+    srcs = ["//:wxfb_gen"],
+    includes = ["src/wxfb"],
+    deps = [":wxwidgets"],
 )
 
 cc_library(
