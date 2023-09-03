@@ -4,8 +4,8 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "//src/core:core",
-        "//:images",
-        "//:wxfb",
+        "//res:images",
+        "//wxfb:wxfb",
     ],
     visibility = ["//visibility:public"],
 )

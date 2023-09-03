@@ -47,5 +47,5 @@ bazel-*
 compile_commands.json
 
 #wxformbuilder locally generated code
-src/wxfb/*.cpp
-src/wxfb/*.h
+wxfb/*.cpp
+wxfb/*.h
