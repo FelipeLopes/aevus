@@ -99,7 +99,6 @@ genrule(
 
 cc_library(
     name = "wxfb",
-    hdrs = ["//:wxfb_gen"],
     srcs = ["//:wxfb_gen"],
     includes = ["src/wxfb"],
     deps = [":wxwidgets"],
