@@ -18,13 +18,12 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
 
     eventBroker = make_shared<EventBroker>();
 
-    preTransformModel =
-        make_shared<TransformModel>(flame, preTransformDataViewCtrl, true);
-    postTransformModel =
-        make_shared<TransformModel>(flame, postTransformDataViewCtrl, false);
-    weightsModel = make_shared<WeightsModel>(flame, weightsDataViewCtrl);
-    variationModel =
-        make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
+    preTransformModel = make_shared<TransformModel>(flame, preTransformDataViewCtrl,
+        resetPreButton, true);
+    postTransformModel = make_shared<TransformModel>(flame, postTransformDataViewCtrl,
+        resetPostButton, false);
+    weightsModel = make_shared<WeightsModel>(flame, weightsDataViewCtrl, removeXformButton);
+    variationModel = make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
     colorModel = make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
     frameModel = make_shared<FrameModel>(flame, frameListCtrl);
     triangleModel = make_shared<TriangleModel>(flame, trianglePanel);

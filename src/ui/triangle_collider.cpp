@@ -15,6 +15,10 @@ TriangleCollider::TriangleCollider(shared_ptr<Flame> flame_, shared_ptr<Triangle
 Collision TriangleCollider::getCollision(WindowPoint pos) {
     Collision ans;
     ans.triangleId = -1;
+    if (activeTransform == -1) {
+        ans.type = NO_COLLISION;
+        return ans;
+    }
     ans.type = getCollisionType(pos, activeTransform);
     if (ans.type == NO_COLLISION) {
         for (int i=0; i<flame->xforms.size(); i++) {

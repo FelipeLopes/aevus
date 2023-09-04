@@ -21,7 +21,7 @@ ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCt
     paletteBitmap(paletteWidth, 256),
     blackLineBitmap(paletteWidth, 1),
     whiteLineBitmap(paletteWidth, 1),
-    activeTransform(0),
+    activeTransform(-1),
     dragging(false)
 {
     palettePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -142,9 +142,11 @@ void ColorModel::handleMouseUp(wxMouseEvent& event) {
 }
 
 void ColorModel::handleMouseDown(wxMouseEvent& event) {
-    dragging = true;
-    auto cursorPos = event.GetPosition();
-    setValue(1.0-cursorPos.y/255.0, 0, 1);
+    if (activeTransform != -1) {
+        dragging = true;
+        auto cursorPos = event.GetPosition();
+        setValue(1.0-cursorPos.y/255.0, 0, 1);
+    }
 }
 
 void ColorModel::handleMouseMove(wxMouseEvent& event) {

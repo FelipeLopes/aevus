@@ -12,7 +12,7 @@ using core::Flame;
 namespace ui {
 
 TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), activeTransform(0)
+    flame(flame_), trianglePanel(trianglePanel_), activeTransform(-1)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
     auto sz = trianglePanel->GetSize();

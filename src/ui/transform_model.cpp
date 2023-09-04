@@ -11,8 +11,8 @@ using std::vector;
 namespace ui {
 
 TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* transformCtrl,
-    bool accessCoefs_): ViewModel(transformCtrl), flame(flame_), accessCoefs(accessCoefs_),
-    activeTransform(0) { }
+    wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(flame_),
+    resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1) { }
 
 void TransformModel::handleActiveXformChanged(int id) {
     activeTransform = id;
@@ -116,6 +116,14 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
         default: throw std::invalid_argument("Invalid cell");
     }
     transformCoordsChanged();
+}
+
+void TransformModel::afterUpdate(int selectedRow) {
+    if (activeTransform == -1) {
+        resetButton->Disable();
+    } else {
+        resetButton->Enable();
+    }
 }
 
 }

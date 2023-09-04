@@ -8,8 +8,8 @@ class SelectionViewModel: public ViewModel {
 public:
     SelectionViewModel(wxDataViewListCtrl* dvListCtrl);
     void handleKillFocusEvent(wxFocusEvent& event) override;
-private:
-    void afterUpdate(int selectedRow) override;
+protected:
+    virtual void afterUpdate(int selectedRow) override;
 };
 
 }

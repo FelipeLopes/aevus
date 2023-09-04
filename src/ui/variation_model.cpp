@@ -12,7 +12,7 @@ namespace ui {
 
 VariationModel::VariationModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* variationCtrl,
     wxTextCtrl* variationAddCtrl_): ViewModel(variationCtrl),
-    flame(flame_), variationAddCtrl(variationAddCtrl_)
+    flame(flame_), activeTransform(-1), variationAddCtrl(variationAddCtrl_)
 {
     variationAddCtrl->AutoComplete(new VariationTextCompleter);
 }
@@ -83,6 +83,15 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
         (*varMap)[it->first] = newValue;
     }
     variationDataChanged();
+}
+
+void VariationModel::afterUpdate(int selectedRow) {
+    if (activeTransform == -1) {
+        variationAddCtrl->ChangeValue("");
+        variationAddCtrl->Disable();
+    } else {
+        variationAddCtrl->Enable();
+    }
 }
 
 }
