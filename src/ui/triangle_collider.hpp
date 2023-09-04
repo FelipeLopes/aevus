@@ -9,7 +9,7 @@ namespace ui {
 
 class TriangleCollider {
 public:
-    TriangleCollider(std::shared_ptr<core::Flame>, std::shared_ptr<TriangleGrid>,
+    TriangleCollider(core::Flame* flame, std::shared_ptr<TriangleGrid> triangleGrid,
         int activeTransform);
     Collision getCollision(WindowPoint pos);
     void handleActiveXformChanged(int id);
@@ -21,7 +21,7 @@ private:
     double distancePointSegment(WindowPoint p, WindowPoint s1, WindowPoint s2);
     double sign(GridPoint p1, GridPoint p2, GridPoint p3);
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     int activeTransform;
 };

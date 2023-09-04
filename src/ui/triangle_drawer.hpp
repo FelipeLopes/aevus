@@ -9,7 +9,7 @@ namespace ui {
 
 class TriangleDrawer {
 public:
-    TriangleDrawer(std::shared_ptr<core::Flame> flame, std::shared_ptr<TriangleGrid> triangleGrid,
+    TriangleDrawer(core::Flame* flame, std::shared_ptr<TriangleGrid> triangleGrid,
         wxFont font, int activeTransform);
     void handleActiveXformChanged(int id);
     void drawXformTriangles(wxGraphicsContext* gc);
@@ -25,7 +25,7 @@ private:
     std::vector<GridPoint> getXformTriangle(int i);
     wxColour getXformColor(int i);
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     wxFont font;
     int activeTransform;

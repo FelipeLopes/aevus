@@ -1,14 +1,13 @@
 #include "frame_model.hpp"
 #include "view_model.hpp"
 
-using std::shared_ptr;
 using std::string;
 using std::to_string;
 using core::Flame;
 
 namespace ui {
 
-FrameModel::FrameModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* frameListCtrl):
+FrameModel::FrameModel(Flame* flame_, wxDataViewListCtrl* frameListCtrl):
     ViewModel(frameListCtrl), flame(flame_)
 {
     update();

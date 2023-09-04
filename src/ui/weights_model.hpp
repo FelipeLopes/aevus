@@ -10,7 +10,7 @@ namespace ui {
 
 class WeightsModel: public SelectionViewModel {
 public:
-    WeightsModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* weightsListCtrl,
+    WeightsModel(core::Flame* flame, wxDataViewListCtrl* weightsListCtrl,
         wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
     void handleActiveXformChanged(int id);
@@ -23,7 +23,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     wxBitmapButton* removeXformButton;
     int activeTransform;
     bool blockSelectionEvents;

@@ -11,22 +11,20 @@ using std::string;
 
 namespace ui {
 
-AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
-    flame(flame_)
-{
+AevusFrame::AevusFrame(): WxfbFrame(NULL) {
     SetStatusText("Welcome to Aevus!");
 
     eventBroker = make_shared<EventBroker>();
 
-    preTransformModel = make_shared<TransformModel>(flame, preTransformDataViewCtrl,
+    preTransformModel = make_shared<TransformModel>(&flame, preTransformDataViewCtrl,
         resetPreButton, true);
-    postTransformModel = make_shared<TransformModel>(flame, postTransformDataViewCtrl,
+    postTransformModel = make_shared<TransformModel>(&flame, postTransformDataViewCtrl,
         resetPostButton, false);
-    weightsModel = make_shared<WeightsModel>(flame, weightsDataViewCtrl, removeXformButton);
-    variationModel = make_shared<VariationModel>(flame, variationListCtrl, variationTextCtrl);
-    colorModel = make_shared<ColorModel>(flame, colorListCtrl, palettePanel);
-    frameModel = make_shared<FrameModel>(flame, frameListCtrl);
-    triangleModel = make_shared<TriangleModel>(flame, trianglePanel);
+    weightsModel = make_shared<WeightsModel>(&flame, weightsDataViewCtrl, removeXformButton);
+    variationModel = make_shared<VariationModel>(&flame, variationListCtrl, variationTextCtrl);
+    colorModel = make_shared<ColorModel>(&flame, colorListCtrl, palettePanel);
+    frameModel = make_shared<FrameModel>(&flame, frameListCtrl);
+    triangleModel = make_shared<TriangleModel>(&flame, trianglePanel);
 
     preTransformModel->transformCoordsChanged
         .connect(eventBroker->activeXformCoordsChanged);
@@ -211,7 +209,7 @@ void AevusFrame::loadFile(std::string filename) {
         printf("Error on opening file: %s\n", filename.c_str());
         return;
     }
-    flame->deserialize(inputStream);
+    flame.deserialize(inputStream);
     fclose(inputStream);
     eventBroker->paletteChanged();
     eventBroker->flameWeightsChanged();
@@ -242,10 +240,8 @@ void AevusFrame::onFileSaveAs(wxCommandEvent& event) {
         printf("Error on opening file: %s\n", filename.c_str());
         return;
     }
-    flame->serialize(outputStream);
+    flame.serialize(outputStream);
     fclose(outputStream);
 }
-
-AevusFrame::~AevusFrame() { }
 
 }

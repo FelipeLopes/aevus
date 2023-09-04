@@ -27,11 +27,10 @@ namespace ui {
 
 class AevusFrame: public WxfbFrame {
 public:
-    AevusFrame(std::shared_ptr<core::Flame> flame);
-    ~AevusFrame();
+    AevusFrame();
     void loadFile(std::string filename);
 private:
-    std::shared_ptr<core::Flame> flame;
+    core::Flame flame;
     std::shared_ptr<EventBroker> eventBroker;
 
     std::shared_ptr<TransformModel> preTransformModel;

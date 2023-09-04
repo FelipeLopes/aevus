@@ -2,7 +2,6 @@
 #include "variation_text_completer.hpp"
 #include <stdexcept>
 
-using std::shared_ptr;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -10,7 +9,7 @@ using core::Flame;
 
 namespace ui {
 
-VariationModel::VariationModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* variationCtrl,
+VariationModel::VariationModel(Flame* flame_, wxDataViewListCtrl* variationCtrl,
     wxTextCtrl* variationAddCtrl_): ViewModel(variationCtrl),
     flame(flame_), activeTransform(-1), variationAddCtrl(variationAddCtrl_)
 {

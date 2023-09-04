@@ -9,7 +9,7 @@ namespace ui {
 
 class TriangleUpdater {
 public:
-    TriangleUpdater(std::shared_ptr<core::Flame> flame, std::shared_ptr<TriangleGrid> triangleGrid,
+    TriangleUpdater(core::Flame* flame, std::shared_ptr<TriangleGrid> triangleGrid,
         int activeTransform);
     void handleActiveXformChanged(int id);
     UpdateState getUpdateState();
@@ -23,7 +23,7 @@ public:
     void finishUpdate();
 private:
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     int activeTransform;
     UpdateState state;

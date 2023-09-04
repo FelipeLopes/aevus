@@ -14,7 +14,7 @@ namespace ui {
 
 class TriangleModel {
 public:
-    TriangleModel(std::shared_ptr<core::Flame> flame, wxPanel* trianglePanel);
+    TriangleModel(core::Flame* flame, wxPanel* trianglePanel);
     void update();
     void handleActiveXformChanged(int id);
     void handlePaint();
@@ -27,7 +27,7 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     std::shared_ptr<TriangleGrid> triangleGrid;
     std::shared_ptr<TriangleCollider> triangleCollider;
     std::shared_ptr<TriangleDrawer> triangleDrawer;

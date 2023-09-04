@@ -2,14 +2,13 @@
 
 #include "view_model.hpp"
 #include "../core/flame.hpp"
-#include <memory>
 #include <boost/signals2.hpp>
 
 namespace ui {
 
 class VariationModel: public ViewModel {
 public:
-    VariationModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* variationCtrl,
+    VariationModel(core::Flame* flame, wxDataViewListCtrl* variationCtrl,
         wxTextCtrl* variationAddCtrl);
     void handleActiveXformChanged(int id);
     void handleVariationAdd();
@@ -19,7 +18,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     int activeTransform;
     wxTextCtrl* variationAddCtrl;
 };

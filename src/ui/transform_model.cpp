@@ -3,14 +3,13 @@
 #include <string>
 
 using core::Flame;
-using std::shared_ptr;
 using std::string;
 using std::to_string;
 using std::vector;
 
 namespace ui {
 
-TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* transformCtrl,
+TransformModel::TransformModel(Flame* flame_, wxDataViewListCtrl* transformCtrl,
     wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(flame_),
     resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1)
 {

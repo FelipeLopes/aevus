@@ -9,7 +9,7 @@ using std::vector;
 
 namespace ui {
 
-TriangleDrawer::TriangleDrawer(shared_ptr<Flame> flame_, shared_ptr<TriangleGrid> triangleGrid_,
+TriangleDrawer::TriangleDrawer(Flame* flame_, shared_ptr<TriangleGrid> triangleGrid_,
     wxFont font_, int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
     font(font_), activeTransform(activeTransform_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",

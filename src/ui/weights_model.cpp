@@ -3,14 +3,13 @@
 #include <string>
 
 using core::Flame;
-using std::shared_ptr;
 using std::string;
 using std::to_string;
 using std::vector;
 
 namespace ui {
 
-WeightsModel::WeightsModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* weightsListCtrl,
+WeightsModel::WeightsModel(Flame* flame_, wxDataViewListCtrl* weightsListCtrl,
     wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl), flame(flame_),
     removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false)
 {

@@ -9,8 +9,7 @@ public:
 
 bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNGHandler());
-    auto flame = std::make_shared<core::Flame>();
-    ui::AevusFrame* frame = new ui::AevusFrame(flame);
+    ui::AevusFrame* frame = new ui::AevusFrame;
     frame->Show();
     return true;
 }

@@ -5,7 +5,6 @@
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
-using std::shared_ptr;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -14,7 +13,7 @@ using core::Flame;
 
 namespace ui {
 
-ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCtrl,
+ColorModel::ColorModel(Flame* flame_, wxDataViewListCtrl* colorListCtrl,
     wxPanel* palettePanel_): ViewModel(colorListCtrl), flame(flame_),
     palettePanel(palettePanel_),
     paletteWidth(palettePanel->GetSize().GetWidth()),

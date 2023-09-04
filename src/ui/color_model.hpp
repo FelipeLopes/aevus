@@ -10,7 +10,7 @@ namespace ui {
 
 class ColorModel: public ViewModel {
 public:
-    ColorModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* colorListCtrl,
+    ColorModel(core::Flame* flame, wxDataViewListCtrl* colorListCtrl,
         wxPanel* palettePanel);
     void handleActiveXformChanged(int id);
     void handlePaint();
@@ -24,7 +24,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     wxPanel* palettePanel;
     int paletteWidth;
     wxBitmap paletteBitmap;

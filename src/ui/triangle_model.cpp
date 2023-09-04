@@ -5,13 +5,12 @@
 #include <wx/dcbuffer.h>
 
 using std::make_shared;
-using std::shared_ptr;
 using std::string;
 using core::Flame;
 
 namespace ui {
 
-TriangleModel::TriangleModel(shared_ptr<Flame> flame_, wxPanel* trianglePanel_):
+TriangleModel::TriangleModel(Flame* flame_, wxPanel* trianglePanel_):
     flame(flame_), trianglePanel(trianglePanel_), activeTransform(-1)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);

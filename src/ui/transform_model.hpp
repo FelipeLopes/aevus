@@ -2,7 +2,6 @@
 
 #include "view_model.hpp"
 #include "../core/flame.hpp"
-#include <memory>
 #include <wx/button.h>
 #include <wx/dataview.h>
 #include <boost/signals2.hpp>
@@ -11,7 +10,7 @@ namespace ui {
 
 class TransformModel: public ViewModel {
 public:
-    TransformModel(std::shared_ptr<core::Flame> flame, wxDataViewListCtrl* transformCtrl,
+    TransformModel(core::Flame* flame, wxDataViewListCtrl* transformCtrl,
         wxButton* resetButton, bool accessCoefs);
     void handleActiveXformChanged(int id);
     void handleReset();
@@ -21,7 +20,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    std::shared_ptr<core::Flame> flame;
+    core::Flame* flame;
     wxButton* resetButton;
     bool accessCoefs;
     int activeTransform;
