@@ -31,15 +31,15 @@ public:
     void loadFile(std::string filename);
 private:
     core::Flame flame;
-    std::shared_ptr<EventBroker> eventBroker;
+    EventBroker eventBroker;
 
-    std::shared_ptr<TransformModel> preTransformModel;
-    std::shared_ptr<TransformModel> postTransformModel;
-    std::shared_ptr<WeightsModel> weightsModel;
-    std::shared_ptr<VariationModel> variationModel;
-    std::shared_ptr<ColorModel> colorModel;
-    std::shared_ptr<FrameModel> frameModel;
-    std::shared_ptr<TriangleModel> triangleModel;
+    TransformModel preTransformModel;
+    TransformModel postTransformModel;
+    WeightsModel weightsModel;
+    VariationModel variationModel;
+    ColorModel colorModel;
+    FrameModel frameModel;
+    TriangleModel triangleModel;
 
     void onFileOpen(wxCommandEvent& event) override;
     void onFileSaveAs(wxCommandEvent& event) override;
