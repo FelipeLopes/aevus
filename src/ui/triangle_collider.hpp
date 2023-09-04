@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "../core/flame.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
@@ -9,8 +8,7 @@ namespace ui {
 
 class TriangleCollider {
 public:
-    TriangleCollider(core::Flame* flame, std::shared_ptr<TriangleGrid> triangleGrid,
-        int activeTransform);
+    TriangleCollider(core::Flame* flame, TriangleGrid* triangleGrid, int activeTransform);
     Collision getCollision(WindowPoint pos);
     void handleActiveXformChanged(int id);
 private:
@@ -22,7 +20,7 @@ private:
     double sign(GridPoint p1, GridPoint p2, GridPoint p3);
 
     core::Flame* flame;
-    std::shared_ptr<TriangleGrid> triangleGrid;
+    TriangleGrid* triangleGrid;
     int activeTransform;
 };
 

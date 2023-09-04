@@ -1,14 +1,12 @@
 #include "triangle_collider.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
-#include <memory>
 
-using std::shared_ptr;
 using core::Flame;
 
 namespace ui {
 
-TriangleCollider::TriangleCollider(Flame* flame_, shared_ptr<TriangleGrid> triangleGrid_,
+TriangleCollider::TriangleCollider(Flame* flame_, TriangleGrid* triangleGrid_,
     int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
     activeTransform(activeTransform_) { }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "../core/flame.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
@@ -9,8 +8,7 @@ namespace ui {
 
 class TriangleDrawer {
 public:
-    TriangleDrawer(core::Flame* flame, std::shared_ptr<TriangleGrid> triangleGrid,
-        wxFont font, int activeTransform);
+    TriangleDrawer(core::Flame* flame, TriangleGrid* triangleGrid, wxFont font, int activeTransform);
     void handleActiveXformChanged(int id);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
@@ -26,7 +24,7 @@ private:
     wxColour getXformColor(int i);
 
     core::Flame* flame;
-    std::shared_ptr<TriangleGrid> triangleGrid;
+    TriangleGrid* triangleGrid;
     wxFont font;
     int activeTransform;
     std::vector<wxColour> xformColors;

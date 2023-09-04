@@ -9,8 +9,9 @@ using std::vector;
 
 namespace ui {
 
-TriangleGrid::TriangleGrid(int width_, int height_): center(0,0), width(width_), height(height_),
-    gridColor("#333333"), unitTriangleColor("#808080"), zoomLevel(0), zoomFactor(1.1)
+TriangleGrid::TriangleGrid(wxSize size): center(0,0), width(size.GetWidth()),
+    height(size.GetHeight()), gridColor("#333333"), unitTriangleColor("#808080"),
+    zoomLevel(0), zoomFactor(1.1)
 {
     updateWindowSize(width, height);
 }

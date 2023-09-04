@@ -10,7 +10,7 @@ namespace ui {
 
 class TriangleGrid {
 public:
-    TriangleGrid(int width, int height);
+    TriangleGrid(wxSize size);
     void strokeLine(wxGraphicsContext* gc, GridPoint p1, GridPoint p2);
     void strokeLines(wxGraphicsContext* gc, const std::vector<GridPoint>& arr);
     void drawGrid(wxGraphicsContext* gc);

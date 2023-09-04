@@ -2,11 +2,10 @@
 #include "triangle_types.hpp"
 
 using core::Flame;
-using std::shared_ptr;
 
 namespace ui {
 
-TriangleUpdater::TriangleUpdater(Flame* flame_, shared_ptr<TriangleGrid> triangleGrid_,
+TriangleUpdater::TriangleUpdater(Flame* flame_, TriangleGrid* triangleGrid_,
     int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
     activeTransform(activeTransform_), state(NO_UPDATE) { }
 

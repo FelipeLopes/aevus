@@ -28,12 +28,12 @@ public:
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
     core::Flame* flame;
-    std::shared_ptr<TriangleGrid> triangleGrid;
-    std::shared_ptr<TriangleCollider> triangleCollider;
-    std::shared_ptr<TriangleDrawer> triangleDrawer;
-    std::shared_ptr<TriangleUpdater> triangleUpdater;
     wxPanel* trianglePanel;
     int activeTransform;
+    TriangleGrid triangleGrid;
+    TriangleCollider triangleCollider;
+    TriangleDrawer triangleDrawer;
+    TriangleUpdater triangleUpdater;
 };
 
 }
