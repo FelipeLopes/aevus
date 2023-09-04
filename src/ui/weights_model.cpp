@@ -12,7 +12,10 @@ namespace ui {
 
 WeightsModel::WeightsModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* weightsListCtrl,
     wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl), flame(flame_),
-    removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false) { }
+    removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false)
+{
+    removeXformButton->Disable();
+}
 
 void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     if (!updating() && !blockSelectionEvents) {

@@ -76,8 +76,6 @@ AevusFrame::AevusFrame(std::shared_ptr<core::Flame> flame_): WxfbFrame(NULL),
     eventBroker->frameParamsChanged
         .connect(bind(&FrameModel::update, frameModel));
 
-    loadFile("../in.xml");
-
     trianglePanel->SetFocus();
 
     addXformButton->SetBitmap(loadEmbeddedPNG(

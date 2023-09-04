@@ -17,7 +17,14 @@ Flame::Flame(): XMLElementClass("flame"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast", 1.0),
     xforms(*this, "xform"),
-    palette(*this) { }
+    palette(*this)
+{
+    center.get()->x = 0;
+    center.get()->y = 0;
+    scale.setValue(100);
+    size.get()->width = 732;
+    size.get()->height = 640;
+}
 
 FlameCL Flame::getFlameCL() const {
     FlameCL flameCL;

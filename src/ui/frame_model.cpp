@@ -9,7 +9,10 @@ using core::Flame;
 namespace ui {
 
 FrameModel::FrameModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* frameListCtrl):
-    ViewModel(frameListCtrl), flame(flame_) { }
+    ViewModel(frameListCtrl), flame(flame_)
+{
+    update();
+}
 
 void FrameModel::getValues(std::vector<wxVector<wxVariant>>& data) const {
     wxVector<wxVariant> row;

@@ -12,7 +12,10 @@ namespace ui {
 
 TransformModel::TransformModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* transformCtrl,
     wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(flame_),
-    resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1) { }
+    resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1)
+{
+    resetButton->Disable();
+}
 
 void TransformModel::handleActiveXformChanged(int id) {
     activeTransform = id;

@@ -41,6 +41,7 @@ ColorModel::ColorModel(shared_ptr<Flame> flame_, wxDataViewListCtrl* colorListCt
         q.Blue() = 255;
         ++q;
     }
+    setupPalette();
 }
 
 void ColorModel::setupPalette() {

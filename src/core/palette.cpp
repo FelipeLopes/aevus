@@ -1,4 +1,5 @@
 #include "palette.hpp"
+#include <algorithm>
 #include <optional>
 
 using std::optional;
@@ -7,7 +8,10 @@ using std::vector;
 
 namespace core {
 
-PaletteColors::PaletteColors() { }
+PaletteColors::PaletteColors() {
+    paletteData.resize(3*PALETTE_WIDTH);
+    std::fill(paletteData.begin(), paletteData.end(), 255);
+}
 
 char PaletteColors::hexHigh(byte b) const {
     return b/16 > 9 ? (b/16)+'A'-10 : (b/16)+'0';
