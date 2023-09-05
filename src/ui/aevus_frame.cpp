@@ -6,11 +6,12 @@
 
 using namespace boost::signals2;
 using boost::bind;
+using std::optional;
 using std::string;
 
 namespace ui {
 
-AevusFrame::AevusFrame(): WxfbFrame(NULL),
+AevusFrame::AevusFrame(optional<string> filename): WxfbFrame(NULL),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
     weightsModel(&flame, weightsDataViewCtrl, removeXformButton),
@@ -69,8 +70,6 @@ AevusFrame::AevusFrame(): WxfbFrame(NULL),
     eventBroker.frameParamsChanged
         .connect(bind(&FrameModel::update, &frameModel));
 
-    trianglePanel->SetFocus();
-
     addXformButton->SetBitmap(loadEmbeddedPNG(
         _binary_res_plus_default_png_start,
         _binary_res_plus_default_png_end
@@ -87,6 +86,12 @@ AevusFrame::AevusFrame(): WxfbFrame(NULL),
         _binary_res_minus_selected_png_start,
         _binary_res_minus_selected_png_end
     ));
+
+    trianglePanel->SetFocus();
+
+    if (filename.has_value()) {
+        loadFlame(filename.value());
+    }
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
@@ -194,7 +199,7 @@ void AevusFrame::onAbout(wxCommandEvent& event) {
         "About Aevus", wxOK | wxICON_INFORMATION);
 }
 
-void AevusFrame::loadFile(std::string filename) {
+void AevusFrame::loadFlame(std::string filename) {
     FILE* inputStream = fopen(filename.c_str(), "r");
     if (inputStream == NULL) {
         printf("Error on opening file: %s\n", filename.c_str());
@@ -216,7 +221,7 @@ void AevusFrame::onFileOpen(wxCommandEvent& event) {
         return;
     }
     auto filename = openFileDialog.GetPath().ToStdString();
-    loadFile(filename);
+    loadFlame(filename);
 }
 
 void AevusFrame::onFileSaveAs(wxCommandEvent& event) {

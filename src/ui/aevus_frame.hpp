@@ -25,8 +25,7 @@ namespace ui {
 
 class AevusFrame: public WxfbFrame {
 public:
-    AevusFrame();
-    void loadFile(std::string filename);
+    AevusFrame(std::optional<std::string> filename);
 private:
     core::Flame flame;
     EventBroker eventBroker;
@@ -59,6 +58,7 @@ private:
     void onMouseMove(wxMouseEvent& event) override;
     void onMouseWheel(wxMouseEvent& event) override;
 
+    void loadFlame(std::string filename);
     wxBitmap loadEmbeddedPNG(char* start, char* end);
 };
 

@@ -1,6 +1,10 @@
+#include <optional>
 #include <wx/app.h>
 #include "clwrap/opencl.hpp"
 #include "ui/aevus_frame.hpp"
+
+using std::optional;
+using std::string;
 
 class Aevus: public wxApp {
 public:
@@ -9,7 +13,8 @@ public:
 
 bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNGHandler());
-    ui::AevusFrame* frame = new ui::AevusFrame;
+    auto filename = argc < 2 ? (optional<string>)std::nullopt : argv[1].ToStdString();
+    ui::AevusFrame* frame = new ui::AevusFrame(filename);
     frame->Show();
     return true;
 }
