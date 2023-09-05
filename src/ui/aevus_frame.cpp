@@ -87,10 +87,6 @@ AevusFrame::AevusFrame(): WxfbFrame(NULL),
         _binary_res_minus_selected_png_start,
         _binary_res_minus_selected_png_end
     ));
-    removeXformButton->SetBitmap(loadEmbeddedPNG(
-        _binary_res_minus_disabled_png_start,
-        _binary_res_minus_disabled_png_end
-    ));
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {

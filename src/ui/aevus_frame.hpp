@@ -20,8 +20,6 @@ extern char _binary_res_minus_default_png_start[];
 extern char _binary_res_minus_default_png_end[];
 extern char _binary_res_minus_selected_png_start[];
 extern char _binary_res_minus_selected_png_end[];
-extern char _binary_res_minus_disabled_png_start[];
-extern char _binary_res_minus_disabled_png_end[];
 
 namespace ui {
 
