@@ -10,6 +10,7 @@
 #include "triangle_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
+#include "../clwrap/opencl.hpp"
 #include "../core/flame.hpp"
 
 extern char _binary_res_plus_default_png_start[];
@@ -25,9 +26,10 @@ namespace ui {
 
 class AevusFrame: public WxfbFrame {
 public:
-    AevusFrame(std::optional<std::string> filename);
+    AevusFrame(clwrap::OpenCL* openCL, std::optional<std::string> filename);
 private:
     core::Flame flame;
+    clwrap::CLQueuedContext context;
     EventBroker eventBroker;
 
     TransformModel preTransformModel;

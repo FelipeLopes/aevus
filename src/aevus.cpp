@@ -13,8 +13,9 @@ public:
 
 bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNGHandler());
+    auto openCL = clwrap::OpenCL::getInstance();
     auto filename = argc < 2 ? (optional<string>)std::nullopt : argv[1].ToStdString();
-    ui::AevusFrame* frame = new ui::AevusFrame(filename);
+    ui::AevusFrame* frame = new ui::AevusFrame(openCL, filename);
     frame->Show();
     return true;
 }
@@ -22,7 +23,6 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
-    auto context = clwrap::OpenCL::getInstance().createQueuedContext(0, 1);
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
     wxTheApp->OnRun();

@@ -6,12 +6,14 @@
 
 using namespace boost::signals2;
 using boost::bind;
+using clwrap::OpenCL;
 using std::optional;
 using std::string;
 
 namespace ui {
 
-AevusFrame::AevusFrame(optional<string> filename): WxfbFrame(NULL),
+AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
+    context(openCL->createQueuedContext(0, 1)),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
     weightsModel(&flame, weightsDataViewCtrl, removeXformButton),

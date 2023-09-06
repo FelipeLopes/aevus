@@ -8,9 +8,9 @@ namespace clwrap {
 
 class OpenCL {
 public:
-    static OpenCL& getInstance() {
+    static OpenCL* getInstance() {
         static OpenCL instance;
-        return instance;
+        return &instance;
     }
     CLContext createContext(int platformIdx, int deviceIdx);
     CLQueuedContext createQueuedContext(int platformIdx, int deviceIdx);
