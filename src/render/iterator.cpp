@@ -2,14 +2,14 @@
 #include "tone_mapper.hpp"
 #include <random>
 
-using std::shared_ptr;
+using core::Flame;
 using std::vector;
 
 using clwrap::CLQueuedContext;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, shared_ptr<core::Flame> flame):
+Iterator::Iterator(const CLQueuedContext& context_, Flame* flame):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame->size.value().width),
@@ -57,10 +57,10 @@ Iterator::Iterator(const CLQueuedContext& context_, shared_ptr<core::Flame> flam
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
     toneMapper.readOutput(arr);
-    writeImage("../square.pam", arr);
+    writePNMImage("../flame.pnm", arr);
 }
 
-void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
+void Iterator::writePAMImage(std::string filename, std::vector<float>& arr) {
     std::ostringstream os;
     os << "P7\nWIDTH " << width <<
         "\nHEIGHT "<< height <<
@@ -88,6 +88,28 @@ void Iterator::writeImage(std::string filename, std::vector<float>& arr) {
         fputc((uint8_t)(g*255),f);
         fputc((uint8_t)(b*255),f);
         fputc((uint8_t)(af*255),f);
+    }
+    fclose(f);
+}
+
+void Iterator::writePNMImage(std::string filename, std::vector<float>& arr) {
+    FILE* f = fopen(filename.c_str(),"w");
+    fprintf(f, "P6\n3 2\n255\n");
+    std::vector<float> fakeArr = {
+        1.0, 0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 1.0,
+        1.0, 1.0, 0.0, 1.0,
+        1.0, 1.0, 1.0, 1.0,
+        0.0, 0.0, 0.0, 1.0
+    };
+    for (int i=0; i<fakeArr.size()/4; i++) {
+        uint8_t r = fakeArr[4*i]*255;
+        uint8_t g = fakeArr[4*i+1]*255;
+        uint8_t b = fakeArr[4*i+2]*255;
+        fputc(r,f);
+        fputc(g,f);
+        fputc(b,f);
     }
     fclose(f);
 }

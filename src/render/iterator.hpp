@@ -10,8 +10,9 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const clwrap::CLQueuedContext& context, std::shared_ptr<core::Flame> flame);
-    void writeImage(std::string filename, std::vector<float>& arr);
+    Iterator(const clwrap::CLQueuedContext& context, core::Flame* flame);
+    void writePAMImage(std::string filename, std::vector<float>& arr);
+    void writePNMImage(std::string filename, std::vector<float>& arr);
 private:
     const clwrap::CLQueuedContext& context;
     clwrap::CLExecutable kernel;

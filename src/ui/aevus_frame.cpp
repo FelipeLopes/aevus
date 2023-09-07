@@ -1,8 +1,13 @@
 #include "aevus_frame.hpp"
+#include <wx-3.2/wx/gdicmn.h>
+#include <wx-3.2/wx/image.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
+#include <wx/wfstream.h>
+#include "../render/iterator.hpp"
+#include "flame_model.hpp"
 
 using namespace boost::signals2;
 using boost::bind;
@@ -14,6 +19,7 @@ namespace ui {
 
 AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
     context(openCL->createQueuedContext(0, 1)),
+    flameModel(flamePanel),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
     weightsModel(&flame, weightsDataViewCtrl, removeXformButton),
@@ -22,8 +28,6 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     frameModel(&flame, frameListCtrl),
     triangleModel(&flame, trianglePanel)
 {
-    SetStatusText("Welcome to Aevus!");
-
     preTransformModel.transformCoordsChanged
         .connect(eventBroker.activeXformCoordsChanged);
     postTransformModel.transformCoordsChanged
@@ -105,8 +109,8 @@ wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
 
 void AevusFrame::onTransformValueChanged(wxDataViewEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PRE_DV: preTransformModel.handleValueChangedEvent(event); break;
-        case ID_FLAME_POST_DV: postTransformModel.handleValueChangedEvent(event); break;
+        case ID_PRE_DATAVIEW: preTransformModel.handleValueChangedEvent(event); break;
+        case ID_POST_DATAVIEW: postTransformModel.handleValueChangedEvent(event); break;
     }
 }
 
@@ -121,10 +125,10 @@ void AevusFrame::onWeightEdited(wxDataViewEvent& event) {
 void AevusFrame::onButtonClick(wxCommandEvent& event) {
     int eventId = event.GetId();
     switch (eventId) {
-        case ID_FLAME_PRE_RESET: preTransformModel.handleReset(); break;
-        case ID_FLAME_POST_RESET: postTransformModel.handleReset(); break;
-        case ID_FLAME_ADD_XFORM: weightsModel.handleAddXform(); break;
-        case ID_FLAME_REMOVE_XFORM: weightsModel.handleRemoveXform(); break;
+        case ID_PRE_RESET_BUTTON: preTransformModel.handleReset(); break;
+        case ID_POST_RESET_BUTTON: postTransformModel.handleReset(); break;
+        case ID_ADD_XFORM_BUTTON: weightsModel.handleAddXform(); break;
+        case ID_REMOVE_XFORM_BUTTON: weightsModel.handleRemoveXform(); break;
     }
 }
 
@@ -146,49 +150,49 @@ void AevusFrame::onFrameValueChanged(wxDataViewEvent& event) {
 
 void AevusFrame::onPaint(wxPaintEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PALETTE_PANEL: colorModel.handlePaint(); break;
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handlePaint(); break;
-
+        case ID_FLAME_PANEL: flameModel.handlePaint(); break;
+        case ID_PALETTE_PANEL: colorModel.handlePaint(); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handlePaint(); break;
     }
 }
 
 void AevusFrame::onResize(wxSizeEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handleResize(event); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleResize(event); break;
     }
 }
 
 void AevusFrame::onDataViewLostFocus(wxFocusEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PRE_DV: preTransformModel.handleKillFocusEvent(event); break;
-        case ID_FLAME_POST_DV: postTransformModel.handleKillFocusEvent(event); break;
+        case ID_PRE_DATAVIEW: preTransformModel.handleKillFocusEvent(event); break;
+        case ID_POST_DATAVIEW: postTransformModel.handleKillFocusEvent(event); break;
     }
 }
 
 void AevusFrame::onMouseDown(wxMouseEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PALETTE_PANEL: colorModel.handleMouseDown(event); break;
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handleMouseDown(event); break;
+        case ID_PALETTE_PANEL: colorModel.handleMouseDown(event); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleMouseDown(event); break;
     }
 }
 
 void AevusFrame::onMouseUp(wxMouseEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PALETTE_PANEL: colorModel.handleMouseUp(event); break;
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handleMouseUp(event); break;
+        case ID_PALETTE_PANEL: colorModel.handleMouseUp(event); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleMouseUp(event); break;
     }
 }
 
 void AevusFrame::onMouseMove(wxMouseEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PALETTE_PANEL: colorModel.handleMouseMove(event); break;
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handleMouseMove(event); break;
+        case ID_PALETTE_PANEL: colorModel.handleMouseMove(event); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleMouseMove(event); break;
     }
 }
 
 void AevusFrame::onMouseWheel(wxMouseEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_TRIANGLE_PANEL: triangleModel.handleMouseWheel(event); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleMouseWheel(event); break;
     }
 }
 
@@ -213,6 +217,10 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameWeightsChanged();
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
+    render::Iterator iterator(context, &flame);
+    wxFileInputStream stream("../flame.pnm");
+    wxImage image(stream);
+    flameModel.setBitmap(wxBitmap(image));
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {

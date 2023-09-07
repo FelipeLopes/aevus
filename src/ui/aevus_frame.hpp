@@ -5,6 +5,7 @@
 #include <wxfb_frame.h>
 #include "color_model.hpp"
 #include "event_broker.hpp"
+#include "flame_model.hpp"
 #include "frame_model.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"
@@ -32,6 +33,7 @@ private:
     clwrap::CLQueuedContext context;
     EventBroker eventBroker;
 
+    FlameModel flameModel;
     TransformModel preTransformModel;
     TransformModel postTransformModel;
     WeightsModel weightsModel;
