@@ -23,6 +23,7 @@ void FlameModel::handlePaint() {
 
 void FlameModel::setBitmap(const wxBitmap &bitmap) {
     flameBitmap = bitmap;
+    flamePanel->Refresh();
 }
 
 }

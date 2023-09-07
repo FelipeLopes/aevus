@@ -94,22 +94,25 @@ void Iterator::writePAMImage(std::string filename, std::vector<float>& arr) {
 
 void Iterator::writePNMImage(std::string filename, std::vector<float>& arr) {
     FILE* f = fopen(filename.c_str(),"w");
-    fprintf(f, "P6\n3 2\n255\n");
-    std::vector<float> fakeArr = {
-        1.0, 0.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 1.0,
-        0.0, 0.0, 1.0, 1.0,
-        1.0, 1.0, 0.0, 1.0,
-        1.0, 1.0, 1.0, 1.0,
-        0.0, 0.0, 0.0, 1.0
-    };
-    for (int i=0; i<fakeArr.size()/4; i++) {
-        uint8_t r = fakeArr[4*i]*255;
-        uint8_t g = fakeArr[4*i+1]*255;
-        uint8_t b = fakeArr[4*i+2]*255;
-        fputc(r,f);
-        fputc(g,f);
-        fputc(b,f);
+    fprintf(f, "P6\n%d %d\n255\n",width, height);
+    float bg_ra = background.r * background.a;
+    float bg_ga = background.g * background.a;
+    float bg_ba = background.b * background.a;
+    for (int i=0; i<arr.size()/4; i++) {
+        float a = arr[4*i+3];
+        a = std::min(a, 1.0f);
+        float r = arr[4*i]*a + bg_ra*(1-a);
+        float g = arr[4*i+1]*a + bg_ga*(1-a);
+        float b = arr[4*i+2]*a + bg_ba*(1-a);
+        float af = a + background.a - a*background.a;
+
+        r /= af;
+        g /= af;
+        b /= af;
+
+        fputc((uint8_t)(r*255),f);
+        fputc((uint8_t)(g*255),f);
+        fputc((uint8_t)(b*255),f);
     }
     fclose(f);
 }
