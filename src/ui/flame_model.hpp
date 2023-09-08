@@ -1,17 +1,24 @@
 #pragma once
 
-#include <wx/panel.h>
+#include <wx/scrolwin.h>
 
 namespace ui {
 
 class FlameModel {
 public:
-    FlameModel(wxPanel* flamePanel);
+    FlameModel(wxScrolledWindow* flameWindow);
     void handlePaint();
+    void handleMouseWheel(wxMouseEvent& event);
     void setBitmap(const wxBitmap& bitmap);
 private:
-    wxPanel* flamePanel;
+    void zoomIn();
+    void zoomOut();
+    wxSize scaledImageSize();
+    wxScrolledWindow* flameWindow;
     wxBitmap flameBitmap;
+    int zoomLevel;
+    const double zoomFactor;
+    static const int MAX_ZOOM_LEVEL = 400;
 };
 
 }

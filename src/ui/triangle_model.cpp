@@ -52,7 +52,7 @@ void TriangleModel::handleResize(wxSizeEvent& event) {
 void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
     if (event.GetWheelRotation() > 0) {
         triangleGrid.zoomIn();
-    } else if (event.GetWheelRotation()) {
+    } else if (event.GetWheelRotation() < 0) {
         triangleGrid.zoomOut();
     }
     trianglePanel->Refresh();

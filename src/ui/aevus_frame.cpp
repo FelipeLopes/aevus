@@ -19,7 +19,7 @@ namespace ui {
 
 AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
     context(openCL->createQueuedContext(0, 1)),
-    flameModel(flamePanel),
+    flameModel(flameWindow),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
     weightsModel(&flame, weightsDataViewCtrl, removeXformButton),
@@ -150,7 +150,7 @@ void AevusFrame::onFrameValueChanged(wxDataViewEvent& event) {
 
 void AevusFrame::onPaint(wxPaintEvent& event) {
     switch (event.GetId()) {
-        case ID_FLAME_PANEL: flameModel.handlePaint(); break;
+        case ID_FLAME_WINDOW: flameModel.handlePaint(); break;
         case ID_PALETTE_PANEL: colorModel.handlePaint(); break;
         case ID_TRIANGLE_PANEL: triangleModel.handlePaint(); break;
     }
@@ -193,6 +193,7 @@ void AevusFrame::onMouseMove(wxMouseEvent& event) {
 void AevusFrame::onMouseWheel(wxMouseEvent& event) {
     switch (event.GetId()) {
         case ID_TRIANGLE_PANEL: triangleModel.handleMouseWheel(event); break;
+        case ID_FLAME_WINDOW: flameModel.handleMouseWheel(event); break;
     }
 }
 
