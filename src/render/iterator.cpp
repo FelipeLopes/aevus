@@ -47,11 +47,11 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame* flame, stringstream& 
     zeros.resize(4*area);
     fill(zeros.begin(), zeros.end(), 0);
     histogramArg.buffer.write(zeros);
-    int samples = width*height*quality;
+    /*int samples = width*height*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
         kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
-    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);*/
     vector<float> arr;
     histogramArg.buffer.read(arr);
     double scale2 = ((double)scale)*scale;

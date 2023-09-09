@@ -19,6 +19,7 @@ namespace ui {
 
 AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
     context(openCL->createQueuedContext(0, 1)),
+    renderer(context),
     flameModel(flameWindow),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),

@@ -13,6 +13,7 @@
 #include "weights_model.hpp"
 #include "../clwrap/opencl.hpp"
 #include "../core/flame.hpp"
+#include "../render/renderer.hpp"
 
 extern char _binary_res_plus_default_png_start[];
 extern char _binary_res_plus_default_png_end[];
@@ -31,6 +32,7 @@ public:
 private:
     core::Flame flame;
     clwrap::CLQueuedContext context;
+    render::Renderer renderer;
     EventBroker eventBroker;
 
     FlameModel flameModel;

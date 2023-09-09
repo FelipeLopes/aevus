@@ -1,4 +1,5 @@
 #include "flame.hpp"
+#include <memory>
 #include <random>
 
 using std::string;
@@ -24,6 +25,7 @@ Flame::Flame(): XMLElementClass("flame"),
     scale.setValue(100);
     size.get()->width = 732;
     size.get()->height = 640;
+    xforms.append(std::make_shared<XForm>());
 }
 
 FlameCL Flame::getFlameCL() const {
