@@ -5,15 +5,17 @@
 #include "../clwrap/cl_context.hpp"
 #include "../clwrap/cl_executable.hpp"
 #include "../core/flame.hpp"
+#include <sstream>
 
 namespace render {
 
 class Iterator {
 public:
-    Iterator(const clwrap::CLQueuedContext& context, core::Flame* flame);
-    void writePAMImage(std::string filename, std::vector<float>& arr);
-    void writePNMImage(std::string filename, std::vector<float>& arr);
+    Iterator(const clwrap::CLQueuedContext& context, core::Flame* flame,
+        std::stringstream& out);
 private:
+    void writePAMImage(std::stringstream& out, std::vector<float>& arr);
+    void writePNMImage(std::stringstream& out, std::vector<float>& arr);
     const clwrap::CLQueuedContext& context;
     clwrap::CLExecutable kernel;
     const int width, height, scale, quality;

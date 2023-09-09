@@ -3,13 +3,14 @@
 #include <random>
 
 using core::Flame;
+using std::stringstream;
 using std::vector;
 
 using clwrap::CLQueuedContext;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, Flame* flame):
+Iterator::Iterator(const CLQueuedContext& context_, Flame* flame, stringstream& out):
     context(context_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     width(flame->size.value().width),
@@ -57,17 +58,13 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame* flame):
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
     toneMapper.readOutput(arr);
-    writePNMImage("../flame.pnm", arr);
+    writePNMImage(out, arr);
 }
 
-void Iterator::writePAMImage(std::string filename, std::vector<float>& arr) {
-    std::ostringstream os;
-    os << "P7\nWIDTH " << width <<
+void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
+    out << "P7\nWIDTH " << width <<
         "\nHEIGHT "<< height <<
         "\nDEPTH 4\nMAXVAL 255\nTUPLTYPE RGB_ALPHA\nENDHDR\n";
-    FILE* f = fopen(filename.c_str(),"wb");
-    std::string s = os.str();
-    fwrite(s.c_str(), 1, s.size(), f);
     float bg_ra = background.r * background.a;
     float bg_ga = background.g * background.a;
     float bg_ba = background.b * background.a;
@@ -84,17 +81,15 @@ void Iterator::writePAMImage(std::string filename, std::vector<float>& arr) {
         g /= af;
         b /= af;
 
-        fputc((uint8_t)(r*255),f);
-        fputc((uint8_t)(g*255),f);
-        fputc((uint8_t)(b*255),f);
-        fputc((uint8_t)(af*255),f);
+        out.put((uint8_t)(r*255));
+        out.put((uint8_t)(g*255));
+        out.put((uint8_t)(b*255));
+        out.put((uint8_t)(af*255));
     }
-    fclose(f);
 }
 
-void Iterator::writePNMImage(std::string filename, std::vector<float>& arr) {
-    FILE* f = fopen(filename.c_str(),"w");
-    fprintf(f, "P6\n%d %d\n255\n",width, height);
+void Iterator::writePNMImage(stringstream& out, vector<float>& arr) {
+    out << "P6\n" << width << " " << height << "\n255\n";
     float bg_ra = background.r * background.a;
     float bg_ga = background.g * background.a;
     float bg_ba = background.b * background.a;
@@ -110,11 +105,10 @@ void Iterator::writePNMImage(std::string filename, std::vector<float>& arr) {
         g /= af;
         b /= af;
 
-        fputc((uint8_t)(r*255),f);
-        fputc((uint8_t)(g*255),f);
-        fputc((uint8_t)(b*255),f);
+        out.put((uint8_t)(r*255));
+        out.put((uint8_t)(g*255));
+        out.put((uint8_t)(b*255));
     }
-    fclose(f);
 }
 
 }

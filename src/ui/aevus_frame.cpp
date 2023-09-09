@@ -218,7 +218,14 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameWeightsChanged();
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
-    render::Iterator iterator(context, &flame);
+    std::stringstream imageStream;
+    render::Iterator iterator(context, &flame, imageStream);
+    FILE* f = fopen("../flame.pnm", "wb");
+    char c;
+    while (imageStream.get(c)) {
+        fputc(c,f);
+    }
+    fclose(f);
     wxFileInputStream stream("../flame.pnm");
     wxImage image(stream);
     flameModel.setBitmap(wxBitmap(image));
