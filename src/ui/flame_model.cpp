@@ -34,11 +34,26 @@ void FlameModel::handleMouseWheel(wxMouseEvent &event) {
     if (!flameBitmap.IsOk()) {
         return;
     }
-    if (event.GetWheelRotation() > 0) {
-        zoomIn();
-    } else if (event.GetWheelRotation() < 0) {
-        zoomOut();
+    auto clientSize = flameWindow->GetClientSize();
+    wxPoint clientCenter(clientSize.GetWidth() / 2, clientSize.GetHeight() / 2);
+    auto prevCenter = flameWindow->CalcUnscrolledPosition(clientCenter);
+    wxPoint nextCenter;
+    if (event.GetWheelRotation() > 0 && zoomLevel < MAX_ZOOM_LEVEL) {
+        zoomLevel++;
+        nextCenter = prevCenter * zoomFactor;
+    } else if (event.GetWheelRotation() < 0 && zoomLevel > -MAX_ZOOM_LEVEL) {
+        zoomLevel--;
+        nextCenter = prevCenter * (1.0 / zoomFactor);
+    } else {
+        return;
     }
+    wxPoint pixelsPerUnit;
+    flameWindow->GetScrollPixelsPerUnit(&pixelsPerUnit.x, &pixelsPerUnit.y);
+    auto diff = nextCenter - prevCenter;
+    auto newX = flameWindow->GetViewStart().x + diff.x / pixelsPerUnit.x;
+    auto newY = flameWindow->GetViewStart().y + diff.y / pixelsPerUnit.y;
+    flameWindow->Scroll(newX, newY);
+    flameWindow->SetVirtualSize(scaledImageSize());
     flameWindow->Refresh();
 }
 
@@ -46,20 +61,6 @@ void FlameModel::setBitmap(const wxBitmap &bitmap) {
     flameBitmap = bitmap;
     flameWindow->SetVirtualSize(scaledImageSize());
     flameWindow->Refresh();
-}
-
-void FlameModel::zoomIn() {
-    if (zoomLevel < MAX_ZOOM_LEVEL) {
-        zoomLevel++;
-    }
-    flameWindow->SetVirtualSize(scaledImageSize());
-}
-
-void FlameModel::zoomOut() {
-    if (zoomLevel > -MAX_ZOOM_LEVEL) {
-        zoomLevel--;
-    }
-    flameWindow->SetVirtualSize(scaledImageSize());
 }
 
 wxSize FlameModel::scaledImageSize() {

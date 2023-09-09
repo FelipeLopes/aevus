@@ -11,8 +11,6 @@ public:
     void handleMouseWheel(wxMouseEvent& event);
     void setBitmap(const wxBitmap& bitmap);
 private:
-    void zoomIn();
-    void zoomOut();
     wxSize scaledImageSize();
     wxScrolledWindow* flameWindow;
     wxBitmap flameBitmap;
