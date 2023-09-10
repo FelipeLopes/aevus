@@ -21,7 +21,7 @@ Iterator::Iterator(const CLQueuedContext& context_, stringstream& out_):
     paletteArg(&kernel, 4),
     histogramArg(&kernel, 5) { }
 
-void Iterator::setFlame(Flame* flame) {
+void Iterator::setup(Flame* flame) {
     auto sz = flame->size.value();
     width = sz.width;
     height = sz.height;
@@ -50,7 +50,7 @@ void Iterator::setFlame(Flame* flame) {
     histogramArg.set(hist);
 }
 
-void Iterator::render() {
+void Iterator::run() {
     int area = width*height;
     int samples = area*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
