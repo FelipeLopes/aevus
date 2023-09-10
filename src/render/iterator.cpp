@@ -10,32 +10,16 @@ using clwrap::CLQueuedContext;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, stringstream& out):
+Iterator::Iterator(const CLQueuedContext& context_, stringstream& out_):
     context(context_),
+    out(out_),
     kernel(context, "iterate", "src/render/cl/iterate.cl"),
     flameArg(&kernel, 0, core::FlameCL()),
     stateArg(&kernel, 1),
     xformArg(&kernel, 2),
     xformDistArg(&kernel, 3),
     paletteArg(&kernel, 4),
-    histogramArg(&kernel, 5)
-{
-    width = 732;
-    height = 640;
-    /*int samples = width*height*quality;
-    for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
-        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    }
-    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);*/
-    vector<float> arr;
-    arr.resize(4*width*height);
-    //histogramArg.get(arr);
-    /*double scale2 = ((double)scale)*scale;
-    double ref = 1.0*quality*area/scale2;
-    ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
-    toneMapper.readOutput(arr);*/
-    writePNMImage(out, arr);
-}
+    histogramArg(&kernel, 5) { }
 
 void Iterator::setFlame(Flame* flame) {
     auto sz = flame->size.value();
@@ -66,6 +50,46 @@ void Iterator::setFlame(Flame* flame) {
     histogramArg.set(hist);
 }
 
+void Iterator::render() {
+    int area = width*height;
+    int samples = area*quality;
+    for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
+        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    }
+    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    renderData.resize(4*width*height);
+    histogramArg.get(renderData);
+    double scale2 = ((double)scale)*scale;
+    double ref = 1.0*quality*area/scale2;
+    ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, renderData);
+    toneMapper.readOutput(renderData);
+}
+
+void Iterator::writePNMImage() {
+    out.str("");
+    out.clear();
+    out << "P6\n" << width << " " << height << "\n255\n";
+    float bg_ra = background.r * background.a;
+    float bg_ga = background.g * background.a;
+    float bg_ba = background.b * background.a;
+    for (int i=0; i<renderData.size()/4; i++) {
+        float a = renderData[4*i+3];
+        a = std::min(a, 1.0f);
+        float r = renderData[4*i]*a + bg_ra*(1-a);
+        float g = renderData[4*i+1]*a + bg_ga*(1-a);
+        float b = renderData[4*i+2]*a + bg_ba*(1-a);
+        float af = a + background.a - a*background.a;
+
+        r /= af;
+        g /= af;
+        b /= af;
+
+        out.put((uint8_t)(r*255));
+        out.put((uint8_t)(g*255));
+        out.put((uint8_t)(b*255));
+    }
+}
+
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
     out << "P7\nWIDTH " << width <<
         "\nHEIGHT "<< height <<
@@ -90,29 +114,6 @@ void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
         out.put((uint8_t)(g*255));
         out.put((uint8_t)(b*255));
         out.put((uint8_t)(af*255));
-    }
-}
-
-void Iterator::writePNMImage(stringstream& out, vector<float>& arr) {
-    out << "P6\n" << width << " " << height << "\n255\n";
-    float bg_ra = background.r * background.a;
-    float bg_ga = background.g * background.a;
-    float bg_ba = background.b * background.a;
-    for (int i=0; i<arr.size()/4; i++) {
-        float a = arr[4*i+3];
-        a = std::min(a, 1.0f);
-        float r = arr[4*i]*a + bg_ra*(1-a);
-        float g = arr[4*i+1]*a + bg_ga*(1-a);
-        float b = arr[4*i+2]*a + bg_ba*(1-a);
-        float af = a + background.a - a*background.a;
-
-        r /= af;
-        g /= af;
-        b /= af;
-
-        out.put((uint8_t)(r*255));
-        out.put((uint8_t)(g*255));
-        out.put((uint8_t)(b*255));
     }
 }
 

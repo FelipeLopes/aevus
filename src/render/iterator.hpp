@@ -13,10 +13,12 @@ class Iterator {
 public:
     Iterator(const clwrap::CLQueuedContext& context, std::stringstream& out);
     void setFlame(core::Flame* flame);
+    void render();
+    void writePNMImage();
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
-    void writePNMImage(std::stringstream& out, std::vector<float>& arr);
     const clwrap::CLQueuedContext& context;
+    std::stringstream& out;
     clwrap::CLExecutable kernel;
     int width, height, scale, quality;
     double brightness;
@@ -28,6 +30,8 @@ private:
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
+
+    std::vector<float> renderData;
 
     static const int GLOBAL_WORK_SIZE = 1024;
     static const int LOCAL_WORK_SIZE = 64;
