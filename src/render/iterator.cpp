@@ -20,6 +20,8 @@ Iterator::Iterator(const CLQueuedContext& context_, stringstream& out):
     paletteArg(&kernel, 4),
     histogramArg(&kernel, 5)
 {
+    width = 732;
+    height = 640;
     /*int samples = width*height*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
         kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
