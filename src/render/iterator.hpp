@@ -23,7 +23,7 @@ private:
     const double brightness;
     const core::ColorCL background;
 
-    clwrap::CLArg<core::FlameCL> flameCL;
+    clwrap::CLArg<core::FlameCL> flameArg;
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;
     clwrap::CLReadOnlyBufferArg<core::XFormCL> xformArg;
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;

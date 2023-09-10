@@ -15,7 +15,7 @@ public:
     template <typename T>
     void setArg(unsigned int argIndex, const T& arg);
     template <typename T>
-    void setBufferArg(unsigned int argIndex, const CLBuffer<T>& arg);
+    void setBufferArg(unsigned int argIndex, const CLBuffer<T>* arg);
     void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
     const CLQueuedContext& context;
 private:
@@ -33,8 +33,8 @@ void CLExecutable::setArg(unsigned int argIndex, const T& arg) {
 }
 
 template <typename T>
-void CLExecutable::setBufferArg(unsigned int argIndex, const CLBuffer<T>& clBuffer) {
-    cl_int ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer.memoryObject());
+void CLExecutable::setBufferArg(unsigned int argIndex, const CLBuffer<T>* clBuffer) {
+    cl_int ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer->memoryObject());
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not set OpenCL kernel argument");

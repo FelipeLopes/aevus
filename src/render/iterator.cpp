@@ -19,46 +19,44 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame* flame, stringstream& 
     quality(flame->quality.value()),
     brightness(flame->brightness.value()),
     background(flame->background.value().toColorCL()),
-    flameCL(&kernel, 0, flame->getFlameCL()),
-    stateArg(&kernel, 1,
-        [&flame] (auto& arr) {
-            flame->readInitialStateArray(arr, GLOBAL_WORK_SIZE);
-        }
-    ),
-    xformArg(&kernel, 2,
-        [&flame] (auto& arr) {
-            flame->readXFormCLArray(arr);
-        }
-    ),
-    xformDistArg(&kernel, 3,
-        [&flame] (auto& arr) {
-            flame->readXFormDistribution(arr);
-        }
-    ),
-    paletteArg(&kernel, 4,
-        [&flame] (auto& arr) {
-            flame->palette.readColorCLArray(arr);
-        }
-    ),
-    histogramArg(&kernel, 5,
-        [this] (auto& arr) {
-            arr.resize(4*width*height);
-            std::fill(arr.begin(), arr.end(), 0.0f);
-        }
-    )
+    flameArg(&kernel, 0, flame->getFlameCL()),
+    stateArg(&kernel, 1),
+    xformArg(&kernel, 2),
+    xformDistArg(&kernel, 3),
+    paletteArg(&kernel, 4),
+    histogramArg(&kernel, 5)
 {
-    int area = width*height;
+    //int area = width*height;
+    /*
+    flameArg.set(flame->getFlameCL());
+    vector<core::IterationState> stateVec;
+    flame->readInitialStateArray(stateVec, GLOBAL_WORK_SIZE);
+    stateArg.set(stateVec);
+    vector<core::XFormCL> xformVec;
+    flame->readXFormCLArray(xformVec);
+    xformArg.set(xformVec);
+    vector<uint8_t> xformDistVec;
+    flame->readXFormDistribution(xformDistVec);
+    xformDistArg.set(xformDistVec);
+    vector<core::ColorCL> paletteVec;
+    flame->palette.readColorCLArray(paletteVec);
+    paletteArg.set(paletteVec);
+    vector<float> hist;
+    hist.resize(4*width*height);
+    std::fill(hist.begin(), hist.end(), 0.0f);
+    histogramArg.set(hist);*/
     /*int samples = width*height*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
         kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);*/
     vector<float> arr;
-    histogramArg.get(arr);
-    double scale2 = ((double)scale)*scale;
+    arr.resize(4*width*height);
+    //histogramArg.get(arr);
+    /*double scale2 = ((double)scale)*scale;
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
-    toneMapper.readOutput(arr);
+    toneMapper.readOutput(arr);*/
     writePNMImage(out, arr);
 }
 

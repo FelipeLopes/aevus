@@ -4,6 +4,7 @@
 #include "cl_executable.hpp"
 #include <CL/cl.h>
 #include <functional>
+#include <memory>
 #include <vector>
 
 namespace clwrap {
@@ -33,6 +34,7 @@ void CLArg<T>::set(T arg) {
 template <typename T>
 class CLBufferArg {
 public:
+    CLBufferArg(CLExecutable* kernel, cl_mem_flags clMemFlags, unsigned argIndex);
     CLBufferArg(CLExecutable* kernel, cl_mem_flags clMemFlags, unsigned argIndex,
         std::vector<T>& arg);
     CLBufferArg(CLExecutable* kernel, cl_mem_flags clMemFlags, unsigned argIndex, size_t size);
@@ -42,23 +44,30 @@ public:
     void set(const std::vector<T>& arg);
 private:
     CLExecutable* kernel;
+    cl_mem_flags clMemFlags;
     unsigned argIndex;
-    CLBuffer<T> buffer;
+    std::unique_ptr<CLBuffer<T>> buffer;
 };
+
+template <typename T>
+CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags_, unsigned argIndex_):
+    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_) { }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
     std::vector<T>& arg): kernel(kernel_), argIndex(argIndex_),
-    buffer(kernel->context, kernel->context.defaultQueue, clMemFlags, arg.size())
+    buffer(std::make_unique<CLBuffer<T>>(
+        kernel->context, kernel->context.defaultQueue, clMemFlags, arg.size()))
 {
-    buffer.write(arg);
-    kernel->setBufferArg(argIndex, buffer);
+    buffer->write(arg);
+    kernel->setBufferArg(argIndex, buffer.get());
 }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
     size_t size): kernel(kernel_), argIndex(argIndex_),
-    buffer(kernel->context, kernel->context.defaultQueue, clMemFlags, size)
+    buffer(std::make_unique<CLBuffer<T>>(
+        kernel->context, kernel->context.defaultQueue, clMemFlags, size))
 {
     kernel->setBufferArg(argIndex, buffer);
 }
@@ -68,28 +77,43 @@ CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsi
     std::function<void(std::vector<T>&)> f):
     kernel(kernel_),
     argIndex(argIndex_),
-    buffer(kernel->context, kernel->context.defaultQueue, clMemFlags, f)
+    buffer(std::make_unique<CLBuffer<T>>(
+        kernel->context, kernel->context.defaultQueue, clMemFlags, f))
 {
-    kernel->setBufferArg(argIndex, buffer);
+    kernel->setBufferArg(argIndex, buffer.get());
 }
 
 template <typename T>
 void CLBufferArg<T>::get(std::vector<T>& arr) {
-    buffer.read(arr);
+    buffer->read(arr);
 }
 
 template <typename T>
 void CLBufferArg<T>::set(const std::vector<T>& arg) {
-    buffer.write(arg);
+    if (buffer->length() != arg.size()) {
+        if (arg.size() == 0) {
+            buffer = NULL;
+        } else {
+            buffer = std::make_unique<CLBuffer<T>>(kernel->context,
+                kernel->context.defaultQueue, clMemFlags, arg.size());
+        }
+        kernel->setBufferArg(argIndex, buffer.get());
+    }
+    buffer->write(arg);
 }
 
 template <typename T>
 class CLReadOnlyBufferArg: public CLBufferArg<T> {
 public:
+    CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIndex);
     CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIndex, std::vector<T>& arg);
     CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIndex,
         std::function<void(std::vector<T>&)> f);
 };
+
+template <typename T>
+CLReadOnlyBufferArg<T>::CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIndex):
+    CLBufferArg<T>(kernel, CL_MEM_READ_ONLY, argIndex) { }
 
 template <typename T>
 CLReadOnlyBufferArg<T>::CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIndex,
@@ -112,11 +136,16 @@ CLWriteOnlyBufferArg<T>::CLWriteOnlyBufferArg(CLExecutable* kernel, unsigned arg
 template <typename T>
 class CLReadWriteBufferArg: public CLBufferArg<T> {
 public:
+    CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex);
     CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex, size_t size);
     CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex, std::vector<T>& arg);
     CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex,
         std::function<void(std::vector<T>&)> f);
 };
+
+template <typename T>
+CLReadWriteBufferArg<T>::CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex):
+    CLBufferArg<T>(kernel, CL_MEM_READ_WRITE, argIndex) { }
 
 template <typename T>
 CLReadWriteBufferArg<T>::CLReadWriteBufferArg(CLExecutable* kernel, unsigned argIndex,

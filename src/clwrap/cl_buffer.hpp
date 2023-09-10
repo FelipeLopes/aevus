@@ -19,6 +19,7 @@ public:
     virtual ~CLBuffer();
     void write(const std::vector<T>& data);
     void read(std::vector<T>& data);
+    size_t length() const;
     const cl_mem* memoryObject() const;
 private:
     cl_command_queue commandQueue;
@@ -82,6 +83,11 @@ void CLBuffer<T>::read(std::vector<T>& data) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not read from OpenCL buffer");
     }
+}
+
+template <typename T>
+size_t CLBuffer<T>::length() const {
+    return size;
 }
 
 template <typename T>
