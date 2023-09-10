@@ -13,6 +13,7 @@ class Iterator {
 public:
     Iterator(const clwrap::CLQueuedContext& context, core::Flame* flame,
         std::stringstream& out);
+    void setFlame(core::Flame* flame);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     void writePNMImage(std::stringstream& out, std::vector<float>& arr);

@@ -19,46 +19,51 @@ Iterator::Iterator(const CLQueuedContext& context_, Flame* flame, stringstream& 
     quality(flame->quality.value()),
     brightness(flame->brightness.value()),
     background(flame->background.value().toColorCL()),
-    flameCL(kernel, 0, flame->getFlameCL()),
-    stateArg(kernel, 1,
+    flameCL(&kernel, 0, flame->getFlameCL()),
+    stateArg(&kernel, 1,
         [&flame] (auto& arr) {
             flame->readInitialStateArray(arr, GLOBAL_WORK_SIZE);
         }
     ),
-    xformArg(kernel, 2,
+    xformArg(&kernel, 2,
         [&flame] (auto& arr) {
             flame->readXFormCLArray(arr);
         }
     ),
-    xformDistArg(kernel, 3,
+    xformDistArg(&kernel, 3,
         [&flame] (auto& arr) {
             flame->readXFormDistribution(arr);
         }
     ),
-    paletteArg(kernel, 4,
+    paletteArg(&kernel, 4,
         [&flame] (auto& arr) {
             flame->palette.readColorCLArray(arr);
         }
     ),
-    histogramArg(kernel, 5, 4*width*height)
+    histogramArg(&kernel, 5,
+        [this] (auto& arr) {
+            arr.resize(4*width*height);
+            std::fill(arr.begin(), arr.end(), 0.0f);
+        }
+    )
 {
     int area = width*height;
-    vector<float> zeros;
-    zeros.resize(4*area);
-    fill(zeros.begin(), zeros.end(), 0);
-    histogramArg.buffer.write(zeros);
     /*int samples = width*height*quality;
     for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
         kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     }
     kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);*/
     vector<float> arr;
-    histogramArg.buffer.read(arr);
+    histogramArg.get(arr);
     double scale2 = ((double)scale)*scale;
     double ref = 1.0*quality*area/scale2;
     ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, arr);
     toneMapper.readOutput(arr);
     writePNMImage(out, arr);
+}
+
+void Iterator::setFlame(Flame* flame) {
+
 }
 
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
