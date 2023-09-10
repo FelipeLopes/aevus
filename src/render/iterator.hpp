@@ -15,6 +15,7 @@ public:
     void setFlame(core::Flame* flame);
     void render();
     void writePNMImage();
+    std::vector<float> renderData;
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     const clwrap::CLQueuedContext& context;
@@ -30,8 +31,6 @@ private:
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
-
-    std::vector<float> renderData;
 
     static const int GLOBAL_WORK_SIZE = 1024;
     static const int LOCAL_WORK_SIZE = 64;

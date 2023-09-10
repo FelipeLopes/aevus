@@ -219,8 +219,7 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameWeightsChanged();
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
-    renderer.iterator.setFlame(&flame);
-    renderer.iterator.render();
+    renderer.renderFlame(&flame);
     renderer.iterator.writePNMImage();
     auto flameStreamView = flameStream.view();
     wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());

@@ -7,12 +7,11 @@ namespace render {
 
 class ToneMapper {
 public:
-    ToneMapper(const clwrap::CLQueuedContext& context, int area, float a, float b,
-        std::vector<float>& hist);
+    ToneMapper(const clwrap::CLQueuedContext& context);
+    void setParams(int area, float a, float b, std::vector<float>& hist);
     void readOutput(std::vector<float>& arr);
 private:
     const clwrap::CLQueuedContext& context;
-    const int area;
     clwrap::CLExecutable kernel;
 
     clwrap::CLArg<float> aArg;

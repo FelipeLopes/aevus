@@ -59,10 +59,6 @@ void Iterator::render() {
     kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     renderData.resize(4*width*height);
     histogramArg.get(renderData);
-    double scale2 = ((double)scale)*scale;
-    double ref = 1.0*quality*area/scale2;
-    ToneMapper toneMapper(context, area, brightness*268.0/256, 1.0/ref, renderData);
-    toneMapper.readOutput(renderData);
 }
 
 void Iterator::writePNMImage() {

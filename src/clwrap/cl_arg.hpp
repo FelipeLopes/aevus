@@ -90,8 +90,12 @@ void CLBufferArg<T>::get(std::vector<T>& arr) {
 
 template <typename T>
 void CLBufferArg<T>::set(const std::vector<T>& arg) {
-    if ((buffer == NULL && arg.size()>0) || (buffer->length() != arg.size())) {
+    if (buffer == NULL && arg.size() == 0) {
+        return;
+    }
+    if (buffer == NULL || (buffer->length() != arg.size())) {
         if (arg.size() == 0) {
+            printf("set to null\n");
             buffer = NULL;
         } else {
             buffer = std::make_unique<CLBuffer<T>>(kernel->context,
