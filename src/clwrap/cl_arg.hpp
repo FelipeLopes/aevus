@@ -90,7 +90,7 @@ void CLBufferArg<T>::get(std::vector<T>& arr) {
 
 template <typename T>
 void CLBufferArg<T>::set(const std::vector<T>& arg) {
-    if (buffer->length() != arg.size()) {
+    if ((buffer == NULL && arg.size()>0) || (buffer->length() != arg.size())) {
         if (arg.size() == 0) {
             buffer = NULL;
         } else {

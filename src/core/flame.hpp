@@ -13,6 +13,12 @@ namespace core {
 struct FlameCL {
     float cx, cy, scale;
     int width, height;
+    FlameCL() {
+        cx = cy = 0;
+        scale = 100;
+        width = 732;
+        height = 640;
+    }
 };
 
 struct IterationState {

@@ -8,10 +8,8 @@ namespace render {
 
 class Renderer {
 public:
-    Renderer(const clwrap::CLQueuedContext& context);
-    std::stringstream stream;
-private:
-    core::Flame flame;
+    Renderer(const clwrap::CLQueuedContext& context, std::stringstream& stream);
+    std::stringstream& stream;
     std::vector<float> dummy;
     Iterator iterator;
     ToneMapper toneMapper;

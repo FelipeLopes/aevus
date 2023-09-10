@@ -19,7 +19,7 @@ namespace ui {
 
 AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
     context(openCL->createQueuedContext(0, 1)),
-    renderer(context),
+    renderer(context, flameStream),
     flameModel(flameWindow),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
@@ -219,12 +219,11 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameWeightsChanged();
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
-    std::stringstream flameStream;
-    render::Iterator iterator(context, &flame, flameStream);
-    auto flameStreamView = flameStream.view();
+    renderer.iterator.setFlame(&flame);
+    /*auto flameStreamView = flameStream.view();
     wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());
     wxImage image(wxStream);
-    flameModel.setBitmap(wxBitmap(image));
+    flameModel.setBitmap(wxBitmap(image));*/
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {

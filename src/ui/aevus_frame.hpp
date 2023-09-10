@@ -32,6 +32,7 @@ public:
 private:
     core::Flame flame;
     clwrap::CLQueuedContext context;
+    std::stringstream flameStream;
     render::Renderer renderer;
     EventBroker eventBroker;
 

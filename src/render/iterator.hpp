@@ -11,17 +11,16 @@ namespace render {
 
 class Iterator {
 public:
-    Iterator(const clwrap::CLQueuedContext& context, core::Flame* flame,
-        std::stringstream& out);
+    Iterator(const clwrap::CLQueuedContext& context, std::stringstream& out);
     void setFlame(core::Flame* flame);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     void writePNMImage(std::stringstream& out, std::vector<float>& arr);
     const clwrap::CLQueuedContext& context;
     clwrap::CLExecutable kernel;
-    const int width, height, scale, quality;
-    const double brightness;
-    const core::ColorCL background;
+    int width, height, scale, quality;
+    double brightness;
+    core::ColorCL background;
 
     clwrap::CLArg<core::FlameCL> flameArg;
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;
