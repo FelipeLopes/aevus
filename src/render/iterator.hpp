@@ -32,6 +32,7 @@ private:
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
+    clwrap::CLArg<int> itersArg;
 
     static const int GLOBAL_WORK_SIZE = 1024;
     static const int LOCAL_WORK_SIZE = 64;

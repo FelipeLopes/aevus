@@ -212,19 +212,22 @@ __kernel void iterate(
     __global const XFormCL *xform,
     __global uchar *xformDist,
     __global float4 *palette,
-    __global float4 *hist)
+    __global float4 *hist,
+    int iters)
 {
     int i = get_global_id(0);
-    int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
-    int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-    float2 p = calcXform(xform, xfIdx, &state[i]);
-    if (badval(p)) {
-        resetPoint(&state[i]);
-    } else {
-        int idx = histogramIndex(&flameCL, p);
-        if (idx != -1) {
-            float4 color = lookupColor(palette, state[i].c);
-            atomic_add_f4(&hist[idx], color);
+    for (int j=0; j<iters; j++) {
+        int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
+        int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
+        float2 p = calcXform(xform, xfIdx, &state[i]);
+        if (badval(p)) {
+            resetPoint(&state[i]);
+        } else {
+            int idx = histogramIndex(&flameCL, p);
+            if (idx != -1) {
+                float4 color = lookupColor(palette, state[i].c);
+                atomic_add_f4(&hist[idx], color);
+            }
         }
     }
 }

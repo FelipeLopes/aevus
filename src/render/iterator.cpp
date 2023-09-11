@@ -19,7 +19,8 @@ Iterator::Iterator(const CLQueuedContext& context_, stringstream& out_):
     xformArg(&kernel, 2),
     xformDistArg(&kernel, 3),
     paletteArg(&kernel, 4),
-    histogramArg(&kernel, 5) { }
+    histogramArg(&kernel, 5),
+    itersArg(&kernel, 6, 0) { }
 
 void Iterator::setup(Flame* flame) {
     auto sz = flame->size.value();
@@ -48,15 +49,12 @@ void Iterator::setup(Flame* flame) {
     hist.resize(4*area);
     std::fill(hist.begin(), hist.end(), 0.0f);
     histogramArg.set(hist);
+    int samples = area*quality;
+    itersArg.set(samples/GLOBAL_WORK_SIZE);
 }
 
 void Iterator::run() {
-    int area = width*height;
-    int samples = area*quality;
-    for (int i=0; i<samples/GLOBAL_WORK_SIZE; i++) {
-        kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    }
-    kernel.runBlocking(samples%GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     renderData.resize(4*width*height);
     histogramArg.get(renderData);
 }
