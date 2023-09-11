@@ -7,17 +7,13 @@
 
 namespace clwrap {
 
-CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name, std::string filename):
+CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name,
+    const char* sourceStart, const char* sourceEnd):
     context(clContext)
 {
-    std::ifstream file(filename);
-    std::stringstream buffer;
-    buffer<<file.rdbuf();
-    auto source = buffer.str();
-    auto sArr = source.c_str();
-    auto len = source.size();
+    size_t sourceLen = sourceEnd - sourceStart;
     cl_int ret;
-    program = clCreateProgramWithSource(clContext.context, 1, &sArr, &len, &ret);
+    program = clCreateProgramWithSource(clContext.context, 1, &sourceStart, &sourceLen, &ret);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not create OpenCL program");

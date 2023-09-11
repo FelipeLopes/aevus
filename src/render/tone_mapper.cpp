@@ -9,7 +9,7 @@ namespace render {
 
 ToneMapper::ToneMapper(const CLQueuedContext& context_):
     context(context_),
-    kernel(context, "mapping", "src/render/cl/mapping.cl"),
+    kernel(context, "mapping"),
     aArg(&kernel, 0, 1.0),
     bArg(&kernel, 1, 1.0),
     histArg(&kernel, 2) { }

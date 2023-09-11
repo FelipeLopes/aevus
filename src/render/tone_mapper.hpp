@@ -2,6 +2,7 @@
 
 #include "../clwrap/cl_arg.hpp"
 #include "../core/flame.hpp"
+#include "kernel.hpp"
 #include <sstream>
 #include <vector>
 
@@ -15,7 +16,7 @@ public:
     void writePNMImage(std::stringstream& out);
 private:
     const clwrap::CLQueuedContext& context;
-    clwrap::CLExecutable kernel;
+    Kernel kernel;
 
     clwrap::CLArg<float> aArg;
     clwrap::CLArg<float> bArg;

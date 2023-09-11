@@ -10,7 +10,8 @@ namespace clwrap {
 
 class CLExecutable {
 public:
-    CLExecutable(const CLQueuedContext& clContext, std::string name, std::string filename);
+    CLExecutable(const CLQueuedContext& clContext, std::string name,
+        const char* sourceStart, const char* sourceEnd);
     ~CLExecutable();
     template <typename T>
     void setArg(unsigned int argIndex, const T& arg);

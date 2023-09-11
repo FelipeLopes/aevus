@@ -5,6 +5,7 @@
 #include "../clwrap/cl_context.hpp"
 #include "../clwrap/cl_executable.hpp"
 #include "../core/flame.hpp"
+#include "kernel.hpp"
 #include <sstream>
 
 namespace render {
@@ -20,7 +21,7 @@ private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     const clwrap::CLQueuedContext& context;
     std::stringstream& out;
-    clwrap::CLExecutable kernel;
+    Kernel kernel;
     int width, height, scale, quality;
     double brightness;
     core::ColorCL background;

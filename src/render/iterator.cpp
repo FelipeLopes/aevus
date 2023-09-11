@@ -13,7 +13,7 @@ namespace render {
 Iterator::Iterator(const CLQueuedContext& context_, stringstream& out_):
     context(context_),
     out(out_),
-    kernel(context, "iterate", "src/render/cl/iterate.cl"),
+    kernel(context, "iterate"),
     flameArg(&kernel, 0, core::FlameCL()),
     stateArg(&kernel, 1),
     xformArg(&kernel, 2),

@@ -3,6 +3,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     srcs = glob(["*.cpp"]),
     deps = [
+        "//cl",
         "//src/clwrap:clwrap",
         "//src/core:core",
     ],
