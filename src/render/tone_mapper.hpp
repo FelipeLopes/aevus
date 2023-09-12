@@ -14,7 +14,6 @@ class ToneMapper {
 public:
     ToneMapper(const clwrap::CLQueuedContext& context);
     void setup(core::Flame* flame, std::vector<float>& hist);
-    void run();
     void runAsync(Renderer* renderer, void (*block)(Renderer* renderer));
     void writePNMImage(std::stringstream& out);
 private:

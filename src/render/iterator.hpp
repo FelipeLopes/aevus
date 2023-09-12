@@ -10,11 +10,15 @@
 
 namespace render {
 
+class Renderer;
+
 class Iterator {
 public:
     Iterator(const clwrap::CLQueuedContext& context, std::stringstream& out);
     void setup(core::Flame* flame);
     void run();
+    void runAsync(Renderer* renderer, void (*block)(Renderer* renderer));
+    void getRenderData();
     void writePNMImage();
     std::vector<float> renderData;
 private:

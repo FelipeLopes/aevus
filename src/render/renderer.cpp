@@ -11,12 +11,15 @@ namespace render {
 Renderer::Renderer(const CLQueuedContext& context, stringstream& stream_): stream(stream_),
     iterator(context, stream), toneMapper(context) { }
 
-void Renderer::renderFlame(Flame* flame) {
+void Renderer::renderFlame(Flame* flame_) {
+    flame = flame_;
     iterator.setup(flame);
-    iterator.run();
-    toneMapper.setup(flame, iterator.renderData);
-    toneMapper.runAsync(this, [](Renderer* renderer) {
-        renderer->toneMapper.writePNMImage(renderer->stream);
+    iterator.runAsync(this, [](auto r) {
+        r->iterator.getRenderData();
+        r->toneMapper.setup(r->flame, r->iterator.renderData);
+        r->toneMapper.runAsync(r, [](auto r) {
+            r->toneMapper.writePNMImage(r->stream);
+        });
     });
 }
 

@@ -59,6 +59,16 @@ void Iterator::run() {
     histogramArg.get(renderData);
 }
 
+void Iterator::runAsync(Renderer* renderer, void (*block)(Renderer*)) {
+    auto event = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    event->setCallback(renderer, clwrap::CLEvent::COMPLETE, block);
+}
+
+void Iterator::getRenderData() {
+    renderData.resize(4*width*height);
+    histogramArg.get(renderData);
+}
+
 void Iterator::writePNMImage() {
     out.str("");
     out.clear();
