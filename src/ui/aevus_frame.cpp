@@ -1,6 +1,4 @@
 #include "aevus_frame.hpp"
-#include <wx-3.2/wx/gdicmn.h>
-#include <wx-3.2/wx/image.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>

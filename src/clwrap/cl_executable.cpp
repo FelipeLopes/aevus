@@ -44,6 +44,19 @@ void CLExecutable::runBlocking(const size_t globalWorkSize, const size_t localWo
     }
 }
 
+std::shared_ptr<CLEvent> CLExecutable::runAsync(
+    const size_t globalWorkSize, const size_t localWorkSize)
+{
+    cl_event event;
+    cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,
+        &globalWorkSize, &localWorkSize, 0, NULL, &event);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not run OpenCL kernel");
+    }
+    return std::make_shared<CLEvent>(event);
+}
+
 CLExecutable::~CLExecutable() {
     clReleaseKernel(kernel);
     clReleaseProgram(program);

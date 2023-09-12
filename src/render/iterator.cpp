@@ -49,8 +49,8 @@ void Iterator::setup(Flame* flame) {
     hist.resize(4*area);
     std::fill(hist.begin(), hist.end(), 0.0f);
     histogramArg.set(hist);
-    int samples = area*quality;
-    itersArg.set(samples/GLOBAL_WORK_SIZE);
+    double samples = area*quality;
+    itersArg.set(ceil(samples/GLOBAL_WORK_SIZE));
 }
 
 void Iterator::run() {

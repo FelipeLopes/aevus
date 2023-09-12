@@ -2,6 +2,7 @@
 
 #include "cl_buffer.hpp"
 #include "cl_context.hpp"
+#include "cl_event.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <string>
@@ -18,6 +19,7 @@ public:
     template <typename T>
     void setBufferArg(unsigned int argIndex, const CLBuffer<T>* arg);
     void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
+    std::shared_ptr<CLEvent> runAsync(const size_t globalWorkSize, const size_t localWorkSize);
     const CLQueuedContext& context;
 private:
     cl_program program;

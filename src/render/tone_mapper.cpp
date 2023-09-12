@@ -38,6 +38,11 @@ void ToneMapper::run() {
     kernel.runBlocking(width*height, LOCAL_WORK_SIZE);
 }
 
+void ToneMapper::runAsync(Renderer* renderer, void (*block)(Renderer *)) {
+    auto event = kernel.runAsync(width*height, LOCAL_WORK_SIZE);
+    event->setCallback<Renderer>(renderer, clwrap::CLEvent::COMPLETE, block);
+}
+
 void ToneMapper::writePNMImage(stringstream& out) {
     vector<float> renderData;
     histArg.get(renderData);

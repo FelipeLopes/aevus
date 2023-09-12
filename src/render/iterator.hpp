@@ -34,8 +34,8 @@ private:
     clwrap::CLReadWriteBufferArg<float> histogramArg;
     clwrap::CLArg<int> itersArg;
 
-    static const int GLOBAL_WORK_SIZE = 1024;
-    static const int LOCAL_WORK_SIZE = 64;
+    static const int GLOBAL_WORK_SIZE = 4096;
+    static const int LOCAL_WORK_SIZE = 256;
 };
 
 }
