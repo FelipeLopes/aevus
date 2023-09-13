@@ -4,6 +4,7 @@
 #include "cl_executable.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
+#include <boost/asio/post.hpp>
 #include <system_error>
 
 namespace clwrap {
@@ -25,7 +26,9 @@ void CLContext::setEventCallback(std::shared_ptr<CLEvent> event,
     CLEvent::Status status, std::function<void()> f)
 {
     eventCallbacks.push_back(CLEventCallback(event, status, f));
-    clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
+    boost::asio::post(callbackPool, [event, status, this] {
+        clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
+    });
 }
 
 CLContext::~CLContext() {

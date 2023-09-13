@@ -19,6 +19,7 @@ void Renderer::renderFlame(Flame* flame_) {
         toneMapper.setup(flame, iterator.renderData);
         toneMapper.runAsync([this] {
             toneMapper.writePNMImage(stream);
+            imageRendered();
         });
     });
 }

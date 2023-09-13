@@ -46,6 +46,9 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     triangleModel.transformCoordsChanged
         .connect(eventBroker.activeXformCoordsChanged);
 
+    renderer.imageRendered
+        .connect(bind(&AevusFrame::setFlameBitmap, this));
+
     eventBroker.activeXformCoordsChanged
         .connect(bind(&TransformModel::update, &preTransformModel));
     eventBroker.activeXformCoordsChanged
@@ -218,6 +221,9 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
     renderer.renderFlame(&flame);
+}
+
+void AevusFrame::setFlameBitmap() {
     auto flameStreamView = flameStream.view();
     wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());
     wxImage image(wxStream);
