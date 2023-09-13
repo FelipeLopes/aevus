@@ -7,7 +7,7 @@ using std::vector;
 
 namespace render {
 
-ToneMapper::ToneMapper(const CLQueuedContext& context_):
+ToneMapper::ToneMapper(CLQueuedContext& context_):
     context(context_),
     kernel(context, "mapping"),
     aArg(&kernel, 0, 1.0),
@@ -34,9 +34,9 @@ void ToneMapper::setup(Flame* flame, vector<float>& hist) {
     histArg.set(hist);
 }
 
-void ToneMapper::runAsync(Renderer* renderer, void (*block)(Renderer *)) {
+void ToneMapper::runAsync(std::function<void()> block) {
     auto event = kernel.runAsync(width*height, LOCAL_WORK_SIZE);
-    event->setCallback<Renderer>(renderer, clwrap::CLEvent::COMPLETE, block);
+    context.setEventCallback(event, clwrap::CLEvent::COMPLETE, block);
 }
 
 void ToneMapper::writePNMImage(stringstream& out) {

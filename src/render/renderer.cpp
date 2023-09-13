@@ -8,17 +8,17 @@ using std::stringstream;
 
 namespace render {
 
-Renderer::Renderer(const CLQueuedContext& context, stringstream& stream_): stream(stream_),
+Renderer::Renderer(CLQueuedContext& context, stringstream& stream_): stream(stream_),
     iterator(context, stream), toneMapper(context) { }
 
 void Renderer::renderFlame(Flame* flame_) {
     flame = flame_;
     iterator.setup(flame);
-    iterator.runAsync(this, [](auto r) {
-        r->iterator.getRenderData();
-        r->toneMapper.setup(r->flame, r->iterator.renderData);
-        r->toneMapper.runAsync(r, [](auto r) {
-            r->toneMapper.writePNMImage(r->stream);
+    iterator.runAsync([this] {
+        iterator.getRenderData();
+        toneMapper.setup(flame, iterator.renderData);
+        toneMapper.runAsync([this] {
+            toneMapper.writePNMImage(stream);
         });
     });
 }

@@ -10,7 +10,7 @@ using clwrap::CLQueuedContext;
 
 namespace render {
 
-Iterator::Iterator(const CLQueuedContext& context_, stringstream& out_):
+Iterator::Iterator(CLQueuedContext& context_, stringstream& out_):
     context(context_),
     out(out_),
     kernel(context, "iterate"),
@@ -59,9 +59,9 @@ void Iterator::run() {
     histogramArg.get(renderData);
 }
 
-void Iterator::runAsync(Renderer* renderer, void (*block)(Renderer*)) {
+void Iterator::runAsync(std::function<void()> block) {
     auto event = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    event->setCallback(renderer, clwrap::CLEvent::COMPLETE, block);
+    context.setEventCallback(event, clwrap::CLEvent::COMPLETE, block);
 }
 
 void Iterator::getRenderData() {

@@ -1,5 +1,6 @@
 #include "cl_context.hpp"
 #include "cl_buffer.hpp"
+#include "cl_event.hpp"
 #include "cl_executable.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
@@ -7,7 +8,7 @@
 
 namespace clwrap {
 
-CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId) {
+CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId), callbackPool(1) {
     cl_int ret;
     context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &ret);
     if (ret != CL_SUCCESS) {
@@ -18,6 +19,13 @@ CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId) {
 
 CLQueue CLContext::createCommandQueue() {
     return CLQueue(context, deviceId);
+}
+
+void CLContext::setEventCallback(std::shared_ptr<CLEvent> event,
+    CLEvent::Status status, std::function<void()> f)
+{
+    eventCallbacks.push_back(CLEventCallback(event, status, f));
+    clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
 }
 
 CLContext::~CLContext() {

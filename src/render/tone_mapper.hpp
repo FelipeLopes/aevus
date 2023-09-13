@@ -12,12 +12,12 @@ class Renderer;
 
 class ToneMapper {
 public:
-    ToneMapper(const clwrap::CLQueuedContext& context);
+    ToneMapper(clwrap::CLQueuedContext& context);
     void setup(core::Flame* flame, std::vector<float>& hist);
-    void runAsync(Renderer* renderer, void (*block)(Renderer* renderer));
+    void runAsync(std::function<void()> block);
     void writePNMImage(std::stringstream& out);
 private:
-    const clwrap::CLQueuedContext& context;
+    clwrap::CLQueuedContext& context;
     Kernel kernel;
 
     clwrap::CLArg<float> aArg;

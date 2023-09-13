@@ -10,13 +10,7 @@ CLEvent::~CLEvent() {
     clReleaseEvent(clEvent);
 }
 
-cl_int CLEvent::convertStatus(Status status) {
-    switch (status) {
-        case SUBMITTED: return CL_SUBMITTED;
-        case RUNNING: return CL_RUNNING;
-        case COMPLETE: return CL_COMPLETE;
-    }
-    throw std::invalid_argument("Unrecognized event execution status");
-}
+CLEventCallback::CLEventCallback(std::shared_ptr<CLEvent> event_, CLEvent::Status status_,
+    std::function<void()> f_): event(event_), status(status_), f(f_) { }
 
 }

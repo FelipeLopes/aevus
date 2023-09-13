@@ -2,6 +2,7 @@
 
 #include <CL/cl.h>
 #include <CL/opencl.hpp>
+#include <memory>
 
 namespace clwrap {
 
@@ -14,24 +15,32 @@ public:
         RUNNING,
         COMPLETE
     };
-    template <typename T>
-    void setCallback(T* object, Status status, void (*f)(T* obj));
-private:
-    cl_event clEvent;
-    cl_int convertStatus(Status status);
-    void* object;
-    void (*callback)(void* obj);
-    static void clCallback(cl_event event, cl_int execStatus, void* thisObject) {
-        CLEvent* eventObject = reinterpret_cast<CLEvent*>(thisObject);
-        eventObject->callback(eventObject->object);
+    static CLEvent::Status convertCLStatus(cl_int status) {
+        switch (status) {
+            case CL_SUBMITTED: return SUBMITTED;
+            case CL_RUNNING: return RUNNING;
+            case CL_COMPLETE: return COMPLETE;
+        }
+        throw std::invalid_argument("Unrecognized event execution status");
     }
+    static cl_int convertStatus(Status status) {
+        switch (status) {
+            case SUBMITTED: return CL_SUBMITTED;
+            case RUNNING: return CL_RUNNING;
+            case COMPLETE: return CL_COMPLETE;
+        }
+        throw std::invalid_argument("Unrecognized event execution status");
+    }
+    cl_event clEvent;
 };
 
-template <typename T>
-void CLEvent::setCallback(T* obj, Status status, void (*f)(T*)) {
-    object = obj;
-    callback = reinterpret_cast<void (*)(void*)>(f);
-    clSetEventCallback(clEvent, convertStatus(status), clCallback, this);
-}
+class CLEventCallback {
+public:
+    CLEventCallback(std::shared_ptr<CLEvent> event, CLEvent::Status status,
+        std::function<void()> f);
+    std::shared_ptr<CLEvent> event;
+    CLEvent::Status status;
+    std::function<void()> f;
+};
 
 }
