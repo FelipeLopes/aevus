@@ -25,7 +25,9 @@ CLQueue CLContext::createCommandQueue() {
 void CLContext::setEventCallback(std::shared_ptr<CLEvent> event,
     CLEvent::Status status, std::function<void()> f)
 {
+    eventCallbacksLock.lock();
     eventCallbacks.push_back(CLEventCallback(event, status, f));
+    eventCallbacksLock.unlock();
     boost::asio::post(callbackPool, [event, status, this] {
         clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
     });

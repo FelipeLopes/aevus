@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+#include <wx/graphics.h>
 #include <wx/scrolwin.h>
 
 namespace ui {
@@ -11,7 +13,9 @@ public:
     void handleMouseWheel(wxMouseEvent& event);
     void setBitmap(const wxBitmap& bitmap);
 private:
+    void drawFlameBitmap(wxGraphicsContext* gc);
     wxSize scaledImageSize();
+    std::mutex bitmapLock;
     wxScrolledWindow* flameWindow;
     wxBitmap flameBitmap;
     int zoomLevel;

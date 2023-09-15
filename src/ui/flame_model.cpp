@@ -16,16 +16,8 @@ void FlameModel::handlePaint() {
     dc.Clear();
     flameWindow->DoPrepareDC(dc);
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
-    auto drawSize = flameWindow->GetVirtualSize();
     if (gc) {
-        if (flameBitmap.IsOk()) {
-            auto imageSize = scaledImageSize();
-            double bitmapWidth = imageSize.GetWidth();
-            double bitmapHeight = imageSize.GetHeight();
-            double x = (drawSize.GetWidth() - bitmapWidth) / 2;
-            double y = (drawSize.GetHeight() - bitmapHeight) / 2;
-            gc->DrawBitmap(flameBitmap, x, y, bitmapWidth, bitmapHeight);
-        }
+        drawFlameBitmap(gc);
         delete gc;
     }
 }
@@ -58,9 +50,25 @@ void FlameModel::handleMouseWheel(wxMouseEvent &event) {
 }
 
 void FlameModel::setBitmap(const wxBitmap &bitmap) {
+    bitmapLock.lock();
     flameBitmap = bitmap;
+    bitmapLock.unlock();
     flameWindow->SetVirtualSize(scaledImageSize());
     flameWindow->Refresh();
+}
+
+void FlameModel::drawFlameBitmap(wxGraphicsContext* gc) {
+    auto drawSize = flameWindow->GetVirtualSize();
+    bitmapLock.lock();
+    if (flameBitmap.IsOk()) {
+        auto imageSize = scaledImageSize();
+        double bitmapWidth = imageSize.GetWidth();
+        double bitmapHeight = imageSize.GetHeight();
+        double x = (drawSize.GetWidth() - bitmapWidth) / 2;
+        double y = (drawSize.GetHeight() - bitmapHeight) / 2;
+        gc->DrawBitmap(flameBitmap, x, y, bitmapWidth, bitmapHeight);
+    }
+    bitmapLock.unlock();
 }
 
 wxSize FlameModel::scaledImageSize() {
