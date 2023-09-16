@@ -67,7 +67,6 @@ private:
 
     void loadFlame(std::string filename);
     wxBitmap loadEmbeddedPNG(char* start, char* end);
-    void setFlameBitmap();
 };
 
 }

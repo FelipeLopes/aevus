@@ -8,11 +8,10 @@ using std::stringstream;
 
 namespace render {
 
-Renderer::Renderer(CLQueuedContext& context, stringstream& stream_): stream(stream_),
-    iterator(context, stream), toneMapper(context) { }
+Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream_): stream(stream_),
+    flame(flame_), iterator(context, stream), toneMapper(context) { }
 
-void Renderer::renderFlame(Flame* flame_) {
-    flame = flame_;
+void Renderer::renderFlame() {
     iterator.setup(flame);
     iterator.runAsync([this] {
         iterator.getRenderData();

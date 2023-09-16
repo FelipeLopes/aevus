@@ -1,13 +1,22 @@
 #include "flame_model.hpp"
+#include <sstream>
+#include <wx/mstream.h>
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
 namespace ui {
 
-FlameModel::FlameModel(wxScrolledWindow* flameWindow_): flameWindow(flameWindow_),
-    zoomLevel(0), zoomFactor(1.1)
+FlameModel::FlameModel(wxScrolledWindow* flameWindow_, std::stringstream& flameStream_):
+    flameWindow(flameWindow_), flameStream(flameStream_), zoomLevel(0), zoomFactor(1.1)
 {
     flameWindow->SetBackgroundStyle(wxBG_STYLE_PAINT);
+}
+
+void FlameModel::update() {
+    auto flameStreamView = flameStream.view();
+    wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());
+    wxImage image(wxStream);
+    setBitmap(wxBitmap(image));
 }
 
 void FlameModel::handlePaint() {

@@ -8,7 +8,8 @@ namespace ui {
 
 class FlameModel {
 public:
-    FlameModel(wxScrolledWindow* flameWindow);
+    FlameModel(wxScrolledWindow* flameWindow, std::stringstream& flameStream);
+    void update();
     void handlePaint();
     void handleMouseWheel(wxMouseEvent& event);
     void setBitmap(const wxBitmap& bitmap);
@@ -17,6 +18,7 @@ private:
     wxSize scaledImageSize();
     std::mutex bitmapLock;
     wxScrolledWindow* flameWindow;
+    std::stringstream& flameStream;
     wxBitmap flameBitmap;
     int zoomLevel;
     const double zoomFactor;

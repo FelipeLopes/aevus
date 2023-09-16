@@ -10,6 +10,7 @@
 using namespace boost::signals2;
 using boost::bind;
 using clwrap::OpenCL;
+using render::Renderer;
 using std::optional;
 using std::string;
 
@@ -17,8 +18,8 @@ namespace ui {
 
 AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
     context(openCL->createQueuedContext(0, 1)),
-    renderer(context, flameStream),
-    flameModel(flameWindow),
+    renderer(context, &flame, flameStream),
+    flameModel(flameWindow, flameStream),
     preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
     weightsModel(&flame, weightsDataViewCtrl, removeXformButton),
@@ -46,8 +47,7 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     triangleModel.transformCoordsChanged
         .connect(eventBroker.activeXformCoordsChanged);
 
-    renderer.imageRendered
-        .connect(bind(&AevusFrame::setFlameBitmap, this));
+    renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
 
     eventBroker.activeXformCoordsChanged
         .connect(bind(&TransformModel::update, &preTransformModel));
@@ -55,8 +55,12 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
         .connect(bind(&TransformModel::update, &postTransformModel));
     eventBroker.activeXformCoordsChanged
         .connect(bind(&TriangleModel::update, &triangleModel));
+    eventBroker.activeXformCoordsChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
     eventBroker.flameWeightsChanged
         .connect(bind(&WeightsModel::update, &weightsModel));
+    eventBroker.flameWeightsChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
     eventBroker.activeXformChanged
         .connect(bind(&TransformModel::handleActiveXformChanged, &preTransformModel, _1));
     eventBroker.activeXformChanged
@@ -71,12 +75,20 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
         .connect(bind(&TriangleModel::handleActiveXformChanged, &triangleModel, _1));
     eventBroker.variationParamsChanged
         .connect(bind(&VariationModel::update, &variationModel));
+    eventBroker.variationParamsChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
     eventBroker.paletteChanged
         .connect(bind(&ColorModel::setupPalette, &colorModel));
+    eventBroker.paletteChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
     eventBroker.colorParamsChanged
         .connect(bind(&ColorModel::update, &colorModel));
+    eventBroker.colorParamsChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
     eventBroker.frameParamsChanged
         .connect(bind(&FrameModel::update, &frameModel));
+    eventBroker.frameParamsChanged
+        .connect(bind(&Renderer::renderFlame, &renderer));
 
     addXformButton->SetBitmap(loadEmbeddedPNG(
         _binary_res_plus_default_png_start,
@@ -220,14 +232,6 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameWeightsChanged();
     eventBroker.activeXformChanged(0);
     eventBroker.frameParamsChanged();
-    renderer.renderFlame(&flame);
-}
-
-void AevusFrame::setFlameBitmap() {
-    auto flameStreamView = flameStream.view();
-    wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());
-    wxImage image(wxStream);
-    flameModel.setBitmap(wxBitmap(image));
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {

@@ -9,8 +9,8 @@ namespace render {
 
 class Renderer {
 public:
-    Renderer(clwrap::CLQueuedContext& context, std::stringstream& stream);
-    void renderFlame(core::Flame* flame);
+    Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
+    void renderFlame();
     boost::signals2::signal<void ()> imageRendered;
     std::stringstream& stream;
     core::Flame* flame;
