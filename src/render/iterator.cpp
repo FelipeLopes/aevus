@@ -53,12 +53,6 @@ void Iterator::setup(Flame* flame) {
     itersArg.set(ceil(samples/GLOBAL_WORK_SIZE));
 }
 
-void Iterator::run() {
-    kernel.runBlocking(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    renderData.resize(4*width*height);
-    histogramArg.get(renderData);
-}
-
 void Iterator::runAsync(std::function<void()> block) {
     auto event = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     context.setEventCallback(event, clwrap::CLEvent::COMPLETE, block);

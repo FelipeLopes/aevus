@@ -16,7 +16,6 @@ class Iterator {
 public:
     Iterator(clwrap::CLQueuedContext& context, std::stringstream& out);
     void setup(core::Flame* flame);
-    void run();
     void runAsync(std::function<void()> block);
     void getRenderData();
     void writePNMImage();

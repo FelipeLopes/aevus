@@ -42,7 +42,9 @@ public:
         std::function<void(std::vector<T>&)> f);
     void get(std::vector<T>& arr);
     void set(const std::vector<T>& arg);
+    std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
 private:
+    void resize(size_t size);
     CLExecutable* kernel;
     cl_mem_flags clMemFlags;
     unsigned argIndex;
@@ -89,21 +91,32 @@ void CLBufferArg<T>::get(std::vector<T>& arr) {
 }
 
 template <typename T>
-void CLBufferArg<T>::set(const std::vector<T>& arg) {
-    if (buffer == NULL && arg.size() == 0) {
+void CLBufferArg<T>::resize(size_t size) {
+    if (buffer == NULL && size == 0) {
         return;
     }
-    if (buffer == NULL || (buffer->length() != arg.size())) {
-        if (arg.size() == 0) {
+    if (buffer == NULL || (buffer->length() != size)) {
+        if (size == 0) {
             printf("set to null\n");
             buffer = NULL;
         } else {
             buffer = std::make_unique<CLBuffer<T>>(kernel->context,
-                kernel->context.defaultQueue, clMemFlags, arg.size());
+                kernel->context.defaultQueue, clMemFlags, size);
         }
         kernel->setBufferArg(argIndex, buffer.get());
     }
+}
+
+template <typename T>
+void CLBufferArg<T>::set(const std::vector<T>& arg) {
+    resize(arg.size());
     buffer->write(arg);
+}
+
+template <typename T>
+std::shared_ptr<CLEvent> CLBufferArg<T>::setAsync(const std::vector<T>& arg) {
+    resize(arg.size());
+    return buffer->writeAsync(arg);
 }
 
 template <typename T>
