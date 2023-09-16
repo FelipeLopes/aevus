@@ -6,6 +6,7 @@
 #include <wx/wfstream.h>
 #include "../render/iterator.hpp"
 #include "flame_model.hpp"
+#include "transform_model.hpp"
 
 using namespace boost::signals2;
 using boost::bind;
@@ -48,6 +49,25 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
         .connect(eventBroker.activeXformCoordsChanged);
 
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
+
+    eventBroker.flameLoaded
+        .connect(bind(&TransformModel::update, &preTransformModel));
+    eventBroker.flameLoaded
+        .connect(bind(&TransformModel::update, &postTransformModel));
+    eventBroker.flameLoaded
+        .connect(bind(&TriangleModel::update, &triangleModel));
+    eventBroker.flameLoaded
+        .connect(bind(&Renderer::renderFlame, &renderer));
+    eventBroker.flameLoaded
+        .connect(bind(&WeightsModel::update, &weightsModel));
+    eventBroker.flameLoaded
+        .connect(bind(&VariationModel::update, &variationModel));
+    eventBroker.flameLoaded
+        .connect(bind(&ColorModel::setupPalette, &colorModel));
+    eventBroker.flameLoaded
+        .connect(bind(&ColorModel::update, &colorModel));
+    eventBroker.flameLoaded
+        .connect(bind(&FrameModel::update, &frameModel));
 
     eventBroker.activeXformCoordsChanged
         .connect(bind(&TransformModel::update, &preTransformModel));
@@ -228,10 +248,10 @@ void AevusFrame::loadFlame(std::string filename) {
     }
     flame.deserialize(inputStream);
     fclose(inputStream);
-    eventBroker.paletteChanged();
-    eventBroker.flameWeightsChanged();
-    eventBroker.activeXformChanged(0);
-    eventBroker.frameParamsChanged();
+    eventBroker.flameLoaded();
+    if (flame.xforms.size() > 0) {
+        eventBroker.activeXformChanged(0);
+    }
 }
 
 void AevusFrame::onFileOpen(wxCommandEvent& event) {
