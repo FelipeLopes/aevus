@@ -2,6 +2,7 @@
 
 using clwrap::CLQueuedContext;
 using core::Flame;
+using std::shared_ptr;
 using std::stringstream;
 using std::vector;
 
@@ -14,7 +15,7 @@ ToneMapper::ToneMapper(CLQueuedContext& context_):
     bArg(&kernel, 1, 1.0),
     histArg(&kernel, 2) { }
 
-void ToneMapper::setup(Flame* flame, vector<float>& hist) {
+void ToneMapper::setup(Flame* flame, std::shared_ptr<vector<float>> hist) {
     auto sz = flame->size.value();
     width = sz.width;
     height = sz.height;
@@ -31,7 +32,7 @@ void ToneMapper::setup(Flame* flame, vector<float>& hist) {
 
     aArg.set(a);
     bArg.set(b);
-    histArg.set(hist);
+    histArg.set(*hist);
 }
 
 void ToneMapper::runAsync(std::function<void()> block) {

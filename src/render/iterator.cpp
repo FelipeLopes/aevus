@@ -3,6 +3,7 @@
 #include <random>
 
 using core::Flame;
+using std::shared_ptr;
 using std::stringstream;
 using std::vector;
 
@@ -48,39 +49,13 @@ void Iterator::setup(Flame* flame) {
     itersArg.set(ceil(samples/GLOBAL_WORK_SIZE));
 }
 
-void Iterator::runAsync(std::function<void()> block) {
-    auto event = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    context.setEventCallback(event, clwrap::CLEvent::COMPLETE, block);
-}
-
-void Iterator::getRenderData() {
-    renderData.resize(4*width*height);
-    histogramArg.get(renderData);
-}
-
-void Iterator::writePNMImage() {
-    out.str("");
-    out.clear();
-    out << "P6\n" << width << " " << height << "\n255\n";
-    float bg_ra = background.r * background.a;
-    float bg_ga = background.g * background.a;
-    float bg_ba = background.b * background.a;
-    for (int i=0; i<renderData.size()/4; i++) {
-        float a = renderData[4*i+3];
-        a = std::min(a, 1.0f);
-        float r = renderData[4*i]*a + bg_ra*(1-a);
-        float g = renderData[4*i+1]*a + bg_ga*(1-a);
-        float b = renderData[4*i+2]*a + bg_ba*(1-a);
-        float af = a + background.a - a*background.a;
-
-        r /= af;
-        g /= af;
-        b /= af;
-
-        out.put((uint8_t)(r*255));
-        out.put((uint8_t)(g*255));
-        out.put((uint8_t)(b*255));
-    }
+void Iterator::runAsync(std::function<void(shared_ptr<vector<float>>)> block) {
+    auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    auto histogram = std::make_shared<vector<float>>();
+    auto readEvent = histogramArg.getAsyncAfterEvent(execEvent, histogram);
+    context.setEventCallback(readEvent, clwrap::CLEvent::COMPLETE, [histogram, block] {
+        block(histogram);
+    });
 }
 
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {

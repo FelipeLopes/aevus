@@ -3,6 +3,7 @@
 #include "../clwrap/cl_arg.hpp"
 #include "../core/flame.hpp"
 #include "kernel.hpp"
+#include <memory>
 #include <sstream>
 #include <vector>
 
@@ -13,7 +14,7 @@ class Renderer;
 class ToneMapper {
 public:
     ToneMapper(clwrap::CLQueuedContext& context);
-    void setup(core::Flame* flame, std::vector<float>& hist);
+    void setup(core::Flame* flame, std::shared_ptr<std::vector<float>> hist);
     void runAsync(std::function<void()> block);
     void writePNMImage(std::stringstream& out);
 private:

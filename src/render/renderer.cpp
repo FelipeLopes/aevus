@@ -13,9 +13,8 @@ Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream
 
 void Renderer::renderFlame() {
     iterator.setup(flame);
-    iterator.runAsync([this] {
-        iterator.getRenderData();
-        toneMapper.setup(flame, iterator.renderData);
+    iterator.runAsync([this] (auto hist) {
+        toneMapper.setup(flame, hist);
         toneMapper.runAsync([this] {
             toneMapper.writePNMImage(stream);
             imageRendered();
