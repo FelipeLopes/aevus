@@ -43,21 +43,25 @@ public:
     void get(std::vector<T>& arr);
     void set(const std::vector<T>& arg);
     std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
+    bool isLazy();
+    void lazy(bool lazy = true);
+    std::vector<T> argVec;
 private:
     void resize(size_t size);
     CLExecutable* kernel;
     cl_mem_flags clMemFlags;
     unsigned argIndex;
+    bool isLazyArg;
     std::unique_ptr<CLBuffer<T>> buffer;
 };
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags_, unsigned argIndex_):
-    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_) { }
+    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_), isLazyArg(false) { }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
-    std::vector<T>& arg): kernel(kernel_), argIndex(argIndex_),
+    std::vector<T>& arg): kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, arg.size()))
 {
@@ -67,7 +71,7 @@ CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsi
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
-    size_t size): kernel(kernel_), argIndex(argIndex_),
+    size_t size): kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, size))
 {
@@ -77,8 +81,7 @@ CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsi
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
     std::function<void(std::vector<T>&)> f):
-    kernel(kernel_),
-    argIndex(argIndex_),
+    kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, f))
 {
@@ -117,6 +120,16 @@ template <typename T>
 std::shared_ptr<CLEvent> CLBufferArg<T>::setAsync(const std::vector<T>& arg) {
     resize(arg.size());
     return buffer->writeAsync(arg);
+}
+
+template <typename T>
+bool CLBufferArg<T>::isLazy() {
+    return isLazyArg;
+}
+
+template <typename T>
+void CLBufferArg<T>::lazy(bool lazy) {
+    isLazyArg = lazy;
 }
 
 template <typename T>

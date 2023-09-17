@@ -33,22 +33,17 @@ void Iterator::setup(Flame* flame) {
 
     int area = width*height;
     flameArg.set(flame->getFlameCL());
-    vector<core::IterationState> stateVec;
-    flame->readInitialStateArray(stateVec, GLOBAL_WORK_SIZE);
-    stateArg.set(stateVec);
-    vector<core::XFormCL> xformVec;
-    flame->readXFormCLArray(xformVec);
-    xformArg.set(xformVec);
-    vector<uint8_t> xformDistVec;
-    flame->readXFormDistribution(xformDistVec);
-    xformDistArg.set(xformDistVec);
-    vector<core::ColorCL> paletteVec;
-    flame->palette.readColorCLArray(paletteVec);
-    paletteArg.set(paletteVec);
-    vector<float> hist;
-    hist.resize(4*area);
-    std::fill(hist.begin(), hist.end(), 0.0f);
-    histogramArg.set(hist);
+    flame->readInitialStateArray(stateArg.argVec, GLOBAL_WORK_SIZE);
+    stateArg.set(stateArg.argVec);
+    flame->readXFormCLArray(xformArg.argVec);
+    xformArg.set(xformArg.argVec);
+    flame->readXFormDistribution(xformDistArg.argVec);
+    xformDistArg.set(xformDistArg.argVec);
+    flame->palette.readColorCLArray(paletteArg.argVec);
+    paletteArg.set(paletteArg.argVec);
+    histogramArg.argVec.resize(4*area);
+    std::fill(histogramArg.argVec.begin(), histogramArg.argVec.end(), 0.0f);
+    histogramArg.set(histogramArg.argVec);
     double samples = area*quality;
     itersArg.set(ceil(samples/GLOBAL_WORK_SIZE));
 }
