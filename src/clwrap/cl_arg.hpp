@@ -5,6 +5,7 @@
 #include <CL/cl.h>
 #include <functional>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 
 namespace clwrap {
@@ -49,6 +50,7 @@ public:
     void get(std::vector<T>& arr);
     void set(const std::vector<T>& arg);
     std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
+    size_t size();
     bool isLazy() override;
     void lazy(bool lazy = true);
     std::shared_ptr<CLEvent> lazySet() override;
@@ -108,17 +110,11 @@ void CLBufferArg<T>::get(std::vector<T>& arr) {
 
 template <typename T>
 void CLBufferArg<T>::resize(size_t size) {
-    if (buffer == NULL && size == 0) {
-        return;
-    }
-    if (buffer == NULL || (buffer->length() != size)) {
-        if (size == 0) {
-            printf("set to null\n");
-            buffer = NULL;
-        } else {
-            buffer = std::make_unique<CLBuffer<T>>(kernel->context,
-                kernel->context.defaultQueue, clMemFlags, size);
-        }
+    if (size == 0) {
+        buffer = NULL;
+    } else {
+        buffer = std::make_unique<CLBuffer<T>>(kernel->context,
+            kernel->context.defaultQueue, clMemFlags, size);
         kernel->setBufferArg(argIndex, buffer.get());
     }
 }
@@ -136,6 +132,15 @@ std::shared_ptr<CLEvent> CLBufferArg<T>::setAsync(const std::vector<T>& arg) {
 }
 
 template <typename T>
+size_t CLBufferArg<T>::size() {
+    if (buffer == NULL) {
+        return 0;
+    } else {
+        return buffer->length();
+    }
+}
+
+template <typename T>
 bool CLBufferArg<T>::isLazy() {
     return isLazyArg;
 }
@@ -147,6 +152,10 @@ void CLBufferArg<T>::lazy(bool lazy) {
 
 template <typename T>
 std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet() {
+    if (argVec.size() == 0) {
+        throw std::invalid_argument("Buffer size cannot be zero");
+    }
+    resize(argVec.size());
     return setAsync(argVec);
 }
 
