@@ -11,9 +11,8 @@ using clwrap::CLQueuedContext;
 
 namespace render {
 
-Iterator::Iterator(CLQueuedContext& context_, stringstream& out_):
+Iterator::Iterator(CLQueuedContext& context_):
     context(context_),
-    out(out_),
     kernel(context, "iterate"),
     flameArg(&kernel, 0, core::FlameCL()),
     stateArg(&kernel, 1),

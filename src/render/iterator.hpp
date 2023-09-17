@@ -14,13 +14,12 @@ class Renderer;
 
 class Iterator {
 public:
-    Iterator(clwrap::CLQueuedContext& context, std::stringstream& out);
+    Iterator(clwrap::CLQueuedContext& context);
     void setup(core::Flame* flame);
     void runAsync(std::function<void(std::shared_ptr<std::vector<float>>)> block);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     clwrap::CLQueuedContext& context;
-    std::stringstream& out;
     Kernel kernel;
     int width, height, scale, quality;
     double brightness;
