@@ -34,8 +34,7 @@ void CLArg<T>::set(T arg) {
 
 class CLKernelBufferArg {
 public:
-    virtual bool isLazy() = 0;
-    virtual std::shared_ptr<CLEvent> lazySet() = 0;
+    virtual std::shared_ptr<CLEvent> lazySet(std::vector<uint8_t>& data) = 0;
 };
 
 template <typename T>
@@ -53,55 +52,46 @@ public:
     void set(const std::vector<T>& arg);
     std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
     size_t size();
-    bool isLazy() override;
-    void lazy(bool lazy = true);
-    std::shared_ptr<CLEvent> lazySet() override;
-    std::vector<T> argVec;
+    void lazy(std::vector<T>& arr);
+    std::shared_ptr<CLEvent> lazySet(std::vector<uint8_t>& data) override;
 private:
     void resize(size_t size);
     CLExecutable* kernel;
     cl_mem_flags clMemFlags;
     unsigned argIndex;
-    bool isLazyArg;
     std::unique_ptr<CLBuffer<T>> buffer;
 };
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags_, unsigned argIndex_):
-    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_), isLazyArg(false)
-{
-    kernel->bufferArgs.push_back(this);
-}
+    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_) { }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
-    std::vector<T>& arg): kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
+    std::vector<T>& arg): kernel(kernel_), argIndex(argIndex_),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, arg.size()))
 {
     buffer->write(arg);
-    kernel->bufferArgs.push_back(this);
     kernel->setBufferArg(argIndex, buffer.get());
 }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
-    size_t size): kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
+    size_t size): kernel(kernel_), argIndex(argIndex_),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, size))
 {
-    kernel->bufferArgs.push_back(this);
     kernel->setBufferArg(argIndex, buffer);
 }
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
     std::function<void(std::vector<T>&)> f):
-    kernel(kernel_), argIndex(argIndex_), isLazyArg(false),
+    kernel(kernel_), argIndex(argIndex_),
     buffer(std::make_unique<CLBuffer<T>>(
         kernel->context, kernel->context.defaultQueue, clMemFlags, f))
 {
-    kernel->bufferArgs.push_back(this);
     kernel->setBufferArg(argIndex, buffer.get());
 }
 
@@ -150,22 +140,23 @@ size_t CLBufferArg<T>::size() {
 }
 
 template <typename T>
-bool CLBufferArg<T>::isLazy() {
-    return isLazyArg;
+void CLBufferArg<T>::lazy(std::vector<T>& arr) {
+    auto ptr = reinterpret_cast<uint8_t*>(arr.data());
+    size_t len = arr.size()*sizeof(T);
+    std::vector<uint8_t> data(ptr, ptr+len);
+    kernel->lazyArgs.push_back(CLExecutable::LazyArg(this, data));
 }
 
 template <typename T>
-void CLBufferArg<T>::lazy(bool lazy) {
-    isLazyArg = lazy;
-}
-
-template <typename T>
-std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet() {
-    if (argVec.size() == 0) {
+std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet(std::vector<uint8_t>& data) {
+    if (data.size() == 0) {
         throw std::invalid_argument("Buffer size cannot be zero");
     }
-    resize(argVec.size());
-    return setAsync(argVec);
+    size_t len = data.size()/sizeof(T);
+    resize(len);
+    auto typedData = reinterpret_cast<T*>(data.data());
+    std::vector<T> vec(typedData, typedData+len);
+    return setAsync(vec);
 }
 
 template <typename T>

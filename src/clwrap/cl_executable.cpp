@@ -52,11 +52,12 @@ std::shared_ptr<CLEvent> CLExecutable::runAsync(
 {
     cl_event event;
     vector<cl_event> depEvents;
-    for (int i=0; i<bufferArgs.size(); i++) {
-        if (bufferArgs[i]->isLazy()) {
-            depEvents.push_back(bufferArgs[i]->lazySet()->clEvent);
-        }
+    for (int i=0; i<lazyArgs.size(); i++) {
+        depEvents.push_back(
+            lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data)->clEvent
+        );
     }
+    lazyArgs.clear();
     cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,
         &globalWorkSize, &localWorkSize, depEvents.size(), depEvents.data(), &event);
     if (ret != CL_SUCCESS) {

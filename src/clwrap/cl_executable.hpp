@@ -23,7 +23,13 @@ public:
     void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
     std::shared_ptr<CLEvent> runAsync(const size_t globalWorkSize, const size_t localWorkSize);
     const CLQueuedContext& context;
-    std::vector<CLKernelBufferArg*> bufferArgs;
+    struct LazyArg {
+        CLKernelBufferArg* bufferArg;
+        std::vector<uint8_t> data;
+        LazyArg(CLKernelBufferArg* bufferArg_, std::vector<uint8_t>& data_):
+            bufferArg(bufferArg_), data(data_) { }
+    };
+    std::vector<LazyArg> lazyArgs;
 private:
     cl_program program;
     cl_kernel kernel;
