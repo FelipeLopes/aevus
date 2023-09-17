@@ -34,16 +34,16 @@ void Iterator::setup(Flame* flame) {
     int area = width*height;
     flameArg.set(flame->getFlameCL());
     flame->readInitialStateArray(stateArg.argVec, GLOBAL_WORK_SIZE);
-    stateArg.set(stateArg.argVec);
+    stateArg.lazy();
     flame->readXFormCLArray(xformArg.argVec);
-    xformArg.set(xformArg.argVec);
+    xformArg.lazy();
     flame->readXFormDistribution(xformDistArg.argVec);
-    xformDistArg.set(xformDistArg.argVec);
+    xformDistArg.lazy();
     flame->palette.readColorCLArray(paletteArg.argVec);
-    paletteArg.set(paletteArg.argVec);
+    paletteArg.lazy();
     histogramArg.argVec.resize(4*area);
     std::fill(histogramArg.argVec.begin(), histogramArg.argVec.end(), 0.0f);
-    histogramArg.set(histogramArg.argVec);
+    histogramArg.lazy();
     double samples = area*quality;
     itersArg.set(ceil(samples/GLOBAL_WORK_SIZE));
 }

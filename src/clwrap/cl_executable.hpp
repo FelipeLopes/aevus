@@ -9,6 +9,8 @@
 
 namespace clwrap {
 
+class CLKernelBufferArg;
+
 class CLExecutable {
 public:
     CLExecutable(const CLQueuedContext& clContext, std::string name,
@@ -21,6 +23,7 @@ public:
     void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
     std::shared_ptr<CLEvent> runAsync(const size_t globalWorkSize, const size_t localWorkSize);
     const CLQueuedContext& context;
+    std::vector<CLKernelBufferArg*> bufferArgs;
 private:
     cl_program program;
     cl_kernel kernel;

@@ -1,9 +1,12 @@
 #include "cl_executable.hpp"
+#include "cl_arg.hpp"
 #include "cl_context.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <fstream>
 #include <sstream>
+
+using std::vector;
 
 namespace clwrap {
 
@@ -48,8 +51,14 @@ std::shared_ptr<CLEvent> CLExecutable::runAsync(
     const size_t globalWorkSize, const size_t localWorkSize)
 {
     cl_event event;
+    vector<cl_event> depEvents;
+    for (int i=0; i<bufferArgs.size(); i++) {
+        if (bufferArgs[i]->isLazy()) {
+            depEvents.push_back(bufferArgs[i]->lazySet()->clEvent);
+        }
+    }
     cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,
-        &globalWorkSize, &localWorkSize, 0, NULL, &event);
+        &globalWorkSize, &localWorkSize, depEvents.size(), depEvents.data(), &event);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not run OpenCL kernel");
