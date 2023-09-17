@@ -3,6 +3,7 @@
 #include "cl_context.hpp"
 #include <CL/cl.h>
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <system_error>
 #include <vector>
@@ -20,6 +21,8 @@ public:
     void write(const std::vector<T>& data);
     std::shared_ptr<CLEvent> writeAsync(const std::vector<T>& data);
     void read(std::vector<T>& data);
+    std::shared_ptr<CLEvent> readAsyncAfterEvent(std::shared_ptr<CLEvent> event,
+        std::shared_ptr<std::vector<T>> arr);
     size_t length() const;
     const cl_mem* memoryObject() const;
 private:
@@ -96,6 +99,21 @@ void CLBuffer<T>::read(std::vector<T>& data) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not read from OpenCL buffer");
     }
+}
+
+template <typename T>
+std::shared_ptr<CLEvent> CLBuffer<T>::readAsyncAfterEvent(std::shared_ptr<CLEvent> depEvent,
+    std::shared_ptr<std::vector<T>> arr)
+{
+    cl_event event;
+    arr->resize(size);
+    cl_int ret = clEnqueueReadBuffer(commandQueue, memObject, CL_FALSE, 0, size*sizeof(T),
+        arr->data(), 1, &depEvent->clEvent, &event);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not read from OpenCL buffer");
+    }
+    return std::make_shared<CLEvent>(event);
 }
 
 template <typename T>
