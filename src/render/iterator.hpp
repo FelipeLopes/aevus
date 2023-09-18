@@ -10,18 +10,25 @@
 
 namespace render {
 
+struct IteratorParams {
+    core::FlameCL flameCL;
+    std::shared_ptr<std::vector<core::IterationState>> stateVec;
+    std::shared_ptr<std::vector<core::XFormCL>> xformVec;
+    std::shared_ptr<std::vector<uint8_t>> xformDistVec;
+    std::shared_ptr<std::vector<core::ColorCL>> paletteVec;
+    int iters;
+};
+
 class Iterator {
 public:
     Iterator(clwrap::CLQueuedContext& context);
-    void setup(core::Flame* flame);
-    void runAsync(std::function<void(std::shared_ptr<std::vector<float>>)> block);
+    IteratorParams extractParams(core::Flame* flame);
+    void runAsync(IteratorParams params,
+        std::function<void(std::shared_ptr<std::vector<float>>)> block);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     clwrap::CLQueuedContext& context;
     Kernel kernel;
-    int width, height, scale, quality;
-    double brightness;
-    core::ColorCL background;
 
     clwrap::CLArg<core::FlameCL> flameArg;
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;

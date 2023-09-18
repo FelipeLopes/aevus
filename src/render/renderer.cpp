@@ -14,8 +14,8 @@ Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream
     flame(flame_), iterator(context), toneMapper(context) { }
 
 void Renderer::renderFlame() {
-    iterator.setup(flame);
-    iterator.runAsync([this] (auto hist) {
+    auto params = iterator.extractParams(flame);
+    iterator.runAsync(params, [this] (auto hist) {
         toneMapper.setup(flame, hist);
         toneMapper.runAsync([this] (auto imgData) {
             auto sz = flame->size.value();
