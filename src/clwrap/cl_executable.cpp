@@ -10,7 +10,7 @@ using std::vector;
 
 namespace clwrap {
 
-CLExecutable::CLExecutable(const CLQueuedContext& clContext, std::string name,
+CLExecutable::CLExecutable(CLQueuedContext& clContext, std::string name,
     const char* sourceStart, const char* sourceEnd):
     context(clContext)
 {

@@ -56,9 +56,8 @@ void Iterator::setup(Flame* flame) {
 void Iterator::runAsync(std::function<void(shared_ptr<vector<float>>)> block) {
     auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     auto histogram = std::make_shared<vector<float>>();
-    auto readEvent = histogramArg.getAsyncAfterEvent(execEvent, histogram);
-    context.setEventCallback(readEvent, clwrap::CLEvent::COMPLETE, [histogram, block] {
-        block(histogram);
+    histogramArg.getAsyncAfterEvent(execEvent, [block] (auto readResult) {
+        block(readResult.get());
     });
 }
 

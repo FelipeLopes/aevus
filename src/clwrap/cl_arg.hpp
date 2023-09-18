@@ -47,8 +47,8 @@ public:
     CLBufferArg(CLExecutable* kernel, cl_mem_flags clMemFlags, unsigned argIndex,
         std::function<void(std::vector<T>&)> f);
     void get(std::vector<T>& arr);
-    std::shared_ptr<CLEvent> getAsyncAfterEvent(std::shared_ptr<CLEvent> event,
-        std::shared_ptr<std::vector<T>> arr);
+    void getAsyncAfterEvent(std::shared_ptr<CLEvent> event,
+        std::function<void(CLBufferReadResult<T>)> block);
     void set(const std::vector<T>& arg);
     std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
     size_t size();
@@ -101,10 +101,10 @@ void CLBufferArg<T>::get(std::vector<T>& arr) {
 }
 
 template <typename T>
-std::shared_ptr<CLEvent> CLBufferArg<T>::getAsyncAfterEvent(std::shared_ptr<CLEvent> event,
-    std::shared_ptr<std::vector<T>> arr)
+void CLBufferArg<T>::getAsyncAfterEvent(std::shared_ptr<CLEvent> event,
+    std::function<void(CLBufferReadResult<T>)> block)
 {
-    return buffer->readAsyncAfterEvent(event, arr);
+    return buffer->readAsyncAfterEvent(event, block);
 }
 
 template <typename T>

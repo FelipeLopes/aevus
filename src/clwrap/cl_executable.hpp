@@ -13,7 +13,7 @@ class CLKernelBufferArg;
 
 class CLExecutable {
 public:
-    CLExecutable(const CLQueuedContext& clContext, std::string name,
+    CLExecutable(CLQueuedContext& clContext, std::string name,
         const char* sourceStart, const char* sourceEnd);
     ~CLExecutable();
     template <typename T>
@@ -22,7 +22,7 @@ public:
     void setBufferArg(unsigned int argIndex, const CLBuffer<T>* arg);
     void runBlocking(const size_t globalWorkSize, const size_t localWorkSize);
     std::shared_ptr<CLEvent> runAsync(const size_t globalWorkSize, const size_t localWorkSize);
-    const CLQueuedContext& context;
+    CLQueuedContext& context;
     struct LazyArg {
         CLKernelBufferArg* bufferArg;
         std::vector<uint8_t> data;

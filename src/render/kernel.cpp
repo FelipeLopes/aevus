@@ -5,7 +5,7 @@ using clwrap::CLQueuedContext;
 
 namespace render {
 
-Kernel::Kernel(const CLQueuedContext& context, std::string name):
+Kernel::Kernel(CLQueuedContext& context, std::string name):
     CLExecutable(context, name, lookup.find(name)->second.first,
         lookup.find(name)->second.second) { }
 

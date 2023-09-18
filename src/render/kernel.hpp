@@ -12,7 +12,7 @@ namespace render {
 
 class Kernel : public clwrap::CLExecutable {
 public:
-    Kernel(const clwrap::CLQueuedContext& context, std::string name);
+    Kernel(clwrap::CLQueuedContext& context, std::string name);
 private:
     static const std::map<std::string, std::pair<char*, char*>> lookup;
 };
