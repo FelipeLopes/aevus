@@ -10,8 +10,6 @@
 
 namespace render {
 
-class Renderer;
-
 class Iterator {
 public:
     Iterator(clwrap::CLQueuedContext& context);
