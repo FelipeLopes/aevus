@@ -43,29 +43,4 @@ void ToneMapper::runAsync(std::function<void(shared_ptr<vector<float>>)> block) 
     });
 }
 
-void ToneMapper::writePNMImage(vector<float>& imgData, stringstream& out) {
-    out.str("");
-    out.clear();
-    out << "P6\n" << width << " " << height << "\n255\n";
-    float bg_ra = background.r * background.a;
-    float bg_ga = background.g * background.a;
-    float bg_ba = background.b * background.a;
-    for (int i=0; i<imgData.size()/4; i++) {
-        float a = imgData[4*i+3];
-        a = std::min(a, 1.0f);
-        float r = imgData[4*i]*a + bg_ra*(1-a);
-        float g = imgData[4*i+1]*a + bg_ga*(1-a);
-        float b = imgData[4*i+2]*a + bg_ba*(1-a);
-        float af = a + background.a - a*background.a;
-
-        r /= af;
-        g /= af;
-        b /= af;
-
-        out.put((uint8_t)(r*255));
-        out.put((uint8_t)(g*255));
-        out.put((uint8_t)(b*255));
-    }
-}
-
 }

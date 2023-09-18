@@ -16,6 +16,8 @@ public:
     core::Flame* flame;
     Iterator iterator;
     ToneMapper toneMapper;
+private:
+    void writePNMImage(std::vector<float>& imgData, int width, int height, core::ColorCL background);
 };
 
 }

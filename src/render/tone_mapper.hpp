@@ -14,7 +14,6 @@ public:
     ToneMapper(clwrap::CLQueuedContext& context);
     void setup(core::Flame* flame, std::shared_ptr<std::vector<float>> hist);
     void runAsync(std::function<void(std::shared_ptr<std::vector<float>>)> block);
-    void writePNMImage(std::vector<float>& imgData, std::stringstream& out);
 private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;
