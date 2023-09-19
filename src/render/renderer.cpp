@@ -10,18 +10,51 @@ using std::vector;
 namespace render {
 
 Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream_): stream(stream_),
-    flame(flame_), iterator(context), toneMapper(context) { }
+    flame(flame_), iterator(context), toneMapper(context), flameModified(true), idle(true)
+{
+    renderFlame();
+}
+
+void Renderer::update() {
+    lock.lock();
+    flameModified = true;
+    lock.unlock();
+    renderFlame();
+}
 
 void Renderer::renderFlame() {
-    iterator.extractParams(flame, iteratorParams);
-    toneMapper.extractParams(flame, toneMapperParams);
-    extractRendererParams();
-    iterator.runAsync(iteratorParams, [this] (auto hist) {
-        toneMapper.runAsync(toneMapperParams, hist, [this] (auto imgData) {
-            writePNMImage(*imgData);
-            imageRendered();
+    lock.lock();
+    if (idle) {
+        flameModified = false;
+        idle = false;
+        iterator.extractParams(flame, iteratorParams);
+        toneMapper.extractParams(flame, toneMapperParams);
+        extractRendererParams();
+        iterator.runAsync(iteratorParams, [this] (auto hist) {
+            if (!flameModified) {
+                toneMapper.runAsync(toneMapperParams, hist, [this] (auto imgData) {
+                    if (!flameModified) {
+                        writePNMImage(*imgData);
+                        lock.lock();
+                        idle = true;
+                        lock.unlock();
+                        imageRendered();
+                    } else {
+                        lock.lock();
+                        idle = true;
+                        lock.unlock();
+                        renderFlame();
+                    }
+                });
+            } else {
+                lock.lock();
+                idle = true;
+                lock.unlock();
+                renderFlame();
+            }
         });
-    });
+    }
+    lock.unlock();
 }
 
 void Renderer::writePNMImage(vector<float>& imgData) {

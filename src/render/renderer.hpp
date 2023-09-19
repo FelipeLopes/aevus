@@ -15,6 +15,7 @@ struct RendererParams {
 class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
+    void update();
     void renderFlame();
     boost::signals2::signal<void ()> imageRendered;
 private:
@@ -27,6 +28,8 @@ private:
     ToneMapper toneMapper;
     ToneMapperParams toneMapperParams;
     RendererParams rendererParams;
+    bool flameModified, idle;
+    std::mutex lock;
 };
 
 }

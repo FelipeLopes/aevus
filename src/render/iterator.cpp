@@ -1,6 +1,8 @@
 #include "iterator.hpp"
 #include "tone_mapper.hpp"
+#include <memory>
 #include <random>
+#include <vector>
 
 using core::Flame;
 using std::shared_ptr;
@@ -35,6 +37,13 @@ void Iterator::extractParams(Flame* flame, IteratorParams& params) {
 void Iterator::runAsync(IteratorParams& params,
     std::function<void(shared_ptr<vector<float>>)> block)
 {
+    if (params.xformVec.size() == 0) {
+        auto arr = std::make_shared<vector<float>>();
+        arr->resize(4*params.flameCL.width*params.flameCL.height);
+        std::fill(arr->begin(), arr->end(), 0.0f);
+        block(arr);
+        return;
+    }
     flameArg.set(params.flameCL);
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);

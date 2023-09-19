@@ -57,7 +57,7 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     eventBroker.flameLoaded
         .connect(bind(&TriangleModel::update, &triangleModel));
     eventBroker.flameLoaded
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.flameLoaded
         .connect(bind(&WeightsModel::update, &weightsModel));
     eventBroker.flameLoaded
@@ -76,11 +76,11 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     eventBroker.activeXformCoordsChanged
         .connect(bind(&TriangleModel::update, &triangleModel));
     eventBroker.activeXformCoordsChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.flameWeightsChanged
         .connect(bind(&WeightsModel::update, &weightsModel));
     eventBroker.flameWeightsChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.activeXformChanged
         .connect(bind(&TransformModel::handleActiveXformChanged, &preTransformModel, _1));
     eventBroker.activeXformChanged
@@ -96,19 +96,19 @@ AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NUL
     eventBroker.variationParamsChanged
         .connect(bind(&VariationModel::update, &variationModel));
     eventBroker.variationParamsChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.paletteChanged
         .connect(bind(&ColorModel::setupPalette, &colorModel));
     eventBroker.paletteChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.colorParamsChanged
         .connect(bind(&ColorModel::update, &colorModel));
     eventBroker.colorParamsChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
     eventBroker.frameParamsChanged
         .connect(bind(&FrameModel::update, &frameModel));
     eventBroker.frameParamsChanged
-        .connect(bind(&Renderer::renderFlame, &renderer));
+        .connect(bind(&Renderer::update, &renderer));
 
     addXformButton->SetBitmap(loadEmbeddedPNG(
         _binary_res_plus_default_png_start,
