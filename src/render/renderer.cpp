@@ -3,7 +3,6 @@
 #include "tone_mapper.hpp"
 
 using clwrap::CLQueuedContext;
-using core::ColorCL;
 using core::Flame;
 using std::stringstream;
 using std::vector;
@@ -14,31 +13,33 @@ Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream
     flame(flame_), iterator(context), toneMapper(context) { }
 
 void Renderer::renderFlame() {
-    auto params = iterator.extractParams(flame);
-    iterator.runAsync(params, [this] (auto hist) {
-        toneMapper.setup(flame, hist);
-        toneMapper.runAsync([this] (auto imgData) {
-            auto sz = flame->size.value();
-            writePNMImage(*imgData, sz.width, sz.height, flame->background.value().toColorCL());
+    iterator.extractParams(flame, iteratorParams);
+    toneMapper.extractParams(flame, toneMapperParams);
+    extractRendererParams();
+    iterator.runAsync(iteratorParams, [this] (auto hist) {
+        toneMapper.runAsync(toneMapperParams, hist, [this] (auto imgData) {
+            writePNMImage(*imgData);
             imageRendered();
         });
     });
 }
 
-void Renderer::writePNMImage(vector<float>& imgData, int width, int height, ColorCL background) {
+void Renderer::writePNMImage(vector<float>& imgData) {
     stream.str("");
     stream.clear();
-    stream << "P6\n" << width << " " << height << "\n255\n";
-    float bg_ra = background.r * background.a;
-    float bg_ga = background.g * background.a;
-    float bg_ba = background.b * background.a;
+    stream << "P6\n" << rendererParams.width << " " <<
+        rendererParams.height << "\n255\n";
+    auto bg = rendererParams.background;
+    float bg_ra = bg.r * bg.a;
+    float bg_ga = bg.g * bg.a;
+    float bg_ba = bg.b * bg.a;
     for (int i=0; i<imgData.size()/4; i++) {
         float a = imgData[4*i+3];
         a = std::min(a, 1.0f);
         float r = imgData[4*i]*a + bg_ra*(1-a);
         float g = imgData[4*i+1]*a + bg_ga*(1-a);
         float b = imgData[4*i+2]*a + bg_ba*(1-a);
-        float af = a + background.a - a*background.a;
+        float af = a + bg.a - a*bg.a;
 
         r /= af;
         g /= af;
@@ -48,6 +49,13 @@ void Renderer::writePNMImage(vector<float>& imgData, int width, int height, Colo
         stream.put((uint8_t)(g*255));
         stream.put((uint8_t)(b*255));
     }
+}
+
+void Renderer::extractRendererParams() {
+    auto sz = flame->size.value();
+    rendererParams.width = sz.width;
+    rendererParams.height = sz.height;
+    rendererParams.background = flame->background.value().toColorCL();
 }
 
 }

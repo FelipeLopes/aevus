@@ -3,7 +3,6 @@
 #include <random>
 
 using core::Flame;
-using std::make_shared;
 using std::shared_ptr;
 using std::stringstream;
 using std::vector;
@@ -23,30 +22,24 @@ Iterator::Iterator(CLQueuedContext& context_):
     histogramArg(&kernel, 5),
     itersArg(&kernel, 6, 0) { }
 
-IteratorParams Iterator::extractParams(Flame* flame) {
-    IteratorParams params;
+void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
-    params.stateVec = make_shared<vector<core::IterationState>>();
-    flame->readInitialStateArray(*params.stateVec, GLOBAL_WORK_SIZE);
-    params.xformVec = make_shared<vector<core::XFormCL>>();
-    flame->readXFormCLArray(*params.xformVec);
-    params.xformDistVec = make_shared<vector<uint8_t>>();
-    flame->readXFormDistribution(*params.xformDistVec);
-    params.paletteVec = make_shared<vector<core::ColorCL>>();
-    flame->palette.readColorCLArray(*params.paletteVec);
+    flame->readInitialStateArray(params.stateVec, GLOBAL_WORK_SIZE);
+    flame->readXFormCLArray(params.xformVec);
+    flame->readXFormDistribution(params.xformDistVec);
+    flame->palette.readColorCLArray(params.paletteVec);
     double samples = flame->quality.value()*params.flameCL.width*params.flameCL.height;
     params.iters = ceil(samples/GLOBAL_WORK_SIZE);
-    return params;
 }
 
-void Iterator::runAsync(IteratorParams params,
+void Iterator::runAsync(IteratorParams& params,
     std::function<void(shared_ptr<vector<float>>)> block)
 {
     flameArg.set(params.flameCL);
-    stateArg.lazy(*params.stateVec);
-    xformArg.lazy(*params.xformVec);
-    xformDistArg.lazy(*params.xformDistVec);
-    paletteArg.lazy(*params.paletteVec);
+    stateArg.lazy(params.stateVec);
+    xformArg.lazy(params.xformVec);
+    xformDistArg.lazy(params.xformDistVec);
+    paletteArg.lazy(params.paletteVec);
     vector<float> histogramVec;
     histogramVec.resize(4*params.flameCL.width*params.flameCL.height);
     std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);

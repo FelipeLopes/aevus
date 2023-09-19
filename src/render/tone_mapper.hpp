@@ -9,11 +9,17 @@
 
 namespace render {
 
+struct ToneMapperParams {
+    int width, height;
+    double a, b;
+};
+
 class ToneMapper {
 public:
     ToneMapper(clwrap::CLQueuedContext& context);
-    void setup(core::Flame* flame, std::shared_ptr<std::vector<float>> hist);
-    void runAsync(std::function<void(std::shared_ptr<std::vector<float>>)> block);
+    void extractParams(core::Flame* flame, ToneMapperParams& params);
+    void runAsync(ToneMapperParams& params, std::shared_ptr<std::vector<float>> hist,
+        std::function<void(std::shared_ptr<std::vector<float>>)> block);
 private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;
@@ -21,9 +27,6 @@ private:
     clwrap::CLArg<float> aArg;
     clwrap::CLArg<float> bArg;
     clwrap::CLReadWriteBufferArg<float> histArg;
-
-    int width, height;
-    core::ColorCL background;
 
     static const int LOCAL_WORK_SIZE = 64;
 };

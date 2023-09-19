@@ -7,17 +7,26 @@
 
 namespace render {
 
+struct RendererParams {
+    int width, height;
+    core::ColorCL background;
+};
+
 class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
     void renderFlame();
     boost::signals2::signal<void ()> imageRendered;
+private:
+    void writePNMImage(std::vector<float>& imgData);
+    void extractRendererParams();
     std::stringstream& stream;
     core::Flame* flame;
     Iterator iterator;
+    IteratorParams iteratorParams;
     ToneMapper toneMapper;
-private:
-    void writePNMImage(std::vector<float>& imgData, int width, int height, core::ColorCL background);
+    ToneMapperParams toneMapperParams;
+    RendererParams rendererParams;
 };
 
 }
