@@ -20,7 +20,7 @@ XForm::XForm(): XMLElementClass("xform"),
     colorSpeed.get()->colorSpeed = 0.5;
 }
 
-XFormCL XForm::toXFormCL() const {
+XFormCL XForm::toXFormCL(int varBegin) const {
     XFormCL xf;
 
     auto pre = coefs.value();
@@ -41,18 +41,24 @@ XFormCL XForm::toXFormCL() const {
     xf.pe = pst.yy;
     xf.pf = -pst.oy;
 
-    int sz = 0;
-    for (auto kv: variationMap.value().variations) {
-        xf.varData[sz].id = kv.first;
-        xf.varData[sz].weight = kv.second;
-        sz++;
-    }
-    xf.varData[sz].id = Variation::NO_VARIATION;
+    xf.varBegin = varBegin;
+    xf.varEnd = varBegin + variationMap.value().variations.size();
 
     xf.color = color.value();
     xf.colorSpeed = colorSpeed.value().colorSpeed;
 
     return xf;
+}
+
+void XForm::readVariationCLArray(std::vector<VariationCL>& vars) {
+    for (auto kv: variationMap.value().variations) {
+        VariationCL varCL;
+        varCL.id = kv.first;
+        varCL.weight = kv.second;
+        varCL.paramBegin = 0;
+        varCL.paramEnd = 0;
+        vars.push_back(varCL);
+    }
 }
 
 }

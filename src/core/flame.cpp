@@ -38,7 +38,7 @@ FlameCL Flame::getFlameCL() const {
     return flameCL;
 }
 
-void Flame::readInitialStateArray(std::vector<IterationState> &arr, int size) const {
+void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
     std::mt19937_64 rng(314159);
     std::uniform_int_distribution<uint64_t> seedDist;
     std::uniform_int_distribution<uint8_t> xformDist(0,xforms.size()-1);
@@ -55,10 +55,14 @@ void Flame::readInitialStateArray(std::vector<IterationState> &arr, int size) co
     }
 }
 
-void Flame::readXFormCLArray(std::vector<XFormCL>& arr) const {
-    arr.resize(xforms.size());
-    for (int i=0; i<arr.size(); i++) {
-        arr[i] = xforms.get(i)->toXFormCL();
+void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec) const {
+    xformVec.resize(xforms.size());
+    varVec.resize(0);
+    int varBegin = 0;
+    for (int i=0; i<xforms.size(); i++) {
+        xformVec[i] = xforms.get(i)->toXFormCL(varBegin);
+        xforms.get(i)->readVariationCLArray(varVec);
+        varBegin = xformVec[i].varEnd;
     }
 }
 

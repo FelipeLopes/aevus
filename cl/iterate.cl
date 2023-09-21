@@ -2,7 +2,6 @@
 #define PI (3.141592653589793f)
 
 enum {
-    MAX_VARIATIONS = 10,
     MWC64X_A = 4294883355u,
     XFORM_DISTRIBUTION_GRAINS = 16384,
     XFORM_DISTRIBUTION_GRAINS_M1 = 16383,
@@ -52,16 +51,17 @@ typedef enum VariationID {
     SQUARE = 43
 } VariationID;
 
-typedef struct VariationData {
+typedef struct VariationCL {
     VariationID id;
     float weight;
-} VariationData;
+    int paramBegin, paramEnd;
+} VariationCL;
 
 typedef struct XFormCL {
-    VariationData varData[MAX_VARIATIONS];
     float a, b, c, d, e, f;
     float pa, pb, pc, pd, pe, pf;
     float color, colorSpeed;
+    int varBegin, varEnd;
 } XFormCL;
 
 typedef struct FlameCL {
@@ -173,26 +173,26 @@ int histogramIndex(FlameCL* flame, float2 p) {
     return iPos*flame->width+jPos;
 }
 
-float2 calcXform(__global const XFormCL* xform, int idx, __global IterationState* state) {
+float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
+    int idx, __global IterationState* state)
+{
     float2 t, acc, ans;
     t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
     t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
     acc.x = 0;
     acc.y = 0;
-    int i = 0;
-    while (i < MAX_VARIATIONS && xform[idx].varData[i].id != NO_VARIATION) {
-        switch (xform[idx].varData[i].id) {
-            case LINEAR: acc += xform[idx].varData[i].weight*linear(t); break;
-            case SPHERICAL: acc += xform[idx].varData[i].weight*spherical(t); break;
-            case POLAR: acc += xform[idx].varData[i].weight*polar(t); break;
-            case HYPERBOLIC: acc += xform[idx].varData[i].weight*hyperbolic(t); break;
-            case DIAMOND: acc += xform[idx].varData[i].weight*diamond(t); break;
-            case EYEFISH: acc += xform[idx].varData[i].weight*eyefish(t); break;
-            case CYLINDER: acc +=xform[idx].varData[i].weight*cylinder(t); break;
-            case SQUARE: acc += xform[idx].varData[i].weight*square(&state->seed); break;
+    for (int i=xform[idx].varBegin; i<xform[idx].varEnd; i++) {
+        switch (vars[i].id) {
+            case LINEAR: acc += vars[i].weight*linear(t); break;
+            case SPHERICAL: acc += vars[i].weight*spherical(t); break;
+            case POLAR: acc += vars[i].weight*polar(t); break;
+            case HYPERBOLIC: acc += vars[i].weight*hyperbolic(t); break;
+            case DIAMOND: acc += vars[i].weight*diamond(t); break;
+            case EYEFISH: acc += vars[i].weight*eyefish(t); break;
+            case CYLINDER: acc +=vars[i].weight*cylinder(t); break;
+            case SQUARE: acc += vars[i].weight*square(&state->seed); break;
             default: break;
         }
-        i++;
     }
     ans.x = xform[idx].pa*acc.x + xform[idx].pb*acc.y + xform[idx].pc;
     ans.y = xform[idx].pd*acc.x + xform[idx].pe*acc.y + xform[idx].pf;
@@ -210,6 +210,7 @@ __kernel void iterate(
     FlameCL flameCL,
     __global IterationState *state,
     __global const XFormCL *xform,
+    __global const VariationCL *vars,
     __global uchar *xformDist,
     __global float4 *palette,
     __global float4 *hist,
@@ -219,7 +220,7 @@ __kernel void iterate(
     for (int j=0; j<iters; j++) {
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-        float2 p = calcXform(xform, xfIdx, &state[i]);
+        float2 p = calcXform(xform, vars, xfIdx, &state[i]);
         if (badval(p)) {
             resetPoint(&state[i]);
         } else {

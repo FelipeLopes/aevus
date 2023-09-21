@@ -19,15 +19,16 @@ Iterator::Iterator(CLQueuedContext& context_):
     flameArg(&kernel, 0, core::FlameCL()),
     stateArg(&kernel, 1),
     xformArg(&kernel, 2),
-    xformDistArg(&kernel, 3),
-    paletteArg(&kernel, 4),
-    histogramArg(&kernel, 5),
-    itersArg(&kernel, 6, 0) { }
+    varArg(&kernel, 3),
+    xformDistArg(&kernel, 4),
+    paletteArg(&kernel, 5),
+    histogramArg(&kernel, 6),
+    itersArg(&kernel, 7, 0) { }
 
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
     flame->readInitialStateArray(params.stateVec, GLOBAL_WORK_SIZE);
-    flame->readXFormCLArray(params.xformVec);
+    flame->readXFormData(params.xformVec, params.varVec);
     flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
     double samples = flame->quality.value()*params.flameCL.width*params.flameCL.height;
@@ -47,6 +48,7 @@ void Iterator::runAsync(IteratorParams& params,
     flameArg.set(params.flameCL);
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);
+    varArg.lazy(params.varVec);
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
     vector<float> histogramVec;

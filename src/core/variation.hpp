@@ -21,6 +21,12 @@ struct Variation {
     const static boost::bimap<VariationID, std::string> variationNames;
 };
 
+struct VariationCL {
+    Variation::VariationID id;
+    float weight;
+    int paramBegin, paramEnd;
+};
+
 class VariationMap: public serial::StringMapSerializable {
 public:
     VariationMap();

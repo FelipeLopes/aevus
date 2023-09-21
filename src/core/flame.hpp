@@ -49,7 +49,7 @@ public:
 
     FlameCL getFlameCL() const;
     void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
-    void readXFormCLArray(std::vector<XFormCL>& arr) const;
+    void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec) const;
     void readXFormDistribution(std::vector<uint8_t>& dist) const;
 
     const static int XFORM_DISTRIBUTION_GRAINS = 16384;

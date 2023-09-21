@@ -8,15 +8,10 @@
 namespace core {
 
 struct XFormCL {
-    static const int MAX_VARIATIONS = 10;
-    struct VariationData {
-        Variation::VariationID id;
-        float weight;
-    };
-    VariationData varData[MAX_VARIATIONS];
     float a, b, c, d, e, f;
     float pa, pb, pc, pd, pe, pf;
     float color, colorSpeed;
+    int varBegin, varEnd;
 };
 
 class XForm: public serial::XMLElementClass {
@@ -29,7 +24,8 @@ public:
     serial::XMLAttribute<PostAffine> post;
     serial::XMLAttribute<Chaos> chaos;
     serial::XMLMultiAttribute<ColorSpeed> colorSpeed;
-    XFormCL toXFormCL() const;
+    XFormCL toXFormCL(int varBegin) const;
+    void readVariationCLArray(std::vector<VariationCL>& vars);
 };
 
 }

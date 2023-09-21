@@ -14,6 +14,7 @@ struct IteratorParams {
     core::FlameCL flameCL;
     std::vector<core::IterationState> stateVec;
     std::vector<core::XFormCL> xformVec;
+    std::vector<core::VariationCL> varVec;
     std::vector<uint8_t> xformDistVec;
     std::vector<core::ColorCL> paletteVec;
     int iters;
@@ -33,6 +34,7 @@ private:
     clwrap::CLArg<core::FlameCL> flameArg;
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;
     clwrap::CLReadOnlyBufferArg<core::XFormCL> xformArg;
+    clwrap::CLReadOnlyBufferArg<core::VariationCL> varArg;
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
