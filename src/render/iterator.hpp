@@ -15,6 +15,7 @@ struct IteratorParams {
     std::vector<core::IterationState> stateVec;
     std::vector<core::XFormCL> xformVec;
     std::vector<core::VariationCL> varVec;
+    std::vector<float> paramVec;
     std::vector<uint8_t> xformDistVec;
     std::vector<core::ColorCL> paletteVec;
     int iters;

@@ -50,8 +50,7 @@ void Iterator::runAsync(IteratorParams& params,
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);
     varArg.lazy(params.varVec);
-    std::vector arr = {0.0f};
-    paramArg.lazy(arr);
+    paramArg.lazy(params.paramVec);
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
     vector<float> histogramVec;

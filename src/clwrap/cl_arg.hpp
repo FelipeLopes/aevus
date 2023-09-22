@@ -64,7 +64,10 @@ private:
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags_, unsigned argIndex_):
-    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_) { }
+    kernel(kernel_), clMemFlags(clMemFlags_), argIndex(argIndex_)
+{
+    kernel->setBufferArg<T>(argIndex, NULL);
+}
 
 template <typename T>
 CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsigned argIndex_,
@@ -97,7 +100,9 @@ CLBufferArg<T>::CLBufferArg(CLExecutable* kernel_, cl_mem_flags clMemFlags, unsi
 
 template <typename T>
 void CLBufferArg<T>::get(std::vector<T>& arr) {
-    buffer->read(arr);
+    if (buffer != NULL) {
+        buffer->read(arr);
+    }
 }
 
 template <typename T>
@@ -111,6 +116,7 @@ template <typename T>
 void CLBufferArg<T>::resize(size_t size) {
     if (size == 0) {
         buffer = NULL;
+        kernel->setBufferArg<T>(argIndex, NULL);
     } else {
         buffer = std::make_unique<CLBuffer<T>>(kernel->context,
             kernel->context.defaultQueue, clMemFlags, size);
@@ -121,13 +127,15 @@ void CLBufferArg<T>::resize(size_t size) {
 template <typename T>
 void CLBufferArg<T>::set(const std::vector<T>& arg) {
     resize(arg.size());
-    buffer->write(arg);
+    if (buffer != NULL) {
+        buffer->write(arg);
+    }
 }
 
 template <typename T>
 std::shared_ptr<CLEvent> CLBufferArg<T>::setAsync(const std::vector<T>& arg) {
     resize(arg.size());
-    return buffer->writeAsync(arg);
+    return buffer.get() ? buffer->writeAsync(arg) : NULL;
 }
 
 template <typename T>
@@ -149,11 +157,7 @@ void CLBufferArg<T>::lazy(std::vector<T>& arr) {
 
 template <typename T>
 std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet(std::vector<uint8_t>& data) {
-    if (data.size() == 0) {
-        throw std::invalid_argument("Buffer size cannot be zero");
-    }
     size_t len = data.size()/sizeof(T);
-    resize(len);
     auto typedData = reinterpret_cast<T*>(data.data());
     std::vector<T> vec(typedData, typedData+len);
     return setAsync(vec);

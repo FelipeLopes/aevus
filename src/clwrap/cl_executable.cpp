@@ -53,9 +53,10 @@ std::shared_ptr<CLEvent> CLExecutable::runAsync(
     cl_event event;
     vector<cl_event> depEvents;
     for (int i=0; i<lazyArgs.size(); i++) {
-        depEvents.push_back(
-            lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data)->clEvent
-        );
+        auto ptr = lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data);
+        if (ptr != NULL) {
+            depEvents.push_back(ptr->clEvent);
+        }
     }
     lazyArgs.clear();
     cl_int ret = clEnqueueNDRangeKernel(context.defaultQueue.commandQueue, kernel, 1, NULL,

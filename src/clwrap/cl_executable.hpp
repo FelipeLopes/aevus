@@ -46,7 +46,8 @@ void CLExecutable::setArg(unsigned int argIndex, const T& arg) {
 
 template <typename T>
 void CLExecutable::setBufferArg(unsigned int argIndex, const CLBuffer<T>* clBuffer) {
-    cl_int ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), clBuffer->memoryObject());
+    auto memoryObject = clBuffer ? clBuffer->memoryObject() : NULL;
+    cl_int ret = clSetKernelArg(kernel, argIndex, sizeof(cl_mem), memoryObject);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not set OpenCL kernel argument");
