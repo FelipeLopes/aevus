@@ -35,6 +35,7 @@ private:
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;
     clwrap::CLReadOnlyBufferArg<core::XFormCL> xformArg;
     clwrap::CLReadOnlyBufferArg<core::VariationCL> varArg;
+    clwrap::CLReadOnlyBufferArg<float> paramArg;
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;

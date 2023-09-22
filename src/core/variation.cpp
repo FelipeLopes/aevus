@@ -1,8 +1,10 @@
 #include "variation.hpp"
 #include <boost/assign.hpp>
+#include <boost/assign/list_of.hpp>
 #include <stdexcept>
 
 using boost::assign::list_of;
+using boost::assign::map_list_of;
 using boost::bimap;
 using std::map;
 using std::string;
@@ -16,9 +18,22 @@ const bimap<Variation::VariationID, string> Variation::variationNames =
         (POLAR, "polar")
         (HYPERBOLIC, "hyperbolic")
         (DIAMOND, "diamond")
+        (PDJ, "pdj")
         (EYEFISH, "eyefish")
         (CYLINDER, "cylinder")
         (SQUARE, "square");
+
+const map<Variation::VariationID, VariationParamNames> Variation::variationParamNames =
+    map_list_of
+        (LINEAR, VariationParamNames())
+        (SPHERICAL, VariationParamNames())
+        (POLAR, VariationParamNames())
+        (HYPERBOLIC, VariationParamNames())
+        (DIAMOND, VariationParamNames())
+        (PDJ, VariationParamNames({"a", "b", "c", "d"}))
+        (EYEFISH, VariationParamNames())
+        (CYLINDER, VariationParamNames())
+        (SQUARE, VariationParamNames());
 
 VariationMap::VariationMap() { }
 
@@ -29,7 +44,7 @@ map<string, string> VariationMap::toStringMap() {
         if (it == Variation::variationNames.left.end()) {
             throw std::invalid_argument("Unknown variation ID");
         }
-        ans[it->second] = serial::formattedDouble(kv.second);
+        ans[it->second] = serial::formattedDouble(kv.second.weight);
     }
     return ans;
 }
@@ -41,7 +56,7 @@ void VariationMap::fromStringMap(map<string, string> stringMap) {
         if (it == Variation::variationNames.right.end()) {
             throw std::invalid_argument("Unknown variation name");
         }
-        variations[it->second] = stod(kv.second);
+        variations[it->second].weight = stod(kv.second);
     }
 }
 

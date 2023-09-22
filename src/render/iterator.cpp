@@ -20,10 +20,11 @@ Iterator::Iterator(CLQueuedContext& context_):
     stateArg(&kernel, 1),
     xformArg(&kernel, 2),
     varArg(&kernel, 3),
-    xformDistArg(&kernel, 4),
-    paletteArg(&kernel, 5),
-    histogramArg(&kernel, 6),
-    itersArg(&kernel, 7, 0) { }
+    paramArg(&kernel, 4),
+    xformDistArg(&kernel, 5),
+    paletteArg(&kernel, 6),
+    histogramArg(&kernel, 7),
+    itersArg(&kernel, 8, 0) { }
 
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
@@ -49,6 +50,8 @@ void Iterator::runAsync(IteratorParams& params,
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);
     varArg.lazy(params.varVec);
+    std::vector arr = {0.0f};
+    paramArg.lazy(arr);
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
     vector<float> histogramVec;

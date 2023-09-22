@@ -46,6 +46,7 @@ typedef enum VariationID {
     POLAR = 5,
     HYPERBOLIC = 10,
     DIAMOND = 11,
+    PDJ = 24,
     EYEFISH = 27,
     CYLINDER = 29,
     SQUARE = 43
@@ -54,7 +55,7 @@ typedef enum VariationID {
 typedef struct VariationCL {
     VariationID id;
     float weight;
-    int paramBegin, paramEnd;
+    int paramBegin;
 } VariationCL;
 
 typedef struct XFormCL {
@@ -135,6 +136,13 @@ float2 diamond(float2 p) {
     return ans;
 }
 
+float2 pdj(float2 p, __global const float* params) {
+    float2 ans;
+    ans.x = sin(params[0]*p.y) - cos(params[1]*p.x);
+    ans.y = sin(params[3]*p.x) - cos(params[3]*p.y);
+    return ans;
+}
+
 float2 eyefish(float2 p) {
     float2 ans;
     float k = 2.0f/(sqrt(p.x*p.x+p.y*p.y)+1.0f);
@@ -174,7 +182,7 @@ int histogramIndex(FlameCL* flame, float2 p) {
 }
 
 float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
-    int idx, __global IterationState* state)
+    __global const float* params, int idx, __global IterationState* state)
 {
     float2 t, acc, ans;
     t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
@@ -188,6 +196,7 @@ float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars
             case POLAR: acc += vars[i].weight*polar(t); break;
             case HYPERBOLIC: acc += vars[i].weight*hyperbolic(t); break;
             case DIAMOND: acc += vars[i].weight*diamond(t); break;
+            case PDJ: acc += vars[i].weight*pdj(t, params+vars[i].paramBegin); break;
             case EYEFISH: acc += vars[i].weight*eyefish(t); break;
             case CYLINDER: acc +=vars[i].weight*cylinder(t); break;
             case SQUARE: acc += vars[i].weight*square(&state->seed); break;
@@ -211,6 +220,7 @@ __kernel void iterate(
     __global IterationState *state,
     __global const XFormCL *xform,
     __global const VariationCL *vars,
+    __global const float *params,
     __global uchar *xformDist,
     __global float4 *palette,
     __global float4 *hist,
@@ -220,7 +230,7 @@ __kernel void iterate(
     for (int j=0; j<iters; j++) {
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-        float2 p = calcXform(xform, vars, xfIdx, &state[i]);
+        float2 p = calcXform(xform, vars, params, xfIdx, &state[i]);
         if (badval(p)) {
             resetPoint(&state[i]);
         } else {

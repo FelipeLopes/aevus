@@ -16,7 +16,8 @@ XForm::XForm(): XMLElementClass("xform"),
     colorSpeed(*this, {"color_speed", "symmetry"})
 {
     weight.setValue(0.5);
-    variationMap.get()->variations[Variation::VariationID::LINEAR] = 1.0;
+    variationMap.get()->variations[Variation::VariationID::LINEAR] =
+        VariationData(1.0, {});
     colorSpeed.get()->colorSpeed = 0.5;
 }
 
@@ -54,9 +55,8 @@ void XForm::readVariationCLArray(std::vector<VariationCL>& vars) {
     for (auto kv: variationMap.value().variations) {
         VariationCL varCL;
         varCL.id = kv.first;
-        varCL.weight = kv.second;
+        varCL.weight = kv.second.weight;
         varCL.paramBegin = 0;
-        varCL.paramEnd = 0;
         vars.push_back(varCL);
     }
 }

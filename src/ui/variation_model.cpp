@@ -31,7 +31,7 @@ void VariationModel::handleVariationAdd() {
             variationAddCtrl->ChangeValue("");
             return;
         }
-        (*varMap)[id] = 1.0;
+        (*varMap)[id] = core::VariationData(1.0, {});
         variationAddCtrl->ChangeValue("");
         variationDataChanged();
     } catch (std::invalid_argument& e) {
@@ -48,7 +48,7 @@ void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
     for (auto el: varMap) {
         wxVector<wxVariant> row;
         row.push_back(varLookup->idToName(el.first));
-        row.push_back(to_string(el.second));
+        row.push_back(to_string(el.second.weight));
         data.push_back(row);
     }
 }
@@ -63,7 +63,7 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
     for (int i=0; i<row; i++) {
         ++it;
     }
-    double oldValue = it->second;
+    double oldValue = it->second.weight;
     string text = val.GetString().ToStdString();
     double newValue = 0;
     try {
@@ -79,7 +79,7 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
     if (newValue == 0.0) {
         varMap->erase(it->first);
     } else {
-        (*varMap)[it->first] = newValue;
+        (*varMap)[it->first].weight = newValue;
     }
     variationDataChanged();
 }
