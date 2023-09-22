@@ -9,8 +9,9 @@ using std::vector;
 
 namespace render {
 
-Renderer::Renderer(CLQueuedContext& context, Flame* flame_, stringstream& stream_): stream(stream_),
-    flame(flame_), iterator(context), toneMapper(context), flameModified(true), idle(true)
+Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& stream_):
+    context(context_), flame(flame_), stream(stream_), iterator(context),
+    toneMapper(context), flameModified(true), idle(true)
 {
     renderFlame();
 }
@@ -89,6 +90,10 @@ void Renderer::extractRendererParams() {
     rendererParams.width = sz.width;
     rendererParams.height = sz.height;
     rendererParams.background = flame->background.value().toColorCL();
+}
+
+Renderer::~Renderer() {
+    context.callbackPool.join();
 }
 
 }

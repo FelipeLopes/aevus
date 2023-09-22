@@ -49,10 +49,14 @@ public:
 
     FlameCL getFlameCL() const;
     void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
-    void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec) const;
+    void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec,
+        std::vector<float>& paramVec) const;
     void readXFormDistribution(std::vector<uint8_t>& dist) const;
 
     const static int XFORM_DISTRIBUTION_GRAINS = 16384;
+
+private:
+    tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;
 };
 
 }

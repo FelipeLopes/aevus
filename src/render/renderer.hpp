@@ -17,12 +17,14 @@ public:
     Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
     void update();
     void renderFlame();
+    ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:
     void writePNMImage(std::vector<float>& imgData);
     void extractRendererParams();
-    std::stringstream& stream;
+    clwrap::CLQueuedContext& context;
     core::Flame* flame;
+    std::stringstream& stream;
     Iterator iterator;
     IteratorParams iteratorParams;
     ToneMapper toneMapper;

@@ -1,4 +1,5 @@
 #include "xform.hpp"
+#include "variation.hpp"
 
 namespace core {
 
@@ -8,6 +9,10 @@ XForm::XForm(): XMLElementClass("xform"),
     variationMap(*this, [](auto& names) {
         for (auto kv: Variation::variationNames.right) {
             names.insert(kv.first);
+            auto paramNames = Variation::variationParamNames.find(kv.second)->second.paramNames;
+            for (auto param: paramNames) {
+                names.insert(kv.first + "_" + param);
+            }
         }
     }),
     coefs(*this, "coefs"),
@@ -51,12 +56,15 @@ XFormCL XForm::toXFormCL(int varBegin) const {
     return xf;
 }
 
-void XForm::readVariationCLArray(std::vector<VariationCL>& vars) {
+void XForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params) {
     for (auto kv: variationMap.value().variations) {
         VariationCL varCL;
         varCL.id = kv.first;
         varCL.weight = kv.second.weight;
-        varCL.paramBegin = 0;
+        varCL.paramBegin = params.size();
+        for (int i=0; i<kv.second.params.size(); i++) {
+            params.push_back(kv.second.params[i]);
+        }
         vars.push_back(varCL);
     }
 }

@@ -55,13 +55,16 @@ void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
     }
 }
 
-void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec) const {
+void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec,
+    vector<float>& paramVec) const
+{
     xformVec.resize(xforms.size());
-    varVec.resize(0);
+    varVec.clear();
+    paramVec.clear();
     int varBegin = 0;
     for (int i=0; i<xforms.size(); i++) {
         xformVec[i] = xforms.get(i)->toXFormCL(varBegin);
-        xforms.get(i)->readVariationCLArray(varVec);
+        xforms.get(i)->readVariationData(varVec, paramVec);
         varBegin = xformVec[i].varEnd;
     }
 }
@@ -87,6 +90,17 @@ void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
             curr += step;
         }
     }
+}
+
+tinyxml2::XMLNode* Flame::nodeDeserialize(tinyxml2::XMLNode* node) {
+    auto element = node->ToElement();
+    if (element != NULL) {
+        string name = element->Name();
+        if (name == "flames") {
+            return serial::XMLElementClass::nodeDeserialize(node->FirstChild());
+        }
+    }
+    return serial::XMLElementClass::nodeDeserialize(node);
 }
 
 }

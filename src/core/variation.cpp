@@ -1,6 +1,7 @@
 #include "variation.hpp"
 #include <boost/assign.hpp>
 #include <boost/assign/list_of.hpp>
+#include <regex>
 #include <stdexcept>
 
 using boost::assign::list_of;
@@ -51,12 +52,29 @@ map<string, string> VariationMap::toStringMap() {
 
 void VariationMap::fromStringMap(map<string, string> stringMap) {
     variations.clear();
+    std::regex re("[a-zA-z0-9]+_[a-zA-z0-9]+");
+    std::smatch m;
     for (auto kv: stringMap) {
-        auto it = Variation::variationNames.right.find(kv.first);
-        if (it == Variation::variationNames.right.end()) {
-            throw std::invalid_argument("Unknown variation name");
+        if (std::regex_match(kv.first, m, re)) {
+            int splitPos = kv.first.find("_");
+            auto it = Variation::variationNames.right.find(kv.first.substr(0, splitPos));
+            if (it == Variation::variationNames.right.end()) {
+                throw std::invalid_argument("Unknown variation name");
+            }
+            auto paramNames = Variation::variationParamNames.find(it->second)->second.paramNames;
+            variations[it->second].params.resize(paramNames.size());
+            for (int i=0; i<paramNames.size(); i++) {
+                if (paramNames[i] == kv.first.substr(splitPos+1, kv.first.size())) {
+                    variations[it->second].params[i] = stod(kv.second);
+                }
+            }
+        } else {
+            auto it = Variation::variationNames.right.find(kv.first);
+            if (it == Variation::variationNames.right.end()) {
+                throw std::invalid_argument("Unknown variation name");
+            }
+            variations[it->second].weight = stod(kv.second);
         }
-        variations[it->second].weight = stod(kv.second);
     }
 }
 

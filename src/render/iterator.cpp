@@ -29,7 +29,7 @@ Iterator::Iterator(CLQueuedContext& context_):
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
     flame->readInitialStateArray(params.stateVec, GLOBAL_WORK_SIZE);
-    flame->readXFormData(params.xformVec, params.varVec);
+    flame->readXFormData(params.xformVec, params.varVec, params.paramVec);
     flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
     double samples = flame->quality.value()*params.flameCL.width*params.flameCL.height;

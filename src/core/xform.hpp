@@ -25,7 +25,7 @@ public:
     serial::XMLAttribute<Chaos> chaos;
     serial::XMLMultiAttribute<ColorSpeed> colorSpeed;
     XFormCL toXFormCL(int varBegin) const;
-    void readVariationCLArray(std::vector<VariationCL>& vars);
+    void readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params);
 };
 
 }

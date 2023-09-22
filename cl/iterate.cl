@@ -139,7 +139,7 @@ float2 diamond(float2 p) {
 float2 pdj(float2 p, __global const float* params) {
     float2 ans;
     ans.x = sin(params[0]*p.y) - cos(params[1]*p.x);
-    ans.y = sin(params[3]*p.x) - cos(params[3]*p.y);
+    ans.y = sin(params[2]*p.x) - cos(params[3]*p.y);
     return ans;
 }
 
