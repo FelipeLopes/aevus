@@ -27,8 +27,10 @@ private:
     clwrap::CLArg<float> aArg;
     clwrap::CLArg<float> bArg;
     clwrap::CLReadWriteBufferArg<float> histArg;
+    clwrap::CLArg<int> chunkArg;
 
-    static const int LOCAL_WORK_SIZE = 64;
+    static const int GLOBAL_WORK_SIZE = 4096;
+    static const int LOCAL_WORK_SIZE = 256;
 };
 
 }

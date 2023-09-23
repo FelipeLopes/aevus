@@ -55,7 +55,9 @@ void Iterator::runAsync(IteratorParams& params,
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
     vector<float> histogramVec;
-    histogramVec.resize(4*params.flameCL.width*params.flameCL.height);
+    int histSize = 4*ceil(1.0*params.flameCL.width*params.flameCL.height/GLOBAL_WORK_SIZE) *
+        GLOBAL_WORK_SIZE;
+    histogramVec.resize(histSize);
     std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
     histogramArg.lazy(histogramVec);
     thresholdArg.set(params.threshold);

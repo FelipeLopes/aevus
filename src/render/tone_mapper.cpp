@@ -13,7 +13,8 @@ ToneMapper::ToneMapper(CLQueuedContext& context_):
     kernel(context, "mapping"),
     aArg(&kernel, 0, 1.0),
     bArg(&kernel, 1, 1.0),
-    histArg(&kernel, 2) { }
+    histArg(&kernel, 2),
+    chunkArg(&kernel, 3, 0) { }
 
 void ToneMapper::extractParams(Flame* flame, ToneMapperParams& params) {
     auto sz = flame->size.value();
@@ -36,7 +37,8 @@ void ToneMapper::runAsync(ToneMapperParams& params, shared_ptr<vector<float>> hi
     aArg.set(params.a);
     bArg.set(params.b);
     histArg.lazy(*hist);
-    auto execEvent = kernel.runAsync(params.width*params.height, LOCAL_WORK_SIZE);
+    chunkArg.set(ceil(1.0*params.width*params.height)/GLOBAL_WORK_SIZE);
+    auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     auto imageData = std::make_shared<vector<float>>();
     histArg.getAsyncAfterEvent(execEvent, [block] (auto readResult) {
         block(readResult.get());

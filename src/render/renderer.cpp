@@ -31,8 +31,8 @@ void Renderer::renderFlame() {
         idle = false;
         iterator.extractParams(flame, iteratorParams);
         toneMapper.extractParams(flame, toneMapperParams);
-        iteratorParams.threshold = ceil((exp(accumulationThreshold/toneMapperParams.a)-1)
-            / toneMapperParams.b);
+        iteratorParams.threshold =
+            ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
         extractRendererParams();
         iterator.runAsync(iteratorParams, [this] (auto hist) {
             if (!flameModified) {
