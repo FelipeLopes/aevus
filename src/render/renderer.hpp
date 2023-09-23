@@ -32,6 +32,7 @@ private:
     RendererParams rendererParams;
     bool flameModified, idle;
     std::mutex lock;
+    const double accumulationThreshold = 1.1;
 };
 
 }

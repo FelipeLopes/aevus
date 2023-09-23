@@ -46,6 +46,10 @@ map<string, string> VariationMap::toStringMap() {
             throw std::invalid_argument("Unknown variation ID");
         }
         ans[it->second] = serial::formattedDouble(kv.second.weight);
+        auto paramNames = Variation::variationParamNames.find(it->first)->second.paramNames;
+        for (int i=0; i<kv.second.params.size(); i++) {
+            ans[it->second + "_" + paramNames[i]] = serial::formattedDouble(kv.second.params[i]);
+        }
     }
     return ans;
 }

@@ -1,6 +1,7 @@
 #include "renderer.hpp"
 #include "iterator.hpp"
 #include "tone_mapper.hpp"
+#include <cmath>
 
 using clwrap::CLQueuedContext;
 using core::Flame;
@@ -30,6 +31,8 @@ void Renderer::renderFlame() {
         idle = false;
         iterator.extractParams(flame, iteratorParams);
         toneMapper.extractParams(flame, toneMapperParams);
+        iteratorParams.threshold = ceil((exp(accumulationThreshold/toneMapperParams.a)-1)
+            / toneMapperParams.b);
         extractRendererParams();
         iterator.runAsync(iteratorParams, [this] (auto hist) {
             if (!flameModified) {

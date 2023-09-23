@@ -224,6 +224,7 @@ __kernel void iterate(
     __global uchar *xformDist,
     __global float4 *palette,
     __global float4 *hist,
+    float threshold,
     int iters)
 {
     int i = get_global_id(0);
@@ -237,7 +238,9 @@ __kernel void iterate(
             int idx = histogramIndex(&flameCL, p);
             if (idx != -1) {
                 float4 color = lookupColor(palette, state[i].c);
-                atomic_add_f4(&hist[idx], color);
+                if (hist[idx].w < threshold) {
+                    atomic_add_f4(&hist[idx], color);
+                }
             }
         }
     }

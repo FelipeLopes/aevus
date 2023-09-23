@@ -18,6 +18,7 @@ struct IteratorParams {
     std::vector<float> paramVec;
     std::vector<uint8_t> xformDistVec;
     std::vector<core::ColorCL> paletteVec;
+    float threshold;
     int iters;
 };
 
@@ -40,6 +41,7 @@ private:
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
+    clwrap::CLArg<float> thresholdArg;
     clwrap::CLArg<int> itersArg;
 
     static const int GLOBAL_WORK_SIZE = 4096;

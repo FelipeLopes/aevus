@@ -24,7 +24,8 @@ Iterator::Iterator(CLQueuedContext& context_):
     xformDistArg(&kernel, 5),
     paletteArg(&kernel, 6),
     histogramArg(&kernel, 7),
-    itersArg(&kernel, 8, 0) { }
+    thresholdArg(&kernel, 8, 0.0f),
+    itersArg(&kernel, 9, 0) { }
 
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
@@ -57,6 +58,7 @@ void Iterator::runAsync(IteratorParams& params,
     histogramVec.resize(4*params.flameCL.width*params.flameCL.height);
     std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
     histogramArg.lazy(histogramVec);
+    thresholdArg.set(params.threshold);
     itersArg.set(params.iters);
     auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
     auto histogram = std::make_shared<vector<float>>();
