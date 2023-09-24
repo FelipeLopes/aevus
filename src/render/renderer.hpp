@@ -7,9 +7,16 @@
 
 namespace render {
 
+enum SaturationMode {
+    ALPHA,
+    CHANNEL,
+    WHITE
+};
+
 struct RendererParams {
     int width, height;
     core::ColorCL background;
+    SaturationMode saturationMode;
 };
 
 class Renderer {
@@ -32,7 +39,7 @@ private:
     RendererParams rendererParams;
     bool flameModified, idle;
     std::mutex lock;
-    const double accumulationThreshold = 1.1;
+    const double accumulationThreshold = 10;
 };
 
 }

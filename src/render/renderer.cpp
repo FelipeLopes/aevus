@@ -67,21 +67,32 @@ void Renderer::writePNMImage(vector<float>& imgData) {
     stream << "P6\n" << rendererParams.width << " " <<
         rendererParams.height << "\n255\n";
     auto bg = rendererParams.background;
-    float bg_ra = bg.r * bg.a;
-    float bg_ga = bg.g * bg.a;
-    float bg_ba = bg.b * bg.a;
     for (int i=0; i<imgData.size()/4; i++) {
         float a = imgData[4*i+3];
-        a = std::min(a, 1.0f);
-        float r = imgData[4*i]*a + bg_ra*(1-a);
-        float g = imgData[4*i+1]*a + bg_ga*(1-a);
-        float b = imgData[4*i+2]*a + bg_ba*(1-a);
-        float af = a + bg.a - a*bg.a;
-
-        r /= af;
-        g /= af;
-        b /= af;
-
+        float r = imgData[4*i];
+        float g = imgData[4*i+1];
+        float b = imgData[4*i+2];
+        if (a <= 1.0f) {
+            r = r*a + bg.r*(1-a);
+            g = g*a + bg.g*(1-a);
+            b = b*a + bg.b*(1-a);
+        }
+        switch (rendererParams.saturationMode) {
+            case CHANNEL: {
+                a = std::min({a, 1/r, 1/g, 1/b});
+                r*=a;
+                g*=a;
+                b*=a;
+                break;
+            }
+            case WHITE: {
+                r = std::min(r*a, 1.0f);
+                g = std::min(g*a, 1.0f);
+                b = std::min(b*a, 1.0f);
+                break;
+            }
+            default: break;
+        }
         stream.put((uint8_t)(r*255));
         stream.put((uint8_t)(g*255));
         stream.put((uint8_t)(b*255));
@@ -93,6 +104,7 @@ void Renderer::extractRendererParams() {
     rendererParams.width = sz.width;
     rendererParams.height = sz.height;
     rendererParams.background = flame->background.value().toColorCL();
+    rendererParams.saturationMode = WHITE;
 }
 
 Renderer::~Renderer() {
