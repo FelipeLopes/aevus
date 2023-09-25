@@ -1,6 +1,8 @@
 #include "renderer.hpp"
 #include "iterator.hpp"
 #include "tone_mapper.hpp"
+#include <boost/asio/post.hpp>
+#include <thread>
 #include <cmath>
 
 using clwrap::CLQueuedContext;
@@ -10,54 +12,29 @@ using std::vector;
 
 namespace render {
 
+typedef std::chrono::duration<int, std::ratio<1, 60>> frame_duration;
+
 Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& stream_):
     context(context_), flame(flame_), stream(stream_), iterator(context),
-    toneMapper(context), flameModified(true), idle(true)
+    toneMapper(context), running(true), state(FLAME_MODIFIED)
 {
-    renderFlame();
+    boost::asio::post(context.rendererPool, [this] {
+        while (running) {
+            auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
+            switch (state) {
+                case FLAME_MODIFIED: extractParams(); break;
+                case PARAMS_EXTRACTED: runIteration(); break;
+                case ITERATION_COMPLETED: render(); break;
+                case FLAME_RENDERED: break;
+            }
+            std::this_thread::sleep_until(sleep_time);
+        }
+    });
 }
 
 void Renderer::update() {
     lock.lock();
-    flameModified = true;
-    lock.unlock();
-    renderFlame();
-}
-
-void Renderer::renderFlame() {
-    lock.lock();
-    if (idle) {
-        flameModified = false;
-        idle = false;
-        iterator.extractParams(flame, iteratorParams);
-        toneMapper.extractParams(flame, toneMapperParams);
-        iteratorParams.threshold =
-            ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
-        extractRendererParams();
-        iterator.runAsync(iteratorParams, [this] (auto hist) {
-            if (!flameModified) {
-                toneMapper.runAsync(toneMapperParams, hist, [this] (auto imgData) {
-                    if (!flameModified) {
-                        writePNMImage(*imgData);
-                        lock.lock();
-                        idle = true;
-                        lock.unlock();
-                        imageRendered();
-                    } else {
-                        lock.lock();
-                        idle = true;
-                        lock.unlock();
-                        renderFlame();
-                    }
-                });
-            } else {
-                lock.lock();
-                idle = true;
-                lock.unlock();
-                renderFlame();
-            }
-        });
-    }
+    state = FLAME_MODIFIED;
     lock.unlock();
 }
 
@@ -99,6 +76,40 @@ void Renderer::writePNMImage(vector<float>& imgData) {
     }
 }
 
+void Renderer::extractParams() {
+    lock.lock();
+    iterator.extractParams(flame, iteratorParams);
+    toneMapper.extractParams(flame, toneMapperParams);
+    iteratorParams.threshold =
+        ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
+    extractRendererParams();
+    state = PARAMS_EXTRACTED;
+    lock.unlock();
+}
+
+void Renderer::runIteration() {
+    iterator.runAsync(iteratorParams, [this] (auto hist) {
+        lock.lock();
+        if (state != FLAME_MODIFIED) {
+            histogram = hist;
+            state = ITERATION_COMPLETED;
+        }
+        lock.unlock();
+    });
+}
+
+void Renderer::render() {
+    toneMapper.runAsync(toneMapperParams, histogram, [this] (auto imgData) {
+        lock.lock();
+        if (state != FLAME_MODIFIED) {
+            writePNMImage(*imgData);
+            state = FLAME_RENDERED;
+            imageRendered();
+        }
+        lock.unlock();
+    });
+}
+
 void Renderer::extractRendererParams() {
     auto sz = flame->size.value();
     rendererParams.width = sz.width;
@@ -108,7 +119,8 @@ void Renderer::extractRendererParams() {
 }
 
 Renderer::~Renderer() {
-    context.callbackPool.join();
+    running = false;
+    context.rendererPool.join();
 }
 
 }

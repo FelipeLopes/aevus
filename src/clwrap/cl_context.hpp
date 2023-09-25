@@ -35,7 +35,7 @@ public:
     virtual ~CLContext();
     cl_context context;
     cl_device_id deviceId;
-    boost::asio::thread_pool callbackPool;
+    boost::asio::thread_pool rendererPool;
     std::mutex eventCallbacksLock;
     std::vector<CLEventCallback> eventCallbacks;
 };

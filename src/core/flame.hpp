@@ -32,6 +32,20 @@ struct IterationState {
     } seed;
 };
 
+enum ClippingMode {
+    ALPHA,
+    CHANNEL,
+    WHITE
+};
+
+class Clipping : public serial::StringSerializable {
+public:
+    Clipping();
+    ClippingMode mode;
+    std::optional<std::string> toString() override;
+    void fromString(std::optional<std::string> text) override;
+};
+
 class Flame: public serial::XMLElementClass {
 public:
     Flame();
@@ -44,6 +58,7 @@ public:
     serial::XMLAttribute<Color> background;
     serial::XMLAttributeDouble brightness;
     serial::XMLAttributeDouble contrast;
+    serial::XMLAttribute<Clipping> clipping;
     serial::ListXMLElementClass<XForm> xforms;
     Palette palette;
 

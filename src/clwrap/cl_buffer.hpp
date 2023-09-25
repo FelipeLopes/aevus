@@ -120,11 +120,9 @@ void CLBuffer<T>::readAsyncAfterEvent(std::shared_ptr<CLEvent> depEvent,
 {
     auto arr = std::make_shared<std::vector<T>>();
     arr->resize(size);
-    boost::asio::post(context.callbackPool, [this, depEvent, block, arr] () {
-        cl_int ret = clEnqueueReadBuffer(commandQueue, memObject, CL_FALSE, 0, size*sizeof(T),
+    cl_int ret = clEnqueueReadBuffer(commandQueue, memObject, CL_FALSE, 0, size*sizeof(T),
         arr->data(), 1, &depEvent->clEvent, NULL);
-        block(CLBufferReadResult<T>(ret, arr));
-    });
+    block(CLBufferReadResult<T>(ret, arr));
 }
 
 template <typename T>

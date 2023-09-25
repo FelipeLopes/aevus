@@ -9,7 +9,7 @@
 
 namespace clwrap {
 
-CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId), callbackPool(1) {
+CLContext::CLContext(cl_device_id clDeviceId): deviceId(clDeviceId), rendererPool(1) {
     cl_int ret;
     context = clCreateContext(NULL, 1, &deviceId, NULL, NULL, &ret);
     if (ret != CL_SUCCESS) {
@@ -25,12 +25,8 @@ CLQueue CLContext::createCommandQueue() {
 void CLContext::setEventCallback(std::shared_ptr<CLEvent> event,
     CLEvent::Status status, std::function<void()> f)
 {
-    eventCallbacksLock.lock();
     eventCallbacks.push_back(CLEventCallback(event, status, f));
-    eventCallbacksLock.unlock();
-    boost::asio::post(callbackPool, [event, status, this] {
-        clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
-    });
+    clSetEventCallback(event->clEvent, CLEvent::convertStatus(status), clCallback, this);
 }
 
 CLContext::~CLContext() {

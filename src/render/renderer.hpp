@@ -13,6 +13,13 @@ enum SaturationMode {
     WHITE
 };
 
+enum RendererState {
+    FLAME_MODIFIED,
+    PARAMS_EXTRACTED,
+    ITERATION_COMPLETED,
+    FLAME_RENDERED
+};
+
 struct RendererParams {
     int width, height;
     core::ColorCL background;
@@ -23,11 +30,13 @@ class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
     void update();
-    void renderFlame();
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:
     void writePNMImage(std::vector<float>& imgData);
+    void extractParams();
+    void runIteration();
+    void render();
     void extractRendererParams();
     clwrap::CLQueuedContext& context;
     core::Flame* flame;
@@ -37,7 +46,9 @@ private:
     ToneMapper toneMapper;
     ToneMapperParams toneMapperParams;
     RendererParams rendererParams;
-    bool flameModified, idle;
+    std::atomic<bool> running;
+    std::atomic<RendererState> state;
+    std::shared_ptr<std::vector<float>> histogram;
     std::mutex lock;
     const double accumulationThreshold = 10;
 };

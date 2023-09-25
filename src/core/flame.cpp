@@ -1,11 +1,36 @@
 #include "flame.hpp"
 #include <memory>
 #include <random>
+#include <stdexcept>
 
 using std::string;
 using std::vector;
 
 namespace core {
+
+Clipping::Clipping(): mode(WHITE) { }
+
+std::optional<std::string> Clipping::toString() {
+    switch(mode) {
+        case ALPHA: return "alpha";
+        case CHANNEL: return "channel";
+        case WHITE: return "white";
+    }
+}
+
+void Clipping::fromString(std::optional<std::string> text) {
+    if (!text.has_value()) {
+        mode = WHITE;
+    } else if (text == "alpha") {
+        mode = ALPHA;
+    } else if (text == "channel") {
+        mode = CHANNEL;
+    } else if (text == "white") {
+        mode = WHITE;
+    } else {
+        throw std::invalid_argument("Unrecognized clipping mode");
+    }
+}
 
 Flame::Flame(): XMLElementClass("flame"),
     version(*this, "version"),
@@ -17,6 +42,7 @@ Flame::Flame(): XMLElementClass("flame"),
     background(*this, "background"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast", 1.0),
+    clipping(*this, "clipping"),
     xforms(*this, "xform"),
     palette(*this)
 {
