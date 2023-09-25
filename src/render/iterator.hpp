@@ -26,7 +26,8 @@ class Iterator {
 public:
     Iterator(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, IteratorParams& params);
-    void runAsync(IteratorParams& params,
+    std::shared_ptr<clwrap::CLEvent> runAsync(IteratorParams& params);
+    void readAsync(std::shared_ptr<clwrap::CLEvent>,
         std::function<void(std::shared_ptr<std::vector<float>>)> block);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);

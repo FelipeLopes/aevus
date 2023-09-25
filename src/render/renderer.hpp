@@ -15,7 +15,7 @@ enum SaturationMode {
 
 enum RendererState {
     FLAME_MODIFIED,
-    PARAMS_EXTRACTED,
+    ITERATION_RUNNING,
     ITERATION_COMPLETED,
     FLAME_RENDERED
 };
@@ -48,7 +48,7 @@ private:
     RendererParams rendererParams;
     std::atomic<bool> running;
     std::atomic<RendererState> state;
-    std::shared_ptr<std::vector<float>> histogram;
+    std::vector<float> histogram;
     std::mutex lock;
     const double accumulationThreshold = 10;
 };

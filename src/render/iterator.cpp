@@ -37,15 +37,9 @@ void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.iters = ceil(samples/GLOBAL_WORK_SIZE);
 }
 
-void Iterator::runAsync(IteratorParams& params,
-    std::function<void(shared_ptr<vector<float>>)> block)
-{
+std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
     if (params.xformVec.size() == 0) {
-        auto arr = std::make_shared<vector<float>>();
-        arr->resize(4*params.flameCL.width*params.flameCL.height);
-        std::fill(arr->begin(), arr->end(), 0.0f);
-        block(arr);
-        return;
+        return NULL;
     }
     flameArg.set(params.flameCL);
     stateArg.lazy(params.stateVec);
@@ -63,8 +57,14 @@ void Iterator::runAsync(IteratorParams& params,
     thresholdArg.set(params.threshold);
     itersArg.set(params.iters);
     auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+    return execEvent;
+}
+
+void Iterator::readAsync(std::shared_ptr<clwrap::CLEvent> event,
+    std::function<void(std::shared_ptr<std::vector<float>>)> block)
+{
     auto histogram = std::make_shared<vector<float>>();
-    histogramArg.getAsyncAfterEvent(execEvent, [block] (auto readResult) {
+    histogramArg.getAsyncAfterEvent(event, [block] (auto readResult) {
         block(readResult.get());
     });
 }

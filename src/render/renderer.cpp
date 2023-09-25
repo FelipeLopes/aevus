@@ -18,12 +18,13 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
     context(context_), flame(flame_), stream(stream_), iterator(context),
     toneMapper(context), running(true), state(FLAME_MODIFIED)
 {
+    update();
     boost::asio::post(context.rendererPool, [this] {
         while (running) {
             auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
             switch (state) {
-                case FLAME_MODIFIED: extractParams(); break;
-                case PARAMS_EXTRACTED: runIteration(); break;
+                case FLAME_MODIFIED: runIteration(); break;
+                case ITERATION_RUNNING: /* should never happen */ break;
                 case ITERATION_COMPLETED: render(); break;
                 case FLAME_RENDERED: break;
             }
@@ -35,16 +36,18 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
 void Renderer::update() {
     lock.lock();
     state = FLAME_MODIFIED;
+    extractParams();
     lock.unlock();
 }
 
 void Renderer::writePNMImage(vector<float>& imgData) {
     stream.str("");
     stream.clear();
-    stream << "P6\n" << rendererParams.width << " " <<
-        rendererParams.height << "\n255\n";
+    int width = rendererParams.width;
+    int height = rendererParams.height;
+    stream << "P6\n" << width << " " << height << "\n255\n";
     auto bg = rendererParams.background;
-    for (int i=0; i<imgData.size()/4; i++) {
+    for (int i=0; i<width*height; i++) {
         float a = imgData[4*i+3];
         float r = imgData[4*i];
         float g = imgData[4*i+1];
@@ -77,25 +80,36 @@ void Renderer::writePNMImage(vector<float>& imgData) {
 }
 
 void Renderer::extractParams() {
-    lock.lock();
     iterator.extractParams(flame, iteratorParams);
     toneMapper.extractParams(flame, toneMapperParams);
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
     extractRendererParams();
-    state = PARAMS_EXTRACTED;
-    lock.unlock();
 }
 
 void Renderer::runIteration() {
-    iterator.runAsync(iteratorParams, [this] (auto hist) {
+    std::shared_ptr<clwrap::CLEvent> event = NULL;
+    lock.lock();
+    state = ITERATION_RUNNING;
+    event = iterator.runAsync(iteratorParams);
+    lock.unlock();
+    if (state != FLAME_MODIFIED && event == NULL) {
         lock.lock();
-        if (state != FLAME_MODIFIED) {
-            histogram = hist;
-            state = ITERATION_COMPLETED;
-        }
+        int histSize = 4*ceil(1.0*iteratorParams.flameCL.width*iteratorParams.flameCL.height/4096)*4096;
+        histogram.resize(histSize);
+        std::fill(histogram.begin(), histogram.end(), 0.0f);
+        state = ITERATION_COMPLETED;
         lock.unlock();
-    });
+    } else if (state != FLAME_MODIFIED) {
+        iterator.readAsync(event, [this] (auto hist) {
+            lock.lock();
+            if (state != FLAME_MODIFIED) {
+                histogram = *hist;
+                state = ITERATION_COMPLETED;
+            }
+            lock.unlock();
+        });
+    }
 }
 
 void Renderer::render() {

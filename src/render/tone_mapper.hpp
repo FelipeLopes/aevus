@@ -18,7 +18,7 @@ class ToneMapper {
 public:
     ToneMapper(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, ToneMapperParams& params);
-    void runAsync(ToneMapperParams& params, std::shared_ptr<std::vector<float>> hist,
+    void runAsync(ToneMapperParams& params, std::vector<float>& hist,
         std::function<void(std::shared_ptr<std::vector<float>>)> block);
 private:
     clwrap::CLQueuedContext& context;
