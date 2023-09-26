@@ -65,6 +65,7 @@ FlameCL Flame::getFlameCL() const {
 }
 
 void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
+    arr.clear();
     std::mt19937_64 rng(314159);
     std::uniform_int_distribution<uint64_t> seedDist;
     std::uniform_int_distribution<uint8_t> xformDist(0,xforms.size()-1);

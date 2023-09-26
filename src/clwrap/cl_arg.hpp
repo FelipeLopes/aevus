@@ -110,13 +110,16 @@ std::shared_ptr<std::vector<T>> CLBufferArg<T>::getAfterEvent(std::shared_ptr<CL
 }
 
 template <typename T>
-void CLBufferArg<T>::resize(size_t size) {
-    if (size == 0) {
+void CLBufferArg<T>::resize(size_t len) {
+    if (len == size()) {
+        return;
+    }
+    if (len == 0) {
         buffer = NULL;
         kernel->setBufferArg<T>(argIndex, NULL);
     } else {
         buffer = std::make_unique<CLBuffer<T>>(kernel->context,
-            kernel->context.defaultQueue, clMemFlags, size);
+            kernel->context.defaultQueue, clMemFlags, len);
         kernel->setBufferArg(argIndex, buffer.get());
     }
 }
