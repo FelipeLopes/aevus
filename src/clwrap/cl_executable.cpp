@@ -1,6 +1,7 @@
 #include "cl_executable.hpp"
 #include "cl_arg.hpp"
 #include "cl_context.hpp"
+#include "cl_event.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <fstream>
@@ -52,9 +53,12 @@ std::shared_ptr<CLEvent> CLExecutable::runAsync(
 {
     cl_event event;
     vector<cl_event> depEvents;
+    // This vector is necessary to not release the event before enqueueing the kernel
+    vector<std::shared_ptr<CLEvent>> eventPtrs;
     for (int i=0; i<lazyArgs.size(); i++) {
         auto ptr = lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data);
         if (ptr != NULL) {
+            eventPtrs.push_back(ptr);
             depEvents.push_back(ptr->clEvent);
         }
     }

@@ -31,15 +31,18 @@ void ToneMapper::extractParams(Flame* flame, ToneMapperParams& params) {
     params.b = 1.0/ref;
 }
 
-void ToneMapper::runAsync(ToneMapperParams& params, vector<float>& hist,
-    std::function<void(shared_ptr<vector<float>>)> block)
-{
+shared_ptr<clwrap::CLEvent> ToneMapper::runAsync(ToneMapperParams& params, vector<float>& hist) {
     aArg.set(params.a);
     bArg.set(params.b);
     histArg.lazy(hist);
     chunkArg.set(ceil(1.0*params.width*params.height)/GLOBAL_WORK_SIZE);
-    auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    histArg.getAsyncAfterEvent(execEvent, [block] (auto readResult) {
+    return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+}
+
+void ToneMapper::readAsync(shared_ptr<clwrap::CLEvent> event,
+    std::function<void (std::shared_ptr<std::vector<float>>)> block)
+{
+    histArg.getAsyncAfterEvent(event, [block] (auto readResult) {
         block(readResult.get());
     });
 }

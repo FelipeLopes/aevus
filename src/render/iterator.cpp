@@ -56,8 +56,7 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
     histogramArg.lazy(histogramVec);
     thresholdArg.set(params.threshold);
     itersArg.set(params.iters);
-    auto execEvent = kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
-    return execEvent;
+    return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
 }
 
 void Iterator::readAsync(std::shared_ptr<clwrap::CLEvent> event,

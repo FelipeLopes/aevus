@@ -88,10 +88,9 @@ void Renderer::extractParams() {
 }
 
 void Renderer::runIteration() {
-    std::shared_ptr<clwrap::CLEvent> event = NULL;
     lock.lock();
     state = ITERATION_RUNNING;
-    event = iterator.runAsync(iteratorParams);
+    auto event = iterator.runAsync(iteratorParams);
     lock.unlock();
     if (state != FLAME_MODIFIED && event == NULL) {
         lock.lock();
@@ -113,15 +112,20 @@ void Renderer::runIteration() {
 }
 
 void Renderer::render() {
-    toneMapper.runAsync(toneMapperParams, histogram, [this] (auto imgData) {
-        lock.lock();
-        if (state != FLAME_MODIFIED) {
-            writePNMImage(*imgData);
-            state = FLAME_RENDERED;
-            imageRendered();
-        }
-        lock.unlock();
-    });
+    lock.lock();
+    auto event = toneMapper.runAsync(toneMapperParams, histogram);
+    lock.unlock();
+    if (state != FLAME_MODIFIED) {
+        toneMapper.readAsync(event, [this] (auto imgData) {
+            lock.lock();
+            if (state != FLAME_MODIFIED) {
+                writePNMImage(*imgData);
+                state = FLAME_RENDERED;
+                imageRendered();
+            }
+            lock.unlock();
+        });
+    }
 }
 
 void Renderer::extractRendererParams() {
