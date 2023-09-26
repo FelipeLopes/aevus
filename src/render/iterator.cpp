@@ -59,13 +59,9 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
 }
 
-void Iterator::readAsync(std::shared_ptr<clwrap::CLEvent> event,
-    std::function<void(std::shared_ptr<std::vector<float>>)> block)
-{
+std::shared_ptr<std::vector<float>> Iterator::read(std::shared_ptr<clwrap::CLEvent> event) {
     auto histogram = std::make_shared<vector<float>>();
-    histogramArg.getAsyncAfterEvent(event, [block] (auto readResult) {
-        block(readResult.get());
-    });
+    return histogramArg.getAfterEvent(event);
 }
 
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {

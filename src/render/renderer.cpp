@@ -94,20 +94,20 @@ void Renderer::runIteration() {
     lock.unlock();
     if (state != FLAME_MODIFIED && event == NULL) {
         lock.lock();
-        int histSize = 4*ceil(1.0*iteratorParams.flameCL.width*iteratorParams.flameCL.height/4096)*4096;
+        int histSize = 4*ceil(1.0*iteratorParams.flameCL.width *
+            iteratorParams.flameCL.height/4096)*4096;
         histogram.resize(histSize);
         std::fill(histogram.begin(), histogram.end(), 0.0f);
         state = ITERATION_COMPLETED;
         lock.unlock();
     } else if (state != FLAME_MODIFIED) {
-        iterator.readAsync(event, [this] (auto hist) {
-            lock.lock();
-            if (state != FLAME_MODIFIED) {
-                histogram = *hist;
-                state = ITERATION_COMPLETED;
-            }
-            lock.unlock();
-        });
+        auto hist = iterator.read(event);
+        lock.lock();
+        if (state != FLAME_MODIFIED) {
+            histogram = *hist;
+            state = ITERATION_COMPLETED;
+        }
+        lock.unlock();
     }
 }
 
@@ -116,15 +116,14 @@ void Renderer::render() {
     auto event = toneMapper.runAsync(toneMapperParams, histogram);
     lock.unlock();
     if (state != FLAME_MODIFIED) {
-        toneMapper.readAsync(event, [this] (auto imgData) {
-            lock.lock();
-            if (state != FLAME_MODIFIED) {
-                writePNMImage(*imgData);
-                state = FLAME_RENDERED;
-                imageRendered();
-            }
-            lock.unlock();
-        });
+        auto imgData = toneMapper.read(event);
+        lock.lock();
+        if (state != FLAME_MODIFIED) {
+            writePNMImage(*imgData);
+            state = FLAME_RENDERED;
+            imageRendered();
+        }
+        lock.unlock();
     }
 }
 
