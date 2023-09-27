@@ -48,7 +48,7 @@ private:
     RendererParams rendererParams;
     std::atomic<bool> running;
     std::atomic<RendererState> state;
-    std::vector<float> histogram;
+    std::vector<float> histogram, imageData;
     std::mutex lock;
     const double accumulationThreshold = 10;
 };

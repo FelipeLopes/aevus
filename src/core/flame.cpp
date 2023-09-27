@@ -51,7 +51,6 @@ Flame::Flame(): XMLElementClass("flame"),
     scale.setValue(100);
     size.get()->width = 732;
     size.get()->height = 640;
-    xforms.append(std::make_shared<XForm>());
 }
 
 FlameCL Flame::getFlameCL() const {
@@ -66,6 +65,9 @@ FlameCL Flame::getFlameCL() const {
 
 void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
     arr.clear();
+    if (xforms.size() == 0) {
+        return;
+    }
     std::mt19937_64 rng(314159);
     std::uniform_int_distribution<uint64_t> seedDist;
     std::uniform_int_distribution<uint8_t> xformDist(0,xforms.size()-1);

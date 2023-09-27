@@ -19,7 +19,7 @@ public:
     ToneMapper(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, ToneMapperParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(ToneMapperParams& params, std::vector<float>& hist);
-    std::shared_ptr<std::vector<float>> read(std::shared_ptr<clwrap::CLEvent> event);
+    void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& imageData);
 private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;

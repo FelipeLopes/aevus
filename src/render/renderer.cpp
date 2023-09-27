@@ -92,19 +92,10 @@ void Renderer::runIteration() {
     state = ITERATION_RUNNING;
     auto event = iterator.runAsync(iteratorParams);
     lock.unlock();
-    if (state != FLAME_MODIFIED && event == NULL) {
-        lock.lock();
-        int histSize = 4*ceil(1.0*iteratorParams.flameCL.width *
-            iteratorParams.flameCL.height/4096)*4096;
-        histogram.resize(histSize);
-        std::fill(histogram.begin(), histogram.end(), 0.0f);
-        state = ITERATION_COMPLETED;
-        lock.unlock();
-    } else if (state != FLAME_MODIFIED) {
-        auto hist = iterator.read(event);
+    if (state != FLAME_MODIFIED) {
+        iterator.read(event, histogram);
         lock.lock();
         if (state != FLAME_MODIFIED) {
-            histogram = *hist;
             state = ITERATION_COMPLETED;
         }
         lock.unlock();
@@ -116,10 +107,10 @@ void Renderer::render() {
     auto event = toneMapper.runAsync(toneMapperParams, histogram);
     lock.unlock();
     if (state != FLAME_MODIFIED) {
-        auto imgData = toneMapper.read(event);
+        toneMapper.read(event, imageData);
+        writePNMImage(imageData);
         lock.lock();
         if (state != FLAME_MODIFIED) {
-            writePNMImage(*imgData);
             state = FLAME_RENDERED;
             imageRendered();
         }

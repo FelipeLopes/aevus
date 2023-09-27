@@ -27,7 +27,7 @@ public:
     Iterator(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, IteratorParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(IteratorParams& params);
-    std::shared_ptr<std::vector<float>> read(std::shared_ptr<clwrap::CLEvent>);
+    void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& histogram);
 private:
     void writePAMImage(std::stringstream& out, std::vector<float>& arr);
     clwrap::CLQueuedContext& context;
@@ -43,6 +43,8 @@ private:
     clwrap::CLReadWriteBufferArg<float> histogramArg;
     clwrap::CLArg<float> thresholdArg;
     clwrap::CLArg<int> itersArg;
+
+    std::vector<float> histogramVec;
 
     static const int GLOBAL_WORK_SIZE = 4096;
     static const int LOCAL_WORK_SIZE = 256;

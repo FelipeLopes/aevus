@@ -32,7 +32,7 @@ public:
     void write(const std::vector<T>& data);
     std::shared_ptr<CLEvent> writeAsync(const std::vector<T>& data);
     void read(std::vector<T>& data);
-    std::shared_ptr<std::vector<T>> readAfterEvent(std::shared_ptr<CLEvent> event);
+    void readAfterEvent(std::shared_ptr<CLEvent> event, std::vector<T>& arr);
     size_t length() const;
     const cl_mem* memoryObject() const;
 private:
@@ -114,16 +114,14 @@ void CLBuffer<T>::read(std::vector<T>& data) {
 }
 
 template <typename T>
-std::shared_ptr<std::vector<T>> CLBuffer<T>::readAfterEvent(std::shared_ptr<CLEvent> depEvent) {
-    auto arr = std::make_shared<std::vector<T>>();
-    arr->resize(size);
+void CLBuffer<T>::readAfterEvent(std::shared_ptr<CLEvent> depEvent, std::vector<T>& arr) {
+    arr.resize(size);
     cl_int ret = clEnqueueReadBuffer(commandQueue, memObject, CL_FALSE, 0, size*sizeof(T),
-        arr->data(), 1, &depEvent->clEvent, NULL);
+        arr.data(), 1, &depEvent->clEvent, NULL);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not read from OpenCL buffer");
     }
-    return arr;
 }
 
 template <typename T>

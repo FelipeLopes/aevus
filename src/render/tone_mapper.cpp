@@ -39,8 +39,8 @@ shared_ptr<clwrap::CLEvent> ToneMapper::runAsync(ToneMapperParams& params, vecto
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
 }
 
-std::shared_ptr<std::vector<float>> ToneMapper::read(shared_ptr<clwrap::CLEvent> event) {
-    return histArg.getAfterEvent(event);
+void ToneMapper::read(shared_ptr<clwrap::CLEvent> event, vector<float>& imageData) {
+    return histArg.getAfterEvent(event, imageData);
 }
 
 }

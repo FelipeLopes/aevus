@@ -38,6 +38,10 @@ void Iterator::extractParams(Flame* flame, IteratorParams& params) {
 }
 
 std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
+    int histSize = 4*ceil(1.0*params.flameCL.width*params.flameCL.height/GLOBAL_WORK_SIZE) *
+        GLOBAL_WORK_SIZE;
+    histogramVec.resize(histSize);
+    std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
     if (params.xformVec.size() == 0) {
         return NULL;
     }
@@ -48,20 +52,18 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
     paramArg.lazy(params.paramVec);
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
-    vector<float> histogramVec;
-    int histSize = 4*ceil(1.0*params.flameCL.width*params.flameCL.height/GLOBAL_WORK_SIZE) *
-        GLOBAL_WORK_SIZE;
-    histogramVec.resize(histSize);
-    std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
     histogramArg.lazy(histogramVec);
     thresholdArg.set(params.threshold);
     itersArg.set(params.iters);
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
 }
 
-std::shared_ptr<std::vector<float>> Iterator::read(std::shared_ptr<clwrap::CLEvent> event) {
-    auto histogram = std::make_shared<vector<float>>();
-    return histogramArg.getAfterEvent(event);
+void Iterator::read(std::shared_ptr<clwrap::CLEvent> event, vector<float>& histogram) {
+    if (event != NULL) {
+        histogramArg.getAfterEvent(event, histogram);
+    } else {
+        histogram = histogramVec;
+    }
 }
 
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
