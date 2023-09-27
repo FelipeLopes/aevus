@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "by-gdb",
+            "request": "launch",
+            "name": "Debug Aevus",
+            "program": "bazel-bin/aevus",
+            "cwd": "${workspaceRoot}",
+            "preLaunchTask": "Build Debug"
+        }
+    ]
+}
