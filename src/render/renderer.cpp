@@ -57,15 +57,15 @@ void Renderer::writePNMImage(vector<float>& imgData) {
             g = g*a + bg.g*(1-a);
             b = b*a + bg.b*(1-a);
         }
-        switch (rendererParams.saturationMode) {
-            case CHANNEL: {
+        switch (rendererParams.clippingMode) {
+            case core::CHANNEL: {
                 a = std::min({a, 1/r, 1/g, 1/b});
                 r*=a;
                 g*=a;
                 b*=a;
                 break;
             }
-            case WHITE: {
+            case core::WHITE: {
                 r = std::min(r*a, 1.0f);
                 g = std::min(g*a, 1.0f);
                 b = std::min(b*a, 1.0f);
@@ -123,7 +123,7 @@ void Renderer::extractRendererParams() {
     rendererParams.width = sz.width;
     rendererParams.height = sz.height;
     rendererParams.background = flame->background.value().toColorCL();
-    rendererParams.saturationMode = WHITE;
+    rendererParams.clippingMode = flame->clipping.value().mode;
 }
 
 Renderer::~Renderer() {

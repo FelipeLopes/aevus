@@ -7,12 +7,6 @@
 
 namespace render {
 
-enum SaturationMode {
-    ALPHA,
-    CHANNEL,
-    WHITE
-};
-
 enum RendererState {
     FLAME_MODIFIED,
     ITERATION_RUNNING,
@@ -23,7 +17,7 @@ enum RendererState {
 struct RendererParams {
     int width, height;
     core::ColorCL background;
-    SaturationMode saturationMode;
+    core::ClippingMode clippingMode;
 };
 
 class Renderer {
