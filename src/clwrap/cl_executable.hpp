@@ -25,9 +25,10 @@ public:
     CLQueuedContext& context;
     struct LazyArg {
         CLKernelBufferArg* bufferArg;
-        std::vector<uint8_t> data;
-        LazyArg(CLKernelBufferArg* bufferArg_, std::vector<uint8_t>& data_):
-            bufferArg(bufferArg_), data(data_) { }
+        uint8_t* data;
+        size_t len;
+        LazyArg(CLKernelBufferArg* bufferArg_, uint8_t* data_, size_t len_):
+            bufferArg(bufferArg_), data(data_), len(len_) { }
     };
     std::vector<LazyArg> lazyArgs;
 private:

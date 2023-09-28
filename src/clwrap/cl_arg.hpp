@@ -34,7 +34,7 @@ void CLArg<T>::set(T arg) {
 
 class CLKernelBufferArg {
 public:
-    virtual std::shared_ptr<CLEvent> lazySet(std::vector<uint8_t>& data) = 0;
+    virtual std::shared_ptr<CLEvent> lazySet(uint8_t* data, size_t len) = 0;
 };
 
 template <typename T>
@@ -52,7 +52,7 @@ public:
     std::shared_ptr<CLEvent> setAsync(const std::vector<T>& arg);
     size_t size();
     void lazy(std::vector<T>& arr);
-    std::shared_ptr<CLEvent> lazySet(std::vector<uint8_t>& data) override;
+    std::shared_ptr<CLEvent> lazySet(uint8_t* data, size_t len) override;
 private:
     void resize(size_t size);
     CLExecutable* kernel;
@@ -155,16 +155,14 @@ template <typename T>
 void CLBufferArg<T>::lazy(std::vector<T>& arr) {
     auto ptr = reinterpret_cast<uint8_t*>(arr.data());
     size_t len = arr.size()*sizeof(T);
-    std::vector<uint8_t> data(ptr, ptr+len);
-    kernel->lazyArgs.push_back(CLExecutable::LazyArg(this, data));
+    kernel->lazyArgs.push_back(CLExecutable::LazyArg(this, ptr, len));
 }
 
 template <typename T>
-std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet(std::vector<uint8_t>& data) {
-    size_t len = data.size()/sizeof(T);
-    auto typedData = reinterpret_cast<T*>(data.data());
-    std::vector<T> vec(typedData, typedData+len);
-    return setAsync(vec);
+std::shared_ptr<CLEvent> CLBufferArg<T>::lazySet(uint8_t* data, size_t len) {
+    size_t typedLen = len/sizeof(T);
+    resize(typedLen);
+    return buffer == NULL ? NULL : buffer->writeAsyncRaw(data, len);
 }
 
 template <typename T>

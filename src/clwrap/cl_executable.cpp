@@ -56,7 +56,7 @@ std::shared_ptr<CLEvent> CLExecutable::runAsync(
     // This vector is necessary to not release the event before enqueueing the kernel
     vector<std::shared_ptr<CLEvent>> eventPtrs;
     for (int i=0; i<lazyArgs.size(); i++) {
-        auto ptr = lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data);
+        auto ptr = lazyArgs[i].bufferArg->lazySet(lazyArgs[i].data, lazyArgs[i].len);
         if (ptr != NULL) {
             eventPtrs.push_back(ptr);
             depEvents.push_back(ptr->clEvent);

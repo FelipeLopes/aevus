@@ -3,6 +3,7 @@
 #include "cl_context.hpp"
 #include <CL/cl.h>
 #include <boost/asio/post.hpp>
+#include <cstddef>
 #include <functional>
 #include <memory>
 #include <stdexcept>
@@ -31,6 +32,7 @@ public:
     virtual ~CLBuffer();
     void write(const std::vector<T>& data);
     std::shared_ptr<CLEvent> writeAsync(const std::vector<T>& data);
+    std::shared_ptr<CLEvent> writeAsyncRaw(uint8_t* data, size_t len);
     void read(std::vector<T>& data);
     void readAfterEvent(std::shared_ptr<CLEvent> event, std::vector<T>& arr);
     size_t length() const;
@@ -95,6 +97,18 @@ std::shared_ptr<CLEvent> CLBuffer<T>::writeAsync(const std::vector<T>& data) {
     cl_event event;
     cl_int ret = clEnqueueWriteBuffer(commandQueue, memObject, CL_FALSE,
         0, data.size()*sizeof(T), data.data(), 0, NULL, &event);
+    if (ret != CL_SUCCESS) {
+        auto ec = std::error_code(ret, std::generic_category());
+        throw std::system_error(ec, "Could not write to OpenCL buffer");
+    }
+    return std::make_shared<CLEvent>(event);
+}
+
+template <typename T>
+std::shared_ptr<CLEvent> CLBuffer<T>::writeAsyncRaw(uint8_t* data, size_t len) {
+    cl_event event;
+    cl_int ret = clEnqueueWriteBuffer(commandQueue, memObject, CL_FALSE,
+        0, len, data, 0, NULL, &event);
     if (ret != CL_SUCCESS) {
         auto ec = std::error_code(ret, std::generic_category());
         throw std::system_error(ec, "Could not write to OpenCL buffer");
