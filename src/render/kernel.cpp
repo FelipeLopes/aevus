@@ -12,6 +12,7 @@ Kernel::Kernel(CLQueuedContext& context, std::string name):
 const std::map<std::string, std::pair<char*, char*>> Kernel::lookup =
     boost::assign::map_list_of
         ("iterate", std::make_pair(_binary_cl_iterate_cl_start, _binary_cl_iterate_cl_end))
-        ("mapping", std::make_pair(_binary_cl_mapping_cl_start, _binary_cl_mapping_cl_end));
+        ("mapping", std::make_pair(_binary_cl_mapping_cl_start, _binary_cl_mapping_cl_end))
+        ("coloring", std::make_pair(_binary_cl_coloring_cl_start, _binary_cl_coloring_cl_end));
 
 }

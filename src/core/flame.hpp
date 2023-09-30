@@ -54,7 +54,7 @@ public:
     serial::XMLAttribute<SizeParams> size;
     serial::XMLAttribute<CenterParams> center;
     serial::XMLAttributeDouble scale;
-    serial::XMLAttributeInt quality;
+    serial::XMLAttributeDouble quality;
     serial::XMLAttribute<Color> background;
     serial::XMLAttributeDouble brightness;
     serial::XMLAttributeDouble contrast;

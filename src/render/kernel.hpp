@@ -7,6 +7,8 @@ extern char _binary_cl_iterate_cl_start[];
 extern char _binary_cl_iterate_cl_end[];
 extern char _binary_cl_mapping_cl_start[];
 extern char _binary_cl_mapping_cl_end[];
+extern char _binary_cl_coloring_cl_start[];
+extern char _binary_cl_coloring_cl_end[];
 
 namespace render {
 

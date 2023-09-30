@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../clwrap/cl_context.hpp"
+#include "colorer.hpp"
 #include "iterator.hpp"
 #include "tone_mapper.hpp"
 #include <boost/signals2.hpp>
@@ -39,6 +40,7 @@ private:
     IteratorParams iteratorParams;
     ToneMapper toneMapper;
     ToneMapperParams toneMapperParams;
+    Colorer colorer;
     RendererParams rendererParams;
     std::atomic<bool> running;
     std::atomic<RendererState> state;

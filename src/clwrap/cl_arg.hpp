@@ -189,8 +189,13 @@ CLReadOnlyBufferArg<T>::CLReadOnlyBufferArg(CLExecutable* kernel, unsigned argIn
 template <typename T>
 class CLWriteOnlyBufferArg: public CLBufferArg<T> {
 public:
+    CLWriteOnlyBufferArg(CLExecutable* kernel, unsigned argIndex);
     CLWriteOnlyBufferArg(CLExecutable* kernel, unsigned argIndex, size_t size);
 };
+
+template <typename T>
+CLWriteOnlyBufferArg<T>::CLWriteOnlyBufferArg(CLExecutable* kernel, unsigned argIndex):
+    CLBufferArg<T>(kernel, CL_MEM_WRITE_ONLY, argIndex) { }
 
 template <typename T>
 CLWriteOnlyBufferArg<T>::CLWriteOnlyBufferArg(CLExecutable* kernel, unsigned argIndex,

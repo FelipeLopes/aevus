@@ -6,6 +6,10 @@ namespace core {
 
 struct ColorCL {
     float r,g,b,a;
+    ColorCL() {
+        r = g = b = 0;
+        a = 1;
+    }
 };
 
 class Color: public serial::StringSerializable {

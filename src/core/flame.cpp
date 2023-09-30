@@ -53,7 +53,7 @@ Flame::Flame(): XMLElementClass("flame"),
     size.get()->height = 640;
     quality.setValue(5);
     brightness.setValue(4);
-    *background.get() = Color(0,0,0);
+    contrast.setValue(1);
 }
 
 FlameCL Flame::getFlameCL() const {

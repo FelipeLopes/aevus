@@ -16,7 +16,7 @@ typedef std::chrono::duration<int, std::ratio<1, 60>> frame_duration;
 
 Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& stream_):
     context(context_), flame(flame_), stream(stream_), iterator(context),
-    toneMapper(context), running(true), state(FLAME_MODIFIED)
+    toneMapper(context), colorer(context), running(true), state(FLAME_MODIFIED)
 {
     update();
     boost::asio::post(context.rendererPool, [this] {
