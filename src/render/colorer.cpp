@@ -1,6 +1,7 @@
 #include "colorer.hpp"
 
 using clwrap::CLQueuedContext;
+using std::shared_ptr;
 using std::vector;
 
 namespace render {
@@ -24,16 +25,20 @@ void Colorer::extractParams(core::Flame* flame, ColorerParams& params) {
     params.clippingMode = flame->clipping.value().mode;
 }
 
-std::shared_ptr<clwrap::CLEvent> Colorer::runAsync(ColorerParams& params, vector<float>& density) {
+shared_ptr<clwrap::CLEvent> Colorer::runAsync(ColorerParams& params, vector<float>& density) {
     densityArg.lazy(density);
     backgroundArg.set(params.background);
     invGammaArg.set(1.0/params.gamma);
     modeArg.set(params.clippingMode);
     chunkArg.set(ceil(1.0*params.width*params.height/GLOBAL_WORK_SIZE));
-    int imageVecSize = 4*ceil(1.0*params.width*params.height/GLOBAL_WORK_SIZE) *
+    int imageVecSize = 3*ceil(1.0*params.width*params.height/GLOBAL_WORK_SIZE) *
         GLOBAL_WORK_SIZE;
     imageArg.resize(imageVecSize);
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
+}
+
+void Colorer::read(shared_ptr<clwrap::CLEvent> event, vector<uint8_t>& imageData) {
+    imageArg.getAfterEvent(event, imageData);
 }
 
 }

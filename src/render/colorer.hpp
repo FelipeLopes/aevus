@@ -20,7 +20,7 @@ public:
     Colorer(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, ColorerParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(ColorerParams& params, std::vector<float>& density);
-    void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& histogram);
+    void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<uint8_t>& imageData);
 private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;

@@ -29,7 +29,7 @@ public:
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:
-    void writePNMImage(std::vector<float>& imgData);
+    void writePNMImage(std::vector<uint8_t>& imgData);
     void extractParams();
     void runIteration();
     void runToneMapping();
@@ -47,7 +47,8 @@ private:
     RendererParams rendererParams;
     std::atomic<bool> running;
     std::atomic<RendererState> state;
-    std::vector<float> histogram, density, imageData;
+    std::vector<float> histogram, density;
+    std::vector<uint8_t> imageData;
     std::mutex lock;
     const double accumulationThreshold = 10;
 };

@@ -41,42 +41,14 @@ void Renderer::update() {
     lock.unlock();
 }
 
-void Renderer::writePNMImage(vector<float>& imgData) {
+void Renderer::writePNMImage(vector<uint8_t>& imgData) {
     stream.str("");
     stream.clear();
     int width = rendererParams.width;
     int height = rendererParams.height;
     stream << "P6\n" << width << " " << height << "\n255\n";
-    auto bg = rendererParams.background;
-    for (int i=0; i<width*height; i++) {
-        float a = imgData[4*i+3];
-        float r = imgData[4*i];
-        float g = imgData[4*i+1];
-        float b = imgData[4*i+2];
-        if (a <= 1.0f) {
-            r = r*a + bg.r*(1-a);
-            g = g*a + bg.g*(1-a);
-            b = b*a + bg.b*(1-a);
-        }
-        switch (rendererParams.clippingMode) {
-            case core::CHANNEL: {
-                a = std::min({a, 1/r, 1/g, 1/b});
-                r*=a;
-                g*=a;
-                b*=a;
-                break;
-            }
-            case core::WHITE: {
-                r = std::min(r*a, 1.0f);
-                g = std::min(g*a, 1.0f);
-                b = std::min(b*a, 1.0f);
-                break;
-            }
-            default: break;
-        }
-        stream.put((uint8_t)(r*255));
-        stream.put((uint8_t)(g*255));
-        stream.put((uint8_t)(b*255));
+    for (int i=0; i<3*width*height; i++) {
+        stream.put(imageData[i]);
     }
 }
 
@@ -123,7 +95,8 @@ void Renderer::render() {
     auto event = colorer.runAsync(colorerParams, density);
     lock.unlock();
     if (state != FLAME_MODIFIED) {
-        writePNMImage(density);
+        colorer.read(event, imageData);
+        writePNMImage(imageData);
         lock.lock();
         if (state != FLAME_MODIFIED) {
             state = FLAME_RENDERED;
