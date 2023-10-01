@@ -53,8 +53,8 @@ public:
     size_t size();
     void lazy(std::vector<T>& arr);
     std::shared_ptr<CLEvent> lazySet(uint8_t* data, size_t len) override;
-private:
     void resize(size_t size);
+private:
     CLExecutable* kernel;
     cl_mem_flags clMemFlags;
     unsigned argIndex;

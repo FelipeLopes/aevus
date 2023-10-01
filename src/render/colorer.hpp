@@ -19,6 +19,8 @@ class Colorer {
 public:
     Colorer(clwrap::CLQueuedContext& context);
     void extractParams(core::Flame* flame, ColorerParams& params);
+    std::shared_ptr<clwrap::CLEvent> runAsync(ColorerParams& params, std::vector<float>& density);
+    void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& histogram);
 private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;
@@ -29,6 +31,8 @@ private:
     clwrap::CLArg<core::ClippingMode> modeArg;
     clwrap::CLArg<int> chunkArg;
     clwrap::CLWriteOnlyBufferArg<uint8_t> imageArg;
+
+    std::vector<uint8_t> imageVec;
 
     static const int GLOBAL_WORK_SIZE = 4096;
     static const int LOCAL_WORK_SIZE = 256;

@@ -12,6 +12,7 @@ enum RendererState {
     FLAME_MODIFIED,
     ITERATION_RUNNING,
     ITERATION_COMPLETED,
+    MAPPING_COMPLETED,
     FLAME_RENDERED
 };
 
@@ -31,6 +32,7 @@ private:
     void writePNMImage(std::vector<float>& imgData);
     void extractParams();
     void runIteration();
+    void runToneMapping();
     void render();
     void extractRendererParams();
     clwrap::CLQueuedContext& context;
@@ -41,10 +43,11 @@ private:
     ToneMapper toneMapper;
     ToneMapperParams toneMapperParams;
     Colorer colorer;
+    ColorerParams colorerParams;
     RendererParams rendererParams;
     std::atomic<bool> running;
     std::atomic<RendererState> state;
-    std::vector<float> histogram, imageData;
+    std::vector<float> histogram, density, imageData;
     std::mutex lock;
     const double accumulationThreshold = 10;
 };

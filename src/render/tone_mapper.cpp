@@ -35,7 +35,7 @@ shared_ptr<clwrap::CLEvent> ToneMapper::runAsync(ToneMapperParams& params, vecto
     aArg.set(params.a);
     bArg.set(params.b);
     histArg.lazy(hist);
-    chunkArg.set(ceil(1.0*params.width*params.height)/GLOBAL_WORK_SIZE);
+    chunkArg.set(ceil(1.0*params.width*params.height/GLOBAL_WORK_SIZE));
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);
 }
 

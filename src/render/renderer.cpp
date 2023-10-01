@@ -25,7 +25,8 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
             switch (state) {
                 case FLAME_MODIFIED: runIteration(); break;
                 case ITERATION_RUNNING: /* should never happen */ break;
-                case ITERATION_COMPLETED: render(); break;
+                case ITERATION_COMPLETED: runToneMapping(); break;
+                case MAPPING_COMPLETED: render(); break;
                 case FLAME_RENDERED: break;
             }
             std::this_thread::sleep_until(sleep_time);
@@ -84,6 +85,7 @@ void Renderer::extractParams() {
     toneMapper.extractParams(flame, toneMapperParams);
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
+    colorer.extractParams(flame, colorerParams);
     extractRendererParams();
 }
 
@@ -102,13 +104,26 @@ void Renderer::runIteration() {
     }
 }
 
-void Renderer::render() {
+void Renderer::runToneMapping() {
     lock.lock();
     auto event = toneMapper.runAsync(toneMapperParams, histogram);
     lock.unlock();
     if (state != FLAME_MODIFIED) {
-        toneMapper.read(event, imageData);
-        writePNMImage(imageData);
+        toneMapper.read(event, density);
+        lock.lock();
+        if (state != FLAME_MODIFIED) {
+            state = MAPPING_COMPLETED;
+        }
+        lock.unlock();
+    }
+}
+
+void Renderer::render() {
+    lock.lock();
+    auto event = colorer.runAsync(colorerParams, density);
+    lock.unlock();
+    if (state != FLAME_MODIFIED) {
+        writePNMImage(density);
         lock.lock();
         if (state != FLAME_MODIFIED) {
             state = FLAME_RENDERED;
