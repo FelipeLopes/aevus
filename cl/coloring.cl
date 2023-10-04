@@ -10,9 +10,12 @@ __kernel void coloring(__global float4* density, float4 bg,  float invGamma, flo
     int idx = get_global_id(0)*chunk;
     for (int i=idx; i<idx+chunk; i++) {
         float a = pow(density[i].w, invGamma);
-        float r = vibrancy*density[i].x+(1-vibrancy)*pow(density[i].x*density[i].w, invGamma);
-        float g = vibrancy*density[i].y+(1-vibrancy)*pow(density[i].y*density[i].w, invGamma);
-        float b = vibrancy*density[i].z+(1-vibrancy)*pow(density[i].z*density[i].w, invGamma);
+        float r = vibrancy*density[i].x+(1-vibrancy) *
+            min(1.0f, pow(density[i].x*density[i].w, invGamma));
+        float g = vibrancy*density[i].y+(1-vibrancy) *
+            min(1.0f, pow(density[i].y*density[i].w, invGamma));
+        float b = vibrancy*density[i].z+(1-vibrancy) *
+            min(1.0f, pow(density[i].z*density[i].w, invGamma));
         if (a <= 1.0f) {
             r = r*a + bg.x*(1-a);
             g = g*a + bg.y*(1-a);
