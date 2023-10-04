@@ -43,6 +43,7 @@ Flame::Flame(): XMLElementClass("flame"),
     brightness(*this, "brightness"),
     contrast(*this, "contrast", 1.0),
     gamma(*this, "gamma"),
+    vibrancy(*this, "vibrancy", 1.0),
     clipping(*this, "clipping"),
     xforms(*this, "xform"),
     palette(*this)
@@ -56,6 +57,7 @@ Flame::Flame(): XMLElementClass("flame"),
     brightness.setValue(4);
     contrast.setValue(1);
     gamma.setValue(4);
+    vibrancy.setValue(1);
 }
 
 FlameCL Flame::getFlameCL() const {

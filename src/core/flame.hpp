@@ -59,6 +59,7 @@ public:
     serial::XMLAttributeDouble brightness;
     serial::XMLAttributeDouble contrast;
     serial::XMLAttributeDouble gamma;
+    serial::XMLAttributeDouble vibrancy;
     serial::XMLAttribute<Clipping> clipping;
     serial::ListXMLElementClass<XForm> xforms;
     Palette palette;

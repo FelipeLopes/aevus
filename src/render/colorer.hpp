@@ -10,7 +10,7 @@ namespace render {
 
 struct ColorerParams {
     int width, height;
-    float gamma;
+    float gamma, vibrancy;
     core::ColorCL background;
     core::ClippingMode clippingMode;
 };
@@ -28,6 +28,7 @@ private:
     clwrap::CLReadOnlyBufferArg<float> densityArg;
     clwrap::CLArg<core::ColorCL> backgroundArg;
     clwrap::CLArg<float> invGammaArg;
+    clwrap::CLArg<float> vibrancyArg;
     clwrap::CLArg<core::ClippingMode> modeArg;
     clwrap::CLArg<int> chunkArg;
     clwrap::CLWriteOnlyBufferArg<uint8_t> imageArg;

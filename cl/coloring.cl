@@ -4,15 +4,15 @@ typedef enum ClippingMode {
     WHITE
 } ClippingMode;
 
-__kernel void coloring(__global float4* density, float4 bg,  float invGamma,
+__kernel void coloring(__global float4* density, float4 bg,  float invGamma, float vibrancy,
     ClippingMode mode, int chunk, __global uchar* img)
 {
     int idx = get_global_id(0)*chunk;
     for (int i=idx; i<idx+chunk; i++) {
         float a = pow(density[i].w, invGamma);
-        float r = density[i].x;
-        float g = density[i].y;
-        float b = density[i].z;
+        float r = vibrancy*density[i].x+(1-vibrancy)*pow(density[i].x*density[i].w, invGamma);
+        float g = vibrancy*density[i].y+(1-vibrancy)*pow(density[i].y*density[i].w, invGamma);
+        float b = vibrancy*density[i].z+(1-vibrancy)*pow(density[i].z*density[i].w, invGamma);
         if (a <= 1.0f) {
             r = r*a + bg.x*(1-a);
             g = g*a + bg.y*(1-a);
