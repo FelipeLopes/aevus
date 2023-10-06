@@ -25,7 +25,7 @@ void ToneMapper::extractParams(Flame* flame, ToneMapperParams& params) {
     double quality = flame->quality.value();
     double brightness = flame->brightness.value();
     double contrast = flame->contrast.value();
-    double ref = 1.0*quality*area/(contrast*scale*scale);
+    double ref = contrast*ceil(quality*area/GLOBAL_WORK_SIZE)*GLOBAL_WORK_SIZE/(scale*scale);
 
     params.a = contrast*brightness*268.0/256;
     params.b = 1.0/ref;
