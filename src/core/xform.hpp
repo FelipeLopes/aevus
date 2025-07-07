@@ -28,4 +28,12 @@ public:
     void readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params);
 };
 
+class FinalXForm: public serial::XMLElementClass {
+public:
+    FinalXForm(XMLElementClass& el);
+    serial::XMLAttributeDouble color;
+    serial::XMLMultiAttribute<VariationMap> variationMap;
+    serial::XMLAttribute<CoefsAffine> coefs;
+};
+
 }

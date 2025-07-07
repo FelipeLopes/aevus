@@ -69,4 +69,21 @@ void XForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>
     }
 }
 
+FinalXForm::FinalXForm(XMLElementClass& el): XMLElementClass(el, "finalxform"),
+    color(*this, "color"),
+    variationMap(*this, [](auto& names) {
+        for (auto kv: Variation::variationNames.right) {
+            names.insert(kv.first);
+            auto paramNames = Variation::variationParamNames.find(kv.second)->second.paramNames;
+            for (auto param: paramNames) {
+                names.insert(kv.first + "_" + param);
+            }
+        }
+    }),
+    coefs(*this, "coefs")
+{
+    variationMap.get()->variations[Variation::VariationID::LINEAR] =
+        VariationData(1.0, {});
+}
+
 }

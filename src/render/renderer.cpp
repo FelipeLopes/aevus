@@ -24,7 +24,7 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
             auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
             switch (state) {
                 case FLAME_MODIFIED: runIteration(); break;
-                case ITERATION_RUNNING: /* should never happen */ break;
+                case ITERATION_RUNNING: /* do nothing, already busy */ break;
                 case ITERATION_COMPLETED: runToneMapping(); break;
                 case MAPPING_COMPLETED: render(); break;
                 case FLAME_RENDERED: break;

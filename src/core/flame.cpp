@@ -46,6 +46,7 @@ Flame::Flame(): XMLElementClass("flame"),
     vibrancy(*this, "vibrancy", 1.0),
     clipping(*this, "clipping"),
     xforms(*this, "xform"),
+    finalXForm(*this),
     palette(*this)
 {
     center.get()->x = 0;
