@@ -18,7 +18,6 @@ public:
     void deserialize(FILE* fp);
     std::string tag;
     std::vector<XMLElementClass*> children;
-    std::map<std::string, std::list<std::shared_ptr<XMLElementClass>>> listTags;
     std::vector<XMLAttributeField*> attributeFields;
     XMLContentClass* content;
     virtual ~XMLElementClass();
@@ -36,30 +35,28 @@ public:
             "T must inherit from XMLElementClass");
         static_assert(std::is_default_constructible<T>::value,
             "T must have a default constructor");
-        parent.listTags[tag] = std::list<std::shared_ptr<XMLElementClass>>();
-        list = &parent.listTags[tag];
     }
 
     std::shared_ptr<T> get(int index) const {
-        int count = list->size();
+        int count = list.size();
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to access out of list bounds");
         }
-        auto it = std::next(list->begin(), index);
+        auto it = std::next(list.begin(), index);
         return std::static_pointer_cast<T>(*it);
     }
 
     void append(std::shared_ptr<T> element) {
-        list->push_back(element);
+        list.push_back(element);
     }
 
     void remove(int index) {
-        int count = list->size();
+        int count = list.size();
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to remove out of list bounds");
         }
-        auto it = std::next(list->begin(), index);
-        list->erase(it);
+        auto it = std::next(list.begin(), index);
+        list.erase(it);
     }
 
     void clear() {
@@ -69,15 +66,15 @@ public:
     }
 
     bool empty() const {
-        return list->empty();
+        return list.empty();
     }
 
     size_t size() const {
-        return list->size();
+        return list.size();
     }
 
     virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent) {
-        for (auto el: *list) {
+        for (auto el: list) {
             el->nodeSerialize(xmlDoc, parent);
         }
     }
@@ -106,7 +103,7 @@ public:
 private:
     XMLElementClass& parent;
     std::string tag;
-    std::list<std::shared_ptr<XMLElementClass>>* list;
+    std::list<std::shared_ptr<XMLElementClass>> list;
 };
 
 }
