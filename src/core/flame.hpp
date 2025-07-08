@@ -62,7 +62,7 @@ public:
     serial::XMLAttributeDouble vibrancy;
     serial::XMLAttribute<Clipping> clipping;
     serial::ListXMLElementClass<XForm> xforms;
-    FinalXForm finalXForm;
+    serial::OptionalXMLElementClass<FinalXForm> finalXForm;
     Palette palette;
 
     FlameCL getFlameCL() const;

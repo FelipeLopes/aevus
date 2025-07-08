@@ -106,4 +106,63 @@ private:
     std::list<std::shared_ptr<XMLElementClass>> list;
 };
 
+template <typename T>
+class OptionalXMLElementClass: public XMLElementClass {
+public:
+    OptionalXMLElementClass(XMLElementClass& parent_, std::string tag_):
+        XMLElementClass(parent_, tag_), parent(parent_), tag(tag_)
+    {
+        static_assert(std::is_base_of<XMLElementClass, T>::value,
+            "T must inherit from XMLElementClass");
+        static_assert(std::is_default_constructible<T>::value,
+            "T must have a default constructor");
+    }
+
+    std::shared_ptr<T> get() const {
+        return std::static_pointer_cast<T>(ptr);
+    }
+
+    void unset() {
+        ptr.reset();
+    }
+
+    void set(std::shared_ptr<T> val) {
+        ptr = val;
+    }
+
+    bool isSet() const {
+        return ptr != nullptr;
+    }
+
+    virtual void nodeSerialize(tinyxml2::XMLDocument& xmlDoc, tinyxml2::XMLNode* parent) {
+        if (isSet()) {
+            ptr->nodeSerialize(xmlDoc, parent);
+        }
+    }
+
+    virtual tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) {
+        unset();
+        if (node == NULL) {
+            return node;
+        }
+        tinyxml2::XMLElement* element = node->ToElement();
+        if (element == NULL) {
+            return node;
+        }
+        std::string name = element->Name();
+        if (name != tag) {
+            return node;
+        }
+        auto clazz = std::make_shared<T>();
+        clazz->nodeDeserialize(node);
+        set(clazz);
+        node = node->NextSibling();
+        return node;
+    }
+private:
+    XMLElementClass& parent;
+    std::string tag;
+    std::shared_ptr<XMLElementClass> ptr;
+};
+
 }

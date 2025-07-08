@@ -69,7 +69,7 @@ void XForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>
     }
 }
 
-FinalXForm::FinalXForm(XMLElementClass& el): XMLElementClass(el, "finalxform"),
+FinalXForm::FinalXForm(): XMLElementClass("finalxform"),
     color(*this, "color"),
     variationMap(*this, [](auto& names) {
         for (auto kv: Variation::variationNames.right) {

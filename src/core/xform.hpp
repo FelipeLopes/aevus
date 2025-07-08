@@ -30,7 +30,7 @@ public:
 
 class FinalXForm: public serial::XMLElementClass {
 public:
-    FinalXForm(XMLElementClass& el);
+    FinalXForm();
     serial::XMLAttributeDouble color;
     serial::XMLMultiAttribute<VariationMap> variationMap;
     serial::XMLAttribute<CoefsAffine> coefs;
