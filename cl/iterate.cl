@@ -75,10 +75,10 @@ inline bool badval(float2 p) {
 }
 
 inline uint mwc64x(__global SeedUnion* s) {
-	uint c = s->word.y;
+    uint c = s->word.y;
     uint x = s->word.x;
     s->value = x*((ulong)MWC64X_A) + c;
-	return x^c;
+    return x^c;
 }
 
 inline float mwc64x01(__global SeedUnion* s) {
