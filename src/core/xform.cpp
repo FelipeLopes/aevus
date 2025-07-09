@@ -3,8 +3,7 @@
 
 namespace core {
 
-XForm::XForm(): XMLElementClass("xform"),
-    weight(*this, "weight"),
+BaseXForm::BaseXForm(std::string tag): XMLElementClass(tag),
     color(*this, "color"),
     variationMap(*this, [](auto& names) {
         for (auto kv: Variation::variationNames.right) {
@@ -20,13 +19,12 @@ XForm::XForm(): XMLElementClass("xform"),
     chaos(*this, "chaos"),
     colorSpeed(*this, {"color_speed", "symmetry"})
 {
-    weight.setValue(0.5);
     variationMap.get()->variations[Variation::VariationID::LINEAR] =
         VariationData(1.0, {});
     colorSpeed.get()->colorSpeed = 0.5;
 }
 
-XFormCL XForm::toXFormCL(int varBegin) const {
+XFormCL BaseXForm::toXFormCL(int varBegin) const {
     XFormCL xf;
 
     auto pre = coefs.value();
@@ -56,7 +54,7 @@ XFormCL XForm::toXFormCL(int varBegin) const {
     return xf;
 }
 
-void XForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params) {
+void BaseXForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params) {
     for (auto kv: variationMap.value().variations) {
         VariationCL varCL;
         varCL.id = kv.first;
@@ -69,21 +67,12 @@ void XForm::readVariationData(std::vector<VariationCL>& vars, std::vector<float>
     }
 }
 
-FinalXForm::FinalXForm(): XMLElementClass("finalxform"),
-    color(*this, "color"),
-    variationMap(*this, [](auto& names) {
-        for (auto kv: Variation::variationNames.right) {
-            names.insert(kv.first);
-            auto paramNames = Variation::variationParamNames.find(kv.second)->second.paramNames;
-            for (auto param: paramNames) {
-                names.insert(kv.first + "_" + param);
-            }
-        }
-    }),
-    coefs(*this, "coefs")
+XForm::XForm(): BaseXForm("xform"),
+    weight(*this, "weight")
 {
-    variationMap.get()->variations[Variation::VariationID::LINEAR] =
-        VariationData(1.0, {});
+    weight.setValue(0.5);
 }
+
+FinalXForm::FinalXForm(): BaseXForm("finalxform") { }
 
 }

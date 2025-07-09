@@ -14,10 +14,9 @@ struct XFormCL {
     int varBegin, varEnd;
 };
 
-class XForm: public serial::XMLElementClass {
+class BaseXForm: public serial::XMLElementClass {
 public:
-    XForm();
-    serial::XMLAttributeDouble weight;
+    BaseXForm(std::string tag);
     serial::XMLAttributeDouble color;
     serial::XMLMultiAttribute<VariationMap> variationMap;
     serial::XMLAttribute<CoefsAffine> coefs;
@@ -28,12 +27,15 @@ public:
     void readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params);
 };
 
-class FinalXForm: public serial::XMLElementClass {
+class XForm: public BaseXForm {
+public:
+    XForm();
+    serial::XMLAttributeDouble weight;
+};
+
+class FinalXForm: public BaseXForm {
 public:
     FinalXForm();
-    serial::XMLAttributeDouble color;
-    serial::XMLMultiAttribute<VariationMap> variationMap;
-    serial::XMLAttribute<CoefsAffine> coefs;
 };
 
 }
