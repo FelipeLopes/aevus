@@ -104,6 +104,18 @@ void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec
         xforms.get(i)->readVariationData(varVec, paramVec);
         varBegin = xformVec[i].varEnd;
     }
+    if (finalXForm.isSet()) {
+        xformVec.push_back(finalXForm.get()->toXFormCL(varBegin));
+        finalXForm.get()->readVariationData(varVec, paramVec);
+    }
+}
+
+int Flame::readFinalXFormPosition() const {
+    if (finalXForm.isSet()) {
+        return xforms.size();
+    } else {
+        return -1;
+    }
 }
 
 void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
