@@ -17,7 +17,8 @@ using std::string;
 
 namespace ui {
 
-AevusFrame::AevusFrame(OpenCL* openCL, optional<string> filename): WxfbFrame(NULL),
+AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> filename):
+    WxfbFrame(manager, NULL),
     context(openCL->createQueuedContext(0, 1)),
     renderer(context, &flame, flameStream),
     flameModel(flameWindow, flameStream),

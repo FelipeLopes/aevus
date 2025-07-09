@@ -28,7 +28,7 @@ namespace ui {
 
 class AevusFrame: public WxfbFrame {
 public:
-    AevusFrame(clwrap::OpenCL* openCL, std::optional<std::string> filename);
+    AevusFrame(wxDocManager* manager, clwrap::OpenCL* openCL, std::optional<std::string> filename);
 private:
     core::Flame flame;
     clwrap::CLQueuedContext context;

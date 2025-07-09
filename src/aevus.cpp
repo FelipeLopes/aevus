@@ -1,10 +1,13 @@
 #include <optional>
-#include <wx-3.2/wx/image.h>
-#include <wx-3.2/wx/imagpnm.h>
-#include <wx-3.2/wx/wfstream.h>
 #include <wx/app.h>
+#include <wx/docview.h>
+#include <wx/image.h>
+#include <wx/imagpnm.h>
+#include <wx/wfstream.h>
 #include "clwrap/opencl.hpp"
 #include "ui/aevus_frame.hpp"
+#include "ui/flame_document.hpp"
+#include "ui/flame_view.hpp"
 
 using std::optional;
 using std::string;
@@ -12,6 +15,10 @@ using std::string;
 class Aevus: public wxApp {
 public:
     bool OnInit() override;
+private:
+    std::unique_ptr<wxDocManager> docManager;
+    wxDocTemplate* docTemplate;
+    std::unique_ptr<ui::AevusFrame> frame;
 };
 
 bool Aevus::OnInit() {
@@ -19,7 +26,11 @@ bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNMHandler());
     auto openCL = clwrap::OpenCL::getInstance();
     auto filename = argc < 2 ? (optional<string>)std::nullopt : argv[1].ToStdString();
-    ui::AevusFrame* frame = new ui::AevusFrame(openCL, filename);
+    docManager.reset(new wxDocManager);
+    docManager->SetMaxDocsOpen(1);
+    docTemplate = new wxDocTemplate(docManager.get(), "Fractal Flame", "*.flame", "", "flame",
+        "FlameDocument", "FlameView", CLASSINFO(FlameDocument), CLASSINFO(FlameView));
+    frame.reset(new ui::AevusFrame(docManager.get(), openCL, filename));
     frame->Show();
     return true;
 }
