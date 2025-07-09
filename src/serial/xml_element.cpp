@@ -65,7 +65,7 @@ XMLNode* XMLElementClass::nodeDeserialize(XMLNode* node) {
     }
     string name = element->Name();
     if (name != tag) {
-        throw std::invalid_argument("XML node has invalid tag");
+        throw std::invalid_argument("XML node has invalid tag: " + name);
     }
     for (auto field: attributeFields) {
         field->deserialize(element);

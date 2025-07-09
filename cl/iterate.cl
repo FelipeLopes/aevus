@@ -33,8 +33,12 @@ typedef union SeedUnion {
     ulong value;
 } SeedUnion;
 
-typedef struct IterationState {
+typedef struct ColoredPoint {
     float x, y, c;
+} ColoredPoint;
+
+typedef struct IterationState {
+    ColoredPoint p;
     uchar xf;
     SeedUnion seed;
 } IterationState;
@@ -70,8 +74,8 @@ typedef struct FlameCL {
     int width, height;
 } FlameCL;
 
-inline bool badval(float2 p) {
-    return (p.x - p.x != 0) || (p.y - p.y != 0);
+inline bool badval(float x, float y) {
+    return (x - x != 0) || (y - y != 0);
 }
 
 inline uint mwc64x(__global SeedUnion* s) {
@@ -90,8 +94,8 @@ inline float mwc64xn11(__global SeedUnion* s) {
 }
 
 inline void resetPoint(__global IterationState* state) {
-    state->x = mwc64xn11(&state->seed);
-    state->y = mwc64xn11(&state->seed);
+    state->p.x = mwc64xn11(&state->seed);
+    state->p.y = mwc64xn11(&state->seed);
 }
 
 inline float4 lookupColor(__global float4* palette, float val) {
@@ -181,10 +185,11 @@ int histogramIndex(FlameCL* flame, float2 p) {
     return iPos*flame->width+jPos;
 }
 
-float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
-    __global const float* params, int idx, float2 p, __global SeedUnion* seed)
+ColoredPoint calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
+    __global const float* params, int idx, ColoredPoint p, __global SeedUnion* seed)
 {
-    float2 t, acc, ans;
+    float2 t, acc;
+    ColoredPoint ans;
     t.x = xform[idx].a*p.x + xform[idx].b*p.y + xform[idx].c;
     t.y = xform[idx].d*p.x + xform[idx].e*p.y + xform[idx].f;
     acc.x = 0;
@@ -205,21 +210,27 @@ float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars
     }
     ans.x = xform[idx].pa*acc.x + xform[idx].pb*acc.y + xform[idx].pc;
     ans.y = xform[idx].pd*acc.x + xform[idx].pe*acc.y + xform[idx].pf;
+    float s = xform[idx].colorSpeed;
+    ans.c = s*xform[idx].color + (1-s)*p.c;
     return ans;
 }
 
-float2 iterateXform(__global const XFormCL* xform, __global const VariationCL* vars,
-    __global const float* params, int idx, __global IterationState* state, int finalId)
+ColoredPoint iterateXform(__global const XFormCL* xform, __global const VariationCL* vars,
+    __global const float* params, int idx, __global IterationState* state, int finalIdx)
 {
-    float2 stateP = (float2)(state->x, state->y);
-    float2 ans = calcXform(xform, vars, params, idx, stateP, &state->seed);
+    ColoredPoint xfp = calcXform(xform, vars, params, idx, state->p, &state->seed);
 
-    state->x = ans.x;
-    state->y = ans.y;
+    if (badval(xfp.x, xfp.y)) {
+        resetPoint(state);
+    } else {
+        state->p = xfp;
+    }
     state->xf = idx;
 
-    float s = xform[idx].colorSpeed;
-    state->c = s*xform[idx].color + (1-s)*state->c;
+    ColoredPoint ans = state->p;
+    if (finalIdx != -1) {
+        ans = calcXform(xform, vars, params, finalIdx, ans, &state->seed);
+    }
 
     return ans;
 }
@@ -241,16 +252,12 @@ __kernel void iterate(
     for (int j=0; j<iters; j++) {
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-        float2 p = iterateXform(xform, vars, params, xfIdx, &state[i], posFinalXForm);
-        if (badval(p)) {
-            resetPoint(&state[i]);
-        } else {
-            int idx = histogramIndex(&flameCL, p);
-            if (idx != -1) {
-                float4 color = lookupColor(palette, state[i].c);
-                if (hist[idx].w < threshold) {
-                    atomic_add_f4(&hist[idx], color);
-                }
+        ColoredPoint p = iterateXform(xform, vars, params, xfIdx, &state[i], posFinalXForm);
+        int idx = histogramIndex(&flameCL, (float2)(p.x,p.y));
+        if (idx != -1) {
+            float4 color = lookupColor(palette, p.c);
+            if (hist[idx].w < threshold) {
+                atomic_add_f4(&hist[idx], color);
             }
         }
     }
