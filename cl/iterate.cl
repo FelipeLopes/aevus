@@ -182,11 +182,11 @@ int histogramIndex(FlameCL* flame, float2 p) {
 }
 
 float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
-    __global const float* params, int idx, __global IterationState* state)
+    __global const float* params, int idx, float2 p, __global SeedUnion* seed)
 {
     float2 t, acc, ans;
-    t.x = xform[idx].a*state->x + xform[idx].b*state->y + xform[idx].c;
-    t.y = xform[idx].d*state->x + xform[idx].e*state->y + xform[idx].f;
+    t.x = xform[idx].a*p.x + xform[idx].b*p.y + xform[idx].c;
+    t.y = xform[idx].d*p.x + xform[idx].e*p.y + xform[idx].f;
     acc.x = 0;
     acc.y = 0;
     for (int i=xform[idx].varBegin; i<xform[idx].varEnd; i++) {
@@ -199,12 +199,21 @@ float2 calcXform(__global const XFormCL* xform, __global const VariationCL* vars
             case PDJ: acc += vars[i].weight*pdj(t, params+vars[i].paramBegin); break;
             case EYEFISH: acc += vars[i].weight*eyefish(t); break;
             case CYLINDER: acc +=vars[i].weight*cylinder(t); break;
-            case SQUARE: acc += vars[i].weight*square(&state->seed); break;
+            case SQUARE: acc += vars[i].weight*square(seed); break;
             default: break;
         }
     }
     ans.x = xform[idx].pa*acc.x + xform[idx].pb*acc.y + xform[idx].pc;
     ans.y = xform[idx].pd*acc.x + xform[idx].pe*acc.y + xform[idx].pf;
+    return ans;
+}
+
+float2 iterateXform(__global const XFormCL* xform, __global const VariationCL* vars,
+    __global const float* params, int idx, __global IterationState* state, int finalId)
+{
+    float2 stateP = (float2)(state->x, state->y);
+    float2 ans = calcXform(xform, vars, params, idx, stateP, &state->seed);
+
     state->x = ans.x;
     state->y = ans.y;
     state->xf = idx;
@@ -232,7 +241,7 @@ __kernel void iterate(
     for (int j=0; j<iters; j++) {
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
-        float2 p = calcXform(xform, vars, params, xfIdx, &state[i]);
+        float2 p = iterateXform(xform, vars, params, xfIdx, &state[i], posFinalXForm);
         if (badval(p)) {
             resetPoint(&state[i]);
         } else {
