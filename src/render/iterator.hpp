@@ -18,6 +18,7 @@ struct IteratorParams {
     std::vector<float> paramVec;
     std::vector<uint8_t> xformDistVec;
     std::vector<core::ColorCL> paletteVec;
+    int posFinalXForm;
     float threshold;
     int iters;
 };
@@ -41,6 +42,7 @@ private:
     clwrap::CLReadOnlyBufferArg<uint8_t> xformDistArg;
     clwrap::CLReadOnlyBufferArg<core::ColorCL> paletteArg;
     clwrap::CLReadWriteBufferArg<float> histogramArg;
+    clwrap::CLArg<int> posFinalXFormArg;
     clwrap::CLArg<float> thresholdArg;
     clwrap::CLArg<int> itersArg;
 

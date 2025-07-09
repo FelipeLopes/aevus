@@ -24,8 +24,9 @@ Iterator::Iterator(CLQueuedContext& context_):
     xformDistArg(&kernel, 5),
     paletteArg(&kernel, 6),
     histogramArg(&kernel, 7),
-    thresholdArg(&kernel, 8, 0.0f),
-    itersArg(&kernel, 9, 0) { }
+    posFinalXFormArg(&kernel, 8, -1),
+    thresholdArg(&kernel, 9, 0.0f),
+    itersArg(&kernel, 10, 0) { }
 
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     params.flameCL = flame->getFlameCL();
@@ -33,6 +34,7 @@ void Iterator::extractParams(Flame* flame, IteratorParams& params) {
     flame->readXFormData(params.xformVec, params.varVec, params.paramVec);
     flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
+    params.posFinalXForm = flame->readFinalXFormPosition();
     double samples = flame->quality.value()*params.flameCL.width*params.flameCL.height;
     params.iters = ceil(samples/GLOBAL_WORK_SIZE);
 }
@@ -53,6 +55,7 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
     xformDistArg.lazy(params.xformDistVec);
     paletteArg.lazy(params.paletteVec);
     histogramArg.lazy(histogramVec);
+    posFinalXFormArg.set(params.posFinalXForm);
     thresholdArg.set(params.threshold);
     itersArg.set(params.iters);
     return kernel.runAsync(GLOBAL_WORK_SIZE, LOCAL_WORK_SIZE);

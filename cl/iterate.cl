@@ -224,6 +224,7 @@ __kernel void iterate(
     __global uchar *xformDist,
     __global float4 *palette,
     __global float4 *hist,
+    int posFinalXForm,
     float threshold,
     int iters)
 {
