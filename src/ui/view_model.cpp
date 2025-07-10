@@ -1,5 +1,5 @@
 #include "view_model.hpp"
-#include <wx-3.2/wx/variant.h>
+#include <wx/variant.h>
 
 using std::vector;
 
@@ -24,6 +24,10 @@ void ViewModel::update() {
     }
     afterUpdate(row);
     updateOngoing = false;
+}
+
+void ViewModel::setFlame(core::Flame *flame_) {
+    flame = flame_;
 }
 
 bool ViewModel::updating() {

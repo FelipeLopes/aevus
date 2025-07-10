@@ -6,12 +6,11 @@
 #include <wx/dcbuffer.h>
 
 using std::string;
-using core::Flame;
 
 namespace ui {
 
-TriangleModel::TriangleModel(Flame* flame_, wxPanel* trianglePanel_):
-    flame(flame_), trianglePanel(trianglePanel_), activeTransform(-1),
+TriangleModel::TriangleModel(wxPanel* trianglePanel_):
+    flame(NULL), trianglePanel(trianglePanel_), activeTransform(-1),
     triangleGrid(trianglePanel->GetSize()),
     triangleCollider(flame, &triangleGrid, activeTransform),
     triangleDrawer(flame, &triangleGrid, trianglePanel->GetFont(), activeTransform),
@@ -22,6 +21,10 @@ TriangleModel::TriangleModel(Flame* flame_, wxPanel* trianglePanel_):
 
 void TriangleModel::update() {
     trianglePanel->Refresh();
+}
+
+void TriangleModel::setFlame(core::Flame *flame_) {
+    flame = flame_;
 }
 
 void TriangleModel::handleActiveXformChanged(int id) {

@@ -8,8 +8,7 @@ namespace ui {
 
 class VariationModel: public ViewModel {
 public:
-    VariationModel(core::Flame* flame, wxDataViewListCtrl* variationCtrl,
-        wxTextCtrl* variationAddCtrl);
+    VariationModel(wxDataViewListCtrl* variationCtrl, wxTextCtrl* variationAddCtrl);
     void handleActiveXformChanged(int id);
     void handleVariationAdd();
     boost::signals2::signal<void ()> variationDataChanged;

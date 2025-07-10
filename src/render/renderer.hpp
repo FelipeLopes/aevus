@@ -9,6 +9,7 @@
 namespace render {
 
 enum RendererState {
+    NO_FLAME,
     FLAME_MODIFIED,
     ITERATION_RUNNING,
     ITERATION_COMPLETED,
@@ -24,7 +25,8 @@ struct RendererParams {
 
 class Renderer {
 public:
-    Renderer(clwrap::CLQueuedContext& context, core::Flame* flame, std::stringstream& stream);
+    Renderer(clwrap::CLQueuedContext& context, std::stringstream& stream);
+    void setFlame(core::Flame* flame);
     void update();
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;

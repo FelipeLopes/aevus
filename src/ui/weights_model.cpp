@@ -2,15 +2,14 @@
 #include "selection_view_model.hpp"
 #include <string>
 
-using core::Flame;
 using std::string;
 using std::to_string;
 using std::vector;
 
 namespace ui {
 
-WeightsModel::WeightsModel(Flame* flame_, wxDataViewListCtrl* weightsListCtrl,
-    wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl), flame(flame_),
+WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl,
+    wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl), flame(NULL),
     removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false)
 {
     removeXformButton->Disable();

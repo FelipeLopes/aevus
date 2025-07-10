@@ -1,9 +1,15 @@
 #include "flame_view.hpp"
+#include <wx/app.h>
 
 wxIMPLEMENT_DYNAMIC_CLASS(FlameView, wxView);
 
+FlameView::FlameView() {
+    SetFrame(wxTheApp->GetTopWindow());
+}
+
 bool FlameView::OnCreate(wxDocument *doc, long flags) {
-    return true;
+    printf("OnCreate called\n");
+    return wxView::OnCreate(doc, flags);
 }
 
 void FlameView::OnDraw(wxDC *dc) {

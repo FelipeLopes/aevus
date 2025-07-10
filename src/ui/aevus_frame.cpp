@@ -20,15 +20,15 @@ namespace ui {
 AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> filename):
     WxfbFrame(manager, NULL),
     context(openCL->createQueuedContext(0, 1)),
-    renderer(context, &flame, flameStream),
+    renderer(context, flameStream),
     flameModel(flameWindow, flameStream),
-    preTransformModel(&flame, preTransformDataViewCtrl, resetPreButton, true),
-    postTransformModel(&flame, postTransformDataViewCtrl, resetPostButton, false),
-    weightsModel(&flame, weightsDataViewCtrl, removeXformButton),
-    variationModel(&flame, variationListCtrl, variationTextCtrl),
-    colorModel(&flame, colorListCtrl, palettePanel),
-    frameModel(&flame, frameListCtrl),
-    triangleModel(&flame, trianglePanel)
+    preTransformModel(preTransformDataViewCtrl, resetPreButton, true),
+    postTransformModel(postTransformDataViewCtrl, resetPostButton, false),
+    weightsModel(weightsDataViewCtrl, removeXformButton),
+    variationModel(variationListCtrl, variationTextCtrl),
+    colorModel(colorListCtrl, palettePanel),
+    frameModel(frameListCtrl),
+    triangleModel(trianglePanel)
 {
     preTransformModel.transformCoordsChanged
         .connect(eventBroker.activeXformCoordsChanged);
@@ -133,6 +133,16 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     if (filename.has_value()) {
         loadFlame(filename.value());
     }
+}
+
+void AevusFrame::setupForFlameView(FlameView *flameView) {
+    renderer.setFlame(flameView->flame);
+    preTransformModel.setFlame(flameView->flame);
+    weightsModel.setFlame(flameView->flame);
+    variationModel.setFlame(flameView->flame);
+    colorModel.setFlame(flameView->flame);
+    frameModel.setFlame(flameView->flame);
+    triangleModel.setFlame(flameView->flame);
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
@@ -242,6 +252,7 @@ void AevusFrame::onAbout(wxCommandEvent& event) {
 }
 
 void AevusFrame::loadFlame(std::string filename) {
+    /*
     FILE* inputStream = fopen(filename.c_str(), "r");
     if (inputStream == NULL) {
         printf("Error on opening file: %s\n", filename.c_str());
@@ -252,10 +263,10 @@ void AevusFrame::loadFlame(std::string filename) {
     eventBroker.flameLoaded();
     if (flame.xforms.size() > 0) {
         eventBroker.activeXformChanged(0);
-    }
+    }*/
 }
 
-void AevusFrame::onFileOpen(wxCommandEvent& event) {
+/*void AevusFrame::onFileOpen(wxCommandEvent& event) {
     wxFileDialog openFileDialog(this, "Open flame file", "", "",
         "Flame files (*.flame)|*.flame|XML files|*.xml",
         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -280,6 +291,6 @@ void AevusFrame::onFileSaveAs(wxCommandEvent& event) {
     }
     flame.serialize(outputStream);
     fclose(outputStream);
-}
+}*/
 
 }

@@ -10,8 +10,7 @@ namespace ui {
 
 class WeightsModel: public SelectionViewModel {
 public:
-    WeightsModel(core::Flame* flame, wxDataViewListCtrl* weightsListCtrl,
-        wxBitmapButton* removeXformButton);
+    WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
     void handleActiveXformChanged(int id);
     void handleAddXform();

@@ -6,13 +6,13 @@
 #include "color_model.hpp"
 #include "event_broker.hpp"
 #include "flame_model.hpp"
+#include "flame_view.hpp"
 #include "frame_model.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"
 #include "variation_model.hpp"
 #include "weights_model.hpp"
 #include "../clwrap/opencl.hpp"
-#include "../core/flame.hpp"
 #include "../render/renderer.hpp"
 
 extern char _binary_res_plus_default_png_start[];
@@ -29,8 +29,8 @@ namespace ui {
 class AevusFrame: public WxfbFrame {
 public:
     AevusFrame(wxDocManager* manager, clwrap::OpenCL* openCL, std::optional<std::string> filename);
+    void setupForFlameView(FlameView* flameView);
 private:
-    core::Flame flame;
     clwrap::CLQueuedContext context;
     std::stringstream flameStream;
     render::Renderer renderer;
@@ -45,8 +45,8 @@ private:
     FrameModel frameModel;
     TriangleModel triangleModel;
 
-    void onFileOpen(wxCommandEvent& event) override;
-    void onFileSaveAs(wxCommandEvent& event) override;
+    //void onFileOpen(wxCommandEvent& event) override;
+    //void onFileSaveAs(wxCommandEvent& event) override;
     void onExit(wxCommandEvent& event) override;
     void onAbout(wxCommandEvent& event) override;
     void onButtonClick(wxCommandEvent& event) override;

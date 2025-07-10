@@ -10,8 +10,7 @@ namespace ui {
 
 class ColorModel: public ViewModel {
 public:
-    ColorModel(core::Flame* flame, wxDataViewListCtrl* colorListCtrl,
-        wxPanel* palettePanel);
+    ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel);
     void handleActiveXformChanged(int id);
     void handlePaint();
     void handleMouseUp(wxMouseEvent& event);

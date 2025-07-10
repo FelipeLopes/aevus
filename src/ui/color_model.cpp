@@ -9,12 +9,12 @@ using std::string;
 using std::to_string;
 using std::vector;
 using core::Color;
-using core::Flame;
 
 namespace ui {
 
-ColorModel::ColorModel(Flame* flame_, wxDataViewListCtrl* colorListCtrl,
-    wxPanel* palettePanel_): ViewModel(colorListCtrl), flame(flame_),
+ColorModel::ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel_):
+    ViewModel(colorListCtrl),
+    flame(NULL),
     palettePanel(palettePanel_),
     paletteWidth(palettePanel->GetSize().GetWidth()),
     paletteBitmap(paletteWidth, 256),
@@ -44,6 +44,9 @@ ColorModel::ColorModel(Flame* flame_, wxDataViewListCtrl* colorListCtrl,
 }
 
 void ColorModel::setupPalette() {
+    if (flame == NULL) {
+        return;
+    }
     auto flamePalette = flame->palette.colors.value();
     wxNativePixelData data(paletteBitmap);
     wxNativePixelData::Iterator p(data);

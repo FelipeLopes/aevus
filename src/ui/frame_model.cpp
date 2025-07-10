@@ -3,17 +3,19 @@
 
 using std::string;
 using std::to_string;
-using core::Flame;
 
 namespace ui {
 
-FrameModel::FrameModel(Flame* flame_, wxDataViewListCtrl* frameListCtrl):
-    ViewModel(frameListCtrl), flame(flame_)
+FrameModel::FrameModel(wxDataViewListCtrl* frameListCtrl):
+    ViewModel(frameListCtrl), flame(NULL)
 {
     update();
 }
 
 void FrameModel::getValues(std::vector<wxVector<wxVariant>>& data) const {
+    if (flame == NULL) {
+        return;
+    }
     wxVector<wxVariant> row;
     auto flameSize = flame->size.value();
     row.push_back("width");

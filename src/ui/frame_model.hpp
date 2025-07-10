@@ -8,7 +8,7 @@ namespace ui {
 
 class FrameModel: public ViewModel {
 public:
-    FrameModel(core::Flame* flame, wxDataViewListCtrl* frameListCtrl);
+    FrameModel(wxDataViewListCtrl* frameListCtrl);
     boost::signals2::signal<void ()> frameChanged;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;

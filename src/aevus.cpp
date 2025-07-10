@@ -24,6 +24,7 @@ private:
 bool Aevus::OnInit() {
     wxImage::AddHandler(new wxPNGHandler());
     wxImage::AddHandler(new wxPNMHandler());
+    SetAppDisplayName("Aevus");
     auto openCL = clwrap::OpenCL::getInstance();
     auto filename = argc < 2 ? (optional<string>)std::nullopt : argv[1].ToStdString();
     docManager.reset(new wxDocManager);
@@ -31,6 +32,7 @@ bool Aevus::OnInit() {
     docTemplate = new wxDocTemplate(docManager.get(), "Fractal Flame", "*.flame", "", "flame",
         "FlameDocument", "FlameView", CLASSINFO(FlameDocument), CLASSINFO(FlameView));
     frame.reset(new ui::AevusFrame(docManager.get(), openCL, filename));
+    SetTopWindow(frame.get());
     frame->Show();
     return true;
 }

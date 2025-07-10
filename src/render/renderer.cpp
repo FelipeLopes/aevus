@@ -6,7 +6,6 @@
 #include <cmath>
 
 using clwrap::CLQueuedContext;
-using core::Flame;
 using std::stringstream;
 using std::vector;
 
@@ -14,8 +13,8 @@ namespace render {
 
 typedef std::chrono::duration<int, std::ratio<1, 60>> frame_duration;
 
-Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& stream_):
-    context(context_), flame(flame_), stream(stream_), iterator(context),
+Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
+    context(context_), flame(NULL), stream(stream_), iterator(context),
     toneMapper(context), colorer(context), running(true), state(FLAME_MODIFIED)
 {
     update();
@@ -23,6 +22,7 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
         while (running) {
             auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
             switch (state) {
+                case NO_FLAME: break;
                 case FLAME_MODIFIED: runIteration(); break;
                 case ITERATION_RUNNING: /* do nothing, already busy */ break;
                 case ITERATION_COMPLETED: runToneMapping(); break;
@@ -34,10 +34,21 @@ Renderer::Renderer(CLQueuedContext& context_, Flame* flame_, stringstream& strea
     });
 }
 
+void Renderer::setFlame(core::Flame* flame_) {
+    lock.lock();
+    flame = flame_;
+    lock.unlock();
+    update();
+}
+
 void Renderer::update() {
     lock.lock();
-    state = FLAME_MODIFIED;
-    extractParams();
+    if (flame == NULL) {
+        state = NO_FLAME;
+    } else {
+        state = FLAME_MODIFIED;
+        extractParams();
+    }
     lock.unlock();
 }
 

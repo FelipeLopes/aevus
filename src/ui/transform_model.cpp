@@ -2,15 +2,14 @@
 #include <stdexcept>
 #include <string>
 
-using core::Flame;
 using std::string;
 using std::to_string;
 using std::vector;
 
 namespace ui {
 
-TransformModel::TransformModel(Flame* flame_, wxDataViewListCtrl* transformCtrl,
-    wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(flame_),
+TransformModel::TransformModel(wxDataViewListCtrl* transformCtrl,
+    wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(NULL),
     resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1)
 {
     resetButton->Disable();

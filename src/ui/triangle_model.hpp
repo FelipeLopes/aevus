@@ -14,8 +14,9 @@ namespace ui {
 
 class TriangleModel {
 public:
-    TriangleModel(core::Flame* flame, wxPanel* trianglePanel);
+    TriangleModel(wxPanel* trianglePanel);
     void update();
+    void setFlame(core::Flame* flame);
     void handleActiveXformChanged(int id);
     void handlePaint();
     void handleResize(wxSizeEvent& event);
