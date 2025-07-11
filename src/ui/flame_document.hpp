@@ -4,6 +4,8 @@
 #include <wx/docview.h>
 #include "../core/flame.hpp"
 
+namespace ui {
+
 class FlameDocument: public wxDocument {
 public:
     std::ostream& SaveObject(std::ostream &stream) override;
@@ -14,3 +16,5 @@ private:
 
     wxDECLARE_DYNAMIC_CLASS(FlameDocument);
 };
+
+}

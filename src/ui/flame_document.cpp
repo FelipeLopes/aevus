@@ -1,5 +1,7 @@
 #include "flame_document.hpp"
 
+namespace ui {
+
 wxIMPLEMENT_DYNAMIC_CLASS(FlameDocument, wxDocument);
 
 std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
@@ -8,4 +10,6 @@ std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
 
 std::istream& FlameDocument::LoadObject(std::istream& stream) {
     return stream;
+}
+
 }

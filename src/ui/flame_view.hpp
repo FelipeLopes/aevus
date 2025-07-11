@@ -2,6 +2,8 @@
 
 #include "flame_document.hpp"
 
+namespace ui {
+
 class FlameView: public wxView {
 public:
     FlameView();
@@ -15,3 +17,5 @@ public:
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };
+
+}

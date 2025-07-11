@@ -30,7 +30,7 @@ bool Aevus::OnInit() {
     docManager.reset(new wxDocManager);
     docManager->SetMaxDocsOpen(1);
     docTemplate = new wxDocTemplate(docManager.get(), "Fractal Flame", "*.flame", "", "flame",
-        "FlameDocument", "FlameView", CLASSINFO(FlameDocument), CLASSINFO(FlameView));
+        "FlameDocument", "FlameView", CLASSINFO(ui::FlameDocument), CLASSINFO(ui::FlameView));
     frame.reset(new ui::AevusFrame(docManager.get(), openCL, filename));
     SetTopWindow(frame.get());
     frame->Show();
