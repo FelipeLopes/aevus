@@ -23,8 +23,10 @@ void TriangleModel::update() {
     trianglePanel->Refresh();
 }
 
-void TriangleModel::setFlame(core::Flame *flame_) {
-    flame = flame_;
+void TriangleModel::setFlame(core::Flame *flame) {
+    this->flame = flame;
+    triangleCollider.setFlame(flame);
+    triangleDrawer.setFlame(flame);
 }
 
 void TriangleModel::handleActiveXformChanged(int id) {

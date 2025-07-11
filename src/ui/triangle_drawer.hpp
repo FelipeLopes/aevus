@@ -12,6 +12,7 @@ public:
     void handleActiveXformChanged(int id);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
+    void setFlame(core::Flame* flame);
 private:
     void drawInactiveTriangles(wxGraphicsContext* gc);
     void drawActiveTriangle(wxGraphicsContext* gc);

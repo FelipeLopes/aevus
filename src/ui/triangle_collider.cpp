@@ -39,6 +39,10 @@ void TriangleCollider::handleActiveXformChanged(int id) {
     activeTransform = id;
 }
 
+void TriangleCollider::setFlame(core::Flame* flame) {
+    this->flame = flame;
+}
+
 CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) {
     auto ans = NO_COLLISION;
     int vertex = checkVertexCollision(pos, triangle);

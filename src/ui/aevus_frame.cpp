@@ -138,6 +138,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 void AevusFrame::setupForFlameView(FlameView *flameView) {
     renderer.setFlame(flameView->flame);
     preTransformModel.setFlame(flameView->flame);
+    postTransformModel.setFlame(flameView->flame);
     weightsModel.setFlame(flameView->flame);
     variationModel.setFlame(flameView->flame);
     colorModel.setFlame(flameView->flame);

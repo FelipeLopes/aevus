@@ -13,7 +13,6 @@ public:
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
-    core::Flame* flame;
 };
 
 }

@@ -11,6 +11,7 @@ public:
     TriangleCollider(core::Flame* flame, TriangleGrid* triangleGrid, int activeTransform);
     Collision getCollision(WindowPoint pos);
     void handleActiveXformChanged(int id);
+    void setFlame(core::Flame* flame);
 private:
     CollisionType getCollisionType(WindowPoint pos, int triangle);
     int checkVertexCollision(WindowPoint p, int idx);

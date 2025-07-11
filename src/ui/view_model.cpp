@@ -5,8 +5,8 @@ using std::vector;
 
 namespace ui {
 
-ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): dvListCtrl(dvListCtrl_),
-    updateOngoing(false)
+ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): flame(NULL),
+    dvListCtrl(dvListCtrl_), updateOngoing(false)
 {
     clearCtrl();
 }

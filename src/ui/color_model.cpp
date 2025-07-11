@@ -14,7 +14,6 @@ namespace ui {
 
 ColorModel::ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel_):
     ViewModel(colorListCtrl),
-    flame(NULL),
     palettePanel(palettePanel_),
     paletteWidth(palettePanel->GetSize().GetWidth()),
     paletteBitmap(paletteWidth, 256),

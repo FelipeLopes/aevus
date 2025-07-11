@@ -9,7 +9,7 @@ using std::vector;
 namespace ui {
 
 TransformModel::TransformModel(wxDataViewListCtrl* transformCtrl,
-    wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl), flame(NULL),
+    wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl),
     resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1)
 {
     resetButton->Disable();

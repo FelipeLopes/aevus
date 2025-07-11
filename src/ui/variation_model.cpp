@@ -10,7 +10,7 @@ namespace ui {
 
 VariationModel::VariationModel(wxDataViewListCtrl* variationCtrl,
     wxTextCtrl* variationAddCtrl_): ViewModel(variationCtrl),
-    flame(NULL), activeTransform(-1), variationAddCtrl(variationAddCtrl_)
+    activeTransform(-1), variationAddCtrl(variationAddCtrl_)
 {
     variationAddCtrl->AutoComplete(new VariationTextCompleter);
 }

@@ -40,6 +40,10 @@ bool TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
     return false;
 }
 
+void TriangleDrawer::setFlame(core::Flame* flame) {
+    this->flame = flame;
+}
+
 void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
     int sz = flame->xforms.size();
     for (int i=0; i<sz; i++) {

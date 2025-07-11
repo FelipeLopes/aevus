@@ -9,7 +9,7 @@ using std::vector;
 namespace ui {
 
 WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl,
-    wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl), flame(NULL),
+    wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl),
     removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false)
 {
     removeXformButton->Disable();

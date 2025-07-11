@@ -22,7 +22,6 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    core::Flame* flame;
     wxBitmapButton* removeXformButton;
     int activeTransform;
     bool blockSelectionEvents;

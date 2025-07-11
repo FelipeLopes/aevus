@@ -23,7 +23,6 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    core::Flame* flame;
     wxPanel* palettePanel;
     int paletteWidth;
     wxBitmap paletteBitmap;

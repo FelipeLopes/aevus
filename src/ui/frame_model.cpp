@@ -6,9 +6,7 @@ using std::to_string;
 
 namespace ui {
 
-FrameModel::FrameModel(wxDataViewListCtrl* frameListCtrl):
-    ViewModel(frameListCtrl), flame(NULL)
-{
+FrameModel::FrameModel(wxDataViewListCtrl* frameListCtrl): ViewModel(frameListCtrl) {
     update();
 }
 
