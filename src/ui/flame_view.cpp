@@ -15,6 +15,7 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
     if (!wxView::OnCreate(doc, flags)){
         return false;
     }
+    flame = new core::Flame;
     dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
     return true;
 }
@@ -24,6 +25,7 @@ void FlameView::OnDraw(wxDC *dc) {
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
+    delete flame;
     return wxView::OnClose(deleteWindow);
 }
 
