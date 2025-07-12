@@ -43,12 +43,10 @@ core::Flame* FlameView::getFlame() const
 }
 
 void FlameView::documentLoaded() {
+    aevusFrame->notifyActiveTransform(-1);
+    aevusFrame->notifyFlameLoaded();
     if (document->flameHasXForms()) {
-        aevusFrame->notifyFlameLoaded();
         aevusFrame->notifyActiveTransform(0);
-    } else {
-        aevusFrame->notifyActiveTransform(-1);
-        aevusFrame->notifyFlameLoaded();
     }
 }
 
