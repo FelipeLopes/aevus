@@ -1,16 +1,18 @@
 #include "triangle_updater.hpp"
 #include "triangle_types.hpp"
 
-using core::Flame;
-
 namespace ui {
 
-TriangleUpdater::TriangleUpdater(Flame* flame_, TriangleGrid* triangleGrid_,
-    int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
+TriangleUpdater::TriangleUpdater(TriangleGrid* triangleGrid_,
+    int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
     activeTransform(activeTransform_), state(NO_UPDATE) { }
 
 void TriangleUpdater::handleActiveXformChanged(int id) {
     activeTransform = id;
+}
+
+void TriangleUpdater::setFlame(core::Flame* flame) {
+    this->flame = flame;
 }
 
 UpdateState TriangleUpdater::getUpdateState() {

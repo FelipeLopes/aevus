@@ -12,9 +12,9 @@ namespace ui {
 TriangleModel::TriangleModel(wxPanel* trianglePanel_):
     flame(NULL), trianglePanel(trianglePanel_), activeTransform(-1),
     triangleGrid(trianglePanel->GetSize()),
-    triangleCollider(flame, &triangleGrid, activeTransform),
-    triangleDrawer(flame, &triangleGrid, trianglePanel->GetFont(), activeTransform),
-    triangleUpdater(flame, &triangleGrid, activeTransform)
+    triangleCollider(&triangleGrid, activeTransform),
+    triangleDrawer(&triangleGrid, trianglePanel->GetFont(), activeTransform),
+    triangleUpdater(&triangleGrid, activeTransform)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -23,10 +23,11 @@ void TriangleModel::update() {
     trianglePanel->Refresh();
 }
 
-void TriangleModel::setFlame(core::Flame *flame) {
+void TriangleModel::setFlame(core::Flame* flame) {
     this->flame = flame;
     triangleCollider.setFlame(flame);
     triangleDrawer.setFlame(flame);
+    triangleUpdater.setFlame(flame);
 }
 
 void TriangleModel::handleActiveXformChanged(int id) {

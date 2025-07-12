@@ -2,14 +2,13 @@
 #include <wx/brush.h>
 #include <wx/pen.h>
 
-using core::Flame;
 using std::string;
 using std::vector;
 
 namespace ui {
 
-TriangleDrawer::TriangleDrawer(Flame* flame_, TriangleGrid* triangleGrid_,
-    wxFont font_, int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
+TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
+    wxFont font_, int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
     font(font_), activeTransform(activeTransform_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"

@@ -8,7 +8,7 @@ namespace ui {
 
 class TriangleDrawer {
 public:
-    TriangleDrawer(core::Flame* flame, TriangleGrid* triangleGrid, wxFont font, int activeTransform);
+    TriangleDrawer(TriangleGrid* triangleGrid, wxFont font, int activeTransform);
     void handleActiveXformChanged(int id);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);

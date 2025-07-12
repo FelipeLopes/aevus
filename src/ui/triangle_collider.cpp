@@ -6,8 +6,8 @@ using core::Flame;
 
 namespace ui {
 
-TriangleCollider::TriangleCollider(Flame* flame_, TriangleGrid* triangleGrid_,
-    int activeTransform_): flame(flame_), triangleGrid(triangleGrid_),
+TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_,
+    int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
     activeTransform(activeTransform_) { }
 
 Collision TriangleCollider::getCollision(WindowPoint pos) {

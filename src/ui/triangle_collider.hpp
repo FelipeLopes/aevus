@@ -8,7 +8,7 @@ namespace ui {
 
 class TriangleCollider {
 public:
-    TriangleCollider(core::Flame* flame, TriangleGrid* triangleGrid, int activeTransform);
+    TriangleCollider(TriangleGrid* triangleGrid, int activeTransform);
     Collision getCollision(WindowPoint pos);
     void handleActiveXformChanged(int id);
     void setFlame(core::Flame* flame);

@@ -8,8 +8,9 @@ namespace ui {
 
 class TriangleUpdater {
 public:
-    TriangleUpdater(core::Flame* flame, TriangleGrid* triangleGrid, int activeTransform);
+    TriangleUpdater(TriangleGrid* triangleGrid, int activeTransform);
     void handleActiveXformChanged(int id);
+    void setFlame(core::Flame* flame);
     UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);
