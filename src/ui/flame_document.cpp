@@ -9,6 +9,9 @@ std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
 }
 
 std::istream& FlameDocument::LoadObject(std::istream& stream) {
+    flame.deserialize(stream);
+     // workaround for wxWidgets problem: https://github.com/wxWidgets/wxWidgets/issues/23479
+    stream.clear();
     return stream;
 }
 

@@ -1,6 +1,7 @@
 #include "xml_element.hpp"
 #include "xml_attribute.hpp"
 #include "xml_content.hpp"
+#include <sstream>
 
 using std::string;
 using tinyxml2::XMLDocument;
@@ -24,9 +25,12 @@ void XMLElementClass::serialize(FILE* fp) {
     xmlDoc.SaveFile(fp);
 }
 
-void XMLElementClass::deserialize(FILE* fp) {
+void XMLElementClass::deserialize(std::istream& stream) {
     XMLDocument xmlDoc;
-    auto err = xmlDoc.LoadFile(fp);
+    std::ostringstream oss;
+    stream >> oss.rdbuf();
+    string s = oss.str();
+    auto err = xmlDoc.Parse(s.c_str(), s.size());
     if (err != tinyxml2::XML_SUCCESS) {
         auto ec = std::error_code(err, std::generic_category());
         throw std::system_error(ec, "Could not load XML file");

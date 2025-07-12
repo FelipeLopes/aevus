@@ -11,12 +11,10 @@ public:
     void OnDraw(wxDC *dc) override;
     bool OnClose(bool deleteWindow = true) override;
     void OnChangeFilename() override;
-
-    FlameDocument* getDocument() const;
-    core::Flame* flame;
+    core::Flame* getFlame() const;
 
 private:
-    void updateFrame();
+    FlameDocument* document;
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

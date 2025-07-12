@@ -1,5 +1,6 @@
 #include "flame_view.hpp"
 #include "aevus_frame.hpp"
+#include "flame_document.hpp"
 #include <memory>
 #include <wx/app.h>
 
@@ -11,16 +12,12 @@ FlameView::FlameView() {
     SetFrame(wxTheApp->GetTopWindow());
 }
 
-void FlameView::updateFrame() {
-    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
-}
-
 bool FlameView::OnCreate(wxDocument *doc, long flags) {
     if (!wxView::OnCreate(doc, flags)){
         return false;
     }
-    flame = new core::Flame;
-    updateFrame();
+    this->document = dynamic_cast<FlameDocument*>(doc);
+    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
     return true;
 }
 
@@ -29,9 +26,7 @@ void FlameView::OnDraw(wxDC *dc) {
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
-    delete flame;
-    flame = NULL;
-    updateFrame();
+    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(NULL);
     return wxView::OnClose(deleteWindow);
 }
 
@@ -39,9 +34,9 @@ void FlameView::OnChangeFilename() {
     // Stub function
 }
 
-FlameDocument* FlameView::getDocument() const
+core::Flame* FlameView::getFlame() const
 {
-    return wxStaticCast(wxView::GetDocument(), FlameDocument);
+    return &document->flame;
 }
 
 }

@@ -136,14 +136,18 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 }
 
 void AevusFrame::setupForFlameView(FlameView *flameView) {
-    renderer.setFlame(flameView->flame);
-    preTransformModel.setFlame(flameView->flame);
-    postTransformModel.setFlame(flameView->flame);
-    weightsModel.setFlame(flameView->flame);
-    variationModel.setFlame(flameView->flame);
-    colorModel.setFlame(flameView->flame);
-    frameModel.setFlame(flameView->flame);
-    triangleModel.setFlame(flameView->flame);
+    core::Flame* ptr = NULL;
+    if (flameView != NULL) {
+        ptr = flameView->getFlame();
+    }
+    renderer.setFlame(ptr);
+    preTransformModel.setFlame(ptr);
+    postTransformModel.setFlame(ptr);
+    weightsModel.setFlame(ptr);
+    variationModel.setFlame(ptr);
+    colorModel.setFlame(ptr);
+    frameModel.setFlame(ptr);
+    triangleModel.setFlame(ptr);
     eventBroker.flameLoaded();
 }
 

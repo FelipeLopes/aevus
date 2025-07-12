@@ -15,7 +15,7 @@ public:
     XMLElementClass(std::string tag);
     XMLElementClass(XMLElementClass& parent, std::string tag);
     void serialize(FILE* fp);
-    void deserialize(FILE* fp);
+    void deserialize(std::istream& stream);
     std::string tag;
     std::vector<XMLElementClass*> children;
     std::vector<XMLAttributeField*> attributeFields;
