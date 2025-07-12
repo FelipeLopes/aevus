@@ -19,7 +19,7 @@ void TriangleDrawer::handleActiveXformChanged(int id) {
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
-    if (activeTransform == -1) {
+    if (flame == NULL || activeTransform == -1) {
         return;
     }
     drawInactiveTriangles(gc);

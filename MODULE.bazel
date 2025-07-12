@@ -1,0 +1,22 @@
+"""
+This module defines local dependencies for Aevus, which must be
+installed via the operating system. Currently, only Linux
+is supported.
+"""
+
+new_local_repository = use_repo_rule(
+    "@bazel_tools//tools/build_defs/repo:local.bzl",
+    "new_local_repository"
+)
+
+new_local_repository(
+    name = "libs",
+    build_file = "libs.BUILD",
+    path = "/usr/lib/x86_64-linux-gnu",
+)
+
+new_local_repository(
+    name = "hdrs",
+    build_file = "hdrs.BUILD",
+    path = "/usr/include",
+)

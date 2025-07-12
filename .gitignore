@@ -49,3 +49,6 @@ compile_commands.json
 #wxformbuilder locally generated code
 wxfb/*.cpp
 wxfb/*.h
+
+MODULE.bazel.lock
+compdb_aspects.bzl

@@ -53,6 +53,9 @@ void WeightsModel::handleRemoveXform() {
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
+    if (flame == NULL) {
+        return;
+    }
     int sz = flame->xforms.size();
     for (int i=0; i<sz; i++) {
         wxVector<wxVariant> row;

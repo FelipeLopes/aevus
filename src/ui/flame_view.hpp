@@ -15,6 +15,9 @@ public:
     FlameDocument* getDocument() const;
     core::Flame* flame;
 
+private:
+    void updateFrame();
+
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };
 

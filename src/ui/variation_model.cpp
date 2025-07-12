@@ -39,7 +39,7 @@ void VariationModel::handleVariationAdd() {
 }
 
 void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (activeTransform == -1) {
+    if (flame == NULL || activeTransform == -1) {
         return;
     }
     auto varMap = flame->xforms.get(activeTransform)->variationMap.get()->variations;

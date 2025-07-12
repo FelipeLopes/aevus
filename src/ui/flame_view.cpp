@@ -11,12 +11,16 @@ FlameView::FlameView() {
     SetFrame(wxTheApp->GetTopWindow());
 }
 
+void FlameView::updateFrame() {
+    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
+}
+
 bool FlameView::OnCreate(wxDocument *doc, long flags) {
     if (!wxView::OnCreate(doc, flags)){
         return false;
     }
     flame = new core::Flame;
-    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
+    updateFrame();
     return true;
 }
 
@@ -26,6 +30,8 @@ void FlameView::OnDraw(wxDC *dc) {
 
 bool FlameView::OnClose(bool deleteWindow) {
     delete flame;
+    flame = NULL;
+    updateFrame();
     return wxView::OnClose(deleteWindow);
 }
 

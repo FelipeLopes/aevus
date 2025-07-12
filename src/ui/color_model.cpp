@@ -74,7 +74,7 @@ void ColorModel::handlePaint() {
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
         gc->DrawBitmap(paletteBitmap, 0, 0, paletteWidth, 256);
-        if (activeTransform != -1) {
+        if (flame != NULL && activeTransform != -1) {
             float colorVal = flame->xforms.get(activeTransform)->color.value();
             colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
             int palettePos = (int)(colorVal*256);
@@ -95,7 +95,7 @@ void ColorModel::afterUpdate(int selectedRow) {
 }
 
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (activeTransform == -1) {
+    if (flame == NULL || activeTransform == -1) {
         return;
     }
     wxVector<wxVariant> firstRow;

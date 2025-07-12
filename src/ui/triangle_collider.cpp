@@ -2,8 +2,6 @@
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 
-using core::Flame;
-
 namespace ui {
 
 TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_,
