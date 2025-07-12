@@ -24,7 +24,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     flameModel(flameWindow, flameStream),
     preTransformModel(preTransformDataViewCtrl, resetPreButton, true),
     postTransformModel(postTransformDataViewCtrl, resetPostButton, false),
-    weightsModel(weightsDataViewCtrl, removeXformButton),
+    weightsModel(weightsDataViewCtrl, addXformButton, removeXformButton),
     variationModel(variationListCtrl, variationTextCtrl),
     colorModel(colorListCtrl, palettePanel),
     frameModel(frameListCtrl),
@@ -144,6 +144,7 @@ void AevusFrame::setupForFlameView(FlameView *flameView) {
     colorModel.setFlame(flameView->flame);
     frameModel.setFlame(flameView->flame);
     triangleModel.setFlame(flameView->flame);
+    eventBroker.flameLoaded();
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {

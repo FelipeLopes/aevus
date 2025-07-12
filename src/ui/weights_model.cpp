@@ -8,10 +8,12 @@ using std::vector;
 
 namespace ui {
 
-WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl,
+WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* addXformButton_,
     wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl),
-    removeXformButton(removeXformButton_), activeTransform(-1), blockSelectionEvents(false)
+    addXformButton(addXformButton_), removeXformButton(removeXformButton_),
+    activeTransform(-1), blockSelectionEvents(false)
 {
+    addXformButton->Disable();
     removeXformButton->Disable();
 }
 
@@ -84,6 +86,11 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
 
 void WeightsModel::afterUpdate(int selectedRow) {
     SelectionViewModel::afterUpdate(selectedRow);
+    if (flame == NULL) {
+        addXformButton->Disable();
+    } else {
+        addXformButton->Enable();
+    }
     if (activeTransform == -1) {
         removeXformButton->Disable();
     } else {

@@ -10,7 +10,8 @@ namespace ui {
 
 class WeightsModel: public SelectionViewModel {
 public:
-    WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* removeXformButton);
+    WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* addXformButton,
+        wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
     void handleActiveXformChanged(int id);
     void handleAddXform();
@@ -22,6 +23,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
+    wxBitmapButton* addXformButton;
     wxBitmapButton* removeXformButton;
     int activeTransform;
     bool blockSelectionEvents;
