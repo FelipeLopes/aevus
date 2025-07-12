@@ -9,15 +9,22 @@ namespace ui {
 wxIMPLEMENT_DYNAMIC_CLASS(FlameView, wxView);
 
 FlameView::FlameView() {
-    SetFrame(wxTheApp->GetTopWindow());
+    aevusFrame = dynamic_cast<AevusFrame*>(wxTheApp->GetTopWindow());
+    SetFrame(aevusFrame);
 }
 
 bool FlameView::OnCreate(wxDocument *doc, long flags) {
     if (!wxView::OnCreate(doc, flags)){
         return false;
     }
-    this->document = dynamic_cast<FlameDocument*>(doc);
-    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(this);
+    document = dynamic_cast<FlameDocument*>(doc);
+    // KLUDGE: although it looks strange to instantiate the flame
+    // here, instead of inside the document class,
+    // it's the best option we have, given the weird order
+    // of initialization in wxWidgets views and documents.
+    document->flame = new core::Flame;
+    aevusFrame->setupFlameView(this);
+    documentLoaded();
     return true;
 }
 
@@ -26,7 +33,8 @@ void FlameView::OnDraw(wxDC *dc) {
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
-    dynamic_cast<AevusFrame*>(GetFrame())->setupForFlameView(NULL);
+    delete document->flame;
+    aevusFrame->setupFlameView(NULL);
     return wxView::OnClose(deleteWindow);
 }
 
@@ -36,7 +44,17 @@ void FlameView::OnChangeFilename() {
 
 core::Flame* FlameView::getFlame() const
 {
-    return &document->flame;
+    return document->flame;
+}
+
+void FlameView::documentLoaded() {
+    if (document->flameHasXForms()) {
+        aevusFrame->notifyFlameLoaded();
+        aevusFrame->notifyActiveTransform(0);
+    } else {
+        aevusFrame->notifyActiveTransform(-1);
+        aevusFrame->notifyFlameLoaded();
+    }
 }
 
 }

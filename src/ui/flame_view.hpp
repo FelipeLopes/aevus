@@ -4,6 +4,8 @@
 
 namespace ui {
 
+class AevusFrame;
+
 class FlameView: public wxView {
 public:
     FlameView();
@@ -12,8 +14,10 @@ public:
     bool OnClose(bool deleteWindow = true) override;
     void OnChangeFilename() override;
     core::Flame* getFlame() const;
+    void documentLoaded();
 
 private:
+    AevusFrame* aevusFrame;
     FlameDocument* document;
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);

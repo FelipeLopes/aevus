@@ -135,7 +135,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     }
 }
 
-void AevusFrame::setupForFlameView(FlameView *flameView) {
+void AevusFrame::setupFlameView(FlameView *flameView) {
     core::Flame* ptr = NULL;
     if (flameView != NULL) {
         ptr = flameView->getFlame();
@@ -148,7 +148,14 @@ void AevusFrame::setupForFlameView(FlameView *flameView) {
     colorModel.setFlame(ptr);
     frameModel.setFlame(ptr);
     triangleModel.setFlame(ptr);
+}
+
+void AevusFrame::notifyFlameLoaded() {
     eventBroker.flameLoaded();
+}
+
+void AevusFrame::notifyActiveTransform(int i) {
+    eventBroker.activeXformChanged(i);
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
