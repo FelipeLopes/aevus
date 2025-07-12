@@ -18,11 +18,6 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
         return false;
     }
     document = dynamic_cast<FlameDocument*>(doc);
-    // KLUDGE: although it looks strange to instantiate the flame
-    // here, instead of inside the document class,
-    // it's the best option we have, given the weird order
-    // of initialization in wxWidgets views and documents.
-    document->flame = new core::Flame;
     aevusFrame->setupFlameView(this);
     documentLoaded();
     return true;
@@ -33,8 +28,8 @@ void FlameView::OnDraw(wxDC *dc) {
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
-    delete document->flame;
     aevusFrame->setupFlameView(NULL);
+    aevusFrame->notifyActiveTransform(-1);
     return wxView::OnClose(deleteWindow);
 }
 
@@ -44,7 +39,7 @@ void FlameView::OnChangeFilename() {
 
 core::Flame* FlameView::getFlame() const
 {
-    return document->flame;
+    return &document->flame;
 }
 
 void FlameView::documentLoaded() {
