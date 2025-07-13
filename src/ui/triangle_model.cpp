@@ -10,11 +10,11 @@ using std::string;
 namespace ui {
 
 TriangleModel::TriangleModel(wxPanel* trianglePanel_):
-    flame(NULL), trianglePanel(trianglePanel_), activeTransform(-1),
+    trianglePanel(trianglePanel_), activeTransform(-1),
     triangleGrid(trianglePanel->GetSize()),
-    triangleCollider(&triangleGrid, activeTransform),
+    triangleCollider(&triangleGrid),
     triangleDrawer(&triangleGrid, trianglePanel->GetFont(), activeTransform),
-    triangleUpdater(&triangleGrid, activeTransform)
+    triangleUpdater(&triangleGrid)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
@@ -23,16 +23,8 @@ void TriangleModel::update() {
     trianglePanel->Refresh();
 }
 
-void TriangleModel::setFlame(core::Flame* flame) {
-    this->flame = flame;
-    triangleCollider.setFlame(flame);
-    triangleUpdater.setFlame(flame);
-}
-
 void TriangleModel::handleActiveXformChanged(int id) {
     activeTransform = id;
-    triangleCollider.handleActiveXformChanged(id);
-    triangleUpdater.handleActiveXformChanged(id);
     update();
 }
 
@@ -115,12 +107,11 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     }
 }
 
-void TriangleModel::handleContent(const XformTriangleContent& content) {
-    int id = content.activeId;
-    activeTransform = id;
-    triangleCollider.handleActiveXformChanged(id);
+void TriangleModel::handleContent(const XFormTriangleContent& content) {
+    activeTransform = content.activeId;
+    triangleCollider.handleContent(content);
     triangleDrawer.handleContent(content);
-    triangleUpdater.handleActiveXformChanged(id);
+    triangleUpdater.handleContent(content);
 }
 
 }

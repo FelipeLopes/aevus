@@ -4,12 +4,12 @@
 #include <stdexcept>
 #include <vector>
 
+using std::array;
 using std::map;
 using std::optional;
 using std::pair;
 using std::stod;
 using std::string;
-using std::vector;
 
 namespace core {
 
@@ -86,13 +86,12 @@ void Affine::fromString(optional<string> text) {
     oy *= -1;
 }
 
-vector<pair<double, double>> Affine::triangle() {
-    vector<pair<double, double>> ans = {
+array<pair<double, double>, 3> Affine::triangle() {
+    return {{
         {ox, oy},
         {ox + xx, oy + xy},
         {ox + yx, oy + yy}
-    };
-    return ans;
+    }};
 }
 
 CoefsAffine::CoefsAffine(): Affine(true) { }

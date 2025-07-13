@@ -44,30 +44,30 @@ core::Flame* FlameView::getFlame() const
 }
 
 void FlameView::documentLoaded() {
+    activeXformId = -1;
     aevusFrame->notifyActiveTransform(-1);
     aevusFrame->notifyFlameLoaded();
-    sendTriangleContent();
     if (document->flameHasXForms()) {
+        activeXformId = 0;
         aevusFrame->notifyActiveTransform(0);
     }
+    sendTriangleContent();
+}
+
+void FlameView::handleXFormSelected(int i) {
+    activeXformId = i;
+    sendTriangleContent();
 }
 
 void FlameView::sendTriangleContent() {
-    XformTriangleContent content;
+    XFormTriangleContent content;
     content.triangles.resize(document->flame.xforms.size());
-    if (content.triangles.empty()) {
-        content.activeId = -1;
-    } else {
-        content.activeId = 0;
-        for (int i=0; i<content.triangles.size(); i++) {
-            auto triangle = document->flame.xforms.get(i)->coefs.value().triangle();
-            content.triangles[i].o.x = triangle[0].first;
-            content.triangles[i].o.y = triangle[0].second;
-            content.triangles[i].x.x = triangle[1].first;
-            content.triangles[i].x.y = triangle[1].second;
-            content.triangles[i].y.x = triangle[2].first;
-            content.triangles[i].y.y = triangle[2].second;
-        }
+    content.activeId = activeXformId;
+    for (int i=0; i<content.triangles.size(); i++) {
+        XFormTriangle triangle;
+        triangle.arr = document->flame.xforms.get(i)->coefs.value().triangle();
+        triangle.coefs = document->flame.xforms.get(i)->coefs.value();
+        content.triangles.push_back(triangle);
     }
     triangleContentChanged(content);
 }

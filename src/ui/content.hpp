@@ -1,20 +1,19 @@
 #pragma once
 
+#include <array>
 #include <vector>
+#include "../core/custom_coefs.hpp"
 
 namespace ui {
 
-struct XformTrianglePoint {
-    double x, y;
+struct XFormTriangle {
+    std::array<std::pair<double, double>,3> arr;
+    core::CoefsAffine coefs;
 };
 
-struct XformTriangle {
-    XformTrianglePoint o, x, y;
-};
-
-struct XformTriangleContent {
+struct XFormTriangleContent {
     int activeId;
-    std::vector<XformTriangle> triangles;
+    std::vector<XFormTriangle> triangles;
 };
 
 }

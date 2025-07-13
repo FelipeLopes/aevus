@@ -3,6 +3,8 @@
 #include <wx/brush.h>
 #include <wx/pen.h>
 
+using std::array;
+using std::pair;
 using std::string;
 using std::vector;
 
@@ -18,7 +20,7 @@ TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
     content.activeId = -1;
 }
 
-void TriangleDrawer::handleContent(const XformTriangleContent& content) {
+void TriangleDrawer::handleContent(const XFormTriangleContent& content) {
     this->content = content;
 }
 
@@ -147,12 +149,12 @@ void TriangleDrawer::highlightEdge(wxGraphicsContext* gc) {
 }
 
 vector<GridPoint> TriangleDrawer::getXformTriangle(int i) {
-    auto triangle = content.triangles[i];
     vector<GridPoint> ans;
-    ans.resize(3);
-    ans[0] = GridPoint(triangle.o.x, triangle.o.y);
-    ans[1] = GridPoint(triangle.x.x, triangle.x.y);
-    ans[2] = GridPoint(triangle.y.x, triangle.y.y);
+    array<pair<double,double>,3>& arr = content.triangles[i].arr;
+    std::transform(arr.begin(), arr.end(), std::back_inserter(ans),
+        [](auto pair) {
+            return GridPoint(pair);
+        });
     return ans;
 }
 

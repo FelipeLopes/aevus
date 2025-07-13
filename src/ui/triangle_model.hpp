@@ -17,7 +17,6 @@ class TriangleModel {
 public:
     TriangleModel(wxPanel* trianglePanel);
     void update();
-    void setFlame(core::Flame* flame);
     void handleActiveXformChanged(int id);
     void handlePaint();
     void handleResize(wxSizeEvent& event);
@@ -25,12 +24,11 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
-    void handleContent(const XformTriangleContent& content);
+    void handleContent(const XFormTriangleContent& content);
 
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;
 private:
-    core::Flame* flame;
     wxPanel* trianglePanel;
     int activeTransform;
     TriangleGrid triangleGrid;

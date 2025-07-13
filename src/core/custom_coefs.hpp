@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <vector>
 #include "../serial/serializable.hpp"
 
@@ -29,7 +30,7 @@ public:
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
     double xx, xy, yx, yy, ox, oy;
-    std::vector<std::pair<double, double>> triangle();
+    std::array<std::pair<double, double>, 3> triangle();
 private:
     bool serializeIdentity;
 };

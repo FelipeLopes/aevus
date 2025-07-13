@@ -4,21 +4,22 @@
 
 namespace ui {
 
-TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_,
-    int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
-    activeTransform(activeTransform_) { }
+TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_): triangleGrid(triangleGrid_)
+{
+    content.activeId = -1;
+}
 
 Collision TriangleCollider::getCollision(WindowPoint pos) {
     Collision ans;
     ans.triangleId = -1;
-    if (activeTransform == -1) {
+    if (content.activeId == -1) {
         ans.type = NO_COLLISION;
         return ans;
     }
-    ans.type = getCollisionType(pos, activeTransform);
+    ans.type = getCollisionType(pos, content.activeId);
     if (ans.type == NO_COLLISION) {
-        for (int i=0; i<flame->xforms.size(); i++) {
-            if (i == activeTransform) {
+        for (int i=0; i<content.triangles.size(); i++) {
+            if (i == content.activeId) {
                 continue;
             }
             ans.type = getCollisionType(pos, i);
@@ -28,17 +29,13 @@ Collision TriangleCollider::getCollision(WindowPoint pos) {
             }
         }
     } else {
-        ans.triangleId = activeTransform;
+        ans.triangleId = content.activeId;
     }
     return ans;
 }
 
-void TriangleCollider::handleActiveXformChanged(int id) {
-    activeTransform = id;
-}
-
-void TriangleCollider::setFlame(core::Flame* flame) {
-    this->flame = flame;
+void TriangleCollider::handleContent(const XFormTriangleContent& content) {
+    this->content = content;
 }
 
 CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) {
@@ -67,7 +64,7 @@ CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) 
 }
 
 int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
-    auto triangle = flame->xforms.get(idx)->coefs.value().triangle();
+    auto triangle = content.triangles[idx].arr;
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
     for (int i=0; i<3; i++) {
@@ -80,7 +77,7 @@ int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
 }
 
 int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
-    auto triangle = flame->xforms.get(idx)->coefs.value().triangle();
+    auto triangle = content.triangles[idx].arr;
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
@@ -94,7 +91,7 @@ int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
 }
 
 bool TriangleCollider::pointInsideTriangle(GridPoint p, int idx) {
-    auto v = flame->xforms.get(idx)->coefs.value().triangle();
+    auto v = content.triangles[idx].arr;
     double d1 = sign(p, GridPoint(v[0]), GridPoint(v[1]));
     double d2 = sign(p, GridPoint(v[1]), GridPoint(v[2]));
     double d3 = sign(p, GridPoint(v[2]), GridPoint(v[0]));

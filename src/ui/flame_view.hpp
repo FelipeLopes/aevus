@@ -17,12 +17,14 @@ public:
     void OnChangeFilename() override;
     core::Flame* getFlame() const;
     void documentLoaded();
+    void handleXFormSelected(int i);
 
-    boost::signals2::signal<void (XformTriangleContent)> triangleContentChanged;
+    boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
 
 private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
+    int activeXformId;
     void sendTriangleContent();
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);

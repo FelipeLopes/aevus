@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../core/flame.hpp"
+#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 
@@ -8,9 +9,8 @@ namespace ui {
 
 class TriangleUpdater {
 public:
-    TriangleUpdater(TriangleGrid* triangleGrid, int activeTransform);
-    void handleActiveXformChanged(int id);
-    void setFlame(core::Flame* flame);
+    TriangleUpdater(TriangleGrid* triangleGrid);
+    void handleContent(const XFormTriangleContent& content);
     UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);
@@ -22,9 +22,8 @@ public:
     void finishUpdate();
 private:
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
-    core::Flame* flame;
     TriangleGrid* triangleGrid;
-    int activeTransform;
+    XFormTriangleContent content;
     UpdateState state;
     wxAffineMatrix2D gridDragInverse;
     GridPoint startPoint, startO, startX, startY, startCenter;
