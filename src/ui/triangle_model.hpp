@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "../core/flame.hpp"
+#include "content.hpp"
 #include "triangle_collider.hpp"
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
@@ -24,6 +25,7 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
+    void handleContent(const XformTriangleContent& content);
 
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> transformCoordsChanged;

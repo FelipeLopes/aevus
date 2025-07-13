@@ -9,17 +9,24 @@ namespace ui {
 
 TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
     wxFont font_, int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
-    font(font_), activeTransform(activeTransform_), xformColors({
+    font(font_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
-    }), dotLabels({"O", "X", "Y"}) { }
+    }), dotLabels({"O", "X", "Y"})
+{
+    content.activeId = -1;
+}
 
 void TriangleDrawer::handleActiveXformChanged(int id) {
-    activeTransform = id;
+    content.activeId = id;
+}
+
+void TriangleDrawer::handleContent(const XformTriangleContent& content) {
+    this->content = content;
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
-    if (flame == NULL || activeTransform == -1) {
+    if (flame == NULL || content.activeId == -1) {
         return;
     }
     drawInactiveTriangles(gc);
@@ -46,7 +53,7 @@ void TriangleDrawer::setFlame(core::Flame* flame) {
 void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
     int sz = flame->xforms.size();
     for (int i=0; i<sz; i++) {
-        if (i != activeTransform) {
+        if (i != content.activeId) {
             auto triangle = getXformTriangle(i);
             triangle.push_back(triangle[0]);
             auto color = getXformColor(i);
@@ -58,9 +65,9 @@ void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
 }
 
 void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
-    auto color = getXformColor(activeTransform);
-    auto coefs = flame->xforms.get(activeTransform)->coefs.value();
-    auto path = getXformTriangle(activeTransform);
+    auto color = getXformColor(content.activeId);
+    auto coefs = flame->xforms.get(content.activeId)->coefs.value();
+    auto path = getXformTriangle(content.activeId);
     auto ori = path[0];
     path.erase(path.begin());
     gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
@@ -68,7 +75,7 @@ void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
     path.insert(path.begin()+1, ori);
     gc->SetPen(color);
     triangleGrid->strokeLines(gc, path);
-    drawTriangleDots(gc, activeTransform);
+    drawTriangleDots(gc, content.activeId);
 }
 
 void TriangleDrawer::drawTriangleDots(wxGraphicsContext* gc, int idx) {

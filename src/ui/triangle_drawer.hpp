@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../core/flame.hpp"
+#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 
@@ -10,6 +11,7 @@ class TriangleDrawer {
 public:
     TriangleDrawer(TriangleGrid* triangleGrid, wxFont font, int activeTransform);
     void handleActiveXformChanged(int id);
+    void handleContent(const XformTriangleContent& content);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
     void setFlame(core::Flame* flame);
@@ -27,7 +29,7 @@ private:
     core::Flame* flame;
     TriangleGrid* triangleGrid;
     wxFont font;
-    int activeTransform;
+    XformTriangleContent content;
     std::vector<wxColour> xformColors;
     std::vector<std::string> dotLabels;
     Collision cursorCollision;

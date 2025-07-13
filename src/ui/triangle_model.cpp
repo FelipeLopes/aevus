@@ -117,4 +117,12 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     }
 }
 
+void TriangleModel::handleContent(const XformTriangleContent& content) {
+    int id = content.activeId;
+    activeTransform = id;
+    triangleCollider.handleActiveXformChanged(id);
+    triangleDrawer.handleContent(content);
+    triangleUpdater.handleActiveXformChanged(id);
+}
+
 }
