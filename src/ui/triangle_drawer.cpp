@@ -1,4 +1,5 @@
 #include "triangle_drawer.hpp"
+#include "triangle_types.hpp"
 #include <wx/brush.h>
 #include <wx/pen.h>
 
@@ -8,7 +9,7 @@ using std::vector;
 namespace ui {
 
 TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
-    wxFont font_, int activeTransform_): flame(NULL), triangleGrid(triangleGrid_),
+    wxFont font_, int activeTransform_): triangleGrid(triangleGrid_),
     font(font_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
@@ -26,7 +27,7 @@ void TriangleDrawer::handleContent(const XformTriangleContent& content) {
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
-    if (flame == NULL || content.activeId == -1) {
+    if (content.activeId == -1) {
         return;
     }
     drawInactiveTriangles(gc);
@@ -46,12 +47,8 @@ bool TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
     return false;
 }
 
-void TriangleDrawer::setFlame(core::Flame* flame) {
-    this->flame = flame;
-}
-
 void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
-    int sz = flame->xforms.size();
+    int sz = content.triangles.size();
     for (int i=0; i<sz; i++) {
         if (i != content.activeId) {
             auto triangle = getXformTriangle(i);
@@ -66,7 +63,6 @@ void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
 
 void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
     auto color = getXformColor(content.activeId);
-    auto coefs = flame->xforms.get(content.activeId)->coefs.value();
     auto path = getXformTriangle(content.activeId);
     auto ori = path[0];
     path.erase(path.begin());
@@ -155,12 +151,12 @@ void TriangleDrawer::highlightEdge(wxGraphicsContext* gc) {
 }
 
 vector<GridPoint> TriangleDrawer::getXformTriangle(int i) {
-    auto arr = flame->xforms.get(i)->coefs.value().triangle();
+    auto triangle = content.triangles[i];
     vector<GridPoint> ans;
-    std::transform(arr.begin(), arr.end(), std::back_inserter(ans),
-        [](auto pair) {
-            return GridPoint(pair);
-        });
+    ans.resize(3);
+    ans[0] = GridPoint(triangle.o.x, triangle.o.y);
+    ans[1] = GridPoint(triangle.x.x, triangle.x.y);
+    ans[2] = GridPoint(triangle.y.x, triangle.y.y);
     return ans;
 }
 

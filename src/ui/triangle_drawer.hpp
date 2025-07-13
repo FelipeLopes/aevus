@@ -14,7 +14,6 @@ public:
     void handleContent(const XformTriangleContent& content);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
-    void setFlame(core::Flame* flame);
 private:
     void drawInactiveTriangles(wxGraphicsContext* gc);
     void drawActiveTriangle(wxGraphicsContext* gc);
@@ -26,7 +25,6 @@ private:
     std::vector<GridPoint> getXformTriangle(int i);
     wxColour getXformColor(int i);
 
-    core::Flame* flame;
     TriangleGrid* triangleGrid;
     wxFont font;
     XformTriangleContent content;

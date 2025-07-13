@@ -26,7 +26,6 @@ void TriangleModel::update() {
 void TriangleModel::setFlame(core::Flame* flame) {
     this->flame = flame;
     triangleCollider.setFlame(flame);
-    triangleDrawer.setFlame(flame);
     triangleUpdater.setFlame(flame);
 }
 

@@ -7,6 +7,7 @@
 #include "../render/iterator.hpp"
 #include "flame_model.hpp"
 #include "transform_model.hpp"
+#include "triangle_model.hpp"
 
 using namespace boost::signals2;
 using boost::bind;
@@ -139,6 +140,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
     core::Flame* ptr = NULL;
     if (flameView != NULL) {
         ptr = flameView->getFlame();
+        flameView->triangleContentChanged.connect(
+            bind(&TriangleModel::handleContent, &triangleModel, _1)
+        );
     }
     renderer.setFlame(ptr);
     preTransformModel.setFlame(ptr);
