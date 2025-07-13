@@ -67,7 +67,7 @@ void FlameView::sendTriangleContent() {
         XFormTriangle triangle;
         triangle.arr = document->flame.xforms.get(i)->coefs.value().triangle();
         triangle.coefs = document->flame.xforms.get(i)->coefs.value();
-        content.triangles.push_back(triangle);
+        content.triangles[i]=triangle;
     }
     triangleContentChanged(content);
 }
