@@ -18,10 +18,6 @@ TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
     content.activeId = -1;
 }
 
-void TriangleDrawer::handleActiveXformChanged(int id) {
-    content.activeId = id;
-}
-
 void TriangleDrawer::handleContent(const XformTriangleContent& content) {
     this->content = content;
 }

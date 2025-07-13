@@ -32,7 +32,6 @@ void TriangleModel::setFlame(core::Flame* flame) {
 void TriangleModel::handleActiveXformChanged(int id) {
     activeTransform = id;
     triangleCollider.handleActiveXformChanged(id);
-    triangleDrawer.handleActiveXformChanged(id);
     triangleUpdater.handleActiveXformChanged(id);
     update();
 }

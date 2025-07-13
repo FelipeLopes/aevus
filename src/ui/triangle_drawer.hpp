@@ -10,7 +10,6 @@ namespace ui {
 class TriangleDrawer {
 public:
     TriangleDrawer(TriangleGrid* triangleGrid, wxFont font, int activeTransform);
-    void handleActiveXformChanged(int id);
     void handleContent(const XformTriangleContent& content);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
