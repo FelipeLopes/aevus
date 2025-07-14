@@ -113,6 +113,7 @@ void TriangleModel::handleContent(const XFormTriangleContent& content) {
     triangleCollider.handleContent(content);
     triangleDrawer.handleContent(content);
     triangleUpdater.handleContent(content);
+    update();
 }
 
 }

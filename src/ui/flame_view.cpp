@@ -60,7 +60,14 @@ void FlameView::handleXFormSelected(int i) {
 }
 
 void FlameView::handleTriangleCoefs(CoefsContent coefs) {
-    printf("called flameview\n");
+    auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
+    ptr->ox = coefs.ox;
+    ptr->oy = coefs.oy;
+    ptr->xx = coefs.xx;
+    ptr->xy = coefs.xy;
+    ptr->yx = coefs.yx;
+    ptr->yy = coefs.yy;
+    sendTriangleContent();
 }
 
 void FlameView::sendTriangleContent() {

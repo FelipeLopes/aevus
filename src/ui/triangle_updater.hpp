@@ -22,6 +22,7 @@ public:
     CoefsContent getCoefsForPoint(WindowPoint mousePoint);
     void finishUpdate();
 private:
+    void setUpdateStartData(WindowPoint clickPoint);
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
     TriangleGrid* triangleGrid;
     XFormTriangleContent content;

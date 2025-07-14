@@ -15,6 +15,14 @@ UpdateState TriangleUpdater::getUpdateState() {
     return state;
 }
 
+void TriangleUpdater::setUpdateStartData(WindowPoint clickPoint) {
+    startPoint = triangleGrid->transformToGrid(clickPoint);
+    auto coefs = content.triangles[content.activeId].coefs;
+    startO = GridPoint(coefs.ox, coefs.oy);
+    startX = GridPoint(coefs.xx, coefs.xy);
+    startY = GridPoint(coefs.yx, coefs.yy);
+}
+
 void TriangleUpdater::startGridDrag(WindowPoint clickPoint) {
     state = DRAGGING_GRID;
     gridDragInverse = triangleGrid->getAffineMatrix();
@@ -25,39 +33,27 @@ void TriangleUpdater::startGridDrag(WindowPoint clickPoint) {
 
 void TriangleUpdater::startTriangleDrag(WindowPoint clickPoint) {
     state = DRAGGING_TRIANGLE;
-    startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.triangles[content.activeId].coefs;
-    startO = GridPoint(coefs.ox, coefs.oy);
+    setUpdateStartData(clickPoint);
 }
 
 void TriangleUpdater::startXDrag(WindowPoint clickPoint) {
     state = DRAGGING_X;
-    startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.triangles[content.activeId].coefs;
-    startX = GridPoint(coefs.xx, coefs.xy);
+    setUpdateStartData(clickPoint);
 }
 
 void TriangleUpdater::startYDrag(WindowPoint clickPoint) {
     state = DRAGGING_Y;
-    startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.triangles[content.activeId].coefs;
-    startY = GridPoint(coefs.yx, coefs.yy);
+    setUpdateStartData(clickPoint);
 }
 
 void TriangleUpdater::startTriangleRotation(WindowPoint clickPoint) {
     state = ROTATING_TRIANGLE;
-    startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.triangles[content.activeId].coefs;
-    startX = GridPoint(coefs.xx, coefs.xy);
-    startY = GridPoint(coefs.yx, coefs.yy);
+    setUpdateStartData(clickPoint);
 }
 
 void TriangleUpdater::startTriangleScaling(WindowPoint clickPoint) {
     state = SCALING_TRIANGLE;
-    startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.triangles[content.activeId].coefs;
-    startX = GridPoint(coefs.xx, coefs.xy);
-    startY = GridPoint(coefs.yx, coefs.yy);
+    setUpdateStartData(clickPoint);
 }
 
 void TriangleUpdater::updateCenterForPoint(WindowPoint mousePoint) {
@@ -67,13 +63,12 @@ void TriangleUpdater::updateCenterForPoint(WindowPoint mousePoint) {
 
 CoefsContent TriangleUpdater::getCoefsForPoint(WindowPoint mousePoint) {
     CoefsContent coefs;
-    int idx = content.activeId;
-    coefs.ox = content.triangles[idx].coefs.ox;
-    coefs.oy = content.triangles[idx].coefs.oy;
-    coefs.xx = content.triangles[idx].coefs.xx;
-    coefs.xy = content.triangles[idx].coefs.xy;
-    coefs.yx = content.triangles[idx].coefs.yx;
-    coefs.yy = content.triangles[idx].coefs.yy;
+    coefs.ox = startO.m_x;
+    coefs.oy = startO.m_y;
+    coefs.xx = startX.m_x;
+    coefs.xy = startX.m_y;
+    coefs.yx = startY.m_x;
+    coefs.yy = startY.m_y;
     switch(state) {
         case DRAGGING_TRIANGLE: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
