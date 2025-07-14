@@ -27,7 +27,7 @@ public:
     void handleContent(const XFormTriangleContent& content);
 
     boost::signals2::signal<void (int)> xformSelected;
-    boost::signals2::signal<void ()> transformCoordsChanged;
+    boost::signals2::signal<void (CoefsContent)> xformCoefsChanged;
 private:
     wxPanel* trianglePanel;
     int activeTransform;

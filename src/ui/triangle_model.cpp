@@ -93,11 +93,12 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
         pos.x = std::clamp(pos.x, 0, trianglePanel->GetSize().GetWidth());
         pos.y = std::clamp(pos.y, 0, trianglePanel->GetSize().GetHeight());
         WindowPoint pt(pos.x, pos.y);
-        triangleUpdater.setUpdatePoint(pt);
         if (state == DRAGGING_GRID) {
+            triangleUpdater.updateCenterForPoint(pt);
             update();
         } else {
-            transformCoordsChanged();
+            auto coefs = triangleUpdater.getCoefsForPoint(pt);
+            xformCoefsChanged(coefs);
         }
     } else {
         auto coll = triangleCollider.getCollision(WindowPoint(pos.x, pos.y));

@@ -16,4 +16,8 @@ struct XFormTriangleContent {
     std::vector<XFormTriangle> triangles;
 };
 
+struct CoefsContent {
+    double ox, oy, xx, xy, yx, yy;
+};
+
 }

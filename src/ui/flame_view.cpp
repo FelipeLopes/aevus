@@ -59,6 +59,10 @@ void FlameView::handleXFormSelected(int i) {
     sendTriangleContent();
 }
 
+void FlameView::handleTriangleCoefs(CoefsContent coefs) {
+    printf("called flameview\n");
+}
+
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
     content.triangles.resize(document->flame.xforms.size());

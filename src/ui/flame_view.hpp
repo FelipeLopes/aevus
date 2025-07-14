@@ -18,6 +18,7 @@ public:
     core::Flame* getFlame() const;
     void documentLoaded();
     void handleXFormSelected(int i);
+    void handleTriangleCoefs(CoefsContent coefs);
 
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
 

@@ -1,4 +1,5 @@
 #include "triangle_updater.hpp"
+#include "content.hpp"
 #include "triangle_types.hpp"
 
 namespace ui {
@@ -59,70 +60,74 @@ void TriangleUpdater::startTriangleScaling(WindowPoint clickPoint) {
     startY = GridPoint(coefs.yx, coefs.yy);
 }
 
-void TriangleUpdater::setUpdatePoint(WindowPoint mousePoint) {
+void TriangleUpdater::updateCenterForPoint(WindowPoint mousePoint) {
+    auto updatePoint = gridDragInverse.TransformPoint(mousePoint);
+    triangleGrid->updateCenter(startCenter + startPoint - updatePoint);
+}
+
+CoefsContent TriangleUpdater::getCoefsForPoint(WindowPoint mousePoint) {
+    CoefsContent coefs;
+    int idx = content.activeId;
+    coefs.ox = content.triangles[idx].coefs.ox;
+    coefs.oy = content.triangles[idx].coefs.oy;
+    coefs.xx = content.triangles[idx].coefs.xx;
+    coefs.xy = content.triangles[idx].coefs.xy;
+    coefs.yx = content.triangles[idx].coefs.yx;
+    coefs.yy = content.triangles[idx].coefs.yy;
     switch(state) {
-        case DRAGGING_GRID: {
-            auto updatePoint = gridDragInverse.TransformPoint(mousePoint);
-            triangleGrid->updateCenter(startCenter + startPoint - updatePoint);
-            break;
-        }
         case DRAGGING_TRIANGLE: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
             auto newO = startO + updatePoint - startPoint;
-            /*auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-            coefs->ox = newO.m_x;
-            coefs->oy = newO.m_y;*/
+            coefs.ox = newO.m_x;
+            coefs.oy = newO.m_y;
             break;
         }
         case DRAGGING_X: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
             auto newX = startX + updatePoint - startPoint;
-            /*auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-            coefs->xx = newX.m_x;
-            coefs->xy = newX.m_y;*/
+            coefs.xx = newX.m_x;
+            coefs.xy = newX.m_y;
             break;
         }
         case DRAGGING_Y: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
             auto newY = startY + updatePoint - startPoint;
-            /*auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-            coefs->yx = newY.m_x;
-            coefs->yy = newY.m_y;*/
+            coefs.yx = newY.m_x;
+            coefs.yy = newY.m_y;
             break;
         }
         case ROTATING_TRIANGLE: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
-            /*auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-            GridPoint origin(coefs->ox, coefs->oy);
+            GridPoint origin(coefs.ox, coefs.oy);
             double rot = (updatePoint-origin).GetVectorAngle()-(startPoint-origin).GetVectorAngle();
             auto newX = startX;
             newX.SetVectorAngle(startX.GetVectorAngle()+rot);
             auto newY = startY;
             newY.SetVectorAngle(startY.GetVectorAngle()+rot);
-            coefs->xx = newX.m_x;
-            coefs->xy = newX.m_y;
-            coefs->yx = newY.m_x;
-            coefs->yy = newY.m_y;*/
+            coefs.xx = newX.m_x;
+            coefs.xy = newX.m_y;
+            coefs.yx = newY.m_x;
+            coefs.yy = newY.m_y;
             break;
         }
         case SCALING_TRIANGLE: {
             auto updatePoint = triangleGrid->transformToGrid(mousePoint);
-            /*auto coefs = flame->xforms.get(activeTransform)->coefs.get();
-            GridPoint origin(coefs->ox, coefs->oy);
+            GridPoint origin(coefs.ox, coefs.oy);
             double sc = distancePointLine(updatePoint, origin, origin+startX-startY)/
                 distancePointLine(startPoint, origin, origin+startX-startY);
             auto newX = startX;
             newX.SetVectorLength(startX.GetVectorLength()*sc);
             auto newY = startY;
             newY.SetVectorLength(startY.GetVectorLength()*sc);
-            coefs->xx = newX.m_x;
-            coefs->xy = newX.m_y;
-            coefs->yx = newY.m_x;
-            coefs->yy = newY.m_y;*/
+            coefs.xx = newX.m_x;
+            coefs.xy = newX.m_y;
+            coefs.yx = newY.m_x;
+            coefs.yy = newY.m_y;
             break;
         }
         default: break;
     }
+    return coefs;
 }
 
 void TriangleUpdater::finishUpdate() {

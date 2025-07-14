@@ -45,8 +45,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         .connect(eventBroker.colorParamsChanged);
     frameModel.frameChanged
         .connect(eventBroker.frameParamsChanged);
-    triangleModel.transformCoordsChanged
-        .connect(eventBroker.activeXformCoordsChanged);
 
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
 
@@ -143,6 +141,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
+        );
+        triangleModel.xformCoefsChanged.connect(
+            bind(&FlameView::handleTriangleCoefs, flameView, _1)
         );
     }
     renderer.setFlame(ptr);

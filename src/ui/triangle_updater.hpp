@@ -18,7 +18,8 @@ public:
     void startYDrag(WindowPoint clickPoint);
     void startTriangleRotation(WindowPoint clickPoint);
     void startTriangleScaling(WindowPoint clickPoint);
-    void setUpdatePoint(WindowPoint mousePoint);
+    void updateCenterForPoint(WindowPoint mousePoint);
+    CoefsContent getCoefsForPoint(WindowPoint mousePoint);
     void finishUpdate();
 private:
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
