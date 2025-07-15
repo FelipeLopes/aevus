@@ -6,18 +6,13 @@
 
 namespace ui {
 
-struct XFormTriangle {
-    std::array<std::pair<double, double>,3> arr;
-    core::CoefsAffine coefs;
+struct CoefsContent {
+    double ox, oy, xx, xy, yx, yy;
 };
 
 struct XFormTriangleContent {
     int activeId;
-    std::vector<XFormTriangle> triangles;
-};
-
-struct CoefsContent {
-    double ox, oy, xx, xy, yx, yy;
+    std::vector<CoefsContent> coefs;
 };
 
 }

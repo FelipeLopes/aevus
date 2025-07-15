@@ -30,7 +30,6 @@ public:
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
     double xx, xy, yx, yy, ox, oy;
-    std::array<std::pair<double, double>, 3> triangle();
 private:
     bool serializeIdentity;
 };

@@ -1,10 +1,13 @@
 #include "triangle_model.hpp"
+#include "content.hpp"
 #include "triangle_collider.hpp"
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 #include <wx/dcbuffer.h>
 
+using std::array;
+using std::pair;
 using std::string;
 
 namespace ui {
@@ -17,6 +20,14 @@ TriangleModel::TriangleModel(wxPanel* trianglePanel_):
     triangleUpdater(&triangleGrid)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+}
+
+array<pair<double, double>, 3> TriangleModel::triangle(CoefsContent c) {
+    return {{
+        {c.ox, c.oy},
+        {c.ox + c.xx, c.oy + c.xy},
+        {c.ox + c.yx, c.oy + c.yy}
+    }};
 }
 
 void TriangleModel::update() {

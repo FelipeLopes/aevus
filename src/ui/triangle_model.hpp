@@ -28,6 +28,8 @@ public:
 
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void (CoefsContent)> xformCoefsChanged;
+
+    static std::array<std::pair<double, double>, 3> triangle(CoefsContent coefs);
 private:
     wxPanel* trianglePanel;
     int activeTransform;

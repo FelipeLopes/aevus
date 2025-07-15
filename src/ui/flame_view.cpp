@@ -72,13 +72,20 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
 
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
-    content.triangles.resize(document->flame.xforms.size());
+    content.coefs.resize(document->flame.xforms.size());
     content.activeId = activeXformId;
-    for (int i=0; i<content.triangles.size(); i++) {
-        XFormTriangle triangle;
-        triangle.arr = document->flame.xforms.get(i)->coefs.value().triangle();
-        triangle.coefs = document->flame.xforms.get(i)->coefs.value();
-        content.triangles[i]=triangle;
+    for (int i=0; i<content.coefs.size(); i++) {
+        auto flameCoefs = document->flame.xforms.get(i)->coefs.value();
+
+        CoefsContent messageCoefs;
+        messageCoefs.ox = flameCoefs.ox;
+        messageCoefs.oy = flameCoefs.oy;
+        messageCoefs.xx = flameCoefs.xx;
+        messageCoefs.xy = flameCoefs.xy;
+        messageCoefs.yx = flameCoefs.yx;
+        messageCoefs.yy = flameCoefs.yy;
+
+        content.coefs[i] = messageCoefs;
     }
     triangleContentChanged(content);
 }

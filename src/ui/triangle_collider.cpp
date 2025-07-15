@@ -1,5 +1,6 @@
 #include "triangle_collider.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_model.hpp"
 #include "triangle_types.hpp"
 
 namespace ui {
@@ -18,7 +19,7 @@ Collision TriangleCollider::getCollision(WindowPoint pos) {
     }
     ans.type = getCollisionType(pos, content.activeId);
     if (ans.type == NO_COLLISION) {
-        for (int i=0; i<content.triangles.size(); i++) {
+        for (int i=0; i<content.coefs.size(); i++) {
             if (i == content.activeId) {
                 continue;
             }
@@ -64,7 +65,7 @@ CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) 
 }
 
 int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
-    auto triangle = content.triangles[idx].arr;
+    auto triangle = TriangleModel::triangle(content.coefs[idx]);
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
     for (int i=0; i<3; i++) {
@@ -77,7 +78,7 @@ int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
 }
 
 int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
-    auto triangle = content.triangles[idx].arr;
+    auto triangle = TriangleModel::triangle(content.coefs[idx]);
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
@@ -91,7 +92,7 @@ int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
 }
 
 bool TriangleCollider::pointInsideTriangle(GridPoint p, int idx) {
-    auto v = content.triangles[idx].arr;
+    auto v = TriangleModel::triangle(content.coefs[idx]);
     double d1 = sign(p, GridPoint(v[0]), GridPoint(v[1]));
     double d2 = sign(p, GridPoint(v[1]), GridPoint(v[2]));
     double d3 = sign(p, GridPoint(v[2]), GridPoint(v[0]));

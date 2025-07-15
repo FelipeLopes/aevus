@@ -4,10 +4,8 @@
 #include <stdexcept>
 #include <vector>
 
-using std::array;
 using std::map;
 using std::optional;
-using std::pair;
 using std::stod;
 using std::string;
 
@@ -84,14 +82,6 @@ void Affine::fromString(optional<string> text) {
     xy *= -1;
     yx *= -1;
     oy *= -1;
-}
-
-array<pair<double, double>, 3> Affine::triangle() {
-    return {{
-        {ox, oy},
-        {ox + xx, oy + xy},
-        {ox + yx, oy + yy}
-    }};
 }
 
 CoefsAffine::CoefsAffine(): Affine(true) { }

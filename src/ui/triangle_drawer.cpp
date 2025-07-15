@@ -1,10 +1,9 @@
 #include "triangle_drawer.hpp"
+#include "triangle_model.hpp"
 #include "triangle_types.hpp"
 #include <wx/brush.h>
 #include <wx/pen.h>
 
-using std::array;
-using std::pair;
 using std::string;
 using std::vector;
 
@@ -46,7 +45,7 @@ bool TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
 }
 
 void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
-    int sz = content.triangles.size();
+    int sz = content.coefs.size();
     for (int i=0; i<sz; i++) {
         if (i != content.activeId) {
             auto triangle = getXformTriangle(i);
@@ -150,7 +149,7 @@ void TriangleDrawer::highlightEdge(wxGraphicsContext* gc) {
 
 vector<GridPoint> TriangleDrawer::getXformTriangle(int i) {
     vector<GridPoint> ans;
-    array<pair<double,double>,3>& arr = content.triangles[i].arr;
+    auto arr = TriangleModel::triangle(content.coefs[i]);
     std::transform(arr.begin(), arr.end(), std::back_inserter(ans),
         [](auto pair) {
             return GridPoint(pair);
