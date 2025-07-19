@@ -20,6 +20,7 @@ public:
     void handleXFormSelected(int i);
     void handleTriangleCoefs(CoefsContent coefs);
 
+    boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
 
 private:

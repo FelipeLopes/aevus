@@ -139,6 +139,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->triangleContentChanged.connect(
             bind(&TriangleModel::handleContent, &triangleModel, _1)
         );
+        flameView->startNewRender.connect(
+            bind(&Renderer::update, &renderer)
+        );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
