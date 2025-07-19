@@ -71,6 +71,14 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     startNewRender();
 }
 
+void FlameView::handleCoefsPreListCtrl(CoefsContent coefs) {
+
+}
+
+void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
+
+}
+
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
     content.coefs.resize(document->flame.xforms.size());

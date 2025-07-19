@@ -13,10 +13,11 @@ using std::string;
 namespace ui {
 
 TriangleModel::TriangleModel(wxPanel* trianglePanel_):
-    trianglePanel(trianglePanel_), activeTransform(-1),
+    trianglePanel(trianglePanel_),
+    activeId(-1),
     triangleGrid(trianglePanel->GetSize()),
     triangleCollider(&triangleGrid),
-    triangleDrawer(&triangleGrid, trianglePanel->GetFont(), activeTransform),
+    triangleDrawer(&triangleGrid, trianglePanel->GetFont()),
     triangleUpdater(&triangleGrid)
 {
     trianglePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -32,11 +33,6 @@ array<pair<double, double>, 3> TriangleModel::triangle(CoefsContent c) {
 
 void TriangleModel::update() {
     trianglePanel->Refresh();
-}
-
-void TriangleModel::handleActiveXformChanged(int id) {
-    activeTransform = id;
-    update();
 }
 
 void TriangleModel::handlePaint() {
@@ -76,7 +72,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
     if (coll.type == NO_COLLISION) {
         triangleUpdater.startGridDrag(pt);
     } else {
-        if (coll.triangleId != activeTransform) {
+        if (coll.triangleId != activeId) {
             xformSelected(coll.triangleId);
         }
         switch (coll.type) {
@@ -120,7 +116,7 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
 }
 
 void TriangleModel::handleContent(const XFormTriangleContent& content) {
-    activeTransform = content.activeId;
+    activeId = content.activeId;
     triangleCollider.handleContent(content);
     triangleDrawer.handleContent(content);
     triangleUpdater.handleContent(content);

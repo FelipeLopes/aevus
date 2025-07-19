@@ -1,5 +1,6 @@
 #pragma once
 
+#include "content.hpp"
 #include "view_model.hpp"
 #include <wx/button.h>
 #include <wx/dataview.h>
@@ -12,15 +13,17 @@ public:
     TransformModel(wxDataViewListCtrl* transformCtrl, wxButton* resetButton, bool accessCoefs);
     void handleActiveXformChanged(int id);
     void handleReset();
-    boost::signals2::signal<void ()> transformCoordsChanged;
+    void handleNoContent();
+    void handleContent(CoefsContent content);
+    boost::signals2::signal<void (CoefsContent)> contentChanged;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
     wxButton* resetButton;
-    bool accessCoefs;
-    int activeTransform;
+    bool noContent;
+    CoefsContent content;
 };
 
 }

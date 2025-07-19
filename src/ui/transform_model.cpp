@@ -10,17 +10,17 @@ namespace ui {
 
 TransformModel::TransformModel(wxDataViewListCtrl* transformCtrl,
     wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl),
-    resetButton(resetButton_), accessCoefs(accessCoefs_), activeTransform(-1)
+    resetButton(resetButton_), noContent(true)
 {
     resetButton->Disable();
 }
 
 void TransformModel::handleActiveXformChanged(int id) {
-    activeTransform = id;
     update();
 }
 
 void TransformModel::handleReset() {
+    /*
     bool changing = false;
     core::Affine* aff = NULL;
     if (accessCoefs) {
@@ -42,31 +42,34 @@ void TransformModel::handleReset() {
         aff->ox = 0;
         aff->oy = 0;
         transformCoordsChanged();
-    }
+    }*/
+}
+
+void TransformModel::handleNoContent() {
+    noContent = true;
+}
+
+void TransformModel::handleContent(CoefsContent content) {
+    noContent = false;
+    this->content = content;
 }
 
 void TransformModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (flame == NULL || activeTransform == -1) {
+    if (noContent) {
         return;
-    }
-    core::Affine* aff = NULL;
-    if (accessCoefs) {
-        aff = flame->xforms.get(activeTransform)->coefs.get();
-    } else {
-        aff = flame->xforms.get(activeTransform)->post.get();
     }
     wxVector<wxVariant> firstRow;
     firstRow.push_back("X");
-    firstRow.push_back(to_string(aff->xx));
-    firstRow.push_back(to_string(aff->xy));
+    firstRow.push_back(to_string(content.xx));
+    firstRow.push_back(to_string(content.xy));
     wxVector<wxVariant> secondRow;
     secondRow.push_back("Y");
-    secondRow.push_back(to_string(aff->yx));
-    secondRow.push_back(to_string(aff->yy));
+    secondRow.push_back(to_string(content.yx));
+    secondRow.push_back(to_string(content.yy));
     wxVector<wxVariant> thirdRow;
     thirdRow.push_back("O");
-    thirdRow.push_back(to_string(aff->ox));
-    thirdRow.push_back(to_string(aff->oy));
+    thirdRow.push_back(to_string(content.ox));
+    thirdRow.push_back(to_string(content.oy));
 
     data.push_back(firstRow);
     data.push_back(secondRow);
@@ -80,19 +83,13 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
     }
     int num = 2*row + col - 1;
     double oldValue = 0;
-    core::Affine* aff = NULL;
-    if (accessCoefs) {
-        aff = flame->xforms.get(activeTransform)->coefs.get();
-    } else {
-        aff = flame->xforms.get(activeTransform)->post.get();
-    }
     switch (num) {
-        case 0: oldValue = aff->xx; break;
-        case 1: oldValue = aff->xy; break;
-        case 2: oldValue = aff->yx; break;
-        case 3: oldValue = aff->yy; break;
-        case 4: oldValue = aff->ox; break;
-        case 5: oldValue = aff->oy; break;
+        case 0: oldValue = content.xx; break;
+        case 1: oldValue = content.xy; break;
+        case 2: oldValue = content.yx; break;
+        case 3: oldValue = content.yy; break;
+        case 4: oldValue = content.ox; break;
+        case 5: oldValue = content.oy; break;
         default: throw std::invalid_argument("Invalid cell");
     }
     string text = val.GetString().ToStdString();
@@ -108,19 +105,19 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
         return;
     }
     switch (num) {
-        case 0: aff->xx = newValue; break;
-        case 1: aff->xy = newValue; break;
-        case 2: aff->yx = newValue; break;
-        case 3: aff->yy = newValue; break;
-        case 4: aff->ox = newValue; break;
-        case 5: aff->oy = newValue; break;
+        case 0: content.xx = newValue; break;
+        case 1: content.xy = newValue; break;
+        case 2: content.yx = newValue; break;
+        case 3: content.yy = newValue; break;
+        case 4: content.ox = newValue; break;
+        case 5: content.oy = newValue; break;
         default: throw std::invalid_argument("Invalid cell");
     }
-    transformCoordsChanged();
+    contentChanged(content);
 }
 
 void TransformModel::afterUpdate(int selectedRow) {
-    if (activeTransform == -1) {
+    if (noContent) {
         resetButton->Disable();
     } else {
         resetButton->Enable();

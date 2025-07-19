@@ -31,10 +31,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     frameModel(frameListCtrl),
     triangleModel(trianglePanel)
 {
-    preTransformModel.transformCoordsChanged
-        .connect(eventBroker.activeXformCoordsChanged);
-    postTransformModel.transformCoordsChanged
-        .connect(eventBroker.activeXformCoordsChanged);
     weightsModel.weightsChanged
         .connect(eventBroker.flameWeightsChanged);
     weightsModel.xformSelected
@@ -68,12 +64,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         .connect(bind(&FrameModel::update, &frameModel));
 
     eventBroker.activeXformCoordsChanged
-        .connect(bind(&TransformModel::update, &preTransformModel));
-    eventBroker.activeXformCoordsChanged
-        .connect(bind(&TransformModel::update, &postTransformModel));
-    eventBroker.activeXformCoordsChanged
-        .connect(bind(&TriangleModel::update, &triangleModel));
-    eventBroker.activeXformCoordsChanged
         .connect(bind(&Renderer::update, &renderer));
     eventBroker.flameWeightsChanged
         .connect(bind(&WeightsModel::update, &weightsModel));
@@ -89,8 +79,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         .connect(bind(&VariationModel::handleActiveXformChanged, &variationModel, _1));
     eventBroker.activeXformChanged
         .connect(bind(&ColorModel::handleActiveXformChanged, &colorModel, _1));
-    eventBroker.activeXformChanged
-        .connect(bind(&TriangleModel::handleActiveXformChanged, &triangleModel, _1));
     eventBroker.variationParamsChanged
         .connect(bind(&VariationModel::update, &variationModel));
     eventBroker.variationParamsChanged
@@ -142,11 +130,29 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->startNewRender.connect(
             bind(&Renderer::update, &renderer)
         );
+        flameView->noTransformContent.connect(
+            bind(&TransformModel::handleNoContent, &preTransformModel)
+        );
+        flameView->noTransformContent.connect(
+            bind(&TransformModel::handleNoContent, &postTransformModel)
+        );
+        flameView->preTransformContent.connect(
+            bind(&TransformModel::handleContent, &preTransformModel, _1)
+        );
+        flameView->postTransformContent.connect(
+            bind(&TransformModel::handleContent, &postTransformModel, _1)
+        );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
         triangleModel.xformCoefsChanged.connect(
             bind(&FlameView::handleTriangleCoefs, flameView, _1)
+        );
+        preTransformModel.contentChanged.connect(
+            bind(&FlameView::handleCoefsPreListCtrl, flameView, _1)
+        );
+        postTransformModel.contentChanged.connect(
+            bind(&FlameView::handleCoefsPostListCtrl, flameView, _1)
         );
     }
     renderer.setFlame(ptr);

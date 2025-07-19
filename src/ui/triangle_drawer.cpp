@@ -9,9 +9,8 @@ using std::vector;
 
 namespace ui {
 
-TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_,
-    wxFont font_, int activeTransform_): triangleGrid(triangleGrid_),
-    font(font_), xformColors({
+TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_, wxFont font_):
+    triangleGrid(triangleGrid_), font(font_), xformColors({
         "#ff0000", "#cccc00", "#00cc00", "#00cccc", "#4040ff", "#cc00cc", "#cc8000",
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }), dotLabels({"O", "X", "Y"})

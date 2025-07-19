@@ -17,7 +17,6 @@ class TriangleModel {
 public:
     TriangleModel(wxPanel* trianglePanel);
     void update();
-    void handleActiveXformChanged(int id);
     void handlePaint();
     void handleResize(wxSizeEvent& event);
     void handleMouseWheel(wxMouseEvent& event);
@@ -32,7 +31,7 @@ public:
     static std::array<std::pair<double, double>, 3> triangle(CoefsContent coefs);
 private:
     wxPanel* trianglePanel;
-    int activeTransform;
+    int activeId;
     TriangleGrid triangleGrid;
     TriangleCollider triangleCollider;
     TriangleDrawer triangleDrawer;

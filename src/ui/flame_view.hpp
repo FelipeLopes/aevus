@@ -19,9 +19,14 @@ public:
     void documentLoaded();
     void handleXFormSelected(int i);
     void handleTriangleCoefs(CoefsContent coefs);
+    void handleCoefsPreListCtrl(CoefsContent coefs);
+    void handleCoefsPostListCtrl(CoefsContent coefs);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
+    boost::signals2::signal<void ()> noTransformContent;
+    boost::signals2::signal<void (CoefsContent)> preTransformContent;
+    boost::signals2::signal<void (CoefsContent)> postTransformContent;
 
 private:
     AevusFrame* aevusFrame;
