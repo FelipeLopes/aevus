@@ -156,8 +156,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
     }
     renderer.setFlame(ptr);
-    preTransformModel.setFlame(ptr);
-    postTransformModel.setFlame(ptr);
     weightsModel.setFlame(ptr);
     variationModel.setFlame(ptr);
     colorModel.setFlame(ptr);

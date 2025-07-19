@@ -33,6 +33,8 @@ private:
     FlameDocument* document;
     int activeXformId;
     void sendTriangleContent();
+    void sendPreTransformContent();
+    void sendPostTransformContent();
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

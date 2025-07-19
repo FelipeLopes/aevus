@@ -52,6 +52,7 @@ void TransformModel::handleNoContent() {
 void TransformModel::handleContent(CoefsContent content) {
     noContent = false;
     this->content = content;
+    update();
 }
 
 void TransformModel::getValues(vector<wxVector<wxVariant>>& data) const {

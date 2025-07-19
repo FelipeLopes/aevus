@@ -50,6 +50,10 @@ void FlameView::documentLoaded() {
     if (document->flameHasXForms()) {
         activeXformId = 0;
         aevusFrame->notifyActiveTransform(0);
+        sendPreTransformContent();
+        sendPostTransformContent();
+    } else {
+        noTransformContent();
     }
     sendTriangleContent();
 }
@@ -97,6 +101,34 @@ void FlameView::sendTriangleContent() {
         content.coefs[i] = messageCoefs;
     }
     triangleContentChanged(content);
+}
+
+void FlameView::sendPreTransformContent() {
+    auto vals = document->flame.xforms.get(activeXformId)->coefs.value();
+
+    CoefsContent messageCoefs;
+    messageCoefs.ox = vals.ox;
+    messageCoefs.oy = vals.oy;
+    messageCoefs.xx = vals.xx;
+    messageCoefs.xy = vals.xy;
+    messageCoefs.yx = vals.yx;
+    messageCoefs.yy = vals.yy;
+
+    preTransformContent(messageCoefs);
+}
+
+void FlameView::sendPostTransformContent() {
+    auto vals = document->flame.xforms.get(activeXformId)->post.value();
+
+    CoefsContent messageCoefs;
+    messageCoefs.ox = vals.ox;
+    messageCoefs.oy = vals.oy;
+    messageCoefs.xx = vals.xx;
+    messageCoefs.xy = vals.xy;
+    messageCoefs.yx = vals.yx;
+    messageCoefs.yy = vals.yy;
+
+    postTransformContent(messageCoefs);
 }
 
 }
