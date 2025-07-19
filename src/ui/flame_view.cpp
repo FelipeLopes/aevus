@@ -61,6 +61,8 @@ void FlameView::documentLoaded() {
 void FlameView::handleXFormSelected(int i) {
     activeXformId = i;
     sendTriangleContent();
+    sendPreTransformContent();
+    sendPostTransformContent();
 }
 
 void FlameView::handleTriangleCoefs(CoefsContent coefs) {
@@ -78,11 +80,21 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
 }
 
 void FlameView::handleCoefsPreListCtrl(CoefsContent coefs) {
-
+    handleTriangleCoefs(coefs);
 }
 
 void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
-
+    auto ptr = document->flame.xforms.get(activeXformId)->post.get();
+    ptr->ox = coefs.ox;
+    ptr->oy = coefs.oy;
+    ptr->xx = coefs.xx;
+    ptr->xy = coefs.xy;
+    ptr->yx = coefs.yx;
+    ptr->yy = coefs.yy;
+    sendTriangleContent();
+    sendPreTransformContent();
+    sendPostTransformContent();
+    startNewRender();
 }
 
 void FlameView::sendTriangleContent() {
