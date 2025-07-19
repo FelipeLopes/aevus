@@ -98,6 +98,14 @@ void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
     startNewRender();
 }
 
+void FlameView::handleWeights(WeightsContent content) {
+    int sz = content.weights.size();
+    for (int i=0; i<sz; i++) {
+        document->flame.xforms.get(i)->weight.setValue(content.weights[i]);
+    }
+    startNewRender();
+}
+
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
     content.coefs.resize(document->flame.xforms.size());

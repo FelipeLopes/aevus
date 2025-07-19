@@ -33,7 +33,7 @@ void WeightsModel::handleContent(WeightsContent content) {
 void WeightsModel::handleAddXform() {
     int id = flame->xforms.size();
     flame->xforms.append(std::make_shared<core::XForm>());
-    weightsChanged();
+    weightsChanged(content);
     xformSelected(id);
 }
 
@@ -45,7 +45,7 @@ void WeightsModel::handleRemoveXform() {
         id--;
     }
     xformSelected(id);
-    weightsChanged();
+    weightsChanged(content);
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
@@ -66,7 +66,7 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
-    double oldValue = flame->xforms.get(row)->weight.value();
+    double oldValue = content.weights[row];
     string text = val.GetString().ToStdString();
     double newValue = 0;
     try {
@@ -79,8 +79,8 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
-    flame->xforms.get(row)->weight.setValue(newValue);
-    weightsChanged();
+    content.weights[row] = newValue;
+    weightsChanged(content);
 }
 
 void WeightsModel::afterUpdate(int selectedRow) {

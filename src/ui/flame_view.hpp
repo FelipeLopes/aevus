@@ -21,6 +21,7 @@ public:
     void handleTriangleCoefs(CoefsContent coefs);
     void handleCoefsPreListCtrl(CoefsContent coefs);
     void handleCoefsPostListCtrl(CoefsContent coefs);
+    void handleWeights(WeightsContent content);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;

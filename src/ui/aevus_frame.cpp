@@ -31,10 +31,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     frameModel(frameListCtrl),
     triangleModel(trianglePanel)
 {
-    weightsModel.weightsChanged
-        .connect(eventBroker.flameWeightsChanged);
-    weightsModel.xformSelected
-        .connect(eventBroker.activeXformChanged);
     variationModel.variationDataChanged
         .connect(eventBroker.variationParamsChanged);
     colorModel.colorChanged
@@ -45,16 +41,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
 
     eventBroker.flameLoaded
-        .connect(bind(&TransformModel::update, &preTransformModel));
-    eventBroker.flameLoaded
-        .connect(bind(&TransformModel::update, &postTransformModel));
-    eventBroker.flameLoaded
-        .connect(bind(&TriangleModel::update, &triangleModel));
-    eventBroker.flameLoaded
-        .connect(bind(&Renderer::update, &renderer));
-    eventBroker.flameLoaded
-        .connect(bind(&WeightsModel::update, &weightsModel));
-    eventBroker.flameLoaded
         .connect(bind(&VariationModel::update, &variationModel));
     eventBroker.flameLoaded
         .connect(bind(&ColorModel::setupPalette, &colorModel));
@@ -63,16 +49,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     eventBroker.flameLoaded
         .connect(bind(&FrameModel::update, &frameModel));
 
-    eventBroker.activeXformCoordsChanged
-        .connect(bind(&Renderer::update, &renderer));
-    eventBroker.flameWeightsChanged
-        .connect(bind(&WeightsModel::update, &weightsModel));
-    eventBroker.flameWeightsChanged
-        .connect(bind(&Renderer::update, &renderer));
-    eventBroker.activeXformChanged
-        .connect(bind(&TransformModel::handleActiveXformChanged, &preTransformModel, _1));
-    eventBroker.activeXformChanged
-        .connect(bind(&TransformModel::handleActiveXformChanged, &postTransformModel, _1));
     eventBroker.activeXformChanged
         .connect(bind(&VariationModel::handleActiveXformChanged, &variationModel, _1));
     eventBroker.activeXformChanged
@@ -154,6 +130,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
         postTransformModel.contentChanged.connect(
             bind(&FlameView::handleCoefsPostListCtrl, flameView, _1)
+        );
+        weightsModel.xformSelected.connect(
+            bind(&FlameView::handleXFormSelected, flameView, _1)
+        );
+        weightsModel.weightsChanged.connect(
+            bind(&FlameView::handleWeights, flameView, _1)
         );
     }
     renderer.setFlame(ptr);

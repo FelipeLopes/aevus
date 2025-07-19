@@ -18,7 +18,7 @@ public:
     void handleAddXform();
     void handleRemoveXform();
     boost::signals2::signal<void (int)> xformSelected;
-    boost::signals2::signal<void ()> weightsChanged;
+    boost::signals2::signal<void (WeightsContent)> weightsChanged;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
