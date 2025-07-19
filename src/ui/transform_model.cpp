@@ -47,6 +47,7 @@ void TransformModel::handleReset() {
 
 void TransformModel::handleNoContent() {
     noContent = true;
+    update();
 }
 
 void TransformModel::handleContent(CoefsContent content) {

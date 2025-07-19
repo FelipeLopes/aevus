@@ -72,6 +72,8 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
     sendTriangleContent();
+    sendPreTransformContent();
+    sendPostTransformContent();
     startNewRender();
 }
 
