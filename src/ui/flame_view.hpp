@@ -27,6 +27,7 @@ public:
     boost::signals2::signal<void ()> noTransformContent;
     boost::signals2::signal<void (CoefsContent)> preTransformContent;
     boost::signals2::signal<void (CoefsContent)> postTransformContent;
+    boost::signals2::signal<void (WeightsContent)> weightsContent;
 
 private:
     AevusFrame* aevusFrame;
@@ -35,6 +36,7 @@ private:
     void sendTriangleContent();
     void sendPreTransformContent();
     void sendPostTransformContent();
+    void sendWeightsContent();
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

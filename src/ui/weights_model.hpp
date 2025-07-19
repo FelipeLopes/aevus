@@ -1,5 +1,6 @@
 #pragma once
 
+#include "content.hpp"
 #include "selection_view_model.hpp"
 #include "../core/flame.hpp"
 #include <memory>
@@ -13,7 +14,7 @@ public:
     WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* addXformButton,
         wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
-    void handleActiveXformChanged(int id);
+    void handleContent(WeightsContent content);
     void handleAddXform();
     void handleRemoveXform();
     boost::signals2::signal<void (int)> xformSelected;
@@ -25,7 +26,7 @@ private:
 
     wxBitmapButton* addXformButton;
     wxBitmapButton* removeXformButton;
-    int activeTransform;
+    WeightsContent content;
     bool blockSelectionEvents;
 };
 

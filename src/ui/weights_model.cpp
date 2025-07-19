@@ -1,4 +1,5 @@
 #include "weights_model.hpp"
+#include "content.hpp"
 #include "selection_view_model.hpp"
 #include <string>
 
@@ -11,7 +12,7 @@ namespace ui {
 WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* addXformButton_,
     wxBitmapButton* removeXformButton_): SelectionViewModel(weightsListCtrl),
     addXformButton(addXformButton_), removeXformButton(removeXformButton_),
-    activeTransform(-1), blockSelectionEvents(false)
+    blockSelectionEvents(false)
 {
     addXformButton->Disable();
     removeXformButton->Disable();
@@ -19,18 +20,13 @@ WeightsModel::WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* 
 
 void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     if (!updating() && !blockSelectionEvents) {
-        activeTransform = getSelectedRow();
-        xformSelected(activeTransform);
+        content.activeId = getSelectedRow();
+        xformSelected(content.activeId);
     }
 }
 
-void WeightsModel::handleActiveXformChanged(int id) {
-    activeTransform = id;
-    if (id != -1) {
-        blockSelectionEvents = true;
-        selectRow(id);
-        blockSelectionEvents = false;
-    }
+void WeightsModel::handleContent(WeightsContent content) {
+    this->content = content;
     update();
 }
 
@@ -53,14 +49,14 @@ void WeightsModel::handleRemoveXform() {
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (flame == NULL) {
+    if (!content.flameLoaded) {
         return;
     }
-    int sz = flame->xforms.size();
+    int sz = content.weights.size();
     for (int i=0; i<sz; i++) {
         wxVector<wxVariant> row;
         row.push_back(to_string(i+1));
-        row.push_back(to_string(flame->xforms.get(i)->weight.value()));
+        row.push_back(to_string(content.weights[i]));
         data.push_back(row);
     }
 }
@@ -89,12 +85,12 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
 
 void WeightsModel::afterUpdate(int selectedRow) {
     SelectionViewModel::afterUpdate(selectedRow);
-    if (flame == NULL) {
+    if (!content.flameLoaded) {
         addXformButton->Disable();
     } else {
         addXformButton->Enable();
     }
-    if (activeTransform == -1) {
+    if (content.activeId == -1) {
         removeXformButton->Disable();
     } else {
         removeXformButton->Enable();

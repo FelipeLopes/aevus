@@ -74,8 +74,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     eventBroker.activeXformChanged
         .connect(bind(&TransformModel::handleActiveXformChanged, &postTransformModel, _1));
     eventBroker.activeXformChanged
-        .connect(bind(&WeightsModel::handleActiveXformChanged, &weightsModel, _1));
-    eventBroker.activeXformChanged
         .connect(bind(&VariationModel::handleActiveXformChanged, &variationModel, _1));
     eventBroker.activeXformChanged
         .connect(bind(&ColorModel::handleActiveXformChanged, &colorModel, _1));
@@ -142,6 +140,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->postTransformContent.connect(
             bind(&TransformModel::handleContent, &postTransformModel, _1)
         );
+        flameView->weightsContent.connect(
+            bind(&WeightsModel::handleContent, &weightsModel, _1)
+        );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
@@ -156,7 +157,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
     }
     renderer.setFlame(ptr);
-    weightsModel.setFlame(ptr);
     variationModel.setFlame(ptr);
     colorModel.setFlame(ptr);
     frameModel.setFlame(ptr);

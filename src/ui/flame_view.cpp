@@ -56,6 +56,7 @@ void FlameView::documentLoaded() {
         noTransformContent();
     }
     sendTriangleContent();
+    sendWeightsContent();
 }
 
 void FlameView::handleXFormSelected(int i) {
@@ -143,6 +144,17 @@ void FlameView::sendPostTransformContent() {
     messageCoefs.yy = vals.yy;
 
     postTransformContent(messageCoefs);
+}
+
+void FlameView::sendWeightsContent() {
+    WeightsContent content;
+    content.flameLoaded = true;
+    content.activeId = activeXformId;
+    content.weights.resize(document->flame.xforms.size());
+    for (int i=0; i<content.weights.size(); i++) {
+        content.weights[i] = document->flame.xforms.get(i)->weight.value();
+    }
+    weightsContent(content);
 }
 
 }

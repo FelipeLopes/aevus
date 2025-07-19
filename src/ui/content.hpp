@@ -15,4 +15,10 @@ struct XFormTriangleContent {
     std::vector<CoefsContent> coefs;
 };
 
+struct WeightsContent {
+    int activeId;
+    bool flameLoaded;
+    std::vector<double> weights;
+};
+
 }
