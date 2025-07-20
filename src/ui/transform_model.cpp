@@ -20,29 +20,13 @@ void TransformModel::handleActiveXformChanged(int id) {
 }
 
 void TransformModel::handleReset() {
-    /*
-    bool changing = false;
-    core::Affine* aff = NULL;
-    if (accessCoefs) {
-        aff = flame->xforms.get(activeTransform)->coefs.get();
-    } else {
-        aff = flame->xforms.get(activeTransform)->post.get();
-    }
-    changing |= (aff->xx != 1);
-    changing |= (aff->xy != 0);
-    changing |= (aff->yx != 0);
-    changing |= (aff->yy != 1);
-    changing |= (aff->ox != 0);
-    changing |= (aff->oy != 0);
-    if (changing) {
-        aff->xx = 1;
-        aff->xy = 0;
-        aff->yx = 0;
-        aff->yy = 1;
-        aff->ox = 0;
-        aff->oy = 0;
-        transformCoordsChanged();
-    }*/
+    content.xx = 1;
+    content.xy = 0;
+    content.yx = 0;
+    content.yy = 1;
+    content.ox = 0;
+    content.oy = 0;
+    contentChanged(content);
 }
 
 void TransformModel::handleNoContent() {

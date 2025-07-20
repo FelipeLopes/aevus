@@ -57,6 +57,7 @@ void FlameView::documentLoaded() {
     }
     sendTriangleContent();
     sendWeightsContent();
+    startNewRender();
 }
 
 void FlameView::handleXFormSelected(int i) {
@@ -64,6 +65,7 @@ void FlameView::handleXFormSelected(int i) {
     sendTriangleContent();
     sendPreTransformContent();
     sendPostTransformContent();
+    sendWeightsContent();
 }
 
 void FlameView::handleTriangleCoefs(CoefsContent coefs) {

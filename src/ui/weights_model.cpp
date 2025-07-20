@@ -27,6 +27,11 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
 
 void WeightsModel::handleContent(WeightsContent content) {
     this->content = content;
+    if (content.activeId != -1) {
+        blockSelectionEvents = true;
+        selectRow(content.activeId);
+        blockSelectionEvents = false;
+    }
     update();
 }
 
