@@ -2,6 +2,7 @@
 #include "aevus_frame.hpp"
 #include "content.hpp"
 #include "flame_document.hpp"
+#include "variation_model.hpp"
 #include <memory>
 #include <wx/app.h>
 
@@ -67,6 +68,7 @@ void FlameView::handleXFormSelected(int i) {
     sendPreTransformContent();
     sendPostTransformContent();
     sendWeightsContent();
+    sendVariationContent();
 }
 
 void FlameView::handleXFormAdded() {
@@ -76,6 +78,7 @@ void FlameView::handleXFormAdded() {
     sendPreTransformContent();
     sendPostTransformContent();
     sendWeightsContent();
+    sendVariationContent();
     startNewRender();
 }
 
@@ -89,6 +92,7 @@ void FlameView::handleXFormRemoved() {
     sendPreTransformContent();
     sendPostTransformContent();
     sendWeightsContent();
+    sendVariationContent();
     startNewRender();
 }
 
@@ -129,6 +133,36 @@ void FlameView::handleWeights(WeightsContent content) {
     for (int i=0; i<sz; i++) {
         document->flame.xforms.get(i)->weight.setValue(content.weights[i]);
     }
+    startNewRender();
+}
+
+void FlameView::handleVariationAdded(core::Variation::VariationID id) {
+    if (activeXformId == -1) {
+        return;
+    }
+    auto varMap = &document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
+    if (varMap->find(id) != varMap->end()) {
+        return;
+    }
+    (*varMap)[id] = core::VariationData(1.0, {});
+    sendVariationContent();
+    startNewRender();
+}
+
+void FlameView::handleVariationData(VariationDataParams params) {
+    if (activeXformId == -1) {
+        return;
+    }
+    auto varMap = &document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
+    if (varMap->find(params.id) == varMap->end()) {
+        return;
+    }
+    if (params.data.weight == 0.0) {
+        varMap->erase(params.id);
+    } else {
+        (*varMap)[params.id] = params.data;
+    }
+    sendVariationContent();
     startNewRender();
 }
 

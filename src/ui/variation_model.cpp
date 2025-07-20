@@ -21,21 +21,15 @@ void VariationModel::handleContent(VariationContent content) {
 }
 
 void VariationModel::handleVariationAdd() {
-    /*string text = variationAddCtrl->GetValue().ToStdString();
+    string text = variationAddCtrl->GetValue().ToStdString();
     auto varLookup = core::VariationLookup::getInstance();
     try {
         auto id = varLookup->nameToId(text);
-        auto varMap = &flame->xforms.get(activeTransform)->variationMap.get()->variations;
-        if (varMap->find(id) != varMap->end()) {
-            variationAddCtrl->ChangeValue("");
-            return;
-        }
-        (*varMap)[id] = core::VariationData(1.0, {});
         variationAddCtrl->ChangeValue("");
-        variationDataChanged();
+        variationAdded(id);
     } catch (std::invalid_argument& e) {
         return;
-    }*/
+    }
 }
 
 void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
@@ -49,13 +43,11 @@ void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
 }
 
 void VariationModel::setValue(const wxVariant& val, int row, int col) {
-    /*
     if (col == 0) {
         update();
         return;
     }
-    auto varMap = &flame->xforms.get(activeTransform)->variationMap.get()->variations;
-    auto it = varMap->begin();
+    auto it = content.variations.begin();
     for (int i=0; i<row; i++) {
         ++it;
     }
@@ -72,12 +64,10 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
-    if (newValue == 0.0) {
-        varMap->erase(it->first);
-    } else {
-        (*varMap)[it->first].weight = newValue;
-    }
-    variationDataChanged();*/
+    VariationDataParams varParams;
+    varParams.id = it->first;
+    varParams.data = core::VariationData(newValue, {});
+    variationData(varParams);
 }
 
 void VariationModel::afterUpdate(int selectedRow) {

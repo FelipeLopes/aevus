@@ -2,6 +2,7 @@
 
 #include "content.hpp"
 #include "flame_document.hpp"
+#include "variation_model.hpp"
 #include <boost/signals2.hpp>
 
 namespace ui {
@@ -24,6 +25,8 @@ public:
     void handleCoefsPreListCtrl(CoefsContent coefs);
     void handleCoefsPostListCtrl(CoefsContent coefs);
     void handleWeights(WeightsContent content);
+    void handleVariationAdded(core::Variation::VariationID id);
+    void handleVariationData(VariationDataParams params);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;

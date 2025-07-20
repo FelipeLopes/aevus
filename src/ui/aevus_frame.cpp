@@ -39,8 +39,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
 
     eventBroker.flameLoaded
-        .connect(bind(&VariationModel::update, &variationModel));
-    eventBroker.flameLoaded
         .connect(bind(&ColorModel::setupPalette, &colorModel));
     eventBroker.flameLoaded
         .connect(bind(&ColorModel::update, &colorModel));
@@ -137,6 +135,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
         weightsModel.weightsChanged.connect(
             bind(&FlameView::handleWeights, flameView, _1)
+        );
+        variationModel.variationAdded.connect(
+            bind(&FlameView::handleVariationAdded, flameView, _1)
+        );
+        variationModel.variationData.connect(
+            bind(&FlameView::handleVariationData, flameView, _1)
         );
     }
     renderer.setFlame(ptr);
