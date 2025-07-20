@@ -10,18 +10,18 @@ namespace ui {
 
 VariationModel::VariationModel(wxDataViewListCtrl* variationCtrl,
     wxTextCtrl* variationAddCtrl_): ViewModel(variationCtrl),
-    activeTransform(-1), variationAddCtrl(variationAddCtrl_)
+    variationAddCtrl(variationAddCtrl_)
 {
     variationAddCtrl->AutoComplete(new VariationTextCompleter);
 }
 
-void VariationModel::handleActiveXformChanged(int id) {
-    activeTransform = id;
+void VariationModel::handleContent(VariationContent content) {
+    this->content = content;
     update();
 }
 
 void VariationModel::handleVariationAdd() {
-    string text = variationAddCtrl->GetValue().ToStdString();
+    /*string text = variationAddCtrl->GetValue().ToStdString();
     auto varLookup = core::VariationLookup::getInstance();
     try {
         auto id = varLookup->nameToId(text);
@@ -35,16 +35,12 @@ void VariationModel::handleVariationAdd() {
         variationDataChanged();
     } catch (std::invalid_argument& e) {
         return;
-    }
+    }*/
 }
 
 void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (flame == NULL || activeTransform == -1) {
-        return;
-    }
-    auto varMap = flame->xforms.get(activeTransform)->variationMap.get()->variations;
     auto varLookup = core::VariationLookup::getInstance();
-    for (auto el: varMap) {
+    for (auto el: content.variations) {
         wxVector<wxVariant> row;
         row.push_back(varLookup->idToName(el.first));
         row.push_back(to_string(el.second.weight));
@@ -53,6 +49,7 @@ void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
 }
 
 void VariationModel::setValue(const wxVariant& val, int row, int col) {
+    /*
     if (col == 0) {
         update();
         return;
@@ -80,11 +77,11 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
     } else {
         (*varMap)[it->first].weight = newValue;
     }
-    variationDataChanged();
+    variationDataChanged();*/
 }
 
 void VariationModel::afterUpdate(int selectedRow) {
-    if (activeTransform == -1) {
+    if (!content.flameLoaded) {
         variationAddCtrl->ChangeValue("");
         variationAddCtrl->Disable();
     } else {

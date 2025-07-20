@@ -57,6 +57,7 @@ void FlameView::documentLoaded() {
     }
     sendTriangleContent();
     sendWeightsContent();
+    sendVariationContent();
     startNewRender();
 }
 
@@ -196,6 +197,14 @@ void FlameView::sendWeightsContent() {
         content.weights[i] = document->flame.xforms.get(i)->weight.value();
     }
     weightsContent(content);
+}
+
+void FlameView::sendVariationContent() {
+    VariationContent content;
+    if (activeXformId != -1) {
+        content.variations = document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
+    }
+    variationContent(content);
 }
 
 }
