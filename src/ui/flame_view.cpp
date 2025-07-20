@@ -68,6 +68,16 @@ void FlameView::handleXFormSelected(int i) {
     sendWeightsContent();
 }
 
+void FlameView::handleXFormAdded() {
+    activeXformId = document->flame.xforms.size();
+    document->flame.xforms.append(std::make_shared<core::XForm>());
+    sendTriangleContent();
+    sendPreTransformContent();
+    sendPostTransformContent();
+    sendWeightsContent();
+    startNewRender();
+}
+
 void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
     ptr->ox = coefs.ox;

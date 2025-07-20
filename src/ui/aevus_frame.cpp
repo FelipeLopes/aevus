@@ -134,6 +134,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         weightsModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
+        weightsModel.xformAdded.connect(
+            bind(&FlameView::handleXFormAdded, flameView)
+        );
         weightsModel.weightsChanged.connect(
             bind(&FlameView::handleWeights, flameView, _1)
         );
