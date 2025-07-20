@@ -78,6 +78,19 @@ void FlameView::handleXFormAdded() {
     startNewRender();
 }
 
+void FlameView::handleXFormRemoved() {
+    int sz = document->flame.xforms.size();
+    document->flame.xforms.remove(activeXformId);
+    if (activeXformId == sz - 1) {
+        activeXformId--;
+    }
+    sendTriangleContent();
+    sendPreTransformContent();
+    sendPostTransformContent();
+    sendWeightsContent();
+    startNewRender();
+}
+
 void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
     ptr->ox = coefs.ox;
@@ -139,6 +152,10 @@ void FlameView::sendTriangleContent() {
 }
 
 void FlameView::sendPreTransformContent() {
+    if (activeXformId == -1) {
+        noTransformContent();
+        return;
+    }
     auto vals = document->flame.xforms.get(activeXformId)->coefs.value();
 
     CoefsContent messageCoefs;
@@ -153,6 +170,10 @@ void FlameView::sendPreTransformContent() {
 }
 
 void FlameView::sendPostTransformContent() {
+    if (activeXformId == -1) {
+        noTransformContent();
+        return;
+    }
     auto vals = document->flame.xforms.get(activeXformId)->post.value();
 
     CoefsContent messageCoefs;

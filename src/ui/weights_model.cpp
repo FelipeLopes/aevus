@@ -26,13 +26,17 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
 }
 
 void WeightsModel::handleContent(WeightsContent content) {
+    //printf("handle content begin\n");
     this->content = content;
+    //printf("before update\n");
     update();
-    if (content.activeId != -1) {
+    /*if (content.activeId != -1) {
         blockSelectionEvents = true;
+        printf("before select\n");
         selectRow(content.activeId);
         blockSelectionEvents = false;
     }
+    printf("handle content end\n");*/
 }
 
 void WeightsModel::handleAddXform() {
@@ -40,14 +44,7 @@ void WeightsModel::handleAddXform() {
 }
 
 void WeightsModel::handleRemoveXform() {
-    int id = getSelectedRow();
-    int sz = flame->xforms.size();
-    flame->xforms.remove(id);
-    if (id == sz - 1) {
-        id--;
-    }
-    xformSelected(id);
-    weightsChanged(content);
+    xformRemoved();
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {
@@ -86,7 +83,9 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
 }
 
 void WeightsModel::afterUpdate(int selectedRow) {
-    SelectionViewModel::afterUpdate(selectedRow);
+    if (content.activeId != -1) {
+        SelectionViewModel::afterUpdate(content.activeId);
+    }
     if (!content.flameLoaded) {
         addXformButton->Disable();
     } else {

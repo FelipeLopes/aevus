@@ -19,6 +19,7 @@ public:
     void documentLoaded();
     void handleXFormSelected(int i);
     void handleXFormAdded();
+    void handleXFormRemoved();
     void handleTriangleCoefs(CoefsContent coefs);
     void handleCoefsPreListCtrl(CoefsContent coefs);
     void handleCoefsPostListCtrl(CoefsContent coefs);
