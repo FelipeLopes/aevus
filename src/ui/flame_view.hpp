@@ -35,6 +35,7 @@ public:
     boost::signals2::signal<void (CoefsContent)> postTransformContent;
     boost::signals2::signal<void (WeightsContent)> weightsContent;
     boost::signals2::signal<void (VariationContent)> variationContent;
+    boost::signals2::signal<void (ColorContent)> colorContent;
 
 private:
     AevusFrame* aevusFrame;
@@ -45,6 +46,7 @@ private:
     void sendPostTransformContent();
     void sendWeightsContent();
     void sendVariationContent();
+    void sendColorContent();
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

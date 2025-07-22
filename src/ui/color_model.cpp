@@ -1,4 +1,5 @@
 #include "color_model.hpp"
+#include "content.hpp"
 #include "view_model.hpp"
 #include <algorithm>
 #include <wx/rawbmp.h>
@@ -19,7 +20,6 @@ ColorModel::ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel_
     paletteBitmap(paletteWidth, 256),
     blackLineBitmap(paletteWidth, 1),
     whiteLineBitmap(paletteWidth, 1),
-    activeTransform(-1),
     dragging(false)
 {
     palettePanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
@@ -63,8 +63,8 @@ void ColorModel::setupPalette() {
     }
 }
 
-void ColorModel::handleActiveXformChanged(int id) {
-    activeTransform = id;
+void ColorModel::handleContent(ColorContent content) {
+    this->content = content;
     update();
 }
 
@@ -74,8 +74,8 @@ void ColorModel::handlePaint() {
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
         gc->DrawBitmap(paletteBitmap, 0, 0, paletteWidth, 256);
-        if (flame != NULL && activeTransform != -1) {
-            float colorVal = flame->xforms.get(activeTransform)->color.value();
+        if (content.flameLoaded) {
+            /*float colorVal = content.color;
             colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
             int palettePos = (int)(colorVal*256);
             Color c = flame->palette.colors.value().colorAt(palettePos);
@@ -84,7 +84,7 @@ void ColorModel::handlePaint() {
                 gc->DrawBitmap(blackLineBitmap, 0, highlightLine, paletteWidth, 1);
             } else {
                 gc->DrawBitmap(whiteLineBitmap, 0, highlightLine, paletteWidth, 1);
-            }
+            }*/
         }
         delete gc;
     }
@@ -95,17 +95,16 @@ void ColorModel::afterUpdate(int selectedRow) {
 }
 
 void ColorModel::getValues(vector<wxVector<wxVariant>>& data) const {
-    if (flame == NULL || activeTransform == -1) {
+    if (!content.flameLoaded) {
         return;
     }
     wxVector<wxVariant> firstRow;
     firstRow.push_back("position");
-    firstRow.push_back(to_string(flame->xforms.get(activeTransform)->color.value()));
+    firstRow.push_back(to_string(content.color));
     data.push_back(firstRow);
     wxVector<wxVariant> secondRow;
     secondRow.push_back("speed");
-    secondRow.push_back(
-        to_string(flame->xforms.get(activeTransform)->colorSpeed.value().colorSpeed));
+    secondRow.push_back(to_string(content.colorSpeed));
     data.push_back(secondRow);
 }
 
@@ -116,8 +115,8 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     }
     double oldValue = 0;
     switch (row) {
-        case 0: oldValue = flame->xforms.get(activeTransform)->color.value(); break;
-        case 1: oldValue = flame->xforms.get(activeTransform)->colorSpeed.value().colorSpeed; break;
+        case 0: oldValue = content.color; break;
+        case 1: oldValue = content.colorSpeed; break;
     }
     string text = val.GetString().ToStdString();
     double newValue = 0;
@@ -131,12 +130,12 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     if (newValue == oldValue) {
         update();
         return;
-    }
+    }/*
     switch (row) {
         case 0: flame->xforms.get(activeTransform)->color.setValue(newValue); break;
         case 1: flame->xforms.get(activeTransform)->colorSpeed.get()->colorSpeed = newValue; break;
     }
-    colorChanged();
+    colorChanged();*/
 }
 
 void ColorModel::handleMouseUp(wxMouseEvent& event) {
@@ -144,7 +143,7 @@ void ColorModel::handleMouseUp(wxMouseEvent& event) {
 }
 
 void ColorModel::handleMouseDown(wxMouseEvent& event) {
-    if (activeTransform != -1) {
+    if (content.flameLoaded) {
         dragging = true;
         auto cursorPos = event.GetPosition();
         setValue(1.0-cursorPos.y/255.0, 0, 1);

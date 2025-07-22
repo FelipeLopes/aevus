@@ -31,29 +31,15 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     frameModel(frameListCtrl),
     triangleModel(trianglePanel)
 {
-    colorModel.colorChanged
-        .connect(eventBroker.colorParamsChanged);
     frameModel.frameChanged
         .connect(eventBroker.frameParamsChanged);
 
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
 
     eventBroker.flameLoaded
-        .connect(bind(&ColorModel::setupPalette, &colorModel));
-    eventBroker.flameLoaded
-        .connect(bind(&ColorModel::update, &colorModel));
-    eventBroker.flameLoaded
         .connect(bind(&FrameModel::update, &frameModel));
 
-    eventBroker.activeXformChanged
-        .connect(bind(&ColorModel::handleActiveXformChanged, &colorModel, _1));
     eventBroker.paletteChanged
-        .connect(bind(&ColorModel::setupPalette, &colorModel));
-    eventBroker.paletteChanged
-        .connect(bind(&Renderer::update, &renderer));
-    eventBroker.colorParamsChanged
-        .connect(bind(&ColorModel::update, &colorModel));
-    eventBroker.colorParamsChanged
         .connect(bind(&Renderer::update, &renderer));
     eventBroker.frameParamsChanged
         .connect(bind(&FrameModel::update, &frameModel));
@@ -112,6 +98,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->variationContent.connect(
             bind(&VariationModel::handleContent, &variationModel, _1)
         );
+        flameView->colorContent.connect(
+            bind(&ColorModel::handleContent, &colorModel, _1)
+        );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
@@ -144,7 +133,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
     }
     renderer.setFlame(ptr);
-    colorModel.setFlame(ptr);
     frameModel.setFlame(ptr);
 }
 

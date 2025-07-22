@@ -27,4 +27,9 @@ struct VariationContent {
     std::map<core::Variation::VariationID, core::VariationData> variations;
 };
 
+struct ColorContent {
+    bool flameLoaded;
+    double color, colorSpeed;
+};
+
 }

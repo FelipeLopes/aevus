@@ -59,6 +59,7 @@ void FlameView::documentLoaded() {
     sendTriangleContent();
     sendWeightsContent();
     sendVariationContent();
+    sendColorContent();
     startNewRender();
 }
 
@@ -69,6 +70,7 @@ void FlameView::handleXFormSelected(int i) {
     sendPostTransformContent();
     sendWeightsContent();
     sendVariationContent();
+    sendColorContent();
 }
 
 void FlameView::handleXFormAdded() {
@@ -79,6 +81,7 @@ void FlameView::handleXFormAdded() {
     sendPostTransformContent();
     sendWeightsContent();
     sendVariationContent();
+    sendColorContent();
     startNewRender();
 }
 
@@ -93,6 +96,7 @@ void FlameView::handleXFormRemoved() {
     sendPostTransformContent();
     sendWeightsContent();
     sendVariationContent();
+    sendColorContent();
     startNewRender();
 }
 
@@ -241,4 +245,14 @@ void FlameView::sendVariationContent() {
     variationContent(content);
 }
 
+void FlameView::sendColorContent() {
+    ColorContent content;
+    content.flameLoaded = false;
+    if (activeXformId != -1) {
+        content.flameLoaded = true;
+        content.color = document->flame.xforms.get(activeXformId)->color.value();
+        content.colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
+    }
+    colorContent(content);
+}
 }
