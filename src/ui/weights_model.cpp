@@ -26,17 +26,8 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
 }
 
 void WeightsModel::handleContent(WeightsContent content) {
-    //printf("handle content begin\n");
     this->content = content;
-    //printf("before update\n");
     update();
-    /*if (content.activeId != -1) {
-        blockSelectionEvents = true;
-        printf("before select\n");
-        selectRow(content.activeId);
-        blockSelectionEvents = false;
-    }
-    printf("handle content end\n");*/
 }
 
 void WeightsModel::handleAddXform() {

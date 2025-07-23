@@ -34,4 +34,11 @@ struct ColorContent {
     core::PaletteColors palette;
 };
 
+struct FrameContent {
+    bool flameLoaded;
+    core::SizeParams flameSize;
+    core::CenterParams flameCenter;
+    double flameScale;
+};
+
 }

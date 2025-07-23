@@ -88,6 +88,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->colorContent.connect(
             bind(&ColorModel::handleContent, &colorModel, _1)
         );
+        flameView->frameContent.connect(
+            bind(&FrameModel::handleContent, &frameModel, _1)
+        );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
@@ -123,7 +126,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
     }
     renderer.setFlame(ptr);
-    frameModel.setFlame(ptr);
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {

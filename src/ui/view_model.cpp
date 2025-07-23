@@ -5,7 +5,7 @@ using std::vector;
 
 namespace ui {
 
-ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_): flame(NULL),
+ViewModel::ViewModel(wxDataViewListCtrl* dvListCtrl_):
     dvListCtrl(dvListCtrl_), updateOngoing(false)
 {
     clearCtrl();
@@ -24,10 +24,6 @@ void ViewModel::update() {
     }
     afterUpdate(row);
     updateOngoing = false;
-}
-
-void ViewModel::setFlame(core::Flame *flame_) {
-    flame = flame_;
 }
 
 bool ViewModel::updating() {

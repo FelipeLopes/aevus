@@ -56,6 +56,7 @@ void FlameView::documentLoaded() {
     sendWeightsContent();
     sendVariationContent();
     sendColorContent();
+    sendFrameContent();
     startNewRender();
 }
 
@@ -133,6 +134,7 @@ void FlameView::handleWeights(WeightsContent content) {
     for (int i=0; i<sz; i++) {
         document->flame.xforms.get(i)->weight.setValue(content.weights[i]);
     }
+    sendWeightsContent();
     startNewRender();
 }
 
@@ -262,4 +264,14 @@ void FlameView::sendColorContent() {
     content.palette = document->flame.palette.colors.value();
     colorContent(content);
 }
+
+void FlameView::sendFrameContent() {
+    FrameContent content;
+    content.flameLoaded = true;
+    content.flameSize = document->flame.size.value();
+    content.flameCenter = document->flame.center.value();
+    content.flameScale = document->flame.scale.value();
+    frameContent(content);
+}
+
 }

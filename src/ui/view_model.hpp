@@ -12,7 +12,6 @@ public:
     void handleValueChangedEvent(wxDataViewEvent& event);
     virtual void handleKillFocusEvent(wxFocusEvent& event);
     void update();
-    void setFlame(core::Flame* flame);
     virtual ~ViewModel();
 protected:
     virtual void getValues(std::vector<wxVector<wxVariant>>& data) const;
@@ -21,7 +20,6 @@ protected:
     void selectRow(int row);
     int getSelectedRow();
     bool updating();
-    core::Flame* flame;
 private:
     wxDataViewListCtrl* dvListCtrl;
     bool updateOngoing;

@@ -7,34 +7,38 @@ using std::to_string;
 namespace ui {
 
 FrameModel::FrameModel(wxDataViewListCtrl* frameListCtrl): ViewModel(frameListCtrl) {
+    content.flameLoaded = false;
+    update();
+}
+
+void FrameModel::handleContent(FrameContent content) {
+    this->content = content;
     update();
 }
 
 void FrameModel::getValues(std::vector<wxVector<wxVariant>>& data) const {
-    if (flame == NULL) {
+    if (!content.flameLoaded) {
         return;
     }
     wxVector<wxVariant> row;
-    auto flameSize = flame->size.value();
     row.push_back("width");
-    row.push_back(to_string(flameSize.width));
+    row.push_back(to_string(content.flameSize.width));
     data.push_back(row);
     row.clear();
     row.push_back("height");
-    row.push_back(to_string(flameSize.height));
+    row.push_back(to_string(content.flameSize.height));
     data.push_back(row);
-    auto flameCenter = flame->center.value();
     row.clear();
     row.push_back("center x");
-    row.push_back(to_string(flameCenter.x));
+    row.push_back(to_string(content.flameCenter.x));
     data.push_back(row);
     row.clear();
     row.push_back("center y");
-    row.push_back(to_string(flameCenter.y));
+    row.push_back(to_string(content.flameCenter.y));
     data.push_back(row);
     row.clear();
     row.push_back("scale");
-    row.push_back(to_string(flame->scale.value()));
+    row.push_back(to_string(content.flameScale));
     data.push_back(row);
 }
 
@@ -44,6 +48,7 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
         return;
     }
     string text = val.GetString().ToStdString();
+    /*
     if (row < 2) {
         int oldValue = 0;
         switch (row) {
@@ -90,7 +95,7 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
             case 4: flame->scale.setValue(newValue); break;
         }
         frameChanged();
-    }
+    }*/
 }
 
 }
