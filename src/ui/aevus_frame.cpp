@@ -131,6 +131,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         variationModel.variationData.connect(
             bind(&FlameView::handleVariationData, flameView, _1)
         );
+        colorModel.colorContent.connect(
+            bind(&FlameView::handleColorContent, flameView, _1)
+        );
     }
     renderer.setFlame(ptr);
     frameModel.setFlame(ptr);

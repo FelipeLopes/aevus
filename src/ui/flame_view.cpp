@@ -170,6 +170,16 @@ void FlameView::handleVariationData(VariationDataParams params) {
     startNewRender();
 }
 
+void FlameView::handleColorContent(ColorContent content) {
+    if (activeXformId != -1) {
+        document->flame.xforms.get(activeXformId)->color.setValue(content.color);
+        document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed;
+    }
+    *(document->flame.palette.colors.get()) = content.palette;
+    sendColorContent();
+    startNewRender();
+}
+
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
     content.coefs.resize(document->flame.xforms.size());

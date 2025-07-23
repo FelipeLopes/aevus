@@ -27,6 +27,7 @@ public:
     void handleWeights(WeightsContent content);
     void handleVariationAdded(core::Variation::VariationID id);
     void handleVariationData(VariationDataParams params);
+    void handleColorContent(ColorContent content);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;

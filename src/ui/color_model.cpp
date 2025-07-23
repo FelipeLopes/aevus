@@ -130,12 +130,12 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     if (newValue == oldValue) {
         update();
         return;
-    }/*
-    switch (row) {
-        case 0: flame->xforms.get(activeTransform)->color.setValue(newValue); break;
-        case 1: flame->xforms.get(activeTransform)->colorSpeed.get()->colorSpeed = newValue; break;
     }
-    colorChanged();*/
+    switch (row) {
+        case 0: content.color = newValue; break;
+        case 1: content.colorSpeed = newValue; break;
+    }
+    colorContent(content);
 }
 
 void ColorModel::handleMouseUp(wxMouseEvent& event) {
