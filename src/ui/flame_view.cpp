@@ -178,6 +178,14 @@ void FlameView::handleColorContent(ColorContent content) {
     startNewRender();
 }
 
+void FlameView::handleFrameContent(FrameContent content) {
+    *(document->flame.size.get()) = content.flameSize;
+    *(document->flame.center.get()) = content.flameCenter;
+    document->flame.scale.setValue(content.flameScale);
+    frameContent(content);
+    startNewRender();
+}
+
 void FlameView::sendTriangleContent() {
     XFormTriangleContent content;
     content.coefs.resize(document->flame.xforms.size());

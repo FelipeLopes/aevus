@@ -28,6 +28,7 @@ public:
     void handleVariationAdded(core::Variation::VariationID id);
     void handleVariationData(VariationDataParams params);
     void handleColorContent(ColorContent content);
+    void handleFrameContent(FrameContent content);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;

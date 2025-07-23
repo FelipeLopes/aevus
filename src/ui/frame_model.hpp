@@ -11,7 +11,7 @@ class FrameModel: public ViewModel {
 public:
     FrameModel(wxDataViewListCtrl* frameListCtrl);
     void handleContent(FrameContent content);
-    boost::signals2::signal<void ()> frameChanged;
+    boost::signals2::signal<void (FrameContent)> frameContent;
 private:
     FrameContent content;
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;

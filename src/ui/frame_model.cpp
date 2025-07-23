@@ -48,12 +48,11 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
         return;
     }
     string text = val.GetString().ToStdString();
-    /*
     if (row < 2) {
         int oldValue = 0;
         switch (row) {
-            case 0: oldValue = flame->size.value().width; break;
-            case 1: oldValue = flame->size.value().height; break;
+            case 0: oldValue = content.flameSize.width; break;
+            case 1: oldValue = content.flameSize.height; break;
         }
         int newValue = 0;
         try {
@@ -67,16 +66,16 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
             return;
         }
         switch (row) {
-            case 0: flame->size.get()->width = newValue; break;
-            case 1: flame->size.get()->height = newValue; break;
+            case 0: content.flameSize.width = newValue; break;
+            case 1: content.flameSize.height = newValue; break;
         }
-        frameChanged();
+        frameContent(content);
     } else {
         double oldValue = 0;
         switch (row) {
-            case 2: oldValue = flame->center.value().x; break;
-            case 3: oldValue = flame->center.value().y; break;
-            case 4: oldValue = flame->scale.value(); break;
+            case 2: oldValue = content.flameCenter.x; break;
+            case 3: oldValue = content.flameCenter.y; break;
+            case 4: oldValue = content.flameScale; break;
         }
         double newValue = 0;
         try {
@@ -90,12 +89,12 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
             return;
         }
         switch (row) {
-            case 2: flame->center.get()->x = newValue; break;
-            case 3: flame->center.get()->y = newValue; break;
-            case 4: flame->scale.setValue(newValue); break;
+            case 2: content.flameCenter.x = newValue; break;
+            case 3: content.flameCenter.y = newValue; break;
+            case 4: content.flameScale = newValue; break;
         }
-        frameChanged();
-    }*/
+        frameContent(content);
+    }
 }
 
 }

@@ -124,6 +124,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         colorModel.colorContent.connect(
             bind(&FlameView::handleColorContent, flameView, _1)
         );
+        frameModel.frameContent.connect(
+            bind(&FlameView::handleFrameContent, flameView, _1)
+        );
     }
     renderer.setFlame(ptr);
 }
