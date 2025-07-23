@@ -43,16 +43,15 @@ ColorModel::ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel_
 }
 
 void ColorModel::setupPalette() {
-    if (flame == NULL) {
+    if (!content.flameLoaded) {
         return;
     }
-    auto flamePalette = flame->palette.colors.value();
     wxNativePixelData data(paletteBitmap);
     wxNativePixelData::Iterator p(data);
     for (int y=0; y<256; y++) {
         wxNativePixelData::Iterator row = p;
         for (int x=0; x<paletteWidth; x++) {
-            Color color = flamePalette.colorAt(255-y);
+            Color color = content.palette.colorAt(255-y);
             p.Red() = color.r;
             p.Green() = color.g;
             p.Blue() = color.b;
@@ -65,6 +64,7 @@ void ColorModel::setupPalette() {
 
 void ColorModel::handleContent(ColorContent content) {
     this->content = content;
+    setupPalette();
     update();
 }
 
@@ -75,16 +75,16 @@ void ColorModel::handlePaint() {
     if (gc) {
         gc->DrawBitmap(paletteBitmap, 0, 0, paletteWidth, 256);
         if (content.flameLoaded) {
-            /*float colorVal = content.color;
+            float colorVal = content.color;
             colorVal = std::clamp(colorVal, 0.0f, BUCKET_FACTOR);
             int palettePos = (int)(colorVal*256);
-            Color c = flame->palette.colors.value().colorAt(palettePos);
+            Color c = content.palette.colorAt(palettePos);
             int highlightLine = 255 - palettePos;
             if ((c.r*0.299 + c.g*0.587 + c.b*0.114) > 149) {
                 gc->DrawBitmap(blackLineBitmap, 0, highlightLine, paletteWidth, 1);
             } else {
                 gc->DrawBitmap(whiteLineBitmap, 0, highlightLine, paletteWidth, 1);
-            }*/
+            }
         }
         delete gc;
     }

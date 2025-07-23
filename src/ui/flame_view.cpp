@@ -253,6 +253,7 @@ void FlameView::sendColorContent() {
         content.color = document->flame.xforms.get(activeXformId)->color.value();
         content.colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
     }
+    content.palette = document->flame.palette.colors.value();
     colorContent(content);
 }
 }

@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include "../core/custom_coefs.hpp"
+#include "../core/palette.hpp"
 #include "../core/variation.hpp"
 
 namespace ui {
@@ -30,6 +31,7 @@ struct VariationContent {
 struct ColorContent {
     bool flameLoaded;
     double color, colorSpeed;
+    core::PaletteColors palette;
 };
 
 }
