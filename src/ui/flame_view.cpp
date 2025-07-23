@@ -31,7 +31,6 @@ void FlameView::OnDraw(wxDC *dc) {
 
 bool FlameView::OnClose(bool deleteWindow) {
     aevusFrame->setupFlameView(NULL);
-    aevusFrame->notifyActiveTransform(-1);
     return wxView::OnClose(deleteWindow);
 }
 
@@ -46,11 +45,8 @@ core::Flame* FlameView::getFlame() const
 
 void FlameView::documentLoaded() {
     activeXformId = -1;
-    aevusFrame->notifyActiveTransform(-1);
-    aevusFrame->notifyFlameLoaded();
     if (document->flameHasXForms()) {
         activeXformId = 0;
-        aevusFrame->notifyActiveTransform(0);
         sendPreTransformContent();
         sendPostTransformContent();
     } else {

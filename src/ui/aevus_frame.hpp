@@ -4,7 +4,6 @@
 #include <boost/bind.hpp>
 #include <wxfb_frame.h>
 #include "color_model.hpp"
-#include "event_broker.hpp"
 #include "flame_model.hpp"
 #include "flame_view.hpp"
 #include "frame_model.hpp"
@@ -30,13 +29,10 @@ class AevusFrame: public WxfbFrame {
 public:
     AevusFrame(wxDocManager* manager, clwrap::OpenCL* openCL, std::optional<std::string> filename);
     void setupFlameView(FlameView* flameView);
-    void notifyFlameLoaded();
-    void notifyActiveTransform(int i);
 private:
     clwrap::CLQueuedContext context;
     std::stringstream flameStream;
     render::Renderer renderer;
-    EventBroker eventBroker;
 
     FlameModel flameModel;
     TransformModel preTransformModel;

@@ -31,20 +31,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     frameModel(frameListCtrl),
     triangleModel(trianglePanel)
 {
-    frameModel.frameChanged
-        .connect(eventBroker.frameParamsChanged);
-
     renderer.imageRendered.connect(bind(&FlameModel::update, &flameModel));
-
-    eventBroker.flameLoaded
-        .connect(bind(&FrameModel::update, &frameModel));
-
-    eventBroker.paletteChanged
-        .connect(bind(&Renderer::update, &renderer));
-    eventBroker.frameParamsChanged
-        .connect(bind(&FrameModel::update, &frameModel));
-    eventBroker.frameParamsChanged
-        .connect(bind(&Renderer::update, &renderer));
 
     addXformButton->SetBitmap(loadEmbeddedPNG(
         _binary_res_plus_default_png_start,
@@ -137,14 +124,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
     }
     renderer.setFlame(ptr);
     frameModel.setFlame(ptr);
-}
-
-void AevusFrame::notifyFlameLoaded() {
-    eventBroker.flameLoaded();
-}
-
-void AevusFrame::notifyActiveTransform(int i) {
-    eventBroker.activeXformChanged(i);
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
