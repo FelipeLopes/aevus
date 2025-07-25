@@ -88,11 +88,11 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->flameContent.connect(
             bind(&FrameModel::handleFlameContent, &frameModel, _1)
         );
-        flameView->preTransformContent.connect(
-            bind(&TransformModel::handleContent, &preTransformModel, _1)
+        flameView->activeXformContent.connect(
+            bind(&TransformModel::handleActiveXformContent, &preTransformModel, _1)
         );
-        flameView->postTransformContent.connect(
-            bind(&TransformModel::handleContent, &postTransformModel, _1)
+        flameView->activeXformContent.connect(
+            bind(&TransformModel::handleActiveXformContent, &postTransformModel, _1)
         );
         flameView->weightsContent.connect(
             bind(&WeightsModel::handleContent, &weightsModel, _1)

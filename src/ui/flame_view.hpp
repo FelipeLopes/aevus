@@ -32,9 +32,8 @@ public:
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
+    boost::signals2::signal<void (ActiveXFormContent)> activeXformContent;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
-    boost::signals2::signal<void (CoefsContent)> preTransformContent;
-    boost::signals2::signal<void (CoefsContent)> postTransformContent;
     boost::signals2::signal<void (WeightsContent)> weightsContent;
     boost::signals2::signal<void (VariationContent)> variationContent;
     boost::signals2::signal<void (ColorContent)> colorContent;
@@ -52,6 +51,9 @@ private:
     void sendVariationContent();
     void sendColorContent();
     void sendFrameContent();
+    void sendActiveXFormContent();
+
+    XFormContent getXformContent(int idx);
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

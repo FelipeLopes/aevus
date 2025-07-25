@@ -48,4 +48,9 @@ struct FlameContent {
     core::PaletteColors palette;
 };
 
+struct ActiveXFormContent {
+    int id;
+    XFormContent xform;
+};
+
 }

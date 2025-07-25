@@ -69,20 +69,13 @@ void FlameView::documentLoaded() {
 
 void FlameView::handleXFormSelected(int i) {
     activeXformId = i;
-    sendTriangleContent();
-    sendPreTransformContent();
-    sendPostTransformContent();
-    sendWeightsContent();
-    sendVariationContent();
-    sendColorContent();
+    sendActiveXFormContent();
 }
 
 void FlameView::handleXFormAdded() {
     activeXformId = document->flame.xforms.size();
     document->flame.xforms.append(std::make_shared<core::XForm>());
     sendTriangleContent();
-    sendPreTransformContent();
-    sendPostTransformContent();
     sendWeightsContent();
     sendVariationContent();
     sendColorContent();
@@ -96,8 +89,6 @@ void FlameView::handleXFormRemoved() {
         activeXformId--;
     }
     sendTriangleContent();
-    sendPreTransformContent();
-    sendPostTransformContent();
     sendWeightsContent();
     sendVariationContent();
     sendColorContent();
@@ -113,8 +104,6 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
     sendTriangleContent();
-    sendPreTransformContent();
-    sendPostTransformContent();
     startNewRender();
 }
 
@@ -131,8 +120,6 @@ void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
     sendTriangleContent();
-    sendPreTransformContent();
-    sendPostTransformContent();
     startNewRender();
 }
 
@@ -204,28 +191,7 @@ void FlameView::sendFlameContent() {
     // XForms
     content.xforms.resize(document->flame.xforms.size());
     for (int i=0; i<content.xforms.size(); i++) {
-        auto preCoefs = document->flame.xforms.get(i)->coefs.value();
-        content.xforms[i].preCoefs.ox = preCoefs.ox;
-        content.xforms[i].preCoefs.oy = preCoefs.oy;
-        content.xforms[i].preCoefs.xx = preCoefs.xx;
-        content.xforms[i].preCoefs.xy = preCoefs.xy;
-        content.xforms[i].preCoefs.yx = preCoefs.yx;
-        content.xforms[i].preCoefs.yy = preCoefs.yy;
-
-        auto postCoefs = document->flame.xforms.get(i)->post.value();
-        content.xforms[i].postCoefs.ox = postCoefs.ox;
-        content.xforms[i].postCoefs.oy = postCoefs.oy;
-        content.xforms[i].postCoefs.xx = postCoefs.xx;
-        content.xforms[i].postCoefs.xy = postCoefs.xy;
-        content.xforms[i].postCoefs.yx = postCoefs.yx;
-        content.xforms[i].postCoefs.yy = postCoefs.yy;
-
-        content.xforms[i].weight = document->flame.xforms.get(i)->weight.value();
-
-        content.xforms[i].variations = document->flame.xforms.get(i)->variationMap.get()->variations;
-
-        content.xforms[i].color = document->flame.xforms.get(activeXformId)->color.value();
-        content.xforms[i].colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
+        content.xforms[i] = getXformContent(i);
     }
     // Final xform
     if (document->flame.finalXForm.isSet()) {
@@ -246,10 +212,17 @@ void FlameView::sendFlameContent() {
         content.finalXForm->postCoefs.yx = finalPostCoefs.yx;
         content.finalXForm->postCoefs.yy = finalPostCoefs.yy;
 
-        content.finalXForm->color = document->flame.xforms.get(activeXformId)->color.value();
-        content.finalXForm->colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
+        content.finalXForm->color = document->flame.finalXForm.get()->color.value();
+        content.finalXForm->colorSpeed = document->flame.finalXForm.get()->colorSpeed.value().colorSpeed;
     }
     flameContent(std::make_optional(content));
+}
+
+void FlameView::sendActiveXFormContent() {
+    ActiveXFormContent content;
+    content.id = activeXformId;
+    content.xform = getXformContent(activeXformId);
+    activeXformContent(content);
 }
 
 void FlameView::sendTriangleContent() {
@@ -270,40 +243,6 @@ void FlameView::sendTriangleContent() {
         content.coefs[i] = messageCoefs;
     }
     triangleContentChanged(content);
-}
-
-void FlameView::sendPreTransformContent() {
-    if (activeXformId == -1) {
-        return;
-    }
-    auto vals = document->flame.xforms.get(activeXformId)->coefs.value();
-
-    CoefsContent messageCoefs;
-    messageCoefs.ox = vals.ox;
-    messageCoefs.oy = vals.oy;
-    messageCoefs.xx = vals.xx;
-    messageCoefs.xy = vals.xy;
-    messageCoefs.yx = vals.yx;
-    messageCoefs.yy = vals.yy;
-
-    preTransformContent(messageCoefs);
-}
-
-void FlameView::sendPostTransformContent() {
-    if (activeXformId == -1) {
-        return;
-    }
-    auto vals = document->flame.xforms.get(activeXformId)->post.value();
-
-    CoefsContent messageCoefs;
-    messageCoefs.ox = vals.ox;
-    messageCoefs.oy = vals.oy;
-    messageCoefs.xx = vals.xx;
-    messageCoefs.xy = vals.xy;
-    messageCoefs.yx = vals.yx;
-    messageCoefs.yy = vals.yy;
-
-    postTransformContent(messageCoefs);
 }
 
 void FlameView::sendWeightsContent() {
@@ -340,6 +279,33 @@ void FlameView::sendFrameContent() {
     content.flameCenter = document->flame.center.value();
     content.flameScale = document->flame.scale.value();
     frameContent(content);
+}
+
+XFormContent FlameView::getXformContent(int idx) {
+    XFormContent content;
+    auto preCoefs = document->flame.xforms.get(idx)->coefs.value();
+    content.preCoefs.ox = preCoefs.ox;
+    content.preCoefs.oy = preCoefs.oy;
+    content.preCoefs.xx = preCoefs.xx;
+    content.preCoefs.xy = preCoefs.xy;
+    content.preCoefs.yx = preCoefs.yx;
+    content.preCoefs.yy = preCoefs.yy;
+
+    auto postCoefs = document->flame.xforms.get(idx)->post.value();
+    content.postCoefs.ox = postCoefs.ox;
+    content.postCoefs.oy = postCoefs.oy;
+    content.postCoefs.xx = postCoefs.xx;
+    content.postCoefs.xy = postCoefs.xy;
+    content.postCoefs.yx = postCoefs.yx;
+    content.postCoefs.yy = postCoefs.yy;
+
+    content.weight = document->flame.xforms.get(idx)->weight.value();
+
+    content.variations = document->flame.xforms.get(idx)->variationMap.get()->variations;
+
+    content.color = document->flame.xforms.get(idx)->color.value();
+    content.colorSpeed = document->flame.xforms.get(idx)->colorSpeed.value().colorSpeed;
+    return content;
 }
 
 }

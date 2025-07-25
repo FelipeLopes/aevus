@@ -17,10 +17,6 @@ TransformModel::TransformModel(wxDataViewListCtrl* transformCtrl,
     resetButton->Disable();
 }
 
-void TransformModel::handleActiveXformChanged(int id) {
-    update();
-}
-
 void TransformModel::handleReset() {
     content->xx = 1;
     content->xy = 0;
@@ -43,26 +39,12 @@ void TransformModel::handleFlameContent(std::optional<FlameContent> flameContent
         update();
         return;
     }
-    if (accessCoefs) {
-        content->ox = flameContent.xforms[0].preCoefs.ox;
-        content->oy = flameContent.xforms[0].preCoefs.oy;
-        content->xx = flameContent.xforms[0].preCoefs.xx;
-        content->xy = flameContent.xforms[0].preCoefs.xy;
-        content->yx = flameContent.xforms[0].preCoefs.yx;
-        content->yy = flameContent.xforms[0].preCoefs.yy;
-    } else {
-        content->ox = flameContent.xforms[0].postCoefs.ox;
-        content->oy = flameContent.xforms[0].postCoefs.oy;
-        content->xx = flameContent.xforms[0].postCoefs.xx;
-        content->xy = flameContent.xforms[0].postCoefs.xy;
-        content->yx = flameContent.xforms[0].postCoefs.yx;
-        content->yy = flameContent.xforms[0].postCoefs.yy;
-    }
+    content = getCoefsContent(flameContent.xforms[0]);
     update();
 }
 
-void TransformModel::handleContent(CoefsContent content) {
-    this->content = content;
+void TransformModel::handleActiveXformContent(ActiveXFormContent xformContent) {
+    content = getCoefsContent(xformContent.xform);
     update();
 }
 
@@ -134,6 +116,26 @@ void TransformModel::afterUpdate(int selectedRow) {
     } else {
         resetButton->Disable();
     }
+}
+
+CoefsContent TransformModel::getCoefsContent(XFormContent xformContent) {
+    CoefsContent coefsContent;
+    if (accessCoefs) {
+        coefsContent.ox = xformContent.preCoefs.ox;
+        coefsContent.oy = xformContent.preCoefs.oy;
+        coefsContent.xx = xformContent.preCoefs.xx;
+        coefsContent.xy = xformContent.preCoefs.xy;
+        coefsContent.yx = xformContent.preCoefs.yx;
+        coefsContent.yy = xformContent.preCoefs.yy;
+    } else {
+        coefsContent.ox = xformContent.postCoefs.ox;
+        coefsContent.oy = xformContent.postCoefs.oy;
+        coefsContent.xx = xformContent.postCoefs.xx;
+        coefsContent.xy = xformContent.postCoefs.xy;
+        coefsContent.yx = xformContent.postCoefs.yx;
+        coefsContent.yy = xformContent.postCoefs.yy;
+    }
+    return coefsContent;
 }
 
 }

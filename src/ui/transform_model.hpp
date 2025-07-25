@@ -11,15 +11,15 @@ namespace ui {
 class TransformModel: public ViewModel {
 public:
     TransformModel(wxDataViewListCtrl* transformCtrl, wxButton* resetButton, bool accessCoefs);
-    void handleActiveXformChanged(int id);
     void handleReset();
     void handleFlameContent(std::optional<FlameContent> flameContent);
-    void handleContent(CoefsContent content);
+    void handleActiveXformContent(ActiveXFormContent xformContent);
     boost::signals2::signal<void (CoefsContent)> contentChanged;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
+    CoefsContent getCoefsContent(XFormContent xformContent);
 
     wxButton* resetButton;
     bool accessCoefs;
