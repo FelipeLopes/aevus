@@ -68,6 +68,18 @@ void ColorModel::handleContent(ColorContent content) {
     update();
 }
 
+void ColorModel::handleFlameContent(FlameContent flameContent) {
+    content.flameLoaded = true;
+    content.palette = flameContent.palette;
+    auto sz = flameContent.xforms.size();
+    if (sz > 0) {
+        content.color = flameContent.xforms[0].color;
+        content.colorSpeed = flameContent.xforms[0].colorSpeed;
+    }
+    setupPalette();
+    update();
+}
+
 void ColorModel::handlePaint() {
     wxAutoBufferedPaintDC dc(palettePanel);
     dc.Clear();

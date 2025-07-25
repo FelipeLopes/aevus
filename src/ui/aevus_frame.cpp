@@ -82,6 +82,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->flameContent.connect(
             bind(&VariationModel::handleFlameContent, &variationModel, _1)
         );
+        flameView->flameContent.connect(
+            bind(&ColorModel::handleFlameContent, &colorModel, _1)
+        );
+        flameView->flameContent.connect(
+            bind(&FrameModel::handleFlameContent, &frameModel, _1)
+        );
         flameView->noTransformContent.connect(
             bind(&TransformModel::handleNoContent, &postTransformModel)
         );

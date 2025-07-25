@@ -10,6 +10,7 @@ namespace ui {
 class FrameModel: public ViewModel {
 public:
     FrameModel(wxDataViewListCtrl* frameListCtrl);
+    void handleFlameContent(FlameContent flameContent);
     void handleContent(FrameContent content);
     boost::signals2::signal<void (FrameContent)> frameContent;
 private:

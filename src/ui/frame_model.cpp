@@ -11,6 +11,14 @@ FrameModel::FrameModel(wxDataViewListCtrl* frameListCtrl): ViewModel(frameListCt
     update();
 }
 
+void FrameModel::handleFlameContent(FlameContent flameContent) {
+    content.flameLoaded = true;
+    content.flameSize = flameContent.frame.flameSize;
+    content.flameCenter = flameContent.frame.flameCenter;
+    content.flameScale = flameContent.frame.flameScale;
+    update();
+}
+
 void FrameModel::handleContent(FrameContent content) {
     this->content = content;
     update();
