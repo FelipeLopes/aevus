@@ -7,7 +7,7 @@ namespace ui {
 TriangleUpdater::TriangleUpdater(TriangleGrid* triangleGrid_):
     triangleGrid(triangleGrid_), state(NO_UPDATE) { }
 
-void TriangleUpdater::handleContent(const XFormTriangleContent& content) {
+void TriangleUpdater::handleContent(std::optional<XFormTriangleContent> content) {
     this->content = content;
 }
 
@@ -17,7 +17,7 @@ UpdateState TriangleUpdater::getUpdateState() {
 
 void TriangleUpdater::setUpdateStartData(WindowPoint clickPoint) {
     startPoint = triangleGrid->transformToGrid(clickPoint);
-    auto coefs = content.coefs[content.activeId];
+    auto coefs = content->coefs[content->activeId];
     startO = GridPoint(coefs.ox, coefs.oy);
     startX = GridPoint(coefs.xx, coefs.xy);
     startY = GridPoint(coefs.yx, coefs.yy);

@@ -7,20 +7,20 @@ namespace ui {
 
 TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_): triangleGrid(triangleGrid_)
 {
-    content.activeId = -1;
+    content->activeId = -1;
 }
 
 Collision TriangleCollider::getCollision(WindowPoint pos) {
     Collision ans;
     ans.triangleId = -1;
-    if (content.activeId == -1) {
+    if (content->activeId == -1) {
         ans.type = NO_COLLISION;
         return ans;
     }
-    ans.type = getCollisionType(pos, content.activeId);
+    ans.type = getCollisionType(pos, content->activeId);
     if (ans.type == NO_COLLISION) {
-        for (int i=0; i<content.coefs.size(); i++) {
-            if (i == content.activeId) {
+        for (int i=0; i<content->coefs.size(); i++) {
+            if (i == content->activeId) {
                 continue;
             }
             ans.type = getCollisionType(pos, i);
@@ -30,12 +30,12 @@ Collision TriangleCollider::getCollision(WindowPoint pos) {
             }
         }
     } else {
-        ans.triangleId = content.activeId;
+        ans.triangleId = content->activeId;
     }
     return ans;
 }
 
-void TriangleCollider::handleContent(const XFormTriangleContent& content) {
+void TriangleCollider::handleContent(std::optional<XFormTriangleContent> content) {
     this->content = content;
 }
 
@@ -65,7 +65,7 @@ CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) 
 }
 
 int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
-    auto triangle = TriangleModel::triangle(content.coefs[idx]);
+    auto triangle = TriangleModel::triangle(content->coefs[idx]);
     // We check in order X -> Y -> O, because the X and Y vertices
     // are better when the triangle collapses to a point.
     for (int i=0; i<3; i++) {
@@ -78,7 +78,7 @@ int TriangleCollider::checkVertexCollision(WindowPoint p, int idx) {
 }
 
 int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
-    auto triangle = TriangleModel::triangle(content.coefs[idx]);
+    auto triangle = TriangleModel::triangle(content->coefs[idx]);
     // We check XY last to avoid problems when the triangle
     // degenerates to a line.
     for (int i=0; i<3; i++) {
@@ -92,7 +92,7 @@ int TriangleCollider::checkEdgeCollision(WindowPoint p, int idx) {
 }
 
 bool TriangleCollider::pointInsideTriangle(GridPoint p, int idx) {
-    auto v = TriangleModel::triangle(content.coefs[idx]);
+    auto v = TriangleModel::triangle(content->coefs[idx]);
     double d1 = sign(p, GridPoint(v[0]), GridPoint(v[1]));
     double d2 = sign(p, GridPoint(v[1]), GridPoint(v[2]));
     double d3 = sign(p, GridPoint(v[2]), GridPoint(v[0]));

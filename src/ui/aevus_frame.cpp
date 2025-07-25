@@ -88,15 +88,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->flameContent.connect(
             bind(&FrameModel::handleFlameContent, &frameModel, _1)
         );
-        flameView->noTransformContent.connect(
-            bind(&TransformModel::handleNoContent, &postTransformModel)
-        );
-        flameView->noTransformContent.connect(
-            bind(&TransformModel::handleNoContent, &preTransformModel)
-        );
-        flameView->noTransformContent.connect(
-            bind(&TransformModel::handleNoContent, &postTransformModel)
-        );
         flameView->preTransformContent.connect(
             bind(&TransformModel::handleContent, &preTransformModel, _1)
         );

@@ -11,7 +11,7 @@ class TriangleCollider {
 public:
     TriangleCollider(TriangleGrid* triangleGrid);
     Collision getCollision(WindowPoint pos);
-    void handleContent(const XFormTriangleContent& content);
+    void handleContent(std::optional<XFormTriangleContent> content);
 private:
     CollisionType getCollisionType(WindowPoint pos, int triangle);
     int checkVertexCollision(WindowPoint p, int idx);
@@ -21,7 +21,7 @@ private:
     double sign(GridPoint p1, GridPoint p2, GridPoint p3);
 
     TriangleGrid* triangleGrid;
-    XFormTriangleContent content;
+    std::optional<XFormTriangleContent> content;
 };
 
 }

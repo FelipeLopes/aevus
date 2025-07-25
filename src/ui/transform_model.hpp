@@ -13,7 +13,6 @@ public:
     TransformModel(wxDataViewListCtrl* transformCtrl, wxButton* resetButton, bool accessCoefs);
     void handleActiveXformChanged(int id);
     void handleReset();
-    void handleNoContent();
     void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleContent(CoefsContent content);
     boost::signals2::signal<void (CoefsContent)> contentChanged;
@@ -23,8 +22,8 @@ private:
     void afterUpdate(int selectedRow) override;
 
     wxButton* resetButton;
-    bool noContent, accessCoefs;
-    CoefsContent content;
+    bool accessCoefs;
+    std::optional<CoefsContent> content;
 };
 
 }

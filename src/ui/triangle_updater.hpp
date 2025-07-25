@@ -10,7 +10,7 @@ namespace ui {
 class TriangleUpdater {
 public:
     TriangleUpdater(TriangleGrid* triangleGrid);
-    void handleContent(const XFormTriangleContent& content);
+    void handleContent(std::optional<XFormTriangleContent> content);
     UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);
@@ -25,7 +25,7 @@ private:
     void setUpdateStartData(WindowPoint clickPoint);
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
     TriangleGrid* triangleGrid;
-    XFormTriangleContent content;
+    std::optional<XFormTriangleContent> content;
     UpdateState state;
     wxAffineMatrix2D gridDragInverse;
     GridPoint startPoint, startO, startX, startY, startCenter;

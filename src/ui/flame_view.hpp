@@ -33,7 +33,6 @@ public:
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
-    boost::signals2::signal<void ()> noTransformContent;
     boost::signals2::signal<void (CoefsContent)> preTransformContent;
     boost::signals2::signal<void (CoefsContent)> postTransformContent;
     boost::signals2::signal<void (WeightsContent)> weightsContent;

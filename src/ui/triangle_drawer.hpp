@@ -10,7 +10,7 @@ namespace ui {
 class TriangleDrawer {
 public:
     TriangleDrawer(TriangleGrid* triangleGrid, wxFont font);
-    void handleContent(const XFormTriangleContent& content);
+    void handleContent(std::optional<XFormTriangleContent> content);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
 private:
@@ -26,7 +26,7 @@ private:
 
     TriangleGrid* triangleGrid;
     wxFont font;
-    XFormTriangleContent content;
+    std::optional<XFormTriangleContent> content;
     std::vector<wxColour> xformColors;
     std::vector<std::string> dotLabels;
     Collision cursorCollision;

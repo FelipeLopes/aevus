@@ -275,7 +275,6 @@ void FlameView::sendTriangleContent() {
 
 void FlameView::sendPreTransformContent() {
     if (activeXformId == -1) {
-        noTransformContent();
         return;
     }
     auto vals = document->flame.xforms.get(activeXformId)->coefs.value();
@@ -293,7 +292,6 @@ void FlameView::sendPreTransformContent() {
 
 void FlameView::sendPostTransformContent() {
     if (activeXformId == -1) {
-        noTransformContent();
         return;
     }
     auto vals = document->flame.xforms.get(activeXformId)->post.value();

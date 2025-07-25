@@ -15,15 +15,15 @@ TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_, wxFont font_):
         "#80004f", "#808022", "#608060", "#508080", "#4f4f80", "#805080", "#806022"
     }), dotLabels({"O", "X", "Y"})
 {
-    content.activeId = -1;
+    content->activeId = -1;
 }
 
-void TriangleDrawer::handleContent(const XFormTriangleContent& content) {
+void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) {
     this->content = content;
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
-    if (content.activeId == -1) {
+    if (content->activeId == -1) {
         return;
     }
     drawInactiveTriangles(gc);
@@ -44,9 +44,9 @@ bool TriangleDrawer::setCursorCollision(Collision cursorCollision_) {
 }
 
 void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
-    int sz = content.coefs.size();
+    int sz = content->coefs.size();
     for (int i=0; i<sz; i++) {
-        if (i != content.activeId) {
+        if (i != content->activeId) {
             auto triangle = getXformTriangle(i);
             triangle.push_back(triangle[0]);
             auto color = getXformColor(i);
@@ -58,8 +58,8 @@ void TriangleDrawer::drawInactiveTriangles(wxGraphicsContext* gc) {
 }
 
 void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
-    auto color = getXformColor(content.activeId);
-    auto path = getXformTriangle(content.activeId);
+    auto color = getXformColor(content->activeId);
+    auto path = getXformTriangle(content->activeId);
     auto ori = path[0];
     path.erase(path.begin());
     gc->SetPen(wxPen(color, 1, wxPENSTYLE_SHORT_DASH));
@@ -67,7 +67,7 @@ void TriangleDrawer::drawActiveTriangle(wxGraphicsContext* gc) {
     path.insert(path.begin()+1, ori);
     gc->SetPen(color);
     triangleGrid->strokeLines(gc, path);
-    drawTriangleDots(gc, content.activeId);
+    drawTriangleDots(gc, content->activeId);
 }
 
 void TriangleDrawer::drawTriangleDots(wxGraphicsContext* gc, int idx) {
@@ -148,7 +148,7 @@ void TriangleDrawer::highlightEdge(wxGraphicsContext* gc) {
 
 vector<GridPoint> TriangleDrawer::getXformTriangle(int i) {
     vector<GridPoint> ans;
-    auto arr = TriangleModel::triangle(content.coefs[i]);
+    auto arr = TriangleModel::triangle(content->coefs[i]);
     std::transform(arr.begin(), arr.end(), std::back_inserter(ans),
         [](auto pair) {
             return GridPoint(pair);

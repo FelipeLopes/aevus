@@ -116,18 +116,25 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
 }
 
 void TriangleModel::handleFlameContent(std::optional<FlameContent> content_) {
-    auto content = content_.value();
-    auto sz = content.xforms.size();
-    activeId = (sz == 0) ? -1 : 0;
-    XFormTriangleContent triangleContent;
-    triangleContent.activeId = activeId;
-    triangleContent.coefs.resize(sz);
-    for (int i=0; i<sz; i++) {
-        triangleContent.coefs[i] = content.xforms[i].preCoefs;
+    if (!content_.has_value()) {
+        activeId = -1;
+        triangleCollider.handleContent(std::nullopt);
+        triangleDrawer.handleContent(std::nullopt);
+        triangleUpdater.handleContent(std::nullopt);
+    } else {
+        auto content = content_.value();
+        auto sz = content.xforms.size();
+        activeId = (sz == 0) ? -1 : 0;
+        XFormTriangleContent triangleContent;
+        triangleContent.activeId = activeId;
+        triangleContent.coefs.resize(sz);
+        for (int i=0; i<sz; i++) {
+            triangleContent.coefs[i] = content.xforms[i].preCoefs;
+        }
+        triangleCollider.handleContent(triangleContent);
+        triangleDrawer.handleContent(triangleContent);
+        triangleUpdater.handleContent(triangleContent);
     }
-    triangleCollider.handleContent(triangleContent);
-    triangleDrawer.handleContent(triangleContent);
-    triangleUpdater.handleContent(triangleContent);
     update();
 }
 
