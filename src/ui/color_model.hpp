@@ -30,7 +30,7 @@ private:
     wxBitmap paletteBitmap;
     wxBitmap blackLineBitmap;
     wxBitmap whiteLineBitmap;
-    ColorContent content;
+    std::optional<ColorContent> content;
     bool dragging;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);

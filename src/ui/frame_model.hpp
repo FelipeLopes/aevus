@@ -14,7 +14,7 @@ public:
     void handleContent(FrameContent content);
     boost::signals2::signal<void (FrameContent)> frameContent;
 private:
-    FrameContent content;
+    std::optional<FrameContent> content;
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
 };

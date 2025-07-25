@@ -196,7 +196,6 @@ void FlameView::handleFrameContent(FrameContent content) {
 void FlameView::sendFlameContent() {
     FlameContent content;
     // Frame params
-    content.frame.flameLoaded = true;
     content.frame.flameSize = document->flame.size.value();
     content.frame.flameCenter = document->flame.center.value();
     content.frame.flameScale = document->flame.scale.value();
@@ -327,9 +326,7 @@ void FlameView::sendVariationContent() {
 
 void FlameView::sendColorContent() {
     ColorContent content;
-    content.flameLoaded = false;
     if (activeXformId != -1) {
-        content.flameLoaded = true;
         content.color = document->flame.xforms.get(activeXformId)->color.value();
         content.colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
     }
@@ -339,7 +336,6 @@ void FlameView::sendColorContent() {
 
 void FlameView::sendFrameContent() {
     FrameContent content;
-    content.flameLoaded = true;
     content.flameSize = document->flame.size.value();
     content.flameCenter = document->flame.center.value();
     content.flameScale = document->flame.scale.value();

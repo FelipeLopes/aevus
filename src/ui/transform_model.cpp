@@ -37,6 +37,7 @@ void TransformModel::handleFlameContent(std::optional<FlameContent> flameContent
         update();
         return;
     }
+    content = CoefsContent();
     auto flameContent = flameContent_.value();
     if (flameContent.xforms.size() == 0) {
         update();

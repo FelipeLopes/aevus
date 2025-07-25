@@ -25,13 +25,11 @@ struct WeightsContent {
 typedef std::map<core::Variation::VariationID, core::VariationData> VariationContent;
 
 struct ColorContent {
-    bool flameLoaded;
     double color, colorSpeed;
     core::PaletteColors palette;
 };
 
 struct FrameContent {
-    bool flameLoaded;
     core::SizeParams flameSize;
     core::CenterParams flameCenter;
     double flameScale;
