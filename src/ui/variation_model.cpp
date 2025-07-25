@@ -20,6 +20,17 @@ void VariationModel::handleContent(VariationContent content) {
     update();
 }
 
+void VariationModel::handleFlameContent(FlameContent flameContent) {
+    content.flameLoaded = true;
+    auto sz = flameContent.xforms.size();
+    if (sz > 0) {
+        content.variations = flameContent.xforms[0].variations.variations;
+    } else {
+        content.variations = {};
+    }
+    update();
+}
+
 void VariationModel::handleVariationAdd() {
     string text = variationAddCtrl->GetValue().ToStdString();
     auto varLookup = core::VariationLookup::getInstance();

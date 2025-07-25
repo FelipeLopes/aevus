@@ -115,6 +115,21 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     }
 }
 
+void TriangleModel::handleFlameContent(FlameContent content) {
+    auto sz = content.xforms.size();
+    activeId = (sz == 0) ? -1 : 0;
+    XFormTriangleContent triangleContent;
+    triangleContent.activeId = activeId;
+    triangleContent.coefs.resize(sz);
+    for (int i=0; i<sz; i++) {
+        triangleContent.coefs[i] = content.xforms[i].preCoefs;
+    }
+    triangleCollider.handleContent(triangleContent);
+    triangleDrawer.handleContent(triangleContent);
+    triangleUpdater.handleContent(triangleContent);
+    update();
+}
+
 void TriangleModel::handleContent(const XFormTriangleContent& content) {
     activeId = content.activeId;
     triangleCollider.handleContent(content);

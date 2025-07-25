@@ -25,6 +25,17 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     }
 }
 
+void WeightsModel::handleFlameContent(FlameContent flameContent) {
+    content.flameLoaded = true;
+    auto sz = flameContent.xforms.size();
+    content.activeId = (sz == 0) ? -1 : 0;
+    content.weights.resize(sz);
+    for (int i=0; i<sz; i++) {
+        content.weights[i] = flameContent.xforms[i].weight;
+    }
+    update();
+}
+
 void WeightsModel::handleContent(WeightsContent content) {
     this->content = content;
     update();

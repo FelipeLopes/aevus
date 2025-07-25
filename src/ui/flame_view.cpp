@@ -222,6 +222,8 @@ void FlameView::sendFlameContent() {
 
         content.xforms[i].weight = document->flame.xforms.get(i)->weight.value();
 
+        content.xforms[i].variations.variations = document->flame.xforms.get(i)->variationMap.get()->variations;
+
         content.xforms[i].color = document->flame.xforms.get(activeXformId)->color.value();
         content.xforms[i].colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
     }
