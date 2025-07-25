@@ -14,7 +14,7 @@ public:
     void handleActiveXformChanged(int id);
     void handleReset();
     void handleNoContent();
-    void handleFlameContent(FlameContent flameContent);
+    void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleContent(CoefsContent content);
     boost::signals2::signal<void (CoefsContent)> contentChanged;
 private:

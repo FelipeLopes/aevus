@@ -23,7 +23,7 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
-    void handleFlameContent(FlameContent content);
+    void handleFlameContent(std::optional<FlameContent> content);
     void handleContent(const XFormTriangleContent& content);
 
     boost::signals2::signal<void (int)> xformSelected;

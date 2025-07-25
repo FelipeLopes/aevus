@@ -13,7 +13,7 @@ class ColorModel: public ViewModel {
 public:
     ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel);
     void handleContent(ColorContent content);
-    void handleFlameContent(FlameContent flameContent);
+    void handleFlameContent(std::optional<FlameContent> flameContent);
     void handlePaint();
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);

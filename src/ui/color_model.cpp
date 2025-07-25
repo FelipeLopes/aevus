@@ -68,8 +68,9 @@ void ColorModel::handleContent(ColorContent content) {
     update();
 }
 
-void ColorModel::handleFlameContent(FlameContent flameContent) {
+void ColorModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     content.flameLoaded = true;
+    auto flameContent = flameContent_.value();
     content.palette = flameContent.palette;
     auto sz = flameContent.xforms.size();
     if (sz > 0) {

@@ -48,6 +48,7 @@ void FlameView::OnDraw(wxDC *dc) {
 
 bool FlameView::OnClose(bool deleteWindow) {
     aevusFrame->setupFlameView(NULL);
+    flameContent(std::nullopt);
     return wxView::OnClose(deleteWindow);
 }
 
@@ -249,7 +250,7 @@ void FlameView::sendFlameContent() {
         content.finalXForm->color = document->flame.xforms.get(activeXformId)->color.value();
         content.finalXForm->colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
     }
-    flameContent(content);
+    flameContent(std::make_optional(content));
 }
 
 void FlameView::sendTriangleContent() {

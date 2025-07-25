@@ -14,7 +14,7 @@ public:
     WeightsModel(wxDataViewListCtrl* weightsListCtrl, wxBitmapButton* addXformButton,
         wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
-    void handleFlameContent(FlameContent flameContent);
+    void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleContent(WeightsContent content);
     void handleAddXform();
     void handleRemoveXform();

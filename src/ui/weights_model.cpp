@@ -25,8 +25,9 @@ void WeightsModel::handleSelectionEvent(wxDataViewEvent& event) {
     }
 }
 
-void WeightsModel::handleFlameContent(FlameContent flameContent) {
+void WeightsModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     content.flameLoaded = true;
+    auto flameContent = flameContent_.value();
     auto sz = flameContent.xforms.size();
     content.activeId = (sz == 0) ? -1 : 0;
     content.weights.resize(sz);

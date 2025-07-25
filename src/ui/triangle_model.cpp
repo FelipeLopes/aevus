@@ -115,7 +115,8 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
     }
 }
 
-void TriangleModel::handleFlameContent(FlameContent content) {
+void TriangleModel::handleFlameContent(std::optional<FlameContent> content_) {
+    auto content = content_.value();
     auto sz = content.xforms.size();
     activeId = (sz == 0) ? -1 : 0;
     XFormTriangleContent triangleContent;

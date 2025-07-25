@@ -30,7 +30,8 @@ void TransformModel::handleReset() {
     contentChanged(content);
 }
 
-void TransformModel::handleFlameContent(FlameContent flameContent) {
+void TransformModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
+    auto flameContent = flameContent_.value();
     if (flameContent.xforms.size() == 0) {
         return;
     }

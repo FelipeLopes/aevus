@@ -16,7 +16,7 @@ class VariationModel: public ViewModel {
 public:
     VariationModel(wxDataViewListCtrl* variationCtrl, wxTextCtrl* variationAddCtrl);
     void handleVariationAdd();
-    void handleFlameContent(FlameContent flameContent);
+    void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleNoContent();
     void handleContent(VariationContent content);
     boost::signals2::signal<void (core::Variation::VariationID)> variationAdded;

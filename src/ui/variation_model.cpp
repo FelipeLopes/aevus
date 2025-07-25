@@ -20,8 +20,9 @@ void VariationModel::handleContent(VariationContent content) {
     update();
 }
 
-void VariationModel::handleFlameContent(FlameContent flameContent) {
+void VariationModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     content.flameLoaded = true;
+    auto flameContent = flameContent_.value();
     auto sz = flameContent.xforms.size();
     if (sz > 0) {
         content.variations = flameContent.xforms[0].variations.variations;
