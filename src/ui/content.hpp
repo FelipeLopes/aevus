@@ -41,4 +41,17 @@ struct FrameContent {
     double flameScale;
 };
 
+struct XFormContent {
+    CoefsContent preCoefs, postCoefs;
+    VariationContent variations;
+    double weight, color, colorSpeed;
+};
+
+struct FlameContent {
+    FrameContent frame;
+    std::vector<XFormContent> xforms;
+    std::optional<XFormContent> finalXForm;
+    core::PaletteColors palette;
+};
+
 }

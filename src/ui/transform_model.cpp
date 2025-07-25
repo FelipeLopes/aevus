@@ -1,4 +1,5 @@
 #include "transform_model.hpp"
+#include "content.hpp"
 #include <stdexcept>
 #include <string>
 
@@ -10,7 +11,7 @@ namespace ui {
 
 TransformModel::TransformModel(wxDataViewListCtrl* transformCtrl,
     wxButton* resetButton_, bool accessCoefs_): ViewModel(transformCtrl),
-    resetButton(resetButton_), noContent(true)
+    resetButton(resetButton_), noContent(true), accessCoefs(accessCoefs_)
 {
     resetButton->Disable();
 }
@@ -27,6 +28,29 @@ void TransformModel::handleReset() {
     content.ox = 0;
     content.oy = 0;
     contentChanged(content);
+}
+
+void TransformModel::handleFlameContent(FlameContent flameContent) {
+    if (flameContent.xforms.size() == 0) {
+        return;
+    }
+    if (accessCoefs) {
+        content.ox = flameContent.xforms[0].preCoefs.ox;
+        content.oy = flameContent.xforms[0].preCoefs.oy;
+        content.xx = flameContent.xforms[0].preCoefs.xx;
+        content.xy = flameContent.xforms[0].preCoefs.xy;
+        content.yx = flameContent.xforms[0].preCoefs.yx;
+        content.yy = flameContent.xforms[0].preCoefs.yy;
+    } else {
+        content.ox = flameContent.xforms[0].postCoefs.ox;
+        content.oy = flameContent.xforms[0].postCoefs.oy;
+        content.xx = flameContent.xforms[0].postCoefs.xx;
+        content.xy = flameContent.xforms[0].postCoefs.xy;
+        content.yx = flameContent.xforms[0].postCoefs.yx;
+        content.yy = flameContent.xforms[0].postCoefs.yy;
+    }
+    noContent = false;
+    update();
 }
 
 void TransformModel::handleNoContent() {

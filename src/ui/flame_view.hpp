@@ -31,6 +31,7 @@ public:
     void handleFrameContent(FrameContent content);
 
     boost::signals2::signal<void ()> startNewRender;
+    boost::signals2::signal<void (FlameContent)> flameContent;
     boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
     boost::signals2::signal<void ()> noTransformContent;
     boost::signals2::signal<void (CoefsContent)> preTransformContent;
@@ -44,6 +45,7 @@ private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
     int activeXformId;
+    void sendFlameContent();
     void sendTriangleContent();
     void sendPreTransformContent();
     void sendPostTransformContent();

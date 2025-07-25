@@ -14,6 +14,7 @@ public:
     void handleActiveXformChanged(int id);
     void handleReset();
     void handleNoContent();
+    void handleFlameContent(FlameContent flameContent);
     void handleContent(CoefsContent content);
     boost::signals2::signal<void (CoefsContent)> contentChanged;
 private:
@@ -22,7 +23,7 @@ private:
     void afterUpdate(int selectedRow) override;
 
     wxButton* resetButton;
-    bool noContent;
+    bool noContent, accessCoefs;
     CoefsContent content;
 };
 

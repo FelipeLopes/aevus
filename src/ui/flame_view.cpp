@@ -21,7 +21,24 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
     }
     document = dynamic_cast<FlameDocument*>(doc);
     aevusFrame->setupFlameView(this);
-    documentLoaded();
+    // KLUDGE: wxWidgets document initialization is very weird.
+    // First, it creates the document, then it creates the view,
+    // attaches the view to the document, and only after attaching,
+    // it creates the view.
+    // The problem with this is that the document needs to notify
+    // the view when it loads, since the LoadObject function is in
+    // the document class. However, if the document is new, LoadObject
+    // is never called, and when it's created, there's no way to get
+    // the view since it wasn't created yet.
+
+    // The way I solved this without generating document load events twice
+    // is to save on initialization whether the document is new,
+    // check if it is when the view is created, and then notify the UI.
+    // In the case it's from a file, the notification will come from LoadObject,
+    // when the data is available to the document.
+    if (document->isNew()) {
+        documentLoaded();
+    }
     return true;
 }
 
@@ -44,19 +61,8 @@ core::Flame* FlameView::getFlame() const
 }
 
 void FlameView::documentLoaded() {
-    activeXformId = -1;
-    if (document->flameHasXForms()) {
-        activeXformId = 0;
-        sendPreTransformContent();
-        sendPostTransformContent();
-    } else {
-        noTransformContent();
-    }
-    sendTriangleContent();
-    sendWeightsContent();
-    sendVariationContent();
-    sendColorContent();
-    sendFrameContent();
+    activeXformId = document->flameHasXForms() ? 0 : -1;
+    sendFlameContent();
     startNewRender();
 }
 
@@ -184,6 +190,64 @@ void FlameView::handleFrameContent(FrameContent content) {
     document->flame.scale.setValue(content.flameScale);
     frameContent(content);
     startNewRender();
+}
+
+void FlameView::sendFlameContent() {
+    FlameContent content;
+    // Frame params
+    content.frame.flameLoaded = true;
+    content.frame.flameSize = document->flame.size.value();
+    content.frame.flameCenter = document->flame.center.value();
+    content.frame.flameScale = document->flame.scale.value();
+    // Palette
+    content.palette = document->flame.palette.colors.value();
+    // XForms
+    content.xforms.resize(document->flame.xforms.size());
+    for (int i=0; i<content.xforms.size(); i++) {
+        auto preCoefs = document->flame.xforms.get(i)->coefs.value();
+        content.xforms[i].preCoefs.ox = preCoefs.ox;
+        content.xforms[i].preCoefs.oy = preCoefs.oy;
+        content.xforms[i].preCoefs.xx = preCoefs.xx;
+        content.xforms[i].preCoefs.xy = preCoefs.xy;
+        content.xforms[i].preCoefs.yx = preCoefs.yx;
+        content.xforms[i].preCoefs.yy = preCoefs.yy;
+
+        auto postCoefs = document->flame.xforms.get(i)->post.value();
+        content.xforms[i].postCoefs.ox = postCoefs.ox;
+        content.xforms[i].postCoefs.oy = postCoefs.oy;
+        content.xforms[i].postCoefs.xx = postCoefs.xx;
+        content.xforms[i].postCoefs.xy = postCoefs.xy;
+        content.xforms[i].postCoefs.yx = postCoefs.yx;
+        content.xforms[i].postCoefs.yy = postCoefs.yy;
+
+        content.xforms[i].weight = document->flame.xforms.get(i)->weight.value();
+
+        content.xforms[i].color = document->flame.xforms.get(activeXformId)->color.value();
+        content.xforms[i].colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
+    }
+    // Final xform
+    if (document->flame.finalXForm.isSet()) {
+        content.finalXForm = XFormContent();
+        auto finalPreCoefs = document->flame.finalXForm.get()->coefs.value();
+        content.finalXForm->preCoefs.ox = finalPreCoefs.ox;
+        content.finalXForm->preCoefs.oy = finalPreCoefs.oy;
+        content.finalXForm->preCoefs.xx = finalPreCoefs.xx;
+        content.finalXForm->preCoefs.xy = finalPreCoefs.xy;
+        content.finalXForm->preCoefs.yx = finalPreCoefs.yx;
+        content.finalXForm->preCoefs.yy = finalPreCoefs.yy;
+
+        auto finalPostCoefs = document->flame.finalXForm.get()->post.value();
+        content.finalXForm->postCoefs.ox = finalPostCoefs.ox;
+        content.finalXForm->postCoefs.oy = finalPostCoefs.oy;
+        content.finalXForm->postCoefs.xx = finalPostCoefs.xx;
+        content.finalXForm->postCoefs.xy = finalPostCoefs.xy;
+        content.finalXForm->postCoefs.yx = finalPostCoefs.yx;
+        content.finalXForm->postCoefs.yy = finalPostCoefs.yy;
+
+        content.finalXForm->color = document->flame.xforms.get(activeXformId)->color.value();
+        content.finalXForm->colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
+    }
+    flameContent(content);
 }
 
 void FlameView::sendTriangleContent() {

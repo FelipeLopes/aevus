@@ -6,6 +6,18 @@ namespace ui {
 
 wxIMPLEMENT_DYNAMIC_CLASS(FlameDocument, wxDocument);
 
+bool FlameDocument::OnCreate(const wxString& path, long flags) {
+    documentFlags = flags;
+    if (!wxDocument::OnCreate(path, flags)){
+        return false;
+    }
+    return true;
+}
+
+bool FlameDocument::isNew() {
+    return documentFlags & wxDOC_NEW;
+}
+
 std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
     return stream;
 }
