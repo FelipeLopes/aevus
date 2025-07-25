@@ -29,7 +29,7 @@ private:
 
     wxBitmapButton* addXformButton;
     wxBitmapButton* removeXformButton;
-    WeightsContent content;
+    std::optional<WeightsContent> content;
     bool blockSelectionEvents;
 };
 

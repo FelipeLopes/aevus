@@ -223,7 +223,7 @@ void FlameView::sendFlameContent() {
 
         content.xforms[i].weight = document->flame.xforms.get(i)->weight.value();
 
-        content.xforms[i].variations.variations = document->flame.xforms.get(i)->variationMap.get()->variations;
+        content.xforms[i].variations = document->flame.xforms.get(i)->variationMap.get()->variations;
 
         content.xforms[i].color = document->flame.xforms.get(activeXformId)->color.value();
         content.xforms[i].colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
@@ -309,7 +309,6 @@ void FlameView::sendPostTransformContent() {
 
 void FlameView::sendWeightsContent() {
     WeightsContent content;
-    content.flameLoaded = true;
     content.activeId = activeXformId;
     content.weights.resize(document->flame.xforms.size());
     for (int i=0; i<content.weights.size(); i++) {
@@ -321,7 +320,7 @@ void FlameView::sendWeightsContent() {
 void FlameView::sendVariationContent() {
     VariationContent content;
     if (activeXformId != -1) {
-        content.variations = document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
+        content = document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
     }
     variationContent(content);
 }

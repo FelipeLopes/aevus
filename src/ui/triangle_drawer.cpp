@@ -23,7 +23,7 @@ void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) 
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
-    if (content->activeId == -1) {
+    if (!content.has_value() || content->activeId == -1) {
         return;
     }
     drawInactiveTriangles(gc);

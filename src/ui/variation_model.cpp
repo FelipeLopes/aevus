@@ -21,13 +21,17 @@ void VariationModel::handleContent(VariationContent content) {
 }
 
 void VariationModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
-    content.flameLoaded = true;
+    if (!flameContent_.has_value()) {
+        content = std::nullopt;
+        update();
+        return;
+    }
     auto flameContent = flameContent_.value();
     auto sz = flameContent.xforms.size();
     if (sz > 0) {
-        content.variations = flameContent.xforms[0].variations.variations;
+        content = flameContent.xforms[0].variations;
     } else {
-        content.variations = {};
+        content = {};
     }
     update();
 }
@@ -45,8 +49,11 @@ void VariationModel::handleVariationAdd() {
 }
 
 void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
+    if (!content.has_value()) {
+        return;
+    }
     auto varLookup = core::VariationLookup::getInstance();
-    for (auto el: content.variations) {
+    for (auto el: content.value()) {
         wxVector<wxVariant> row;
         row.push_back(varLookup->idToName(el.first));
         row.push_back(to_string(el.second.weight));
@@ -55,11 +62,11 @@ void VariationModel::getValues(vector<wxVector<wxVariant>>& data) const {
 }
 
 void VariationModel::setValue(const wxVariant& val, int row, int col) {
-    if (col == 0) {
+    if (!content.has_value() || col == 0) {
         update();
         return;
     }
-    auto it = content.variations.begin();
+    auto it = content->begin();
     for (int i=0; i<row; i++) {
         ++it;
     }
@@ -83,7 +90,7 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
 }
 
 void VariationModel::afterUpdate(int selectedRow) {
-    if (!content.flameLoaded) {
+    if (!content.has_value()) {
         variationAddCtrl->ChangeValue("");
         variationAddCtrl->Disable();
     } else {

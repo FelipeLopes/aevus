@@ -5,15 +5,12 @@
 
 namespace ui {
 
-TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_): triangleGrid(triangleGrid_)
-{
-    content->activeId = -1;
-}
+TriangleCollider::TriangleCollider(TriangleGrid* triangleGrid_): triangleGrid(triangleGrid_) { }
 
 Collision TriangleCollider::getCollision(WindowPoint pos) {
     Collision ans;
     ans.triangleId = -1;
-    if (content->activeId == -1) {
+    if (!content.has_value() || content->activeId == -1) {
         ans.type = NO_COLLISION;
         return ans;
     }

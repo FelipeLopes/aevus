@@ -16,6 +16,9 @@ UpdateState TriangleUpdater::getUpdateState() {
 }
 
 void TriangleUpdater::setUpdateStartData(WindowPoint clickPoint) {
+    if (!content.has_value()) {
+        return;
+    }
     startPoint = triangleGrid->transformToGrid(clickPoint);
     auto coefs = content->coefs[content->activeId];
     startO = GridPoint(coefs.ox, coefs.oy);

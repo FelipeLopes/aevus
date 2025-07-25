@@ -19,14 +19,10 @@ struct XFormTriangleContent {
 
 struct WeightsContent {
     int activeId;
-    bool flameLoaded;
     std::vector<double> weights;
 };
 
-struct VariationContent {
-    bool flameLoaded;
-    std::map<core::Variation::VariationID, core::VariationData> variations;
-};
+typedef std::map<core::Variation::VariationID, core::VariationData> VariationContent;
 
 struct ColorContent {
     bool flameLoaded;

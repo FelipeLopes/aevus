@@ -26,7 +26,7 @@ private:
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
 
-    VariationContent content;
+    std::optional<VariationContent> content;
     wxTextCtrl* variationAddCtrl;
 };
 
