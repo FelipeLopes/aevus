@@ -36,6 +36,11 @@ void VariationModel::handleFlameContent(std::optional<FlameContent> flameContent
     update();
 }
 
+void VariationModel::handleActiveXformContent(ActiveXFormContent xformContent) {
+    content = xformContent.xform.variations;
+    update();
+}
+
 void VariationModel::handleVariationAdd() {
     string text = variationAddCtrl->GetValue().ToStdString();
     auto varLookup = core::VariationLookup::getInstance();

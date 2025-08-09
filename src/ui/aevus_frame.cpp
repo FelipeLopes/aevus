@@ -98,6 +98,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
             bind(&TriangleModel::handleActiveXformContent, &triangleModel, _1)
         );
         flameView->activeXformContent.connect(
+            bind(&VariationModel::handleActiveXformContent, &variationModel, _1)
+        );
+        flameView->activeXformContent.connect(
             bind(&WeightsModel::handleActiveXformContent, &weightsModel, _1)
         );
         flameView->weightsContent.connect(

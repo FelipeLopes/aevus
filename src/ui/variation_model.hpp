@@ -17,6 +17,7 @@ public:
     VariationModel(wxDataViewListCtrl* variationCtrl, wxTextCtrl* variationAddCtrl);
     void handleVariationAdd();
     void handleFlameContent(std::optional<FlameContent> flameContent);
+    void handleActiveXformContent(ActiveXFormContent xformContent);
     void handleNoContent();
     void handleContent(VariationContent content);
     boost::signals2::signal<void (core::Variation::VariationID)> variationAdded;
