@@ -61,9 +61,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
     core::Flame* ptr = NULL;
     if (flameView != NULL) {
         ptr = flameView->getFlame();
-        flameView->triangleContentChanged.connect(
-            bind(&TriangleModel::handleContent, &triangleModel, _1)
-        );
         flameView->startNewRender.connect(
             bind(&Renderer::update, &renderer)
         );
@@ -105,18 +102,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         );
         flameView->activeXformContent.connect(
             bind(&ColorModel::handleActiveXformContent, &colorModel, _1)
-        );
-        flameView->weightsContent.connect(
-            bind(&WeightsModel::handleContent, &weightsModel, _1)
-        );
-        flameView->variationContent.connect(
-            bind(&VariationModel::handleContent, &variationModel, _1)
-        );
-        flameView->colorContent.connect(
-            bind(&ColorModel::handleContent, &colorModel, _1)
-        );
-        flameView->frameContent.connect(
-            bind(&FrameModel::handleContent, &frameModel, _1)
         );
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)

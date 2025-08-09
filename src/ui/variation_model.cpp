@@ -15,11 +15,6 @@ VariationModel::VariationModel(wxDataViewListCtrl* variationCtrl,
     variationAddCtrl->AutoComplete(new VariationTextCompleter);
 }
 
-void VariationModel::handleContent(VariationContent content) {
-    this->content = content;
-    update();
-}
-
 void VariationModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     if (!flameContent_.has_value()) {
         content = std::nullopt;

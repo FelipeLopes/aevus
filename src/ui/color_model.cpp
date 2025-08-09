@@ -62,12 +62,6 @@ void ColorModel::setupPalette() {
     }
 }
 
-void ColorModel::handleContent(ColorContent content) {
-    this->content = content;
-    setupPalette();
-    update();
-}
-
 void ColorModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     if (!flameContent_.has_value()) {
         content = std::nullopt;

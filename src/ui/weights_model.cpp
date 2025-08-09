@@ -47,11 +47,6 @@ void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     update();
 }
 
-void WeightsModel::handleContent(WeightsContent content) {
-    this->content = content;
-    update();
-}
-
 void WeightsModel::handleAddXform() {
     xformAdded();
 }

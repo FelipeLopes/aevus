@@ -75,10 +75,7 @@ void FlameView::handleXFormSelected(int i) {
 void FlameView::handleXFormAdded() {
     activeXformId = document->flame.xforms.size();
     document->flame.xforms.append(std::make_shared<core::XForm>());
-    sendTriangleContent();
-    sendWeightsContent();
-    sendVariationContent();
-    sendColorContent();
+    // TODO
     startNewRender();
 }
 
@@ -88,10 +85,7 @@ void FlameView::handleXFormRemoved() {
     if (activeXformId == sz - 1) {
         activeXformId--;
     }
-    sendTriangleContent();
-    sendWeightsContent();
-    sendVariationContent();
-    sendColorContent();
+    // TODO
     startNewRender();
 }
 
@@ -103,7 +97,7 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     ptr->xy = coefs.xy;
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
-    sendTriangleContent();
+    // TODO
     startNewRender();
 }
 
@@ -119,7 +113,7 @@ void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
     ptr->xy = coefs.xy;
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
-    sendTriangleContent();
+    // TODO
     startNewRender();
 }
 
@@ -128,7 +122,7 @@ void FlameView::handleWeights(WeightsContent content) {
     for (int i=0; i<sz; i++) {
         document->flame.xforms.get(i)->weight.setValue(content.weights[i]);
     }
-    sendWeightsContent();
+    // TODO
     startNewRender();
 }
 
@@ -141,7 +135,7 @@ void FlameView::handleVariationAdded(core::Variation::VariationID id) {
         return;
     }
     (*varMap)[id] = core::VariationData(1.0, {});
-    sendVariationContent();
+    // TODO
     startNewRender();
 }
 
@@ -158,7 +152,7 @@ void FlameView::handleVariationData(VariationDataParams params) {
     } else {
         (*varMap)[params.id] = params.data;
     }
-    sendVariationContent();
+    // TODO
     startNewRender();
 }
 
@@ -168,7 +162,7 @@ void FlameView::handleColorContent(ColorContent content) {
         document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed;
     }
     *(document->flame.palette.colors.get()) = content.palette;
-    sendColorContent();
+    // TODO
     startNewRender();
 }
 
@@ -176,7 +170,7 @@ void FlameView::handleFrameContent(FrameContent content) {
     *(document->flame.size.get()) = content.flameSize;
     *(document->flame.center.get()) = content.flameCenter;
     document->flame.scale.setValue(content.flameScale);
-    frameContent(content);
+    // TODO
     startNewRender();
 }
 
@@ -223,62 +217,6 @@ void FlameView::sendActiveXFormContent() {
     content.id = activeXformId;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
-}
-
-void FlameView::sendTriangleContent() {
-    XFormTriangleContent content;
-    content.coefs.resize(document->flame.xforms.size());
-    content.activeId = activeXformId;
-    for (int i=0; i<content.coefs.size(); i++) {
-        auto flameCoefs = document->flame.xforms.get(i)->coefs.value();
-
-        CoefsContent messageCoefs;
-        messageCoefs.ox = flameCoefs.ox;
-        messageCoefs.oy = flameCoefs.oy;
-        messageCoefs.xx = flameCoefs.xx;
-        messageCoefs.xy = flameCoefs.xy;
-        messageCoefs.yx = flameCoefs.yx;
-        messageCoefs.yy = flameCoefs.yy;
-
-        content.coefs[i] = messageCoefs;
-    }
-    triangleContentChanged(content);
-}
-
-void FlameView::sendWeightsContent() {
-    WeightsContent content;
-    content.activeId = activeXformId;
-    content.weights.resize(document->flame.xforms.size());
-    for (int i=0; i<content.weights.size(); i++) {
-        content.weights[i] = document->flame.xforms.get(i)->weight.value();
-    }
-    weightsContent(content);
-}
-
-void FlameView::sendVariationContent() {
-    VariationContent content;
-    if (activeXformId != -1) {
-        content = document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
-    }
-    variationContent(content);
-}
-
-void FlameView::sendColorContent() {
-    ColorContent content;
-    if (activeXformId != -1) {
-        content.color = document->flame.xforms.get(activeXformId)->color.value();
-        content.colorSpeed = document->flame.xforms.get(activeXformId)->colorSpeed.value().colorSpeed;
-    }
-    content.palette = document->flame.palette.colors.value();
-    colorContent(content);
-}
-
-void FlameView::sendFrameContent() {
-    FrameContent content;
-    content.flameSize = document->flame.size.value();
-    content.flameCenter = document->flame.center.value();
-    content.flameScale = document->flame.scale.value();
-    frameContent(content);
 }
 
 XFormContent FlameView::getXformContent(int idx) {

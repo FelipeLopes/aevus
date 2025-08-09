@@ -33,11 +33,6 @@ public:
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
     boost::signals2::signal<void (ActiveXFormContent)> activeXformContent;
-    boost::signals2::signal<void (XFormTriangleContent)> triangleContentChanged;
-    boost::signals2::signal<void (WeightsContent)> weightsContent;
-    boost::signals2::signal<void (VariationContent)> variationContent;
-    boost::signals2::signal<void (ColorContent)> colorContent;
-    boost::signals2::signal<void (FrameContent)> frameContent;
 
 private:
     AevusFrame* aevusFrame;

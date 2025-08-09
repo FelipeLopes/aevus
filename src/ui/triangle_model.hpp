@@ -25,7 +25,6 @@ public:
     void handleMouseMove(wxMouseEvent& event);
     void handleFlameContent(std::optional<FlameContent> content);
     void handleActiveXformContent(ActiveXFormContent xformContent);
-    void handleContent(const XFormTriangleContent& content);
 
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void (CoefsContent)> xformCoefsChanged;

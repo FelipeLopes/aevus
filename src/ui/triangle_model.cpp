@@ -146,12 +146,4 @@ void TriangleModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     update();
 }
 
-void TriangleModel::handleContent(const XFormTriangleContent& content) {
-    activeId = content.activeId;
-    triangleCollider.handleContent(content);
-    triangleDrawer.handleContent(content);
-    triangleUpdater.handleContent(content);
-    update();
-}
-
 }

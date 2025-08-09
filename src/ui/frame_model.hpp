@@ -11,7 +11,6 @@ class FrameModel: public ViewModel {
 public:
     FrameModel(wxDataViewListCtrl* frameListCtrl);
     void handleFlameContent(std::optional<FlameContent> flameContent);
-    void handleContent(FrameContent content);
     boost::signals2::signal<void (FrameContent)> frameContent;
 private:
     std::optional<FrameContent> content;

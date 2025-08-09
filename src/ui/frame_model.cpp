@@ -24,11 +24,6 @@ void FrameModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     update();
 }
 
-void FrameModel::handleContent(FrameContent content) {
-    this->content = content;
-    update();
-}
-
 void FrameModel::getValues(std::vector<wxVector<wxVariant>>& data) const {
     if (!content.has_value()) {
         return;
