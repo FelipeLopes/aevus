@@ -15,6 +15,7 @@ public:
         wxBitmapButton* removeXformButton);
     void handleSelectionEvent(wxDataViewEvent& event);
     void handleFlameContent(std::optional<FlameContent> flameContent);
+    void handleActiveXformContent(ActiveXFormContent xformContent);
     void handleContent(WeightsContent content);
     void handleAddXform();
     void handleRemoveXform();
