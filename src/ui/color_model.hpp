@@ -14,6 +14,7 @@ public:
     ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel);
     void handleContent(ColorContent content);
     void handleFlameContent(std::optional<FlameContent> flameContent);
+    void handleActiveXformContent(ActiveXFormContent xformContent);
     void handlePaint();
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);

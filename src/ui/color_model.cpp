@@ -87,6 +87,12 @@ void ColorModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     update();
 }
 
+void ColorModel::handleActiveXformContent(ActiveXFormContent xformContent) {
+    content->color = xformContent.xform.color;
+    content->colorSpeed = xformContent.xform.colorSpeed;
+    update();
+}
+
 void ColorModel::handlePaint() {
     wxAutoBufferedPaintDC dc(palettePanel);
     dc.Clear();
