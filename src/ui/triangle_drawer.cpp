@@ -22,6 +22,10 @@ void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) 
     this->content = content;
 }
 
+void TriangleDrawer::handleNewActiveId(int id) {
+    content->activeId = id;
+}
+
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
     if (!content.has_value() || content->activeId == -1) {
         return;

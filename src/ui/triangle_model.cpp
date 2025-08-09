@@ -138,6 +138,14 @@ void TriangleModel::handleFlameContent(std::optional<FlameContent> content_) {
     update();
 }
 
+void TriangleModel::handleActiveXformContent(ActiveXFormContent xformContent) {
+    activeId = xformContent.id;
+    triangleCollider.handleNewActiveId(activeId);
+    triangleDrawer.handleNewActiveId(activeId);
+    triangleUpdater.handleNewActiveId(activeId);
+    update();
+}
+
 void TriangleModel::handleContent(const XFormTriangleContent& content) {
     activeId = content.activeId;
     triangleCollider.handleContent(content);
