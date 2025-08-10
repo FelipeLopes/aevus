@@ -53,4 +53,10 @@ struct ActiveXFormContent {
     XFormContent xform;
 };
 
+struct ActiveXFormUpdateContent {
+    std::optional<CoefsContent> preCoefs, postCoefs;
+    std::optional<VariationContent> variations;
+    std::optional<double> weight, color, colorSpeed;
+};
+
 }

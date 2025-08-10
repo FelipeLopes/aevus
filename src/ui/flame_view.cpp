@@ -72,6 +72,29 @@ void FlameView::handleXFormSelected(int i) {
     sendActiveXFormContent();
 }
 
+void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
+    if (content.preCoefs.has_value()) {
+        auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
+        ptr->ox = content.preCoefs->ox;
+        ptr->oy = content.preCoefs->oy;
+        ptr->xx = content.preCoefs->xx;
+        ptr->xy = content.preCoefs->xy;
+        ptr->yx = content.preCoefs->yx;
+        ptr->yy = content.preCoefs->yy;
+    }
+    if (content.postCoefs.has_value()) {
+        auto ptr = document->flame.xforms.get(activeXformId)->post.get();
+        ptr->ox = content.postCoefs->ox;
+        ptr->oy = content.postCoefs->oy;
+        ptr->xx = content.postCoefs->xx;
+        ptr->xy = content.postCoefs->xy;
+        ptr->yx = content.postCoefs->yx;
+        ptr->yy = content.postCoefs->yy;
+    }
+    sendActiveXFormContent();
+    startNewRender();
+}
+
 void FlameView::handleXFormAdded() {
     activeXformId = document->flame.xforms.size();
     document->flame.xforms.append(std::make_shared<core::XForm>());

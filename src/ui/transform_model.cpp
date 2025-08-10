@@ -24,7 +24,13 @@ void TransformModel::handleReset() {
     content->yy = 1;
     content->ox = 0;
     content->oy = 0;
-    contentChanged(content.value());
+    ActiveXFormUpdateContent updateContent;
+    if (accessCoefs) {
+        updateContent.preCoefs = content;
+    } else {
+        updateContent.postCoefs = content;
+    }
+    xformUpdate(updateContent);
 }
 
 void TransformModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
@@ -107,7 +113,13 @@ void TransformModel::setValue(const wxVariant& val, int row, int col) {
         case 5: content->oy = newValue; break;
         default: throw std::invalid_argument("Invalid cell");
     }
-    contentChanged(content.value());
+    ActiveXFormUpdateContent updateContent;
+    if (accessCoefs) {
+        updateContent.preCoefs = content;
+    } else {
+        updateContent.postCoefs = content;
+    }
+    xformUpdate(updateContent);
 }
 
 void TransformModel::afterUpdate(int selectedRow) {

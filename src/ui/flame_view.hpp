@@ -19,6 +19,7 @@ public:
     core::Flame* getFlame() const;
     void documentLoaded();
     void handleXFormSelected(int i);
+    void handleXFormUpdate(ActiveXFormUpdateContent content);
     void handleXFormAdded();
     void handleXFormRemoved();
     void handleTriangleCoefs(CoefsContent coefs);

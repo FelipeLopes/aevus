@@ -14,7 +14,7 @@ public:
     void handleReset();
     void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleActiveXformContent(ActiveXFormContent xformContent);
-    boost::signals2::signal<void (CoefsContent)> contentChanged;
+    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
