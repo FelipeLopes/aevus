@@ -22,9 +22,6 @@ public:
     void handleXFormUpdate(ActiveXFormUpdateContent content);
     void handleXFormAdded();
     void handleXFormRemoved();
-    void handleTriangleCoefs(CoefsContent coefs);
-    void handleCoefsPreListCtrl(CoefsContent coefs);
-    void handleCoefsPostListCtrl(CoefsContent coefs);
     void handleWeights(WeightsContent content);
     void handleVariationAdded(core::Variation::VariationID id);
     void handleVariationData(VariationDataParams params);

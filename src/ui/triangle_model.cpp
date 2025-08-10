@@ -105,7 +105,9 @@ void TriangleModel::handleMouseMove(wxMouseEvent& event) {
             update();
         } else {
             auto coefs = triangleUpdater.getCoefsForPoint(pt);
-            xformCoefsChanged(coefs);
+            ActiveXFormUpdateContent updateContent;
+            updateContent.preCoefs = coefs;
+            xformUpdate(updateContent);
         }
     } else {
         auto coll = triangleCollider.getCollision(WindowPoint(pos.x, pos.y));

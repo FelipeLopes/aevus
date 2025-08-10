@@ -106,8 +106,8 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
         );
-        triangleModel.xformCoefsChanged.connect(
-            bind(&FlameView::handleTriangleCoefs, flameView, _1)
+        triangleModel.xformUpdate.connect(
+            bind(&FlameView::handleXFormUpdate, flameView, _1)
         );
         preTransformModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)

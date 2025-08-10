@@ -27,7 +27,7 @@ public:
     void handleActiveXformContent(ActiveXFormContent xformContent);
 
     boost::signals2::signal<void (int)> xformSelected;
-    boost::signals2::signal<void (CoefsContent)> xformCoefsChanged;
+    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 
     static std::array<std::pair<double, double>, 3> triangle(CoefsContent coefs);
 private:

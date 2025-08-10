@@ -112,34 +112,6 @@ void FlameView::handleXFormRemoved() {
     startNewRender();
 }
 
-void FlameView::handleTriangleCoefs(CoefsContent coefs) {
-    auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
-    ptr->ox = coefs.ox;
-    ptr->oy = coefs.oy;
-    ptr->xx = coefs.xx;
-    ptr->xy = coefs.xy;
-    ptr->yx = coefs.yx;
-    ptr->yy = coefs.yy;
-    sendActiveXFormContent();
-    startNewRender();
-}
-
-void FlameView::handleCoefsPreListCtrl(CoefsContent coefs) {
-    handleTriangleCoefs(coefs);
-}
-
-void FlameView::handleCoefsPostListCtrl(CoefsContent coefs) {
-    auto ptr = document->flame.xforms.get(activeXformId)->post.get();
-    ptr->ox = coefs.ox;
-    ptr->oy = coefs.oy;
-    ptr->xx = coefs.xx;
-    ptr->xy = coefs.xy;
-    ptr->yx = coefs.yx;
-    ptr->yy = coefs.yy;
-    // TODO
-    startNewRender();
-}
-
 void FlameView::handleWeights(WeightsContent content) {
     int sz = content.weights.size();
     for (int i=0; i<sz; i++) {
