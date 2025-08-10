@@ -7,19 +7,13 @@
 
 namespace ui {
 
-struct VariationDataParams {
-    core::Variation::VariationID id;
-    core::VariationData data;
-};
-
 class VariationModel: public ViewModel {
 public:
     VariationModel(wxDataViewListCtrl* variationCtrl, wxTextCtrl* variationAddCtrl);
     void handleVariationAdd();
     void handleFlameContent(std::optional<FlameContent> flameContent);
     void handleActiveXformContent(ActiveXFormContent xformContent);
-    boost::signals2::signal<void (core::Variation::VariationID)> variationAdded;
-    boost::signals2::signal<void (VariationDataParams)> variationData;
+    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;

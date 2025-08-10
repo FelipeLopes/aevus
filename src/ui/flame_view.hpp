@@ -22,9 +22,6 @@ public:
     void handleXFormUpdate(ActiveXFormUpdateContent content);
     void handleXFormAdded();
     void handleXFormRemoved();
-    void handleWeights(WeightsContent content);
-    void handleVariationAdded(core::Variation::VariationID id);
-    void handleVariationData(VariationDataParams params);
     void handleColorContent(ColorContent content);
     void handleFrameContent(FrameContent content);
 

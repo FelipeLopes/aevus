@@ -1,4 +1,5 @@
 #include "variation_model.hpp"
+#include "content.hpp"
 #include "variation_text_completer.hpp"
 #include <stdexcept>
 
@@ -37,12 +38,21 @@ void VariationModel::handleActiveXformContent(ActiveXFormContent xformContent) {
 }
 
 void VariationModel::handleVariationAdd() {
+    if (!content.has_value()) {
+        return;
+    }
     string text = variationAddCtrl->GetValue().ToStdString();
     auto varLookup = core::VariationLookup::getInstance();
     try {
         auto id = varLookup->nameToId(text);
         variationAddCtrl->ChangeValue("");
-        variationAdded(id);
+        if (content->find(id) != content->end()) {
+            return;
+        }
+        content.value()[id] = core::VariationData(1.0, {});
+        ActiveXFormUpdateContent updateContent;
+        updateContent.variations = content;
+        xformUpdate(updateContent);
     } catch (std::invalid_argument& e) {
         return;
     }
@@ -83,10 +93,14 @@ void VariationModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
-    VariationDataParams varParams;
-    varParams.id = it->first;
-    varParams.data = core::VariationData(newValue, {});
-    variationData(varParams);
+    if (newValue == 0.0) {
+        content->erase(it->first);
+    } else {
+        content.value()[it->first] = core::VariationData(newValue, {});
+    }
+    ActiveXFormUpdateContent updateContent;
+    updateContent.variations = content;
+    xformUpdate(updateContent);
 }
 
 void VariationModel::afterUpdate(int selectedRow) {

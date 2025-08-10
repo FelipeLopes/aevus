@@ -94,6 +94,9 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     if (content.weight.has_value()) {
         document->flame.xforms.get(activeXformId)->weight.setValue(content.weight.value());
     }
+    if (content.variations.has_value()) {
+        document->flame.xforms.get(activeXformId)->variationMap.get()->variations = content.variations.value();
+    }
     sendActiveXFormContent();
     startNewRender();
 }
@@ -110,36 +113,6 @@ void FlameView::handleXFormRemoved() {
     document->flame.xforms.remove(activeXformId);
     if (activeXformId == sz - 1) {
         activeXformId--;
-    }
-    // TODO
-    startNewRender();
-}
-
-void FlameView::handleVariationAdded(core::Variation::VariationID id) {
-    if (activeXformId == -1) {
-        return;
-    }
-    auto varMap = &document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
-    if (varMap->find(id) != varMap->end()) {
-        return;
-    }
-    (*varMap)[id] = core::VariationData(1.0, {});
-    // TODO
-    startNewRender();
-}
-
-void FlameView::handleVariationData(VariationDataParams params) {
-    if (activeXformId == -1) {
-        return;
-    }
-    auto varMap = &document->flame.xforms.get(activeXformId)->variationMap.get()->variations;
-    if (varMap->find(params.id) == varMap->end()) {
-        return;
-    }
-    if (params.data.weight == 0.0) {
-        varMap->erase(params.id);
-    } else {
-        (*varMap)[params.id] = params.data;
     }
     // TODO
     startNewRender();
