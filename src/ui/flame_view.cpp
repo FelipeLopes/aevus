@@ -97,7 +97,7 @@ void FlameView::handleTriangleCoefs(CoefsContent coefs) {
     ptr->xy = coefs.xy;
     ptr->yx = coefs.yx;
     ptr->yy = coefs.yy;
-    // TODO
+    sendActiveXFormContent();
     startNewRender();
 }
 

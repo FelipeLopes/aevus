@@ -1,4 +1,5 @@
 #include "triangle_collider.hpp"
+#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_model.hpp"
 #include "triangle_types.hpp"
@@ -36,8 +37,12 @@ void TriangleCollider::handleContent(std::optional<XFormTriangleContent> content
     this->content = content;
 }
 
-void TriangleCollider::handleNewActiveId(int id) {
-    content->activeId = id;
+void TriangleCollider::handleActiveXformContent(ActiveXFormContent xformContent) {
+    if (!content.has_value()) {
+        return;
+    }
+    content->activeId = xformContent.id;
+    content->coefs[content->activeId] = xformContent.xform.preCoefs;
 }
 
 CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) {

@@ -1,4 +1,5 @@
 #include "triangle_drawer.hpp"
+#include "content.hpp"
 #include "triangle_model.hpp"
 #include "triangle_types.hpp"
 #include <wx/brush.h>
@@ -22,8 +23,12 @@ void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) 
     this->content = content;
 }
 
-void TriangleDrawer::handleNewActiveId(int id) {
-    content->activeId = id;
+void TriangleDrawer::handleActiveXformContent(ActiveXFormContent xformContent) {
+    if (!content.has_value()) {
+        return;
+    }
+    content->activeId = xformContent.id;
+    content->coefs[content->activeId] = xformContent.xform.preCoefs;
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {

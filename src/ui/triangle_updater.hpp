@@ -11,7 +11,7 @@ class TriangleUpdater {
 public:
     TriangleUpdater(TriangleGrid* triangleGrid);
     void handleContent(std::optional<XFormTriangleContent> content);
-    void handleNewActiveId(int id);
+    void handleActiveXformContent(ActiveXFormContent xformContent);
     UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);

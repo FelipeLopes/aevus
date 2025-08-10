@@ -11,8 +11,12 @@ void TriangleUpdater::handleContent(std::optional<XFormTriangleContent> content)
     this->content = content;
 }
 
-void TriangleUpdater::handleNewActiveId(int id) {
-    content->activeId = id;
+void TriangleUpdater::handleActiveXformContent(ActiveXFormContent xformContent) {
+    if (!content.has_value()) {
+        return;
+    }
+    content->activeId = xformContent.id;
+    content->coefs[content->activeId] = xformContent.xform.preCoefs;
 }
 
 UpdateState TriangleUpdater::getUpdateState() {
