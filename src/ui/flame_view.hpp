@@ -22,7 +22,6 @@ public:
     void handleXFormUpdate(ActiveXFormUpdateContent content);
     void handleXFormAdded();
     void handleXFormRemoved();
-    void handleColorContent(ColorContent content);
     void handleFrameContent(FrameContent content);
 
     boost::signals2::signal<void ()> startNewRender;

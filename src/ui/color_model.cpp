@@ -150,11 +150,18 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
         update();
         return;
     }
+    ActiveXFormUpdateContent updateContent;
     switch (row) {
-        case 0: content->color = newValue; break;
-        case 1: content->colorSpeed = newValue; break;
+        case 0:
+            content->color = newValue;
+            updateContent.color = newValue;
+            break;
+        case 1:
+            content->colorSpeed = newValue;
+            updateContent.colorSpeed = newValue;
+            break;
     }
-    colorContent(content.value());
+    xformUpdate(updateContent);
     update();
 }
 

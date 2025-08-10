@@ -18,7 +18,7 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
-    boost::signals2::signal<void (ColorContent)> colorContent;
+    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 private:
     void setupPalette();
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;

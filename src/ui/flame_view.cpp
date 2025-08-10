@@ -97,6 +97,12 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     if (content.variations.has_value()) {
         document->flame.xforms.get(activeXformId)->variationMap.get()->variations = content.variations.value();
     }
+    if (content.color.has_value()) {
+        document->flame.xforms.get(activeXformId)->color.setValue(content.color.value());
+    }
+    if (content.colorSpeed.has_value()) {
+        document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
+    }
     sendActiveXFormContent();
     startNewRender();
 }
@@ -114,16 +120,6 @@ void FlameView::handleXFormRemoved() {
     if (activeXformId == sz - 1) {
         activeXformId--;
     }
-    // TODO
-    startNewRender();
-}
-
-void FlameView::handleColorContent(ColorContent content) {
-    if (activeXformId != -1) {
-        document->flame.xforms.get(activeXformId)->color.setValue(content.color);
-        document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed;
-    }
-    *(document->flame.palette.colors.get()) = content.palette;
     // TODO
     startNewRender();
 }
