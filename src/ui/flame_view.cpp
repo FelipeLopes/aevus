@@ -91,6 +91,9 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         ptr->yx = content.postCoefs->yx;
         ptr->yy = content.postCoefs->yy;
     }
+    if (content.weight.has_value()) {
+        document->flame.xforms.get(activeXformId)->weight.setValue(content.weight.value());
+    }
     sendActiveXFormContent();
     startNewRender();
 }
@@ -107,15 +110,6 @@ void FlameView::handleXFormRemoved() {
     document->flame.xforms.remove(activeXformId);
     if (activeXformId == sz - 1) {
         activeXformId--;
-    }
-    // TODO
-    startNewRender();
-}
-
-void FlameView::handleWeights(WeightsContent content) {
-    int sz = content.weights.size();
-    for (int i=0; i<sz; i++) {
-        document->flame.xforms.get(i)->weight.setValue(content.weights[i]);
     }
     // TODO
     startNewRender();

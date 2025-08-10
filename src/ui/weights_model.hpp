@@ -21,7 +21,7 @@ public:
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void ()> xformAdded;
     boost::signals2::signal<void ()> xformRemoved;
-    boost::signals2::signal<void (WeightsContent)> weightsChanged;
+    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;

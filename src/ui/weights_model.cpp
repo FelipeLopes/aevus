@@ -90,7 +90,10 @@ void WeightsModel::setValue(const wxVariant& val, int row, int col) {
         return;
     }
     content->weights[row] = newValue;
-    weightsChanged(content.value());
+    ActiveXFormUpdateContent updateContent;
+    updateContent.weight = newValue;
+    xformUpdate(updateContent);
+    update();
 }
 
 void WeightsModel::afterUpdate(int selectedRow) {
