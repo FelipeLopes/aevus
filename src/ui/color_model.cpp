@@ -155,6 +155,7 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
         case 1: content->colorSpeed = newValue; break;
     }
     colorContent(content.value());
+    update();
 }
 
 void ColorModel::handleMouseUp(wxMouseEvent& event) {
