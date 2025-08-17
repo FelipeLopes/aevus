@@ -54,8 +54,13 @@ void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
         case ADDED:
             content->weights.insert(it, xformContent.xform->weight);
             break;
-        case REMOVED:
+        case REMOVED: {
+            content->weights.erase(it);
+            if (content->activeId == content->weights.size()) {
+                content->activeId--;
+            }
             break;
+        }
     }
     update();
 }

@@ -154,6 +154,9 @@ void TriangleModel::handleActiveXformContent(ActiveXFormContent xformContent) {
             triangleUpdater.insertCoefsContent(activeId, xformContent.xform->preCoefs);
             break;
         case REMOVED:
+            triangleCollider.removeCoefsContent(activeId);
+            triangleDrawer.removeCoefsContent(activeId);
+            triangleUpdater.removeCoefsContent(activeId);
             break;
     }
     update();

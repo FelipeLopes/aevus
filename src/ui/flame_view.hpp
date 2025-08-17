@@ -42,8 +42,9 @@ private:
     void sendFrameContent();
     void sendUpdatedXFormContent();
     void sendAddedXFormContent();
+    void sendRemovedXFormContent(int id);
 
-    XFormContent getXformContent(int idx);
+    std::optional<XFormContent> getXformContent(int idx);
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

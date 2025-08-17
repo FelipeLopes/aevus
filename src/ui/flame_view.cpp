@@ -115,12 +115,13 @@ void FlameView::handleXFormAdded(int id) {
 }
 
 void FlameView::handleXFormRemoved(int id) {
-    int sz = document->flame.xforms.size();
+    activeXformId = id;
     document->flame.xforms.remove(activeXformId);
-    if (activeXformId == sz - 1) {
+    int sz = document->flame.xforms.size();
+    if (activeXformId == sz) {
         activeXformId--;
     }
-    // TODO
+    sendRemovedXFormContent(id);
     startNewRender();
 }
 
@@ -128,7 +129,6 @@ void FlameView::handleFrameContent(FrameContent content) {
     *(document->flame.size.get()) = content.flameSize;
     *(document->flame.center.get()) = content.flameCenter;
     document->flame.scale.setValue(content.flameScale);
-    // TODO
     startNewRender();
 }
 
@@ -143,7 +143,7 @@ void FlameView::sendFlameContent() {
     // XForms
     content.xforms.resize(document->flame.xforms.size());
     for (int i=0; i<content.xforms.size(); i++) {
-        content.xforms[i] = getXformContent(i);
+        content.xforms[i] = getXformContent(i).value();
     }
     // Final xform
     if (document->flame.finalXForm.isSet()) {
@@ -186,7 +186,18 @@ void FlameView::sendAddedXFormContent() {
     activeXformContent(content);
 }
 
-XFormContent FlameView::getXformContent(int idx) {
+void FlameView::sendRemovedXFormContent(int id) {
+    ActiveXFormContent content;
+    content.id = id;
+    content.op = REMOVED;
+    content.xform = getXformContent(activeXformId);
+    activeXformContent(content);
+}
+
+std::optional<XFormContent> FlameView::getXformContent(int idx) {
+    if (idx < 0 || idx >= document->flame.xforms.size()) {
+        return std::nullopt;
+    }
     XFormContent content;
     auto preCoefs = document->flame.xforms.get(idx)->coefs.value();
     content.preCoefs.ox = preCoefs.ox;

@@ -25,4 +25,16 @@ void TriangleHandler::insertCoefsContent(int pos, CoefsContent coefsContent) {
     content->coefs.insert(it, coefsContent);
 }
 
+void TriangleHandler::removeCoefsContent(int pos) {
+    if (!content.has_value()) {
+        return;
+    }
+    content->activeId = pos;
+    auto it = std::next(content->coefs.begin(), pos);
+    content->coefs.erase(it);
+    if (content->activeId == content->coefs.size()) {
+        content->activeId--;
+    }
+}
+
 }

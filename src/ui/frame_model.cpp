@@ -103,6 +103,7 @@ void FrameModel::setValue(const wxVariant& val, int row, int col) {
         }
         frameContent(content.value());
     }
+    update();
 }
 
 }
