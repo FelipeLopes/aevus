@@ -23,12 +23,12 @@ void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) 
     this->content = content;
 }
 
-void TriangleDrawer::handleActiveXformContent(ActiveXFormContent xformContent) {
+void TriangleDrawer::updateCoefsContent(int pos, CoefsContent coefsContent) {
     if (!content.has_value()) {
         return;
     }
-    content->activeId = xformContent.id;
-    content->coefs[content->activeId] = xformContent.xform->preCoefs;
+    content->activeId = pos;
+    content->coefs[pos] = coefsContent;
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {

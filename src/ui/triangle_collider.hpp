@@ -12,7 +12,7 @@ public:
     TriangleCollider(TriangleGrid* triangleGrid);
     Collision getCollision(WindowPoint pos);
     void handleContent(std::optional<XFormTriangleContent> content);
-    void handleActiveXformContent(ActiveXFormContent xformContent);
+    void updateCoefsContent(int pos, CoefsContent coefsContent);
 private:
     CollisionType getCollisionType(WindowPoint pos, int triangle);
     int checkVertexCollision(WindowPoint p, int idx);

@@ -11,7 +11,7 @@ class TriangleDrawer {
 public:
     TriangleDrawer(TriangleGrid* triangleGrid, wxFont font);
     void handleContent(std::optional<XFormTriangleContent> content);
-    void handleActiveXformContent(ActiveXFormContent xformContent);
+    void updateCoefsContent(int pos, CoefsContent coefsContent);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
 private:

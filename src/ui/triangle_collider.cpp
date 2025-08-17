@@ -37,12 +37,12 @@ void TriangleCollider::handleContent(std::optional<XFormTriangleContent> content
     this->content = content;
 }
 
-void TriangleCollider::handleActiveXformContent(ActiveXFormContent xformContent) {
-    if (!content.has_value() || xformContent.xform.has_value()) {
+void TriangleCollider::updateCoefsContent(int pos, CoefsContent coefsContent) {
+    if (!content.has_value()) {
         return;
     }
-    content->activeId = xformContent.id;
-    content->coefs[content->activeId] = xformContent.xform->preCoefs;
+    content->activeId = pos;
+    content->coefs[pos] = coefsContent;
 }
 
 CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) {
