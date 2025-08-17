@@ -48,11 +48,11 @@ void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
 }
 
 void WeightsModel::handleAddXform() {
-    xformAdded();
+    xformAdded(content->weights.size());
 }
 
 void WeightsModel::handleRemoveXform() {
-    xformRemoved();
+    xformRemoved(content->activeId);
 }
 
 void WeightsModel::getValues(vector<wxVector<wxVariant>>& data) const {

@@ -59,4 +59,9 @@ struct ActiveXFormUpdateContent {
     std::optional<double> weight, color, colorSpeed;
 };
 
+struct AddedXFormContent {
+    int id;
+    XFormContent xform;
+};
+
 }

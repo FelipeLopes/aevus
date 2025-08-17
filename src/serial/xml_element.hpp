@@ -46,6 +46,14 @@ public:
         return std::static_pointer_cast<T>(*it);
     }
 
+    void appendAt(int pos, std::shared_ptr<T> element) {
+        auto it = list.begin();
+        for (int i=0; i<pos; i++) {
+            it++;
+        }
+        list.insert(it, element);
+    }
+
     void append(std::shared_ptr<T> element) {
         list.push_back(element);
     }

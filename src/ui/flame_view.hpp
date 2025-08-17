@@ -20,13 +20,14 @@ public:
     void documentLoaded();
     void handleXFormSelected(int i);
     void handleXFormUpdate(ActiveXFormUpdateContent content);
-    void handleXFormAdded();
-    void handleXFormRemoved();
+    void handleXFormAdded(int id);
+    void handleXFormRemoved(int id);
     void handleFrameContent(FrameContent content);
 
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
     boost::signals2::signal<void (ActiveXFormContent)> activeXformContent;
+    boost::signals2::signal<void (AddedXFormContent)> addedXformContent;
 
 private:
     AevusFrame* aevusFrame;
@@ -41,6 +42,7 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendActiveXFormContent();
+    void sendAddedXFormContent();
 
     XFormContent getXformContent(int idx);
 

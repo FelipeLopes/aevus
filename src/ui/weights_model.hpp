@@ -19,8 +19,8 @@ public:
     void handleAddXform();
     void handleRemoveXform();
     boost::signals2::signal<void (int)> xformSelected;
-    boost::signals2::signal<void ()> xformAdded;
-    boost::signals2::signal<void ()> xformRemoved;
+    boost::signals2::signal<void (int)> xformAdded;
+    boost::signals2::signal<void (int)> xformRemoved;
     boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
 private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;

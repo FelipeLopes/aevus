@@ -107,14 +107,14 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     startNewRender();
 }
 
-void FlameView::handleXFormAdded() {
-    activeXformId = document->flame.xforms.size();
-    document->flame.xforms.append(std::make_shared<core::XForm>());
-    // TODO
+void FlameView::handleXFormAdded(int id) {
+    activeXformId = id;
+    document->flame.xforms.appendAt(id, std::make_shared<core::XForm>());
+    sendAddedXFormContent();
     startNewRender();
 }
 
-void FlameView::handleXFormRemoved() {
+void FlameView::handleXFormRemoved(int id) {
     int sz = document->flame.xforms.size();
     document->flame.xforms.remove(activeXformId);
     if (activeXformId == sz - 1) {
@@ -175,6 +175,13 @@ void FlameView::sendActiveXFormContent() {
     content.id = activeXformId;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
+}
+
+void FlameView::sendAddedXFormContent() {
+    AddedXFormContent content;
+    content.id = activeXformId;
+    content.xform = getXformContent(activeXformId);
+    addedXformContent(content);
 }
 
 XFormContent FlameView::getXformContent(int idx) {
