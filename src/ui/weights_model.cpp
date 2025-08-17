@@ -43,11 +43,17 @@ void WeightsModel::handleFlameContent(std::optional<FlameContent> flameContent_)
 }
 
 void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
+    if (!content.has_value()) {
+        return;
+    }
+    content->activeId = xformContent.id;
+    auto it = std::next(content->weights.begin(), content->activeId);
     switch (xformContent.op) {
         case UPDATED:
-            content->activeId = xformContent.id;
             break;
         case ADDED:
+            content->weights.insert(it, xformContent.xform->weight);
+            break;
         case REMOVED:
             break;
     }
