@@ -33,7 +33,11 @@ void VariationModel::handleFlameContent(std::optional<FlameContent> flameContent
 }
 
 void VariationModel::handleActiveXformContent(ActiveXFormContent xformContent) {
-    content = xformContent.xform->variations;
+    if (xformContent.xform.has_value()) {
+        content = xformContent.xform->variations;
+    } else {
+        content = std::nullopt;
+    }
     update();
 }
 
