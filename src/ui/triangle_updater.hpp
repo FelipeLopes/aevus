@@ -3,15 +3,14 @@
 #include "../core/flame.hpp"
 #include "content.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_handler.hpp"
 #include "triangle_types.hpp"
 
 namespace ui {
 
-class TriangleUpdater {
+class TriangleUpdater: public TriangleHandler {
 public:
     TriangleUpdater(TriangleGrid* triangleGrid);
-    void handleContent(std::optional<XFormTriangleContent> content);
-    void updateCoefsContent(int pos, CoefsContent coefsContent);
     UpdateState getUpdateState();
     void startGridDrag(WindowPoint clickPoint);
     void startTriangleDrag(WindowPoint clickPoint);
@@ -26,7 +25,6 @@ private:
     void setUpdateStartData(WindowPoint clickPoint);
     double distancePointLine(GridPoint p, GridPoint s1, GridPoint s2);
     TriangleGrid* triangleGrid;
-    std::optional<XFormTriangleContent> content;
     UpdateState state;
     wxAffineMatrix2D gridDragInverse;
     GridPoint startPoint, startO, startX, startY, startCenter;

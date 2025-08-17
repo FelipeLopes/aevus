@@ -3,16 +3,15 @@
 #include "../core/flame.hpp"
 #include "content.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_handler.hpp"
 #include "triangle_types.hpp"
 
 namespace ui {
 
-class TriangleCollider {
+class TriangleCollider: public TriangleHandler {
 public:
     TriangleCollider(TriangleGrid* triangleGrid);
     Collision getCollision(WindowPoint pos);
-    void handleContent(std::optional<XFormTriangleContent> content);
-    void updateCoefsContent(int pos, CoefsContent coefsContent);
 private:
     CollisionType getCollisionType(WindowPoint pos, int triangle);
     int checkVertexCollision(WindowPoint p, int idx);
@@ -22,7 +21,6 @@ private:
     double sign(GridPoint p1, GridPoint p2, GridPoint p3);
 
     TriangleGrid* triangleGrid;
-    std::optional<XFormTriangleContent> content;
 };
 
 }

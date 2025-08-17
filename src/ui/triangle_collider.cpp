@@ -33,18 +33,6 @@ Collision TriangleCollider::getCollision(WindowPoint pos) {
     return ans;
 }
 
-void TriangleCollider::handleContent(std::optional<XFormTriangleContent> content) {
-    this->content = content;
-}
-
-void TriangleCollider::updateCoefsContent(int pos, CoefsContent coefsContent) {
-    if (!content.has_value()) {
-        return;
-    }
-    content->activeId = pos;
-    content->coefs[pos] = coefsContent;
-}
-
 CollisionType TriangleCollider::getCollisionType(WindowPoint pos, int triangle) {
     auto ans = NO_COLLISION;
     int vertex = checkVertexCollision(pos, triangle);

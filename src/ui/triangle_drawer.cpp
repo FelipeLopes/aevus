@@ -19,18 +19,6 @@ TriangleDrawer::TriangleDrawer(TriangleGrid* triangleGrid_, wxFont font_):
     content->activeId = -1;
 }
 
-void TriangleDrawer::handleContent(std::optional<XFormTriangleContent> content) {
-    this->content = content;
-}
-
-void TriangleDrawer::updateCoefsContent(int pos, CoefsContent coefsContent) {
-    if (!content.has_value()) {
-        return;
-    }
-    content->activeId = pos;
-    content->coefs[pos] = coefsContent;
-}
-
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {
     if (!content.has_value() || content->activeId == -1) {
         return;

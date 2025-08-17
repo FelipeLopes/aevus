@@ -3,15 +3,14 @@
 #include "../core/flame.hpp"
 #include "content.hpp"
 #include "triangle_grid.hpp"
+#include "triangle_handler.hpp"
 #include "triangle_types.hpp"
 
 namespace ui {
 
-class TriangleDrawer {
+class TriangleDrawer: public TriangleHandler {
 public:
     TriangleDrawer(TriangleGrid* triangleGrid, wxFont font);
-    void handleContent(std::optional<XFormTriangleContent> content);
-    void updateCoefsContent(int pos, CoefsContent coefsContent);
     void drawXformTriangles(wxGraphicsContext* gc);
     bool setCursorCollision(Collision cursorCollision);
 private:
@@ -27,7 +26,6 @@ private:
 
     TriangleGrid* triangleGrid;
     wxFont font;
-    std::optional<XFormTriangleContent> content;
     std::vector<wxColour> xformColors;
     std::vector<std::string> dotLabels;
     Collision cursorCollision;

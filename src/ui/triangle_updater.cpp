@@ -7,18 +7,6 @@ namespace ui {
 TriangleUpdater::TriangleUpdater(TriangleGrid* triangleGrid_):
     triangleGrid(triangleGrid_), state(NO_UPDATE) { }
 
-void TriangleUpdater::handleContent(std::optional<XFormTriangleContent> content) {
-    this->content = content;
-}
-
-void TriangleUpdater::updateCoefsContent(int pos, CoefsContent coefsContent) {
-    if (!content.has_value()) {
-        return;
-    }
-    content->activeId = pos;
-    content->coefs[content->activeId] = coefsContent;
-}
-
 UpdateState TriangleUpdater::getUpdateState() {
     return state;
 }
