@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../core/flame.hpp"
-#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_handler.hpp"
 #include "triangle_types.hpp"

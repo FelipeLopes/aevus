@@ -69,10 +69,10 @@ typedef struct XFormCL {
     int varBegin, varEnd;
 } XFormCL;
 
-typedef struct FlameCL {
+typedef struct FrameCL {
     float cx, cy, scale;
     int width, height;
-} FlameCL;
+} FrameCL;
 
 inline bool badval(float x, float y) {
     return (x - x != 0) || (y - y != 0);
@@ -169,20 +169,20 @@ float2 square(__global SeedUnion* s) {
     return ans;
 }
 
-int histogramIndex(FlameCL* flame, float2 p) {
+int histogramIndex(FrameCL* frame, float2 p) {
     float2 tl, prop;
-    prop.x = flame->width/flame->scale;
-    prop.y = flame->height/flame->scale;
-    tl.x = flame->cx - prop.x/2;
-    tl.y = flame->cy - prop.y/2;
+    prop.x = frame->width/frame->scale;
+    prop.y = frame->height/frame->scale;
+    tl.x = frame->cx - prop.x/2;
+    tl.y = frame->cy - prop.y/2;
     if (p.x - tl.x < 0 || p.x - tl.x > prop.x) {
         return -1;
     } else if (p.y - tl.y < 0 || p.y - tl.y > prop.y) {
         return -1;
     }
-    int iPos = (p.y-tl.y)*BUCKET_FACTOR*flame->scale;
-    int jPos = (p.x-tl.x)*BUCKET_FACTOR*flame->scale;
-    return iPos*flame->width+jPos;
+    int iPos = (p.y-tl.y)*BUCKET_FACTOR*frame->scale;
+    int jPos = (p.x-tl.x)*BUCKET_FACTOR*frame->scale;
+    return iPos*frame->width+jPos;
 }
 
 ColoredPoint calcXform(__global const XFormCL* xform, __global const VariationCL* vars,
@@ -236,7 +236,7 @@ ColoredPoint iterateXform(__global const XFormCL* xform, __global const Variatio
 }
 
 __kernel void iterate(
-    FlameCL flameCL,
+    FrameCL frame,
     __global IterationState *state,
     __global const XFormCL *xform,
     __global const VariationCL *vars,
@@ -253,7 +253,7 @@ __kernel void iterate(
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];
         ColoredPoint p = iterateXform(xform, vars, params, xfIdx, &state[i], posFinalXForm);
-        int idx = histogramIndex(&flameCL, (float2)(p.x,p.y));
+        int idx = histogramIndex(&frame, (float2)(p.x,p.y));
         if (idx != -1) {
             float4 color = lookupColor(palette, p.c);
             if (hist[idx].w < threshold) {

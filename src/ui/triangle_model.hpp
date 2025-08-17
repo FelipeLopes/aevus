@@ -1,8 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "../core/flame.hpp"
-#include "content.hpp"
+#include "../core/content.hpp"
 #include "triangle_collider.hpp"
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
@@ -23,13 +22,13 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
-    void handleFlameContent(std::optional<FlameContent> content);
-    void handleActiveXformContent(ActiveXFormContent xformContent);
+    void handleFlameContent(std::optional<core::FlameContent> content);
+    void handleActiveXformContent(core::ActiveXFormContent xformContent);
 
     boost::signals2::signal<void (int)> xformSelected;
-    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
+    boost::signals2::signal<void (core::ActiveXFormUpdateContent)> xformUpdate;
 
-    static std::array<std::pair<double, double>, 3> triangle(CoefsContent coefs);
+    static std::array<std::pair<double, double>, 3> triangle(core::CoefsContent coefs);
 private:
     wxPanel* trianglePanel;
     int activeId;

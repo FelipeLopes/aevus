@@ -11,7 +11,7 @@
 namespace render {
 
 struct IteratorParams {
-    core::FlameCL flameCL;
+    core::FrameCL frame;
     std::vector<core::IterationState> stateVec;
     std::vector<core::XFormCL> xformVec;
     std::vector<core::VariationCL> varVec;
@@ -34,7 +34,7 @@ private:
     clwrap::CLQueuedContext& context;
     Kernel kernel;
 
-    clwrap::CLArg<core::FlameCL> flameArg;
+    clwrap::CLArg<core::FrameCL> frameArg;
     clwrap::CLReadWriteBufferArg<core::IterationState> stateArg;
     clwrap::CLReadOnlyBufferArg<core::XFormCL> xformArg;
     clwrap::CLReadOnlyBufferArg<core::VariationCL> varArg;

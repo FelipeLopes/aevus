@@ -1,5 +1,4 @@
 #include "triangle_collider.hpp"
-#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_model.hpp"
 #include "triangle_types.hpp"

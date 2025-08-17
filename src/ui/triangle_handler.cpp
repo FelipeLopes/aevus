@@ -1,5 +1,8 @@
 #include "triangle_handler.hpp"
 
+using core::XFormTriangleContent;
+using core::CoefsContent;
+
 namespace ui {
 
 TriangleHandler::TriangleHandler() { }

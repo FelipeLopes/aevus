@@ -58,11 +58,9 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 }
 
 void AevusFrame::setupFlameView(FlameView *flameView) {
-    core::Flame* ptr = NULL;
     if (flameView != NULL) {
-        ptr = flameView->getFlame();
-        flameView->startNewRender.connect(
-            bind(&Renderer::update, &renderer)
+        flameView->flameContent.connect(
+            bind(&Renderer::handleFlameContent, &renderer, _1)
         );
         flameView->flameContent.connect(
             bind(&TransformModel::handleFlameContent, &preTransformModel, _1)
@@ -137,7 +135,6 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
             bind(&FlameView::handleFrameContent, flameView, _1)
         );
     }
-    renderer.setFlame(ptr);
 }
 
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {

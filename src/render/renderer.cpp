@@ -14,8 +14,8 @@ namespace render {
 typedef std::chrono::duration<int, std::ratio<1, 60>> frame_duration;
 
 Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
-    context(context_), flame(NULL), stream(stream_), iterator(context),
-    toneMapper(context), colorer(context), running(true), state(FLAME_MODIFIED)
+    context(context_), stream(stream_), iterator(context),
+    toneMapper(context), colorer(context), running(true), state(NO_FLAME)
 {
     update();
     boost::asio::post(context.rendererPool, [this] {
@@ -34,21 +34,32 @@ Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
     });
 }
 
+void Renderer::handleFlameContent(std::optional<core::FlameContent> content) {
+    lock.lock();
+    this->content = content;
+    // TODO: this is called when the document is closed. Verify that it terminates gracefully.
+    lock.unlock();
+}
+
+/*
 void Renderer::setFlame(core::Flame* flame_) {
     lock.lock();
     flame = flame_;
     lock.unlock();
     update();
 }
+*/
 
 void Renderer::update() {
     lock.lock();
+    /*
     if (flame == NULL) {
         state = NO_FLAME;
     } else {
         state = FLAME_MODIFIED;
         extractParams();
     }
+    */
     lock.unlock();
 }
 
@@ -64,12 +75,14 @@ void Renderer::writePNMImage(vector<uint8_t>& imgData) {
 }
 
 void Renderer::extractParams() {
+    /*
     iterator.extractParams(flame, iteratorParams);
     toneMapper.extractParams(flame, toneMapperParams);
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
     colorer.extractParams(flame, colorerParams);
     extractRendererParams();
+    */
 }
 
 void Renderer::runIteration() {
@@ -118,11 +131,13 @@ void Renderer::render() {
 }
 
 void Renderer::extractRendererParams() {
+    /*
     auto sz = flame->size.value();
     rendererParams.width = sz.width;
     rendererParams.height = sz.height;
     rendererParams.background = flame->background.value().toColorCL();
     rendererParams.clippingMode = flame->clipping.value().mode;
+    */
 }
 
 Renderer::~Renderer() {

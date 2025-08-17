@@ -2,11 +2,11 @@
 
 #include <array>
 #include <vector>
-#include "../core/custom_coefs.hpp"
-#include "../core/palette.hpp"
-#include "../core/variation.hpp"
+#include "custom_coefs.hpp"
+#include "palette.hpp"
+#include "variation.hpp"
 
-namespace ui {
+namespace core {
 
 struct CoefsContent {
     double ox, oy, xx, xy, yx, yy;

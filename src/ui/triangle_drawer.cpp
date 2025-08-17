@@ -1,5 +1,4 @@
 #include "triangle_drawer.hpp"
-#include "content.hpp"
 #include "triangle_model.hpp"
 #include "triangle_types.hpp"
 #include <wx/brush.h>

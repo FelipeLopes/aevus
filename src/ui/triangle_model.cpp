@@ -1,11 +1,15 @@
 #include "triangle_model.hpp"
-#include "content.hpp"
 #include "triangle_collider.hpp"
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_types.hpp"
 #include <wx/dcbuffer.h>
 
+using core::CoefsContent;
+using core::ActiveXFormContent;
+using core::ActiveXFormUpdateContent;
+using core::FlameContent;
+using core::XFormTriangleContent;
 using std::array;
 using std::pair;
 using std::string;
@@ -143,17 +147,17 @@ void TriangleModel::handleFlameContent(std::optional<FlameContent> content_) {
 void TriangleModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     activeId = xformContent.id;
     switch (xformContent.op) {
-        case UPDATED:
+        case core::UPDATED:
             triangleCollider.updateCoefsContent(activeId, xformContent.xform->preCoefs);
             triangleDrawer.updateCoefsContent(activeId, xformContent.xform->preCoefs);
             triangleUpdater.updateCoefsContent(activeId, xformContent.xform->preCoefs);
             break;
-        case ADDED:
+        case core::ADDED:
             triangleCollider.insertCoefsContent(activeId, xformContent.xform->preCoefs);
             triangleDrawer.insertCoefsContent(activeId, xformContent.xform->preCoefs);
             triangleUpdater.insertCoefsContent(activeId, xformContent.xform->preCoefs);
             break;
-        case REMOVED:
+        case core::REMOVED:
             triangleCollider.removeCoefsContent(activeId);
             triangleDrawer.removeCoefsContent(activeId);
             triangleUpdater.removeCoefsContent(activeId);

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../core/flame.hpp"
-#include "content.hpp"
 #include "triangle_grid.hpp"
 #include "triangle_handler.hpp"
 #include "triangle_types.hpp"
@@ -19,7 +17,7 @@ public:
     void startTriangleRotation(WindowPoint clickPoint);
     void startTriangleScaling(WindowPoint clickPoint);
     void updateCenterForPoint(WindowPoint mousePoint);
-    CoefsContent getCoefsForPoint(WindowPoint mousePoint);
+    core::CoefsContent getCoefsForPoint(WindowPoint mousePoint);
     void finishUpdate();
 private:
     void setUpdateStartData(WindowPoint clickPoint);

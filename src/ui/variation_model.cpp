@@ -1,8 +1,10 @@
 #include "variation_model.hpp"
-#include "content.hpp"
 #include "variation_text_completer.hpp"
 #include <stdexcept>
 
+using core::FlameContent;
+using core::ActiveXFormContent;
+using core::ActiveXFormUpdateContent;
 using std::string;
 using std::to_string;
 using std::vector;

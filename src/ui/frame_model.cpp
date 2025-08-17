@@ -1,6 +1,8 @@
 #include "frame_model.hpp"
 #include "view_model.hpp"
 
+using core::FlameContent;
+using core::FrameContent;
 using std::string;
 using std::to_string;
 

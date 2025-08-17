@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../clwrap/cl_context.hpp"
+#include "../core/content.hpp"
 #include "colorer.hpp"
 #include "iterator.hpp"
 #include "tone_mapper.hpp"
@@ -26,8 +27,8 @@ struct RendererParams {
 class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, std::stringstream& stream);
-    void setFlame(core::Flame* flame);
     void update();
+    void handleFlameContent(std::optional<core::FlameContent> content);
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:
@@ -37,8 +38,10 @@ private:
     void runToneMapping();
     void render();
     void extractRendererParams();
+
+    std::optional<core::FlameContent> content;
+
     clwrap::CLQueuedContext& context;
-    core::Flame* flame;
     std::stringstream& stream;
     Iterator iterator;
     IteratorParams iteratorParams;

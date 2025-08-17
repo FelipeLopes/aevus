@@ -1,11 +1,14 @@
 #include "color_model.hpp"
-#include "content.hpp"
 #include "view_model.hpp"
 #include <algorithm>
 #include <wx/rawbmp.h>
 #include <wx/graphics.h>
 #include <wx/dcbuffer.h>
 
+using core::FlameContent;
+using core::ColorContent;
+using core::ActiveXFormContent;
+using core::ActiveXFormUpdateContent;
 using std::string;
 using std::to_string;
 using std::vector;

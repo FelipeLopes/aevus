@@ -1,6 +1,7 @@
 #include "triangle_updater.hpp"
-#include "content.hpp"
 #include "triangle_types.hpp"
+
+using core::CoefsContent;
 
 namespace ui {
 

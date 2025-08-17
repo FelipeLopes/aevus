@@ -1,9 +1,13 @@
 #include "transform_model.hpp"
-#include "content.hpp"
 #include <optional>
 #include <stdexcept>
 #include <string>
 
+using core::FlameContent;
+using core::ActiveXFormUpdateContent;
+using core::ActiveXFormContent;
+using core::CoefsContent;
+using core::XFormContent;
 using std::string;
 using std::to_string;
 using std::vector;

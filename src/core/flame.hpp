@@ -10,10 +10,10 @@
 
 namespace core {
 
-struct FlameCL {
+struct FrameCL {
     float cx, cy, scale;
     int width, height;
-    FlameCL() {
+    FrameCL() {
         cx = cy = 0;
         scale = 100;
         width = 732;
@@ -65,7 +65,7 @@ public:
     serial::OptionalXMLElementClass<FinalXForm> finalXForm;
     Palette palette;
 
-    FlameCL getFlameCL() const;
+    FrameCL getFrame() const;
     void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
     void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec,
         std::vector<float>& paramVec) const;

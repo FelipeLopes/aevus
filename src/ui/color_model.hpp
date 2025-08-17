@@ -1,6 +1,6 @@
 #pragma once
 
-#include "content.hpp"
+#include "../core/content.hpp"
 #include "view_model.hpp"
 #include "../core/flame.hpp"
 #include <cfloat>
@@ -12,13 +12,13 @@ namespace ui {
 class ColorModel: public ViewModel {
 public:
     ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel);
-    void handleFlameContent(std::optional<FlameContent> flameContent);
-    void handleActiveXformContent(ActiveXFormContent xformContent);
+    void handleFlameContent(std::optional<core::FlameContent> flameContent);
+    void handleActiveXformContent(core::ActiveXFormContent xformContent);
     void handlePaint();
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
-    boost::signals2::signal<void (ActiveXFormUpdateContent)> xformUpdate;
+    boost::signals2::signal<void (core::ActiveXFormUpdateContent)> xformUpdate;
 private:
     void setupPalette();
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
@@ -30,7 +30,7 @@ private:
     wxBitmap paletteBitmap;
     wxBitmap blackLineBitmap;
     wxBitmap whiteLineBitmap;
-    std::optional<ColorContent> content;
+    std::optional<core::ColorContent> content;
     bool dragging;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);

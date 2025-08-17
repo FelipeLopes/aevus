@@ -16,7 +16,7 @@ namespace render {
 Iterator::Iterator(CLQueuedContext& context_):
     context(context_),
     kernel(context, "iterate"),
-    flameArg(&kernel, 0, core::FlameCL()),
+    frameArg(&kernel, 0, core::FrameCL()),
     stateArg(&kernel, 1),
     xformArg(&kernel, 2),
     varArg(&kernel, 3),
@@ -29,25 +29,25 @@ Iterator::Iterator(CLQueuedContext& context_):
     itersArg(&kernel, 10, 0) { }
 
 void Iterator::extractParams(Flame* flame, IteratorParams& params) {
-    params.flameCL = flame->getFlameCL();
+    params.frame = flame->getFrame();
     flame->readInitialStateArray(params.stateVec, GLOBAL_WORK_SIZE);
     flame->readXFormData(params.xformVec, params.varVec, params.paramVec);
     flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
     params.posFinalXForm = flame->readFinalXFormPosition();
-    double samples = flame->quality.value()*params.flameCL.width*params.flameCL.height;
+    double samples = flame->quality.value()*params.frame.width*params.frame.height;
     params.iters = ceil(samples/GLOBAL_WORK_SIZE);
 }
 
 std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
-    int histSize = 4*ceil(1.0*params.flameCL.width*params.flameCL.height/GLOBAL_WORK_SIZE) *
+    int histSize = 4*ceil(1.0*params.frame.width*params.frame.height/GLOBAL_WORK_SIZE) *
         GLOBAL_WORK_SIZE;
     histogramVec.resize(histSize);
     std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
     if (params.xformVec.size() == 0) {
         return NULL;
     }
-    flameArg.set(params.flameCL);
+    frameArg.set(params.frame);
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);
     varArg.lazy(params.varVec);

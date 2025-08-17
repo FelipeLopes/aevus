@@ -1,8 +1,11 @@
 #include "weights_model.hpp"
-#include "content.hpp"
 #include "selection_view_model.hpp"
 #include <string>
 
+using core::FlameContent;
+using core::WeightsContent;
+using core::ActiveXFormContent;
+using core::ActiveXFormUpdateContent;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -49,12 +52,12 @@ void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     content->activeId = xformContent.id;
     auto it = std::next(content->weights.begin(), content->activeId);
     switch (xformContent.op) {
-        case UPDATED:
+        case core::UPDATED:
             break;
-        case ADDED:
+        case core::ADDED:
             content->weights.insert(it, xformContent.xform->weight);
             break;
-        case REMOVED: {
+        case core::REMOVED: {
             content->weights.erase(it);
             if (content->activeId == content->weights.size()) {
                 content->activeId--;

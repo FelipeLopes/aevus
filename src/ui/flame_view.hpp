@@ -1,6 +1,6 @@
 #pragma once
 
-#include "content.hpp"
+#include "../core/content.hpp"
 #include "flame_document.hpp"
 #include "variation_model.hpp"
 #include <boost/signals2.hpp>
@@ -19,14 +19,13 @@ public:
     core::Flame* getFlame() const;
     void documentLoaded();
     void handleXFormSelected(int i);
-    void handleXFormUpdate(ActiveXFormUpdateContent content);
+    void handleXFormUpdate(core::ActiveXFormUpdateContent content);
     void handleXFormAdded(int id);
     void handleXFormRemoved(int id);
-    void handleFrameContent(FrameContent content);
+    void handleFrameContent(core::FrameContent content);
 
-    boost::signals2::signal<void ()> startNewRender;
-    boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
-    boost::signals2::signal<void (ActiveXFormContent)> activeXformContent;
+    boost::signals2::signal<void (std::optional<core::FlameContent>)> flameContent;
+    boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
 
 private:
     AevusFrame* aevusFrame;
@@ -44,7 +43,7 @@ private:
     void sendAddedXFormContent();
     void sendRemovedXFormContent(int id);
 
-    std::optional<XFormContent> getXformContent(int idx);
+    std::optional<core::XFormContent> getXformContent(int idx);
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

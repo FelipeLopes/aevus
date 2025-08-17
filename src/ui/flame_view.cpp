@@ -1,10 +1,15 @@
 #include "flame_view.hpp"
 #include "aevus_frame.hpp"
-#include "content.hpp"
 #include "flame_document.hpp"
 #include "variation_model.hpp"
 #include <memory>
 #include <wx/app.h>
+
+using core::ActiveXFormContent;
+using core::ActiveXFormUpdateContent;
+using core::FlameContent;
+using core::XFormContent;
+using core::FrameContent;
 
 namespace ui {
 
@@ -64,7 +69,6 @@ core::Flame* FlameView::getFlame() const
 void FlameView::documentLoaded() {
     activeXformId = document->flameHasXForms() ? 0 : -1;
     sendFlameContent();
-    startNewRender();
 }
 
 void FlameView::handleXFormSelected(int i) {
@@ -104,14 +108,12 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
     }
     sendUpdatedXFormContent();
-    startNewRender();
 }
 
 void FlameView::handleXFormAdded(int id) {
     activeXformId = id;
     document->flame.xforms.appendAt(id, std::make_shared<core::XForm>());
     sendAddedXFormContent();
-    startNewRender();
 }
 
 void FlameView::handleXFormRemoved(int id) {
@@ -122,14 +124,13 @@ void FlameView::handleXFormRemoved(int id) {
         activeXformId--;
     }
     sendRemovedXFormContent(id);
-    startNewRender();
 }
 
 void FlameView::handleFrameContent(FrameContent content) {
     *(document->flame.size.get()) = content.flameSize;
     *(document->flame.center.get()) = content.flameCenter;
     document->flame.scale.setValue(content.flameScale);
-    startNewRender();
+    // TODO: sendFrameContent to renderer
 }
 
 void FlameView::sendFlameContent() {
@@ -173,7 +174,7 @@ void FlameView::sendFlameContent() {
 void FlameView::sendUpdatedXFormContent() {
     ActiveXFormContent content;
     content.id = activeXformId;
-    content.op = UPDATED;
+    content.op = core::UPDATED;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
 }
@@ -181,7 +182,7 @@ void FlameView::sendUpdatedXFormContent() {
 void FlameView::sendAddedXFormContent() {
     ActiveXFormContent content;
     content.id = activeXformId;
-    content.op = ADDED;
+    content.op = core::ADDED;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
 }
@@ -189,7 +190,7 @@ void FlameView::sendAddedXFormContent() {
 void FlameView::sendRemovedXFormContent(int id) {
     ActiveXFormContent content;
     content.id = id;
-    content.op = REMOVED;
+    content.op = core::REMOVED;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
 }
