@@ -45,12 +45,12 @@ void TransformModel::handleFlameContent(std::optional<FlameContent> flameContent
         update();
         return;
     }
-    content = getCoefsContent(flameContent.xforms[0]);
+    updateContent(flameContent.xforms[0]);
     update();
 }
 
 void TransformModel::handleActiveXformContent(ActiveXFormContent xformContent) {
-    content = getCoefsContent(xformContent.xform);
+    updateContent(xformContent.xform);
     update();
 }
 
@@ -130,24 +130,28 @@ void TransformModel::afterUpdate(int selectedRow) {
     }
 }
 
-CoefsContent TransformModel::getCoefsContent(XFormContent xformContent) {
-    CoefsContent coefsContent;
-    if (accessCoefs) {
-        coefsContent.ox = xformContent.preCoefs.ox;
-        coefsContent.oy = xformContent.preCoefs.oy;
-        coefsContent.xx = xformContent.preCoefs.xx;
-        coefsContent.xy = xformContent.preCoefs.xy;
-        coefsContent.yx = xformContent.preCoefs.yx;
-        coefsContent.yy = xformContent.preCoefs.yy;
-    } else {
-        coefsContent.ox = xformContent.postCoefs.ox;
-        coefsContent.oy = xformContent.postCoefs.oy;
-        coefsContent.xx = xformContent.postCoefs.xx;
-        coefsContent.xy = xformContent.postCoefs.xy;
-        coefsContent.yx = xformContent.postCoefs.yx;
-        coefsContent.yy = xformContent.postCoefs.yy;
+void TransformModel::updateContent(std::optional<XFormContent> xformContent) {
+    if (!xformContent.has_value()) {
+        content = std::nullopt;
+        return;
     }
-    return coefsContent;
+    auto xformContentValue = xformContent.value();
+    content = CoefsContent();
+    if (accessCoefs) {
+        content->ox = xformContentValue.preCoefs.ox;
+        content->oy = xformContentValue.preCoefs.oy;
+        content->xx = xformContentValue.preCoefs.xx;
+        content->xy = xformContentValue.preCoefs.xy;
+        content->yx = xformContentValue.preCoefs.yx;
+        content->yy = xformContentValue.preCoefs.yy;
+    } else {
+        content->ox = xformContentValue.postCoefs.ox;
+        content->oy = xformContentValue.postCoefs.oy;
+        content->xx = xformContentValue.postCoefs.xx;
+        content->xy = xformContentValue.postCoefs.xy;
+        content->yx = xformContentValue.postCoefs.yx;
+        content->yy = xformContentValue.postCoefs.yy;
+    }
 }
 
 }

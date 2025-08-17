@@ -48,20 +48,22 @@ struct FlameContent {
     core::PaletteColors palette;
 };
 
+enum XFormOperation {
+    UPDATED,
+    ADDED,
+    REMOVED
+};
+
 struct ActiveXFormContent {
     int id;
-    XFormContent xform;
+    XFormOperation op;
+    std::optional<XFormContent> xform;
 };
 
 struct ActiveXFormUpdateContent {
     std::optional<CoefsContent> preCoefs, postCoefs;
     std::optional<VariationContent> variations;
     std::optional<double> weight, color, colorSpeed;
-};
-
-struct AddedXFormContent {
-    int id;
-    XFormContent xform;
 };
 
 }

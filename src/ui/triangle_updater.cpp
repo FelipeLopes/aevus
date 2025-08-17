@@ -16,7 +16,7 @@ void TriangleUpdater::handleActiveXformContent(ActiveXFormContent xformContent) 
         return;
     }
     content->activeId = xformContent.id;
-    content->coefs[content->activeId] = xformContent.xform.preCoefs;
+    content->coefs[content->activeId] = xformContent.xform->preCoefs;
 }
 
 UpdateState TriangleUpdater::getUpdateState() {

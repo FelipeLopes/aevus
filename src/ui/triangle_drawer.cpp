@@ -28,7 +28,7 @@ void TriangleDrawer::handleActiveXformContent(ActiveXFormContent xformContent) {
         return;
     }
     content->activeId = xformContent.id;
-    content->coefs[content->activeId] = xformContent.xform.preCoefs;
+    content->coefs[content->activeId] = xformContent.xform->preCoefs;
 }
 
 void TriangleDrawer::drawXformTriangles(wxGraphicsContext* gc) {

@@ -19,7 +19,7 @@ private:
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
     void setValue(const wxVariant& value, int row, int col) override;
     void afterUpdate(int selectedRow) override;
-    CoefsContent getCoefsContent(XFormContent xformContent);
+    void updateContent(std::optional<XFormContent> xformContent);
 
     wxButton* resetButton;
     bool accessCoefs;

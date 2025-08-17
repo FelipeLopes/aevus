@@ -27,7 +27,6 @@ public:
     boost::signals2::signal<void ()> startNewRender;
     boost::signals2::signal<void (std::optional<FlameContent>)> flameContent;
     boost::signals2::signal<void (ActiveXFormContent)> activeXformContent;
-    boost::signals2::signal<void (AddedXFormContent)> addedXformContent;
 
 private:
     AevusFrame* aevusFrame;
@@ -41,7 +40,7 @@ private:
     void sendVariationContent();
     void sendColorContent();
     void sendFrameContent();
-    void sendActiveXFormContent();
+    void sendUpdatedXFormContent();
     void sendAddedXFormContent();
 
     XFormContent getXformContent(int idx);
