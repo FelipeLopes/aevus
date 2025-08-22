@@ -4,7 +4,9 @@
 #include <random>
 #include <vector>
 
-using core::Flame;
+using core::FlameContent;
+using core::FrameContent;
+using core::FrameCL;
 using std::shared_ptr;
 using std::stringstream;
 using std::vector;
@@ -28,15 +30,16 @@ Iterator::Iterator(CLQueuedContext& context_):
     thresholdArg(&kernel, 9, 0.0f),
     itersArg(&kernel, 10, 0) { }
 
-void Iterator::extractParams(Flame* flame, IteratorParams& params) {
-    params.frame = flame->getFrame();
+void Iterator::extractParams(const FlameContent& flame, IteratorParams& params) {
+    params.frame = getFrame(flame.frame);
+    /*
     flame->readInitialStateArray(params.stateVec, GLOBAL_WORK_SIZE);
     flame->readXFormData(params.xformVec, params.varVec, params.paramVec);
     flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
     params.posFinalXForm = flame->readFinalXFormPosition();
     double samples = flame->quality.value()*params.frame.width*params.frame.height;
-    params.iters = ceil(samples/GLOBAL_WORK_SIZE);
+    params.iters = ceil(samples/GLOBAL_WORK_SIZE);*/
 }
 
 std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
@@ -73,6 +76,16 @@ void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {
     /*out << "P7\nWIDTH " << width <<
         "\nHEIGHT "<< height <<
         "\nDEPTH 4\nMAXVAL 255\nTUPLTYPE RGB_ALPHA\nENDHDR\n";*/
+}
+
+FrameCL Iterator::getFrame(FrameContent frame) {
+    FrameCL frameCL;
+    frameCL.cx = frame.flameCenter.x;
+    frameCL.cy = frame.flameCenter.y;
+    frameCL.scale = frame.flameScale;
+    frameCL.width = frame.flameSize.width;
+    frameCL.height = frame.flameSize.height;
+    return frameCL;
 }
 
 }

@@ -4,6 +4,7 @@
 #include "../clwrap/cl_buffer.hpp"
 #include "../clwrap/cl_context.hpp"
 #include "../clwrap/cl_executable.hpp"
+#include "../core/content.hpp"
 #include "../core/flame.hpp"
 #include "kernel.hpp"
 #include <sstream>
@@ -26,7 +27,7 @@ struct IteratorParams {
 class Iterator {
 public:
     Iterator(clwrap::CLQueuedContext& context);
-    void extractParams(core::Flame* flame, IteratorParams& params);
+    void extractParams(const core::FlameContent& flame, IteratorParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(IteratorParams& params);
     void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& histogram);
 private:
@@ -50,6 +51,8 @@ private:
 
     static const int GLOBAL_WORK_SIZE = 4096;
     static const int LOCAL_WORK_SIZE = 256;
+
+    core::FrameCL getFrame(core::FrameContent frame);
 };
 
 }

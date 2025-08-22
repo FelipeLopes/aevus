@@ -52,14 +52,12 @@ void Renderer::setFlame(core::Flame* flame_) {
 
 void Renderer::update() {
     lock.lock();
-    /*
-    if (flame == NULL) {
+    if (!content.has_value()) {
         state = NO_FLAME;
     } else {
         state = FLAME_MODIFIED;
         extractParams();
     }
-    */
     lock.unlock();
 }
 
@@ -75,8 +73,8 @@ void Renderer::writePNMImage(vector<uint8_t>& imgData) {
 }
 
 void Renderer::extractParams() {
+    iterator.extractParams(content.value(), iteratorParams);
     /*
-    iterator.extractParams(flame, iteratorParams);
     toneMapper.extractParams(flame, toneMapperParams);
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);

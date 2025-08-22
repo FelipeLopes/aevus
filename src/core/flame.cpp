@@ -61,16 +61,6 @@ Flame::Flame(): XMLElementClass("flame"),
     vibrancy.setValue(1);
 }
 
-FrameCL Flame::getFrame() const {
-    FrameCL frameCL;
-    frameCL.cx = center.value().x;
-    frameCL.cy = center.value().y;
-    frameCL.scale = scale.value();
-    frameCL.width = size.value().width;
-    frameCL.height = size.value().height;
-    return frameCL;
-}
-
 void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
     arr.clear();
     if (xforms.size() == 0) {

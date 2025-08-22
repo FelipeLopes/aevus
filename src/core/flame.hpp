@@ -65,7 +65,6 @@ public:
     serial::OptionalXMLElementClass<FinalXForm> finalXForm;
     Palette palette;
 
-    FrameCL getFrame() const;
     void readInitialStateArray(std::vector<IterationState>& arr, int size) const;
     void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec,
         std::vector<float>& paramVec) const;
