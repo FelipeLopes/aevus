@@ -41,15 +41,6 @@ void Renderer::handleFlameContent(std::optional<core::FlameContent> content) {
     lock.unlock();
 }
 
-/*
-void Renderer::setFlame(core::Flame* flame_) {
-    lock.lock();
-    flame = flame_;
-    lock.unlock();
-    update();
-}
-*/
-
 void Renderer::update() {
     lock.lock();
     if (!content.has_value()) {
@@ -75,12 +66,10 @@ void Renderer::writePNMImage(vector<uint8_t>& imgData) {
 void Renderer::extractParams() {
     iterator.extractParams(content.value(), iteratorParams);
     toneMapper.extractParams(content.value(), toneMapperParams);
-    /*
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
-    colorer.extractParams(flame, colorerParams);
+    colorer.extractParams(content.value(), colorerParams);
     extractRendererParams();
-    */
 }
 
 void Renderer::runIteration() {
@@ -129,13 +118,11 @@ void Renderer::render() {
 }
 
 void Renderer::extractRendererParams() {
-    /*
-    auto sz = flame->size.value();
+    auto sz = content->frame.flameSize;
     rendererParams.width = sz.width;
     rendererParams.height = sz.height;
-    rendererParams.background = flame->background.value().toColorCL();
-    rendererParams.clippingMode = flame->clipping.value().mode;
-    */
+    rendererParams.background = content->render.background.toColorCL();
+    rendererParams.clippingMode = content->render.clipping;
 }
 
 Renderer::~Renderer() {

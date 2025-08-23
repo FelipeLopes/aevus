@@ -14,7 +14,7 @@ Color::Color(): Color(0,0,0) { }
 Color::Color(uint8_t r_, uint8_t g_, uint8_t b_):
     r(r_), g(g_), b(b_) { }
 
-ColorCL Color::toColorCL() {
+ColorCL Color::toColorCL() const {
     ColorCL ans;
     ans.r = r / 255.0;
     ans.g = g / 255.0;

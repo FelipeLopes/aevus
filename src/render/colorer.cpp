@@ -17,14 +17,14 @@ Colorer::Colorer(CLQueuedContext& context_):
     chunkArg(&kernel, 5, 0),
     imageArg(&kernel, 6) { }
 
-void Colorer::extractParams(core::Flame* flame, ColorerParams& params) {
-    auto sz = flame->size.value();
+void Colorer::extractParams(const core::FlameContent& flame, ColorerParams& params) {
+    auto sz = flame.frame.flameSize;
     params.width = sz.width;
     params.height = sz.height;
-    params.gamma = flame->gamma.value();
-    params.vibrancy = flame->vibrancy.value();
-    params.background = flame->background.value().toColorCL();
-    params.clippingMode = flame->clipping.value().mode;
+    params.gamma = flame.render.gamma;
+    params.vibrancy = flame.render.vibrancy;
+    params.background = flame.render.background.toColorCL();
+    params.clippingMode = flame.render.clipping;
 }
 
 shared_ptr<clwrap::CLEvent> Colorer::runAsync(ColorerParams& params, vector<float>& density) {

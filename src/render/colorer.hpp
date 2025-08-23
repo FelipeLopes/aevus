@@ -2,6 +2,7 @@
 
 #include "../clwrap/cl_arg.hpp"
 #include "../clwrap/cl_context.hpp"
+#include "../core/content.hpp"
 #include "../core/flame.hpp"
 #include "kernel.hpp"
 #include <cstdint>
@@ -18,7 +19,7 @@ struct ColorerParams {
 class Colorer {
 public:
     Colorer(clwrap::CLQueuedContext& context);
-    void extractParams(core::Flame* flame, ColorerParams& params);
+    void extractParams(const core::FlameContent& flame, ColorerParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(ColorerParams& params, std::vector<float>& density);
     void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<uint8_t>& imageData);
 private:

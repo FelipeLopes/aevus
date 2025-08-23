@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include "custom_coefs.hpp"
+#include "flame.hpp"
 #include "palette.hpp"
 #include "variation.hpp"
 
@@ -36,7 +37,9 @@ struct FrameContent {
 };
 
 struct RenderContent {
-    double quality, brightness, contrast;
+    double quality, brightness, contrast, gamma, vibrancy;
+    Color background;
+    ClippingMode clipping;
 };
 
 struct XFormContent {
