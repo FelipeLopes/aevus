@@ -139,6 +139,14 @@ void FlameView::sendFlameContent() {
     content.frame.flameSize = document->flame.size.value();
     content.frame.flameCenter = document->flame.center.value();
     content.frame.flameScale = document->flame.scale.value();
+    // Render params
+    content.render.quality = document->flame.quality.value();
+    content.render.brightness = document->flame.brightness.value();
+    content.render.contrast = document->flame.contrast.value();
+    content.render.gamma = document->flame.gamma.value();
+    content.render.vibrancy = document->flame.vibrancy.value();
+    content.render.background = document->flame.background.value();
+    content.render.clipping = document->flame.clipping.value().mode;
     // Palette
     content.palette = document->flame.palette.colors.value();
     // XForms
@@ -164,6 +172,8 @@ void FlameView::sendFlameContent() {
         content.finalXForm->postCoefs.xy = finalPostCoefs.xy;
         content.finalXForm->postCoefs.yx = finalPostCoefs.yx;
         content.finalXForm->postCoefs.yy = finalPostCoefs.yy;
+
+        content.finalXForm->variations = document->flame.finalXForm.get()->variationMap.get()->variations;
 
         content.finalXForm->color = document->flame.finalXForm.get()->color.value();
         content.finalXForm->colorSpeed = document->flame.finalXForm.get()->colorSpeed.value().colorSpeed;

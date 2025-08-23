@@ -17,7 +17,6 @@ Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
     context(context_), stream(stream_), iterator(context),
     toneMapper(context), colorer(context), running(true), state(NO_FLAME)
 {
-    update();
     boost::asio::post(context.rendererPool, [this] {
         while (running) {
             auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
@@ -37,18 +36,13 @@ Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
 void Renderer::handleFlameContent(std::optional<core::FlameContent> content) {
     lock.lock();
     this->content = content;
-    // TODO: this is called when the document is closed. Verify that it terminates gracefully.
-    lock.unlock();
-}
-
-void Renderer::update() {
-    lock.lock();
     if (!content.has_value()) {
         state = NO_FLAME;
     } else {
         state = FLAME_MODIFIED;
         extractParams();
     }
+    // TODO: this is called when the document is closed. Verify that it terminates gracefully.
     lock.unlock();
 }
 

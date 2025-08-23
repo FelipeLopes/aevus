@@ -27,7 +27,6 @@ struct RendererParams {
 class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, std::stringstream& stream);
-    void update();
     void handleFlameContent(std::optional<core::FlameContent> content);
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
