@@ -90,7 +90,7 @@ PostAffine::PostAffine(): Affine(false) { }
 
 Chaos::Chaos() { }
 
-double Chaos::getXaos(int idx) {
+double Chaos::getXaos(int idx) const {
     if (idx < 0 || idx >= chaos.size()) {
         return 1.0;
     } else {

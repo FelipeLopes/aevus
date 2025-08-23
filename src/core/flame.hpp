@@ -66,9 +66,6 @@ public:
     Palette palette;
 
     int readFinalXFormPosition() const;
-    void readXFormDistribution(std::vector<uint8_t>& dist) const;
-
-    const static int XFORM_DISTRIBUTION_GRAINS = 16384;
 
 private:
     tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;

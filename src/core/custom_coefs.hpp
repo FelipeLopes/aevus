@@ -49,7 +49,7 @@ public:
     Chaos();
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
-    double getXaos(int idx);
+    double getXaos(int idx) const;
 private:
     std::vector<double> chaos;
 };

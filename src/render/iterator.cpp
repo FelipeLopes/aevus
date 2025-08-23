@@ -37,9 +37,9 @@ Iterator::Iterator(CLQueuedContext& context_):
 void Iterator::extractParams(const FlameContent& flame, IteratorParams& params) {
     params.frame = getFrame(flame.frame);
     readInitialStateArray(flame, params.stateVec, GLOBAL_WORK_SIZE);
+    readXFormData(flame, params.xformVec, params.varVec, params.paramVec);
+    readXFormDistribution(flame, params.xformDistVec);
     /*
-    flame->readXFormData(params.xformVec, params.varVec, params.paramVec);
-    flame->readXFormDistribution(params.xformDistVec);
     flame->palette.readColorCLArray(params.paletteVec);
     params.posFinalXForm = flame->readFinalXFormPosition();
     double samples = flame->quality.value()*params.frame.width*params.frame.height;
@@ -175,6 +175,28 @@ void Iterator::readVariationData(XFormContent xform, std::vector<VariationCL>& v
             params.push_back(kv.second.params[i]);
         }
         vars.push_back(varCL);
+    }
+}
+
+void Iterator::readXFormDistribution(const FlameContent& flame, std::vector<uint8_t>& dist) const {
+    dist.resize(XFORM_DISTRIBUTION_GRAINS*flame.xforms.size());
+    for (int i=0; i<flame.xforms.size(); i++) {
+        double acc = 0;
+        std::vector<double> densities;
+        for (int j=0; j<flame.xforms.size(); j++) {
+            acc += flame.xforms[i].chaos.getXaos(j) * flame.xforms[j].weight;
+            densities.push_back(acc);
+        }
+        double step = acc / XFORM_DISTRIBUTION_GRAINS;
+        int j = 0;
+        double curr = 0;
+        for (int k=0; k<XFORM_DISTRIBUTION_GRAINS; k++) {
+            while (curr >= densities[j] && j<flame.xforms.size()) {
+                j++;
+            }
+            dist[i*XFORM_DISTRIBUTION_GRAINS+k] = j;
+            curr += step;
+        }
     }
 }
 

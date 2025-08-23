@@ -43,6 +43,7 @@ struct XFormContent {
     CoefsContent preCoefs, postCoefs;
     VariationContent variations;
     double weight, color, colorSpeed;
+    Chaos chaos;
 };
 
 struct FlameContent {

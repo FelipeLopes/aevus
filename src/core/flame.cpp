@@ -4,7 +4,6 @@
 #include <stdexcept>
 
 using std::string;
-using std::vector;
 
 namespace core {
 
@@ -66,29 +65,6 @@ int Flame::readFinalXFormPosition() const {
         return xforms.size();
     } else {
         return -1;
-    }
-}
-
-void Flame::readXFormDistribution(std::vector<uint8_t>& dist) const {
-    dist.resize(XFORM_DISTRIBUTION_GRAINS*xforms.size());
-    for (int i=0; i<xforms.size(); i++) {
-        double acc = 0;
-        std::vector<double> densities;
-        for (int j=0; j<xforms.size(); j++) {
-            acc += xforms.get(i)->chaos.value().getXaos(j) *
-                xforms.get(j)->weight.value();
-            densities.push_back(acc);
-        }
-        double step = acc / XFORM_DISTRIBUTION_GRAINS;
-        int j = 0;
-        double curr = 0;
-        for (int k=0; k<XFORM_DISTRIBUTION_GRAINS; k++) {
-            while (curr >= densities[j] && j<xforms.size()) {
-                j++;
-            }
-            dist[i*XFORM_DISTRIBUTION_GRAINS+k] = j;
-            curr += step;
-        }
     }
 }
 
