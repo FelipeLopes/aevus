@@ -61,27 +61,6 @@ Flame::Flame(): XMLElementClass("flame"),
     vibrancy.setValue(1);
 }
 
-void Flame::readInitialStateArray(vector<IterationState> &arr, int size) const {
-    arr.clear();
-    if (xforms.size() == 0) {
-        return;
-    }
-    std::mt19937_64 rng(314159);
-    std::uniform_int_distribution<uint64_t> seedDist;
-    std::uniform_int_distribution<uint8_t> xformDist(0,xforms.size()-1);
-    std::uniform_real_distribution<float> posDist(-1.0, 1.0);
-    std::uniform_real_distribution<float> colorDist(0.0, 1.0);
-    for (int i = 0; i < size; i++) {
-        IterationState st;
-        st.x = posDist(rng);
-        st.y = posDist(rng);
-        st.c = colorDist(rng);
-        st.seed.value = seedDist(rng);
-        st.xf = xformDist(rng);
-        arr.push_back(st);
-    }
-}
-
 void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec,
     vector<float>& paramVec) const
 {

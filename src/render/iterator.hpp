@@ -53,6 +53,9 @@ private:
     static const int LOCAL_WORK_SIZE = 256;
 
     core::FrameCL getFrame(core::FrameContent frame);
+    void readInitialStateArray(const core::FlameContent& flame, std::vector<core::IterationState> &arr,
+        int size) const;
+
 };
 
 }
