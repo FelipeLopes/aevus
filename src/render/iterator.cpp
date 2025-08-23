@@ -6,7 +6,10 @@
 
 using core::FlameContent;
 using core::FrameContent;
+using core::XFormContent;
 using core::FrameCL;
+using core::XFormCL;
+using core::VariationCL;
 using core::IterationState;
 using std::shared_ptr;
 using std::stringstream;
@@ -89,7 +92,9 @@ FrameCL Iterator::getFrame(FrameContent frame) {
     return frameCL;
 }
 
-void Iterator::readInitialStateArray(const FlameContent& flame, vector<IterationState> &arr, int size) const {
+void Iterator::readInitialStateArray(const FlameContent& flame,
+    vector<IterationState> &arr, int size) const
+{
     arr.clear();
     if (flame.xforms.size() == 0) {
         return;
@@ -107,6 +112,69 @@ void Iterator::readInitialStateArray(const FlameContent& flame, vector<Iteration
         st.seed.value = seedDist(rng);
         st.xf = xformDist(rng);
         arr.push_back(st);
+    }
+}
+
+void Iterator::readXFormData(const FlameContent& flame, vector<XFormCL>& xformVec,
+    vector<VariationCL>& varVec, vector<float>& paramVec) const
+{
+    xformVec.resize(flame.xforms.size());
+    varVec.clear();
+    paramVec.clear();
+    int varBegin = 0;
+    for (int i=0; i<flame.xforms.size(); i++) {
+        xformVec[i] = getXFormCL(flame.xforms[i], varBegin);
+        readVariationData(flame.xforms[i], varVec, paramVec);
+        varBegin = xformVec[i].varEnd;
+    }
+    if (flame.finalXForm.has_value()) {
+        xformVec.push_back(getXFormCL(flame.finalXForm.value(), varBegin));
+        readVariationData(flame.finalXForm.value(), varVec, paramVec);
+    }
+}
+
+XFormCL Iterator::getXFormCL(XFormContent xform, int varBegin) const {
+    XFormCL xf;
+
+    auto pre = xform.preCoefs;
+
+    xf.a = pre.xx;
+    xf.b = -pre.yx;
+    xf.c = pre.ox;
+    xf.d = -pre.xy;
+    xf.e = pre.yy;
+    xf.f = -pre.oy;
+
+    auto pst = xform.postCoefs;
+
+    xf.pa = pst.xx;
+    xf.pb = -pst.yx;
+    xf.pc = pst.ox;
+    xf.pd = -pst.xy;
+    xf.pe = pst.yy;
+    xf.pf = -pst.oy;
+
+    xf.varBegin = varBegin;
+    xf.varEnd = varBegin + xform.variations.size();
+
+    xf.color = xform.color;
+    xf.colorSpeed = xform.colorSpeed;
+
+    return xf;
+}
+
+void Iterator::readVariationData(XFormContent xform, std::vector<VariationCL>& vars,
+    std::vector<float>& params) const
+{
+    for (auto kv: xform.variations) {
+        VariationCL varCL;
+        varCL.id = kv.first;
+        varCL.weight = kv.second.weight;
+        varCL.paramBegin = params.size();
+        for (int i=0; i<kv.second.params.size(); i++) {
+            params.push_back(kv.second.params[i]);
+        }
+        vars.push_back(varCL);
     }
 }
 

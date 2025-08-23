@@ -65,8 +65,6 @@ public:
     serial::OptionalXMLElementClass<FinalXForm> finalXForm;
     Palette palette;
 
-    void readXFormData(std::vector<XFormCL>& xformVec, std::vector<VariationCL>& varVec,
-        std::vector<float>& paramVec) const;
     int readFinalXFormPosition() const;
     void readXFormDistribution(std::vector<uint8_t>& dist) const;
 

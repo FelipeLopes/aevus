@@ -53,8 +53,13 @@ private:
     static const int LOCAL_WORK_SIZE = 256;
 
     core::FrameCL getFrame(core::FrameContent frame);
-    void readInitialStateArray(const core::FlameContent& flame, std::vector<core::IterationState> &arr,
-        int size) const;
+    core::XFormCL getXFormCL(core::XFormContent xform, int varBegin) const;
+    void readInitialStateArray(const core::FlameContent& flame,
+        std::vector<core::IterationState> &arr, int size) const;
+    void readXFormData(const core::FlameContent& flame, std::vector<core::XFormCL>& xformVec,
+        std::vector<core::VariationCL>& varVec, std::vector<float>& paramVec) const;
+    void readVariationData(core::XFormContent xform, std::vector<core::VariationCL>& vars,
+        std::vector<float>& params) const;
 
 };
 

@@ -23,8 +23,6 @@ public:
     serial::XMLAttribute<PostAffine> post;
     serial::XMLAttribute<Chaos> chaos;
     serial::XMLMultiAttribute<ColorSpeed> colorSpeed;
-    XFormCL toXFormCL(int varBegin) const;
-    void readVariationData(std::vector<VariationCL>& vars, std::vector<float>& params);
 };
 
 class XForm: public BaseXForm {

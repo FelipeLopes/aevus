@@ -61,24 +61,6 @@ Flame::Flame(): XMLElementClass("flame"),
     vibrancy.setValue(1);
 }
 
-void Flame::readXFormData(vector<XFormCL>& xformVec, vector<VariationCL>& varVec,
-    vector<float>& paramVec) const
-{
-    xformVec.resize(xforms.size());
-    varVec.clear();
-    paramVec.clear();
-    int varBegin = 0;
-    for (int i=0; i<xforms.size(); i++) {
-        xformVec[i] = xforms.get(i)->toXFormCL(varBegin);
-        xforms.get(i)->readVariationData(varVec, paramVec);
-        varBegin = xformVec[i].varEnd;
-    }
-    if (finalXForm.isSet()) {
-        xformVec.push_back(finalXForm.get()->toXFormCL(varBegin));
-        finalXForm.get()->readVariationData(varVec, paramVec);
-    }
-}
-
 int Flame::readFinalXFormPosition() const {
     if (finalXForm.isSet()) {
         return xforms.size();
