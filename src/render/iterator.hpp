@@ -61,6 +61,7 @@ private:
     void readVariationData(core::XFormContent xform, std::vector<core::VariationCL>& vars,
         std::vector<float>& params) const;
     void readXFormDistribution(const core::FlameContent& flame, std::vector<uint8_t>& dist) const;
+    int readFinalXFormPosition(const core::FlameContent& flame) const;
 
     const static int XFORM_DISTRIBUTION_GRAINS = 16384;
 

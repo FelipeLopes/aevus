@@ -60,14 +60,6 @@ Flame::Flame(): XMLElementClass("flame"),
     vibrancy.setValue(1);
 }
 
-int Flame::readFinalXFormPosition() const {
-    if (finalXForm.isSet()) {
-        return xforms.size();
-    } else {
-        return -1;
-    }
-}
-
 tinyxml2::XMLNode* Flame::nodeDeserialize(tinyxml2::XMLNode* node) {
     auto element = node->ToElement();
     if (element != NULL) {

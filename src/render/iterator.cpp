@@ -39,11 +39,10 @@ void Iterator::extractParams(const FlameContent& flame, IteratorParams& params) 
     readInitialStateArray(flame, params.stateVec, GLOBAL_WORK_SIZE);
     readXFormData(flame, params.xformVec, params.varVec, params.paramVec);
     readXFormDistribution(flame, params.xformDistVec);
-    /*
-    flame->palette.readColorCLArray(params.paletteVec);
-    params.posFinalXForm = flame->readFinalXFormPosition();
-    double samples = flame->quality.value()*params.frame.width*params.frame.height;
-    params.iters = ceil(samples/GLOBAL_WORK_SIZE);*/
+    flame.palette.readColorCLArray(params.paletteVec);
+    params.posFinalXForm = readFinalXFormPosition(flame);
+    double samples = flame.render.quality*params.frame.width*params.frame.height;
+    params.iters = ceil(samples/GLOBAL_WORK_SIZE);
 }
 
 std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
@@ -197,6 +196,14 @@ void Iterator::readXFormDistribution(const FlameContent& flame, std::vector<uint
             dist[i*XFORM_DISTRIBUTION_GRAINS+k] = j;
             curr += step;
         }
+    }
+}
+
+int Iterator::readFinalXFormPosition(const FlameContent& flame) const {
+    if (flame.finalXForm.has_value()) {
+        return flame.xforms.size();
+    } else {
+        return -1;
     }
 }
 

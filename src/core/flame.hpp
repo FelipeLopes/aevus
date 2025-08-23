@@ -65,8 +65,6 @@ public:
     serial::OptionalXMLElementClass<FinalXForm> finalXForm;
     Palette palette;
 
-    int readFinalXFormPosition() const;
-
 private:
     tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;
 };
