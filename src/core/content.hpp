@@ -35,6 +35,10 @@ struct FrameContent {
     double flameScale;
 };
 
+struct RenderContent {
+    double quality, brightness, contrast;
+};
+
 struct XFormContent {
     CoefsContent preCoefs, postCoefs;
     VariationContent variations;
@@ -43,6 +47,7 @@ struct XFormContent {
 
 struct FlameContent {
     FrameContent frame;
+    RenderContent render;
     std::vector<XFormContent> xforms;
     std::optional<XFormContent> finalXForm;
     core::PaletteColors palette;

@@ -1,7 +1,7 @@
 #include "tone_mapper.hpp"
 
 using clwrap::CLQueuedContext;
-using core::Flame;
+using core::FlameContent;
 using std::shared_ptr;
 using std::stringstream;
 using std::vector;
@@ -16,15 +16,15 @@ ToneMapper::ToneMapper(CLQueuedContext& context_):
     histArg(&kernel, 2),
     chunkArg(&kernel, 3, 0) { }
 
-void ToneMapper::extractParams(Flame* flame, ToneMapperParams& params) {
-    auto sz = flame->size.value();
+void ToneMapper::extractParams(const FlameContent& flame, ToneMapperParams& params) {
+    auto sz = flame.frame.flameSize;
     params.width = sz.width;
     params.height = sz.height;
     int area = sz.width * sz.height;
-    double scale = flame->scale.value();
-    double quality = flame->quality.value();
-    double brightness = flame->brightness.value();
-    double contrast = flame->contrast.value();
+    double scale = flame.frame.flameScale;
+    double quality = flame.render.quality;
+    double brightness = flame.render.brightness;
+    double contrast = flame.render.contrast;
     double ref = contrast*ceil(quality*area/GLOBAL_WORK_SIZE)*GLOBAL_WORK_SIZE/(scale*scale);
 
     params.a = contrast*brightness*268.0/256;

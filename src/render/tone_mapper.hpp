@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../clwrap/cl_arg.hpp"
-#include "../core/flame.hpp"
+#include "../core/content.hpp"
 #include "kernel.hpp"
 #include <memory>
 #include <sstream>
@@ -17,7 +17,7 @@ struct ToneMapperParams {
 class ToneMapper {
 public:
     ToneMapper(clwrap::CLQueuedContext& context);
-    void extractParams(core::Flame* flame, ToneMapperParams& params);
+    void extractParams(const core::FlameContent& flame, ToneMapperParams& params);
     std::shared_ptr<clwrap::CLEvent> runAsync(ToneMapperParams& params, std::vector<float>& hist);
     void read(std::shared_ptr<clwrap::CLEvent> event, std::vector<float>& imageData);
 private:

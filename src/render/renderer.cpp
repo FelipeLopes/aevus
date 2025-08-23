@@ -74,8 +74,8 @@ void Renderer::writePNMImage(vector<uint8_t>& imgData) {
 
 void Renderer::extractParams() {
     iterator.extractParams(content.value(), iteratorParams);
+    toneMapper.extractParams(content.value(), toneMapperParams);
     /*
-    toneMapper.extractParams(flame, toneMapperParams);
     iteratorParams.threshold =
         ceil((exp(accumulationThreshold/toneMapperParams.a)-1)/toneMapperParams.b);
     colorer.extractParams(flame, colorerParams);
