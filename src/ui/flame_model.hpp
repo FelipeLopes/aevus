@@ -16,6 +16,7 @@ public:
 private:
     void drawFlameBitmap(wxGraphicsContext* gc);
     wxSize scaledImageSize();
+    wxSize initialWindowSize;
     std::mutex bitmapLock;
     wxScrolledWindow* flameWindow;
     std::stringstream& flameStream;

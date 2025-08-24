@@ -15,13 +15,13 @@ typedef std::chrono::duration<int, std::ratio<1, 60>> frame_duration;
 
 Renderer::Renderer(CLQueuedContext& context_, stringstream& stream_):
     context(context_), stream(stream_), iterator(context),
-    toneMapper(context), colorer(context), running(true), state(NO_FLAME)
+    toneMapper(context), colorer(context), running(true), state(FLAME_RENDERED)
 {
     boost::asio::post(context.rendererPool, [this] {
         while (running) {
             auto sleep_time = std::chrono::steady_clock::now() + frame_duration(1);
             switch (state) {
-                case NO_FLAME: break;
+                case NO_FLAME: clearImage(); break;
                 case FLAME_MODIFIED: runIteration(); break;
                 case ITERATION_RUNNING: /* do nothing, already busy */ break;
                 case ITERATION_COMPLETED: runToneMapping(); break;
@@ -42,7 +42,6 @@ void Renderer::handleFlameContent(std::optional<core::FlameContent> content) {
         state = FLAME_MODIFIED;
         extractParams();
     }
-    // TODO: this is called when the document is closed. Verify that it terminates gracefully.
     lock.unlock();
 }
 
@@ -55,6 +54,15 @@ void Renderer::writePNMImage(vector<uint8_t>& imgData) {
     for (int i=0; i<3*width*height; i++) {
         stream.put(imageData[i]);
     }
+}
+
+void Renderer::clearImage() {
+    stream.str("");
+    stream.clear();
+    lock.lock();
+    state = FLAME_RENDERED;
+    imageRendered();
+    lock.unlock();
 }
 
 void Renderer::extractParams() {

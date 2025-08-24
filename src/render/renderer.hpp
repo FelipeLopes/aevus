@@ -32,6 +32,7 @@ public:
     boost::signals2::signal<void ()> imageRendered;
 private:
     void writePNMImage(std::vector<uint8_t>& imgData);
+    void clearImage();
     void extractParams();
     void runIteration();
     void runToneMapping();

@@ -10,13 +10,20 @@ FlameModel::FlameModel(wxScrolledWindow* flameWindow_, std::stringstream& flameS
     flameWindow(flameWindow_), flameStream(flameStream_), zoomLevel(0), zoomFactor(1.1)
 {
     flameWindow->SetBackgroundStyle(wxBG_STYLE_PAINT);
+    initialWindowSize = flameWindow->GetVirtualSize();
 }
 
 void FlameModel::update() {
     auto flameStreamView = flameStream.view();
-    wxMemoryInputStream wxStream(flameStreamView.data(), flameStreamView.size());
-    wxImage image(wxStream);
-    setBitmap(wxBitmap(image));
+    auto sz = flameStreamView.size();
+    if (sz == 0) {
+        zoomLevel = 0;
+        setBitmap(wxNullBitmap);
+    } else {
+        wxMemoryInputStream wxStream(flameStreamView.data(), sz);
+        wxImage image(wxStream);
+        setBitmap(wxBitmap(image));
+    }
 }
 
 void FlameModel::handlePaint() {
@@ -82,7 +89,7 @@ void FlameModel::drawFlameBitmap(wxGraphicsContext* gc) {
 
 wxSize FlameModel::scaledImageSize() {
     double zoom = pow(zoomFactor, zoomLevel);
-    auto bmpSize = flameBitmap.GetSize();
+    auto bmpSize = flameBitmap.IsOk() ? flameBitmap.GetSize() : initialWindowSize;
     return wxSize(bmpSize.GetWidth()*zoom, bmpSize.GetHeight()*zoom);
 }
 
