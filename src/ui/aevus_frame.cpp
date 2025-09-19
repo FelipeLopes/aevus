@@ -101,6 +101,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         flameView->activeXformContent.connect(
             bind(&WeightsModel::handleActiveXformContent, &weightsModel, _1)
         );
+        flameView->frameContent.connect(
+            bind(&Renderer::handleFrameContent, &renderer, _1)
+        );
         flameView->activeXformContent.connect(
             bind(&ColorModel::handleActiveXformContent, &colorModel, _1)
         );

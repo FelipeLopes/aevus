@@ -26,6 +26,7 @@ public:
 
     boost::signals2::signal<void (std::optional<core::FlameContent>)> flameContent;
     boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
+    boost::signals2::signal<void (core::FrameContent)> frameContent;
 
 private:
     AevusFrame* aevusFrame;

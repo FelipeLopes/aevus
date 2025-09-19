@@ -130,7 +130,7 @@ void FlameView::handleFrameContent(FrameContent content) {
     *(document->flame.size.get()) = content.flameSize;
     *(document->flame.center.get()) = content.flameCenter;
     document->flame.scale.setValue(content.flameScale);
-    // TODO: sendFrameContent to renderer
+    sendFrameContent();
 }
 
 void FlameView::sendFlameContent() {
@@ -179,6 +179,14 @@ void FlameView::sendFlameContent() {
         content.finalXForm->colorSpeed = document->flame.finalXForm.get()->colorSpeed.value().colorSpeed;
     }
     flameContent(std::make_optional(content));
+}
+
+void FlameView::sendFrameContent() {
+    FrameContent content;
+    content.flameSize = document->flame.size.value();
+    content.flameCenter = document->flame.center.value();
+    content.flameScale = document->flame.scale.value();
+    frameContent(content);
 }
 
 void FlameView::sendSelectedXFormContent() {

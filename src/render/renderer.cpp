@@ -69,6 +69,14 @@ void Renderer::handleActiveXformContent(ActiveXFormContent xformContent) {
     lock.unlock();
 }
 
+void Renderer::handleFrameContent(core::FrameContent frameContent) {
+    lock.lock();
+    content->frame = frameContent;
+    state = FLAME_MODIFIED;
+    extractParams();
+    lock.unlock();
+}
+
 void Renderer::writePNMImage(vector<uint8_t>& imgData) {
     stream.str("");
     stream.clear();
