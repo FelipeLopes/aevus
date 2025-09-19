@@ -43,6 +43,8 @@ private:
     FrameModel frameModel;
     TriangleModel triangleModel;
 
+    std::vector<boost::signals2::connection> connections;
+
     //void onFileOpen(wxCommandEvent& event) override;
     //void onFileSaveAs(wxCommandEvent& event) override;
     void onExit(wxCommandEvent& event) override;

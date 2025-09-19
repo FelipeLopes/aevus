@@ -58,88 +58,92 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 }
 
 void AevusFrame::setupFlameView(FlameView *flameView) {
+    for (int i=0; i<connections.size(); i++) {
+        connections[i].disconnect();
+    }
+    connections.clear();
     if (flameView != NULL) {
-        flameView->flameContent.connect(
+        connections.push_back(flameView->flameContent.connect(
             bind(&Renderer::handleFlameContent, &renderer, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&TransformModel::handleFlameContent, &preTransformModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&TransformModel::handleFlameContent, &postTransformModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&TriangleModel::handleFlameContent, &triangleModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&WeightsModel::handleFlameContent, &weightsModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&VariationModel::handleFlameContent, &variationModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&ColorModel::handleFlameContent, &colorModel, _1)
-        );
-        flameView->flameContent.connect(
+        ));
+        connections.push_back(flameView->flameContent.connect(
             bind(&FrameModel::handleFlameContent, &frameModel, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&Renderer::handleActiveXformContent, &renderer, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&TransformModel::handleActiveXformContent, &preTransformModel, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&TransformModel::handleActiveXformContent, &postTransformModel, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&TriangleModel::handleActiveXformContent, &triangleModel, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&VariationModel::handleActiveXformContent, &variationModel, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&WeightsModel::handleActiveXformContent, &weightsModel, _1)
-        );
-        flameView->frameContent.connect(
+        ));
+        connections.push_back(flameView->frameContent.connect(
             bind(&Renderer::handleFrameContent, &renderer, _1)
-        );
-        flameView->activeXformContent.connect(
+        ));
+        connections.push_back(flameView->activeXformContent.connect(
             bind(&ColorModel::handleActiveXformContent, &colorModel, _1)
-        );
-        triangleModel.xformSelected.connect(
+        ));
+        connections.push_back(triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
-        );
-        triangleModel.xformUpdate.connect(
+        ));
+        connections.push_back(triangleModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        preTransformModel.xformUpdate.connect(
+        ));
+        connections.push_back(preTransformModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        postTransformModel.xformUpdate.connect(
+        ));
+        connections.push_back(postTransformModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        weightsModel.xformSelected.connect(
+        ));
+        connections.push_back(weightsModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)
-        );
-        weightsModel.xformAdded.connect(
+        ));
+        connections.push_back(weightsModel.xformAdded.connect(
             bind(&FlameView::handleXFormAdded, flameView, _1)
-        );
-        weightsModel.xformRemoved.connect(
+        ));
+        connections.push_back(weightsModel.xformRemoved.connect(
             bind(&FlameView::handleXFormRemoved, flameView, _1)
-        );
-        weightsModel.xformUpdate.connect(
+        ));
+        connections.push_back(weightsModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        variationModel.xformUpdate.connect(
+        ));
+        connections.push_back(variationModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        colorModel.xformUpdate.connect(
+        ));
+        connections.push_back(colorModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
-        );
-        frameModel.frameContent.connect(
+        ));
+        connections.push_back(frameModel.frameContent.connect(
             bind(&FlameView::handleFrameContent, flameView, _1)
-        );
+        ));
     }
 }
 
