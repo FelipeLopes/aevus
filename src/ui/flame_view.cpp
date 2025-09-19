@@ -48,7 +48,7 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
 }
 
 void FlameView::OnDraw(wxDC *dc) {
-    // Stub function
+    // Empty, the document is drawn in separate widgets
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
@@ -57,8 +57,16 @@ bool FlameView::OnClose(bool deleteWindow) {
     return wxView::OnClose(deleteWindow);
 }
 
+// WARNING: this function gets called not only when the filename is changed,
+// but every time the document is modified, so the name is a bit misleading
 void FlameView::OnChangeFilename() {
-    // Stub function
+    wxString appName = wxTheApp->GetAppDisplayName();
+    wxString title;
+
+    wxString docName = GetDocument()->GetUserReadableName();
+    title = appName + wxString(_(" - ")) + docName + (GetDocument()->IsModified() ? "*" : "");
+
+    GetFrame()->SetLabel(title);
 }
 
 core::Flame* FlameView::getFlame() const
@@ -107,12 +115,14 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     if (content.colorSpeed.has_value()) {
         document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
     }
+    GetDocument()->Modify(true);
     sendUpdatedXFormContent();
 }
 
 void FlameView::handleXFormAdded(int id) {
     activeXformId = id;
     document->flame.xforms.appendAt(id, std::make_shared<core::XForm>());
+    GetDocument()->Modify(true);
     sendAddedXFormContent();
 }
 
@@ -123,6 +133,7 @@ void FlameView::handleXFormRemoved(int id) {
     if (activeXformId == sz) {
         activeXformId--;
     }
+    GetDocument()->Modify(true);
     sendRemovedXFormContent(id);
 }
 
@@ -130,6 +141,7 @@ void FlameView::handleFrameContent(FrameContent content) {
     *(document->flame.size.get()) = content.flameSize;
     *(document->flame.center.get()) = content.flameCenter;
     document->flame.scale.setValue(content.flameScale);
+    GetDocument()->Modify(true);
     sendFrameContent();
 }
 
