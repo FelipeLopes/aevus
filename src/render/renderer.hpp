@@ -28,6 +28,7 @@ class Renderer {
 public:
     Renderer(clwrap::CLQueuedContext& context, std::stringstream& stream);
     void handleFlameContent(std::optional<core::FlameContent> content);
+    void handleActiveXformContent(core::ActiveXFormContent xformContent);
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:

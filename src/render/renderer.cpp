@@ -6,6 +6,7 @@
 #include <cmath>
 
 using clwrap::CLQueuedContext;
+using core::ActiveXFormContent;
 using std::stringstream;
 using std::vector;
 
@@ -39,6 +40,29 @@ void Renderer::handleFlameContent(std::optional<core::FlameContent> content) {
     if (!content.has_value()) {
         state = NO_FLAME;
     } else {
+        state = FLAME_MODIFIED;
+        extractParams();
+    }
+    lock.unlock();
+}
+
+void Renderer::handleActiveXformContent(ActiveXFormContent xformContent) {
+    lock.lock();
+    switch (xformContent.op) {
+        case core::SELECTED:
+            break;
+        case core::UPDATED:
+            content->xforms[xformContent.id] = xformContent.xform.value();
+            break;
+        case core::ADDED:
+            content->xforms.insert(std::next(content->xforms.begin(), xformContent.id),
+                xformContent.xform.value());
+            break;
+        case core::REMOVED:
+            content->xforms.erase(std::next(content->xforms.begin(), xformContent.id));
+            break;
+    }
+    if (xformContent.op != core::SELECTED) {
         state = FLAME_MODIFIED;
         extractParams();
     }

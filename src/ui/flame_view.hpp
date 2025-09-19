@@ -39,6 +39,7 @@ private:
     void sendVariationContent();
     void sendColorContent();
     void sendFrameContent();
+    void sendSelectedXFormContent();
     void sendUpdatedXFormContent();
     void sendAddedXFormContent();
     void sendRemovedXFormContent(int id);

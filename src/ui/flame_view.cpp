@@ -73,7 +73,7 @@ void FlameView::documentLoaded() {
 
 void FlameView::handleXFormSelected(int i) {
     activeXformId = i;
-    sendUpdatedXFormContent();
+    sendSelectedXFormContent();
 }
 
 void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
@@ -179,6 +179,14 @@ void FlameView::sendFlameContent() {
         content.finalXForm->colorSpeed = document->flame.finalXForm.get()->colorSpeed.value().colorSpeed;
     }
     flameContent(std::make_optional(content));
+}
+
+void FlameView::sendSelectedXFormContent() {
+    ActiveXFormContent content;
+    content.id = activeXformId;
+    content.op = core::SELECTED;
+    content.xform = getXformContent(activeXformId);
+    activeXformContent(content);
 }
 
 void FlameView::sendUpdatedXFormContent() {

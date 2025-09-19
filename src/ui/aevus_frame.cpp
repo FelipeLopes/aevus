@@ -84,6 +84,9 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
             bind(&FrameModel::handleFlameContent, &frameModel, _1)
         );
         flameView->activeXformContent.connect(
+            bind(&Renderer::handleActiveXformContent, &renderer, _1)
+        );
+        flameView->activeXformContent.connect(
             bind(&TransformModel::handleActiveXformContent, &preTransformModel, _1)
         );
         flameView->activeXformContent.connect(

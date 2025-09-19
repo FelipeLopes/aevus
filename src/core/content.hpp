@@ -58,6 +58,7 @@ struct FlameContent {
 };
 
 enum XFormOperation {
+    SELECTED,
     UPDATED,
     ADDED,
     REMOVED

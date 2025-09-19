@@ -147,6 +147,7 @@ void TriangleModel::handleFlameContent(std::optional<FlameContent> content_) {
 void TriangleModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     activeId = xformContent.id;
     switch (xformContent.op) {
+        case core::SELECTED:
         case core::UPDATED:
             triangleCollider.updateCoefsContent(activeId, xformContent.xform->preCoefs);
             triangleDrawer.updateCoefsContent(activeId, xformContent.xform->preCoefs);

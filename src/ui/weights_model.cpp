@@ -52,6 +52,7 @@ void WeightsModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     content->activeId = xformContent.id;
     auto it = std::next(content->weights.begin(), content->activeId);
     switch (xformContent.op) {
+        case core::SELECTED:
         case core::UPDATED:
             break;
         case core::ADDED:
