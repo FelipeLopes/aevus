@@ -4,7 +4,6 @@
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
 #include <wx/wfstream.h>
-#include "../render/iterator.hpp"
 #include "flame_model.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"

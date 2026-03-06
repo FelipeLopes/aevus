@@ -1,5 +1,4 @@
 #include "iterator.hpp"
-#include "tone_mapper.hpp"
 #include <memory>
 #include <random>
 #include <vector>
@@ -68,11 +67,7 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
 }
 
 void Iterator::read(std::shared_ptr<clwrap::CLEvent> event, vector<float>& histogram) {
-    if (event != NULL) {
-        histogramArg.getAfterEvent(event, histogram);
-    } else {
-        histogram = histogramVec;
-    }
+    histogramArg.get(histogram);
 }
 
 void Iterator::writePAMImage(stringstream& out, vector<float>& arr) {

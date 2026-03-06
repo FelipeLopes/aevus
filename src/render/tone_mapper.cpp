@@ -40,7 +40,7 @@ shared_ptr<clwrap::CLEvent> ToneMapper::runAsync(ToneMapperParams& params, vecto
 }
 
 void ToneMapper::read(shared_ptr<clwrap::CLEvent> event, vector<float>& imageData) {
-    return histArg.getAfterEvent(event, imageData);
+    histArg.get(imageData);
 }
 
 }

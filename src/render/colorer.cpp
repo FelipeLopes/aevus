@@ -41,7 +41,7 @@ shared_ptr<clwrap::CLEvent> Colorer::runAsync(ColorerParams& params, vector<floa
 }
 
 void Colorer::read(shared_ptr<clwrap::CLEvent> event, vector<uint8_t>& imageData) {
-    imageArg.getAfterEvent(event, imageData);
+    imageArg.get(imageData);
 }
 
 }

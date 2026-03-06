@@ -1,7 +1,5 @@
 #include "cl_context.hpp"
-#include "cl_buffer.hpp"
 #include "cl_event.hpp"
-#include "cl_executable.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
 #include <boost/asio/post.hpp>

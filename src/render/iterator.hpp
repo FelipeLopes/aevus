@@ -1,9 +1,7 @@
 #pragma once
 
 #include "../clwrap/cl_arg.hpp"
-#include "../clwrap/cl_buffer.hpp"
 #include "../clwrap/cl_context.hpp"
-#include "../clwrap/cl_executable.hpp"
 #include "../core/content.hpp"
 #include "../core/flame.hpp"
 #include "kernel.hpp"

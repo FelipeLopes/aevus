@@ -4,8 +4,6 @@
 #include "cl_event.hpp"
 #include "cl_queue.hpp"
 #include <CL/cl.h>
-#include <fstream>
-#include <sstream>
 
 using std::vector;
 
