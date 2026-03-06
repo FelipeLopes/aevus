@@ -1,7 +1,6 @@
 #include "flame_view.hpp"
 #include "aevus_frame.hpp"
 #include "flame_document.hpp"
-#include "variation_model.hpp"
 #include <memory>
 #include <wx/app.h>
 
