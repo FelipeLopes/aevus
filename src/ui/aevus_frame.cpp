@@ -1,4 +1,5 @@
 #include "aevus_frame.hpp"
+#include <wx-3.2/wx/docview.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
@@ -19,6 +20,7 @@ namespace ui {
 
 AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> filename):
     WxfbFrame(manager, NULL),
+    docManager(manager),
     context(openCL->createQueuedContext(0, 1)),
     renderer(context, flameStream),
     flameModel(flameWindow, flameStream),
@@ -146,6 +148,14 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
     }
 }
 
+void AevusFrame::onUndo(wxCommandEvent& event) {
+    docManager->GetCurrentDocument()->GetCommandProcessor()->Undo();
+}
+
+void AevusFrame::onRedo(wxCommandEvent& event) {
+    docManager->GetCurrentDocument()->GetCommandProcessor()->Redo();
+}
+
 wxBitmap AevusFrame::loadEmbeddedPNG(char* start, char* end) {
     size_t sz = end - start;
     wxMemoryInputStream stream(start, sz);
@@ -248,6 +258,7 @@ void AevusFrame::onExit(wxCommandEvent& event) {
 }
 
 void AevusFrame::onAbout(wxCommandEvent& event) {
+    editMenu->Enable(wxID_UNDO, true);
     wxMessageBox("This is an early alpha of the Aevus fractal flame editor.",
         "About Aevus", wxOK | wxICON_INFORMATION);
 }

@@ -1,5 +1,6 @@
 #include "flame_view.hpp"
 #include "aevus_frame.hpp"
+#include "commands.hpp"
 #include "flame_document.hpp"
 #include <memory>
 #include <wx/app.h>
@@ -84,8 +85,10 @@ void FlameView::handleXFormSelected(int i) {
 }
 
 void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
+    auto oldXForm = document->flame.xforms.get(activeXformId);
+    auto newXForm = std::make_shared<core::XForm>(*oldXForm);
     if (content.preCoefs.has_value()) {
-        auto ptr = document->flame.xforms.get(activeXformId)->coefs.get();
+        auto ptr = newXForm->coefs.get();
         ptr->ox = content.preCoefs->ox;
         ptr->oy = content.preCoefs->oy;
         ptr->xx = content.preCoefs->xx;
@@ -94,7 +97,7 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         ptr->yy = content.preCoefs->yy;
     }
     if (content.postCoefs.has_value()) {
-        auto ptr = document->flame.xforms.get(activeXformId)->post.get();
+        auto ptr = newXForm->post.get();
         ptr->ox = content.postCoefs->ox;
         ptr->oy = content.postCoefs->oy;
         ptr->xx = content.postCoefs->xx;
@@ -103,18 +106,19 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         ptr->yy = content.postCoefs->yy;
     }
     if (content.weight.has_value()) {
-        document->flame.xforms.get(activeXformId)->weight.setValue(content.weight.value());
+        newXForm->weight.setValue(content.weight.value());
     }
     if (content.variations.has_value()) {
-        document->flame.xforms.get(activeXformId)->variationMap.get()->variations = content.variations.value();
+        newXForm->variationMap.get()->variations = content.variations.value();
     }
     if (content.color.has_value()) {
-        document->flame.xforms.get(activeXformId)->color.setValue(content.color.value());
+        newXForm->color.setValue(content.color.value());
     }
     if (content.colorSpeed.has_value()) {
-        document->flame.xforms.get(activeXformId)->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
+        newXForm->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
     }
-    GetDocument()->Modify(true);
+    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(&document->flame, activeXformId, oldXForm, newXForm));
+    document->Modify(true);
     sendUpdatedXFormContent();
 }
 

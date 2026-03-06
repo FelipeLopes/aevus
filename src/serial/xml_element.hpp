@@ -45,6 +45,11 @@ public:
         return std::static_pointer_cast<T>(*it);
     }
 
+    void set(int index, std::shared_ptr<T> val) {
+        auto it = std::next(list.begin(), index);
+        *it = val;
+    }
+
     void appendAt(int pos, std::shared_ptr<T> element) {
         auto it = list.begin();
         for (int i=0; i<pos; i++) {

@@ -2,8 +2,8 @@
 
 #include "../core/content.hpp"
 #include "flame_document.hpp"
-#include "variation_model.hpp"
 #include <boost/signals2.hpp>
+#include <wx/cmdproc.h>
 
 namespace ui {
 

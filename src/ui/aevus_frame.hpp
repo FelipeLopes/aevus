@@ -29,7 +29,9 @@ class AevusFrame: public WxfbFrame {
 public:
     AevusFrame(wxDocManager* manager, clwrap::OpenCL* openCL, std::optional<std::string> filename);
     void setupFlameView(FlameView* flameView);
+    wxCommandProcessor* getCommandProcessor();
 private:
+    wxDocManager* docManager;
     clwrap::CLQueuedContext context;
     std::stringstream flameStream;
     render::Renderer renderer;
@@ -45,8 +47,8 @@ private:
 
     std::vector<boost::signals2::connection> connections;
 
-    //void onFileOpen(wxCommandEvent& event) override;
-    //void onFileSaveAs(wxCommandEvent& event) override;
+    void onUndo(wxCommandEvent& event) override;
+    void onRedo(wxCommandEvent& event) override;
     void onExit(wxCommandEvent& event) override;
     void onAbout(wxCommandEvent& event) override;
     void onButtonClick(wxCommandEvent& event) override;
