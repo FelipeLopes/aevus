@@ -1,6 +1,4 @@
 #include "flame.hpp"
-#include <memory>
-#include <random>
 #include <stdexcept>
 
 using std::string;

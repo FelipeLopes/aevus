@@ -1,7 +1,6 @@
 #pragma once
 
 #include <list>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -14,7 +13,7 @@ class XMLElementClass {
 public:
     XMLElementClass(std::string tag);
     XMLElementClass(XMLElementClass& parent, std::string tag);
-    void serialize(FILE* fp);
+    void serialize(std::ostream& stream);
     void deserialize(std::istream& stream);
     std::string tag;
     std::vector<XMLElementClass*> children;

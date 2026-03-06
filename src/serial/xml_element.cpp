@@ -1,12 +1,14 @@
 #include "xml_element.hpp"
 #include "xml_attribute.hpp"
 #include "xml_content.hpp"
+#include <ostream>
 #include <sstream>
 
 using std::string;
 using tinyxml2::XMLDocument;
 using tinyxml2::XMLElement;
 using tinyxml2::XMLNode;
+using tinyxml2::XMLPrinter;
 
 namespace serial {
 
@@ -19,10 +21,12 @@ XMLElementClass::XMLElementClass(XMLElementClass& parent, string tag_): tag(tag_
     parent.children.push_back(this);
 }
 
-void XMLElementClass::serialize(FILE* fp) {
+void XMLElementClass::serialize(std::ostream& stream) {
     XMLDocument xmlDoc;
     nodeSerialize(xmlDoc, &xmlDoc);
-    xmlDoc.SaveFile(fp);
+    XMLPrinter xmlPrinter;
+    xmlDoc.Print(&xmlPrinter);
+    stream << xmlPrinter.CStr();
 }
 
 void XMLElementClass::deserialize(std::istream& stream) {

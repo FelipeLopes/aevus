@@ -19,6 +19,8 @@ bool FlameDocument::isNew() {
 }
 
 std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
+    flame.serialize(stream);
+    stream.clear();
     return stream;
 }
 
