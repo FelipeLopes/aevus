@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../serial/serializable.hpp"
+#include <inttypes.h>
 
 namespace core {
 

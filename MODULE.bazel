@@ -4,6 +4,8 @@ installed via the operating system. Currently, only Linux
 is supported.
 """
 
+bazel_dep(name = "rules_cc", version = "0.0.17")
+
 new_local_repository = use_repo_rule(
     "@bazel_tools//tools/build_defs/repo:local.bzl",
     "new_local_repository"
