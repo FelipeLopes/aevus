@@ -52,8 +52,8 @@ void FlameView::OnDraw(wxDC *dc) {
 }
 
 bool FlameView::OnClose(bool deleteWindow) {
-    aevusFrame->setupFlameView(NULL);
     flameContent(std::nullopt);
+    aevusFrame->setupFlameView(NULL);
     return wxView::OnClose(deleteWindow);
 }
 
