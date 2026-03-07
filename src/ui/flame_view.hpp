@@ -29,6 +29,9 @@ public:
     boost::signals2::signal<void (core::FrameContent)> frameContent;
 
     void sendUpdatedXFormContent();
+    void sendAddedXFormContent();
+    void sendRemovedXFormContent(int id);
+    void setActiveXFormId(int id);
 
 private:
     AevusFrame* aevusFrame;
@@ -43,8 +46,6 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendSelectedXFormContent();
-    void sendAddedXFormContent();
-    void sendRemovedXFormContent(int id);
 
     std::optional<core::XFormContent> getXformContent(int idx);
 

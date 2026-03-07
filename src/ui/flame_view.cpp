@@ -84,6 +84,17 @@ void FlameView::handleXFormSelected(int i) {
     sendSelectedXFormContent();
 }
 
+void FlameView::setActiveXFormId(int id) {
+    int sz = document->flame.xforms.size();
+    if (id < 0) {
+        activeXformId = 0;
+    } else if (id >= sz) {
+        activeXformId = sz;
+    } else {
+        activeXformId = id;
+    }
+}
+
 void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     auto oldXForm = document->flame.xforms.get(activeXformId);
     auto newXForm = std::make_shared<core::XForm>(*oldXForm);
@@ -122,21 +133,14 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
 }
 
 void FlameView::handleXFormAdded(int id) {
-    activeXformId = id;
-    document->flame.xforms.appendAt(id, std::make_shared<core::XForm>());
-    GetDocument()->Modify(true);
-    sendAddedXFormContent();
+    document->GetCommandProcessor()->Submit(new XFormAddCommand(this, activeXformId));
+    document->Modify(true);
 }
 
 void FlameView::handleXFormRemoved(int id) {
-    activeXformId = id;
-    document->flame.xforms.remove(activeXformId);
-    int sz = document->flame.xforms.size();
-    if (activeXformId == sz) {
-        activeXformId--;
-    }
-    GetDocument()->Modify(true);
-    sendRemovedXFormContent(id);
+    auto oldXForm = document->flame.xforms.get(activeXformId);
+    document->GetCommandProcessor()->Submit(new XFormRemoveCommand(this, activeXformId, oldXForm));
+    document->Modify(true);
 }
 
 void FlameView::handleFrameContent(FrameContent content) {
