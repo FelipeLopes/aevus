@@ -86,7 +86,9 @@ void ColorModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
 
 void ColorModel::handleActiveXformContent(ActiveXFormContent xformContent) {
     if (xformContent.xform.has_value()) {
-        content = ColorContent();
+        if (!content.has_value()) {
+            content = ColorContent();
+        }
         content->color = xformContent.xform->color;
         content->colorSpeed = xformContent.xform->colorSpeed;
     } else {
