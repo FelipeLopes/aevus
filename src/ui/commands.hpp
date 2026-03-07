@@ -15,8 +15,7 @@ public:
 private:
     FlameView* flameView;
     int xformIndex;
-    std::shared_ptr<core::XForm> oldXform;
-    std::shared_ptr<core::XForm> newXform;
+    std::shared_ptr<core::XForm> oldXform, newXform;
 };
 
 class XFormAddCommand: public wxCommand {
@@ -38,6 +37,16 @@ private:
     FlameView* flameView;
     int xformIndex;
     std::shared_ptr<core::XForm> oldXform;
+};
+
+class FrameUpdateCommand: public wxCommand {
+public:
+    FrameUpdateCommand(FlameView*, core::FrameContent oldFrame, core::FrameContent newFrame);
+    virtual bool Do() override;
+    virtual bool Undo() override;
+private:
+    FlameView* flameView;
+    core::FrameContent oldFrame, newFrame;
 };
 
 }

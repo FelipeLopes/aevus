@@ -1,6 +1,8 @@
 
 #include "commands.hpp"
+#include <wx-3.2/wx/cmdproc.h>
 
+using core::FrameContent;
 using core::XForm;
 using std::shared_ptr;
 
@@ -54,6 +56,27 @@ bool XFormRemoveCommand::Undo() {
     flameView->getFlame()->xforms.set(xformIndex, oldXform);
     flameView->setActiveXFormId(xformIndex);
     flameView->sendAddedXFormContent();
+    return true;
+}
+
+FrameUpdateCommand::FrameUpdateCommand(FlameView* flameView_, FrameContent oldFrame_, FrameContent newFrame_):
+    wxCommand(true), flameView(flameView_), oldFrame(oldFrame_), newFrame(newFrame_) { }
+
+bool FrameUpdateCommand::Do() {
+    auto flame = flameView->getFlame();
+    *(flame->size.get()) = newFrame.flameSize;
+    *(flame->center.get()) = newFrame.flameCenter;
+    flame->scale.setValue(newFrame.flameScale);
+    flameView->sendFlameContent();
+    return true;
+}
+
+bool FrameUpdateCommand::Undo() {
+    auto flame = flameView->getFlame();
+    *(flame->size.get()) = oldFrame.flameSize;
+    *(flame->center.get()) = oldFrame.flameCenter;
+    flame->scale.setValue(oldFrame.flameScale);
+    flameView->sendFlameContent();
     return true;
 }
 

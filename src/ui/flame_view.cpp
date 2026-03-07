@@ -144,11 +144,12 @@ void FlameView::handleXFormRemoved(int id) {
 }
 
 void FlameView::handleFrameContent(FrameContent content) {
-    *(document->flame.size.get()) = content.flameSize;
-    *(document->flame.center.get()) = content.flameCenter;
-    document->flame.scale.setValue(content.flameScale);
-    GetDocument()->Modify(true);
-    sendFrameContent();
+    FrameContent oldContent;
+    oldContent.flameSize = *(document->flame.size.get());
+    oldContent.flameCenter = *(document->flame.center.get());
+    oldContent.flameScale =  document->flame.scale.value();
+    document->GetCommandProcessor()->Submit(new FrameUpdateCommand(this, oldContent, content));
+    document->Modify(true);
 }
 
 void FlameView::sendFlameContent() {

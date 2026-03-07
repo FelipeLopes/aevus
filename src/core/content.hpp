@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <vector>
 #include "custom_coefs.hpp"
 #include "flame.hpp"

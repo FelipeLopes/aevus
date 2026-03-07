@@ -32,12 +32,12 @@ public:
     void sendAddedXFormContent();
     void sendRemovedXFormContent(int id);
     void setActiveXFormId(int id);
+    void sendFlameContent();
 
 private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
     int activeXformId;
-    void sendFlameContent();
     void sendTriangleContent();
     void sendPreTransformContent();
     void sendPostTransformContent();
