@@ -28,6 +28,8 @@ public:
     boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
     boost::signals2::signal<void (core::FrameContent)> frameContent;
 
+    void sendUpdatedXFormContent();
+
 private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
@@ -41,7 +43,6 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendSelectedXFormContent();
-    void sendUpdatedXFormContent();
     void sendAddedXFormContent();
     void sendRemovedXFormContent(int id);
 

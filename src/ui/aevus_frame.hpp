@@ -67,7 +67,6 @@ private:
     void onMouseMove(wxMouseEvent& event) override;
     void onMouseWheel(wxMouseEvent& event) override;
 
-    void loadFlame(std::string filename);
     wxBitmap loadEmbeddedPNG(char* start, char* end);
 };
 

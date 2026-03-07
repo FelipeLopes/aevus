@@ -117,9 +117,8 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     if (content.colorSpeed.has_value()) {
         newXForm->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
     }
-    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(&document->flame, activeXformId, oldXForm, newXForm));
+    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, oldXForm, newXForm));
     document->Modify(true);
-    sendUpdatedXFormContent();
 }
 
 void FlameView::handleXFormAdded(int id) {

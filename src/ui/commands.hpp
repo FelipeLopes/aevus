@@ -2,17 +2,21 @@
 
 #include <wx/cmdproc.h>
 
-#include "../core/flame.hpp"
+#include "flame_view.hpp"
+
+namespace ui {
 
 class XFormUpdateCommand: public wxCommand {
 public:
-    XFormUpdateCommand(core::Flame* flame, int xformIndex, 
+    XFormUpdateCommand(FlameView* flameView, int xformIndex, 
         std::shared_ptr<core::XForm> oldXForm, std::shared_ptr<core::XForm> newXForm);
     virtual bool Do() override;
     virtual bool Undo() override;
 private:
-    core::Flame* flame;
+    FlameView* flameView;
     int xformIndex;
     std::shared_ptr<core::XForm> oldXform;
     std::shared_ptr<core::XForm> newXform;
 };
+
+}

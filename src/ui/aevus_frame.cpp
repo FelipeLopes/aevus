@@ -54,7 +54,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     trianglePanel->SetFocus();
 
     if (filename.has_value()) {
-        loadFlame(filename.value());
+        // TODO: implement CLI load file
     }
 }
 
@@ -262,47 +262,5 @@ void AevusFrame::onAbout(wxCommandEvent& event) {
     wxMessageBox("This is an early alpha of the Aevus fractal flame editor.",
         "About Aevus", wxOK | wxICON_INFORMATION);
 }
-
-void AevusFrame::loadFlame(std::string filename) {
-    /*
-    FILE* inputStream = fopen(filename.c_str(), "r");
-    if (inputStream == NULL) {
-        printf("Error on opening file: %s\n", filename.c_str());
-        return;
-    }
-    flame.deserialize(inputStream);
-    fclose(inputStream);
-    eventBroker.flameLoaded();
-    if (flame.xforms.size() > 0) {
-        eventBroker.activeXformChanged(0);
-    }*/
-}
-
-/*void AevusFrame::onFileOpen(wxCommandEvent& event) {
-    wxFileDialog openFileDialog(this, "Open flame file", "", "",
-        "Flame files (*.flame)|*.flame|XML files|*.xml",
-        wxFD_OPEN | wxFD_FILE_MUST_EXIST);
-    if (openFileDialog.ShowModal() == wxID_CANCEL) {
-        return;
-    }
-    auto filename = openFileDialog.GetPath().ToStdString();
-    loadFlame(filename);
-}
-
-void AevusFrame::onFileSaveAs(wxCommandEvent& event) {
-    wxFileDialog saveFileDialog(this, "Save flame file", "", "",
-        "XML files (*.xml)|*.xml", wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    if (saveFileDialog.ShowModal() == wxID_CANCEL) {
-        return;
-    }
-    auto filename = saveFileDialog.GetPath().ToStdString();
-    FILE* outputStream = fopen(filename.c_str(), "w");
-    if (outputStream == NULL) {
-        printf("Error on opening file: %s\n", filename.c_str());
-        return;
-    }
-    flame.serialize(outputStream);
-    fclose(outputStream);
-}*/
 
 }

@@ -188,7 +188,7 @@
             <property name="label">Undo</property>
             <property name="name">m_menuItem8</property>
             <property name="permission">none</property>
-            <property name="shortcut"></property>
+            <property name="shortcut">Ctrl+Z</property>
             <property name="unchecked_bitmap"></property>
             <event name="OnMenuSelection">onUndo</event>
           </object>
@@ -199,10 +199,10 @@
             <property name="help"></property>
             <property name="id">wxID_REDO</property>
             <property name="kind">wxITEM_NORMAL</property>
-            <property name="label">Redo</property>
+            <property name="label">&amp;Redo</property>
             <property name="name">m_menuItem9</property>
             <property name="permission">none</property>
-            <property name="shortcut"></property>
+            <property name="shortcut">Ctrl+Y</property>
             <property name="unchecked_bitmap"></property>
             <event name="OnMenuSelection">onRedo</event>
           </object>
