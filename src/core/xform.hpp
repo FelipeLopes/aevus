@@ -36,4 +36,20 @@ public:
     FinalXForm();
 };
 
+class BaseXFormV: public serial::SerializableV {
+public:
+    BaseXFormV();
+};
+
+class XFormV: public BaseXFormV {
+public:
+    XFormV();
+    double weight;
+};
+
+class FinalXFormV: public BaseXFormV {
+public:
+    FinalXFormV();
+};
+
 }

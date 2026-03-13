@@ -1,6 +1,5 @@
 #pragma once
 
-#include <list>
 #include <memory>
 #include <string>
 #include <vector>
@@ -41,21 +40,19 @@ public:
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to access out of list bounds");
         }
-        auto it = std::next(list.begin(), index);
-        return std::static_pointer_cast<T>(*it);
+        return std::static_pointer_cast<T>(list[index]);
     }
 
     void set(int index, std::shared_ptr<T> val) {
-        auto it = std::next(list.begin(), index);
-        *it = val;
+        int count = list.size();
+        if (index < 0 || index > count-1) {
+            throw std::invalid_argument("Attempted to access out of list bounds");
+        }
+        list[index] = val;
     }
 
     void appendAt(int pos, std::shared_ptr<T> element) {
-        auto it = list.begin();
-        for (int i=0; i<pos; i++) {
-            it++;
-        }
-        list.insert(it, element);
+        list.insert(list.begin()+pos, element);
     }
 
     void append(std::shared_ptr<T> element) {
@@ -67,14 +64,11 @@ public:
         if (index < 0 || index > count-1) {
             throw std::invalid_argument("Attempted to remove out of list bounds");
         }
-        auto it = std::next(list.begin(), index);
-        list.erase(it);
+        list.erase(list.begin()+index);
     }
 
     void clear() {
-        while (!empty()) {
-            remove(0);
-        }
+        list.clear();
     }
 
     bool empty() const {
@@ -115,7 +109,7 @@ public:
 private:
     XMLElementClass& parent;
     std::string tag;
-    std::list<std::shared_ptr<XMLElementClass>> list;
+    std::vector<std::shared_ptr<XMLElementClass>> list;
 };
 
 template <typename T>

@@ -31,6 +31,32 @@ public:
     serial::XMLAttributeString format;
     serial::XMLContent<PaletteColors> colors;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
+private:
+    typedef unsigned char byte;
+    char hexHigh(byte b) const;
+    char hexLow(byte b) const;
+    byte hexValue(char high, char low) const;
+    std::vector<byte> paletteData;
+};
+
+class PaletteColorsV: public serial::SerializableV {
+public:
+    PaletteColorsV();
+    std::string hexAt(int pos) const;
+    Color colorAt(int pos) const;
+    void readColorCLArray(std::vector<ColorCL>& arr) const;
+    virtual std::optional<std::string> toString();
+    virtual void fromString(std::optional<std::string> text);
+    static const unsigned PALETTE_WIDTH = 256;
+};
+
+class PaletteV: public serial::SerializableV {
+public:
+    PaletteV();
+    int count;
+    std::string format;
+    PaletteColorsV colors;
+    void readColorCLArray(std::vector<ColorCL>& arr) const;
 };
 
 }

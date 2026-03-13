@@ -5,6 +5,7 @@
 #include <optional>
 #include "../serial/xml_element.hpp"
 #include "color.hpp"
+#include "custom_coefs.hpp"
 #include "palette.hpp"
 #include "xform.hpp"
 
@@ -67,6 +68,27 @@ public:
 
 private:
     tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;
+};
+
+class ClippingV: public serial::SerializableV {
+public:
+    ClippingV();
+    ClippingMode mode;
+};
+
+class FlameV: public serial::SerializableV {
+public:
+    FlameV();
+    std::string version, name;
+    SizeParams size;
+    CenterParams center;
+    double scale, quality;
+    Color background;
+    double brightness, contrast, gamma, vibrancy;
+    ClippingV clipping;
+    std::vector<XFormV> xforms;
+    std::optional<FinalXForm> finalXForm;
+    PaletteV palette;
 };
 
 }
