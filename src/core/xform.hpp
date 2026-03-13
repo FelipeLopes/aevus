@@ -40,6 +40,11 @@ public:
 class BaseXFormV: public SerializableV {
 public:
     BaseXFormV();
+    double color, colorSpeed;
+    VariationMap variationMap;
+    CoefsAffine coefs;
+    PostAffine post;
+    Chaos chaos;
 };
 
 class XFormV: public BaseXFormV {

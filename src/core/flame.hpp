@@ -71,14 +71,6 @@ private:
     tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;
 };
 
-class ClippingV: public SerializableV {
-public:
-    ClippingV();
-    ClippingMode mode;
-    virtual void acceptSerializer(Serializer& serializer);
-    virtual void acceptDeserializer(Deserializer& deserializer);
-};
-
 class FlameV: public SerializableV {
 public:
     FlameV();
@@ -88,7 +80,7 @@ public:
     double scale, quality;
     Color background;
     double brightness, contrast, gamma, vibrancy;
-    ClippingV clipping;
+    ClippingMode clippingMode;
     std::vector<XFormV> xforms;
     std::optional<FinalXFormV> finalXForm;
     PaletteV palette;

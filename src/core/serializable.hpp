@@ -1,13 +1,14 @@
 #pragma once
 
 #include <tinyxml2.h>
+
 namespace core {
 
 class FlameV;
+class BaseXFormV;
 class XFormV;
 class FinalXFormV;
 class PaletteV;
-class ClippingV;
 
 class SerializableV;
 
@@ -17,7 +18,6 @@ public:
     virtual void serialize(XFormV& xform) = 0;
     virtual void serialize(FinalXFormV& finalXform) = 0;
     virtual void serialize(PaletteV& palette) = 0;
-    virtual void serialize(ClippingV& clipping) = 0;
 };
 
 class Deserializer {
@@ -26,7 +26,6 @@ public:
     virtual void deserialize(XFormV& xform) = 0;
     virtual void deserialize(FinalXFormV& finalXform) = 0;
     virtual void deserialize(PaletteV& palette) = 0;
-    virtual void deserialize(ClippingV& clipping) = 0;
 };
 
 class SerializableV {
@@ -37,14 +36,15 @@ public:
 
 class XmlSerializer: public Serializer {
 public:
-    XmlSerializer(tinyxml2::XMLDocument* xmlDoc);
+    XmlSerializer(tinyxml2::XMLDocument* xmlDoc, tinyxml2::XMLNode* parent);
     void serialize(FlameV& flame) override;
     void serialize(XFormV& xform) override;
     void serialize(FinalXFormV& finalXform) override;
     void serialize(PaletteV& palette) override;
-    void serialize(ClippingV& clipping) override;
 private:
+    void serializeBaseXForm(BaseXFormV& xform, tinyxml2::XMLElement* element);
     tinyxml2::XMLDocument* xmlDoc;
+    tinyxml2::XMLNode* parent;
 };
 
 }
