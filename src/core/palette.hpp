@@ -3,6 +3,7 @@
 #include <vector>
 #include "../serial/xml_element.hpp"
 #include "../serial/serializable.hpp"
+#include "serializable.hpp"
 #include "color.hpp"
 
 namespace core {
@@ -39,7 +40,7 @@ private:
     std::vector<byte> paletteData;
 };
 
-class PaletteColorsV: public serial::SerializableV {
+class PaletteColorsV: public SerializableV {
 public:
     PaletteColorsV();
     std::string hexAt(int pos) const;
@@ -48,15 +49,19 @@ public:
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
     static const unsigned PALETTE_WIDTH = 256;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
-class PaletteV: public serial::SerializableV {
+class PaletteV: public SerializableV {
 public:
     PaletteV();
     int count;
     std::string format;
     PaletteColorsV colors;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
 }

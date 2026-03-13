@@ -3,6 +3,7 @@
 #include "../serial/xml_attribute.hpp"
 #include "../serial/xml_element.hpp"
 #include "custom_coefs.hpp"
+#include "serializable.hpp"
 #include "variation.hpp"
 
 namespace core {
@@ -36,7 +37,7 @@ public:
     FinalXForm();
 };
 
-class BaseXFormV: public serial::SerializableV {
+class BaseXFormV: public SerializableV {
 public:
     BaseXFormV();
 };
@@ -45,11 +46,15 @@ class XFormV: public BaseXFormV {
 public:
     XFormV();
     double weight;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
 class FinalXFormV: public BaseXFormV {
 public:
     FinalXFormV();
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
 }

@@ -8,6 +8,7 @@
 #include "custom_coefs.hpp"
 #include "palette.hpp"
 #include "xform.hpp"
+#include "serializable.hpp"
 
 namespace core {
 
@@ -70,13 +71,15 @@ private:
     tinyxml2::XMLNode* nodeDeserialize(tinyxml2::XMLNode* node) override;
 };
 
-class ClippingV: public serial::SerializableV {
+class ClippingV: public SerializableV {
 public:
     ClippingV();
     ClippingMode mode;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
-class FlameV: public serial::SerializableV {
+class FlameV: public SerializableV {
 public:
     FlameV();
     std::string version, name;
@@ -89,6 +92,8 @@ public:
     std::vector<XFormV> xforms;
     std::optional<FinalXForm> finalXForm;
     PaletteV palette;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
 }

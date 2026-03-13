@@ -22,18 +22,4 @@ public:
     virtual ~StringMapSerializable() { }
 };
 
-class Serializer {
-
-};
-
-class Deserializer {
-
-};
-
-class SerializableV {
-public:
-    virtual void acceptSerializer(Serializer& serializer);
-    virtual void acceptDeserializer(Deserializer& deserializer);
-};
-
 }
