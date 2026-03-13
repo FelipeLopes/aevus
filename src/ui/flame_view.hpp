@@ -23,6 +23,8 @@ public:
     void handleXFormAdded(int id);
     void handleXFormRemoved(int id);
     void handleFrameContent(core::FrameContent content);
+    void handleStartXFormExplore();
+    void handleStopXFormExplore();
 
     boost::signals2::signal<void (std::optional<core::FlameContent>)> flameContent;
     boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
@@ -38,6 +40,8 @@ private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
     int activeXformId;
+    std::shared_ptr<core::XForm> xFormBeforeExplore;
+
     void sendTriangleContent();
     void sendPreTransformContent();
     void sendPostTransformContent();

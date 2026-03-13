@@ -1,11 +1,9 @@
 #pragma once
 
-#include <memory>
 #include "../core/content.hpp"
 #include "triangle_collider.hpp"
 #include "triangle_drawer.hpp"
 #include "triangle_grid.hpp"
-#include "triangle_types.hpp"
 #include "triangle_updater.hpp"
 #include <boost/signals2.hpp>
 #include <wx/panel.h>
@@ -27,6 +25,8 @@ public:
 
     boost::signals2::signal<void (int)> xformSelected;
     boost::signals2::signal<void (core::ActiveXFormUpdateContent)> xformUpdate;
+    boost::signals2::signal<void ()> startXFormExplore;
+    boost::signals2::signal<void ()> stopXFormExplore;
 
     static std::array<std::pair<double, double>, 3> triangle(core::CoefsContent coefs);
 private:

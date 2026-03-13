@@ -66,6 +66,10 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
 }
 
 void TriangleModel::handleMouseUp(wxMouseEvent& event) {
+    auto state = triangleUpdater.getUpdateState();
+    if (state != NO_UPDATE && state != DRAGGING_GRID) {
+        stopXFormExplore();
+    }
     triangleUpdater.finishUpdate();
 }
 
@@ -79,6 +83,7 @@ void TriangleModel::handleMouseDown(wxMouseEvent& event) {
         if (coll.triangleId != activeId) {
             xformSelected(coll.triangleId);
         }
+        startXFormExplore();
         switch (coll.type) {
             case VERTEX_O:
             case TRIANGLE_BODY:

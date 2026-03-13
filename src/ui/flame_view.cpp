@@ -2,6 +2,7 @@
 #include "aevus_frame.hpp"
 #include "commands.hpp"
 #include "flame_document.hpp"
+#include <cstddef>
 #include <memory>
 #include <wx/app.h>
 
@@ -128,7 +129,12 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     if (content.colorSpeed.has_value()) {
         newXForm->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
     }
-    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, oldXForm, newXForm));
+    if (xFormBeforeExplore != nullptr) {
+        document->flame.xforms.set(activeXformId, newXForm);
+        sendUpdatedXFormContent();
+    } else {
+        document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, oldXForm, newXForm));
+    }
     document->Modify(true);
 }
 
@@ -268,6 +274,17 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
     content.color = document->flame.xforms.get(idx)->color.value();
     content.colorSpeed = document->flame.xforms.get(idx)->colorSpeed.value().colorSpeed;
     return content;
+}
+
+void FlameView::handleStartXFormExplore() {
+    xFormBeforeExplore = std::make_shared<core::XForm>(*document->flame.xforms.get(activeXformId));
+}
+
+void FlameView::handleStopXFormExplore() {
+    auto newXForm = std::make_shared<core::XForm>(*document->flame.xforms.get(activeXformId));
+    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, xFormBeforeExplore, newXForm));
+    xFormBeforeExplore = nullptr;
+    document->Modify(true);
 }
 
 }

@@ -6,6 +6,7 @@
 #include <wx/mstream.h>
 #include <wx/wfstream.h>
 #include "flame_model.hpp"
+#include "flame_view.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"
 
@@ -117,6 +118,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         ));
         connections.push_back(triangleModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
+        ));
+        connections.push_back(triangleModel.startXFormExplore.connect(
+            bind(&FlameView::handleStartXFormExplore, flameView)
+        ));
+        connections.push_back(triangleModel.stopXFormExplore.connect(
+            bind(&FlameView::handleStopXFormExplore, flameView)
         ));
         connections.push_back(preTransformModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
