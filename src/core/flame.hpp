@@ -90,7 +90,7 @@ public:
     double brightness, contrast, gamma, vibrancy;
     ClippingV clipping;
     std::vector<XFormV> xforms;
-    std::optional<FinalXForm> finalXForm;
+    std::optional<FinalXFormV> finalXForm;
     PaletteV palette;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);

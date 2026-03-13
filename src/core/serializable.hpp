@@ -1,5 +1,6 @@
 #pragma once
 
+#include <tinyxml2.h>
 namespace core {
 
 class FlameV;
@@ -36,7 +37,14 @@ public:
 
 class XmlSerializer: public Serializer {
 public:
+    XmlSerializer(tinyxml2::XMLDocument* xmlDoc);
     void serialize(FlameV& flame) override;
+    void serialize(XFormV& xform) override;
+    void serialize(FinalXFormV& finalXform) override;
+    void serialize(PaletteV& palette) override;
+    void serialize(ClippingV& clipping) override;
+private:
+    tinyxml2::XMLDocument* xmlDoc;
 };
 
 }
