@@ -149,6 +149,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
         connections.push_back(colorModel.xformUpdate.connect(
             bind(&FlameView::handleXFormUpdate, flameView, _1)
         ));
+        connections.push_back(colorModel.startXFormExplore.connect(
+            bind(&FlameView::handleStartXFormExplore, flameView)
+        ));
+        connections.push_back(colorModel.stopXFormExplore.connect(
+            bind(&FlameView::handleStopXFormExplore, flameView)
+        ));
         connections.push_back(frameModel.frameContent.connect(
             bind(&FlameView::handleFrameContent, flameView, _1)
         ));

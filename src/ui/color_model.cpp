@@ -176,11 +176,15 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
 }
 
 void ColorModel::handleMouseUp(wxMouseEvent& event) {
-    dragging = false;
+    if (content.has_value()) {
+        dragging = false;
+        stopXFormExplore();
+    }
 }
 
 void ColorModel::handleMouseDown(wxMouseEvent& event) {
     if (content.has_value()) {
+        startXFormExplore();
         dragging = true;
         auto cursorPos = event.GetPosition();
         setValue(1.0-cursorPos.y/255.0, 0, 1);

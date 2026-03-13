@@ -2,7 +2,6 @@
 
 #include "../core/content.hpp"
 #include "view_model.hpp"
-#include "../core/flame.hpp"
 #include <cfloat>
 #include <boost/signals2.hpp>
 #include <wx/panel.h>
@@ -18,7 +17,10 @@ public:
     void handleMouseUp(wxMouseEvent& event);
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
+
     boost::signals2::signal<void (core::ActiveXFormUpdateContent)> xformUpdate;
+    boost::signals2::signal<void ()> startXFormExplore;
+    boost::signals2::signal<void ()> stopXFormExplore;
 private:
     void setupPalette();
     void getValues(std::vector<wxVector<wxVariant>>& data) const override;
