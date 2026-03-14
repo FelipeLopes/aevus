@@ -47,4 +47,15 @@ private:
     tinyxml2::XMLNode* parent;
 };
 
+class XmlDeserializer: public Deserializer {
+public:
+    XmlDeserializer(tinyxml2::XMLNode* parent);
+    void deserialize(FlameV& flame) override;
+    void deserialize(XFormV& xform) override;
+    void deserialize(FinalXFormV& finalXform) override;
+    void deserialize(PaletteV& palette) override;
+private:
+    tinyxml2::XMLNode* parent;
+};
+
 }

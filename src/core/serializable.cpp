@@ -1,5 +1,7 @@
 #include "serializable.hpp"
+#include <stdexcept>
 #include <string>
+#include <stdlib.h>
 #include <tinyxml2.h>
 #include "flame.hpp"
 
@@ -92,6 +94,78 @@ void XmlSerializer::serialize(PaletteV& palette) {
     element->SetText(palette.colors.toString()->c_str());
     if (parent != NULL) {
         parent->InsertEndChild(element);
+    }
+}
+
+XmlDeserializer::XmlDeserializer(XMLNode* parent_): parent(parent_) { }
+
+void XmlDeserializer::deserialize(FlameV& flame) {
+    if (parent == NULL) {
+        throw std::invalid_argument("Flame node is null");
+    }
+    XMLElement* element = parent->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Flame node is not an XML element");
+    }
+    string name = element->Name();
+    if (name != "flame") {
+        throw std::invalid_argument("Flame node has incorrect tag: "+name);
+    }
+    const char* buf;
+    auto err = element->QueryStringAttribute("version", &buf);
+    if (err == tinyxml2::XML_SUCCESS) {
+        flame.version = buf;
+        free((void*)buf);
+    }
+    err = element->QueryStringAttribute("name", &buf);
+    if (err == tinyxml2::XML_SUCCESS) {
+        flame.name = buf;
+        free((void*)buf);
+    }
+    err = element->QueryStringAttribute("size", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read flame size");
+    }
+    flame.size.fromString(buf);
+    free((void*)buf);
+    err = element->QueryStringAttribute("center", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read flame center");
+    }
+    flame.center.fromString(buf);
+    free((void*)buf);
+    err = element->QueryDoubleAttribute("scale", &flame.scale);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read flame scale");
+    }
+    err = element->QueryDoubleAttribute("quality", &flame.quality);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read flame quality");
+    }
+    err = element->QueryStringAttribute("background", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read flame background");
+    }
+    flame.background.fromString(buf);
+    free((void*)buf);
+    flame.brightness = element->DoubleAttribute("brightness", 4.0);
+    flame.quality = element->DoubleAttribute("quality", 5.0);
+    flame.contrast = element->DoubleAttribute("contrast", 1.0);
+    flame.gamma = element->DoubleAttribute("gamma", 4.0);
+    flame.vibrancy = element->DoubleAttribute("vibrancy", 1.0);
+    element->QueryStringAttribute("clipping", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        flame.clippingMode = WHITE;
+    } else {
+        string clipping = buf;
+        if (clipping == "alpha") {
+            flame.clippingMode = ALPHA;
+        } else if (clipping == "channel") {
+            flame.clippingMode = CHANNEL;
+        } else {
+            flame.clippingMode = WHITE;
+        }
+        free((void*)buf);
     }
 }
 
