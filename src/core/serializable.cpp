@@ -84,4 +84,15 @@ void XmlSerializer::serialize(FinalXFormV& finalXform) {
     }
 }
 
+void XmlSerializer::serialize(PaletteV& palette) {
+    XMLElement* element = xmlDoc->NewElement("palette");
+    element->SetAttribute("count", palette.count);
+    element->SetAttribute("format", palette.format.c_str());
+    // TODO: change return type to string instead of optional
+    element->SetText(palette.colors.toString()->c_str());
+    if (parent != NULL) {
+        parent->InsertEndChild(element);
+    }
+}
+
 }

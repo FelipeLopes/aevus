@@ -40,25 +40,12 @@ private:
     std::vector<byte> paletteData;
 };
 
-class PaletteColorsV: public SerializableV {
-public:
-    PaletteColorsV();
-    std::string hexAt(int pos) const;
-    Color colorAt(int pos) const;
-    void readColorCLArray(std::vector<ColorCL>& arr) const;
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
-    static const unsigned PALETTE_WIDTH = 256;
-    virtual void acceptSerializer(Serializer& serializer);
-    virtual void acceptDeserializer(Deserializer& deserializer);
-};
-
 class PaletteV: public SerializableV {
 public:
     PaletteV();
     int count;
     std::string format;
-    PaletteColorsV colors;
+    PaletteColors colors;
     void readColorCLArray(std::vector<ColorCL>& arr) const;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
