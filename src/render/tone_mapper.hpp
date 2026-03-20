@@ -4,7 +4,6 @@
 #include "../core/content.hpp"
 #include "kernel.hpp"
 #include <memory>
-#include <sstream>
 #include <vector>
 
 namespace render {

@@ -49,6 +49,9 @@ std::istream& FlameDocument::LoadObject(std::istream& stream) {
     printf("%lf %lf\n", flameV.xforms[0].coefs.ox, flameV.xforms[0].coefs.oy);
     printf("%lf\n",flameV.xforms[0].variationMap.variations[core::Variation::VariationID::LINEAR].weight);
     printf("%lf\n",flameV.finalXForm->color);
+    printf("%d\n", flameV.palette.count);
+    printf("%s\n",flameV.palette.format.c_str());
+    printf("%s\n", flameV.palette.colors.hexAt(127).c_str());
     return stream;
 }
 

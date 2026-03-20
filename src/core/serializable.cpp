@@ -170,33 +170,36 @@ void XmlDeserializer::deserialize(FlameV& flame) {
         }
     }
     auto node = parent->FirstChild();
-    if (node != NULL) {
-        XMLElement* element = node->ToElement();
-        if (element == NULL) {
-            throw std::invalid_argument("Child of flame node is not an XML element");
-        }
-        while (element->Name() == std::string("xform")) {
-            flame.xforms.push_back(XFormV());
-            int idx = flame.xforms.size() - 1;
-            auto xformDeserializer = XmlDeserializer(node);
-            flame.xforms[idx].acceptDeserializer(xformDeserializer);
-            node = node->NextSibling();
-            element = node->ToElement();
-            if (element == NULL) {
-                throw std::invalid_argument("Child of flame node is not an XML element");
-            }
-        }
+    if (node == NULL) {
+        throw std::invalid_argument("Flame node has no children.");
+    }
+    element = node->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Child of flame node is not an XML element");
+    }
+    while (element->Name() == std::string("xform")) {
+        flame.xforms.push_back(XFormV());
+        int idx = flame.xforms.size() - 1;
+        auto xformDeserializer = XmlDeserializer(node);
+        flame.xforms[idx].acceptDeserializer(xformDeserializer);
+        node = node->NextSibling();
         element = node->ToElement();
         if (element == NULL) {
             throw std::invalid_argument("Child of flame node is not an XML element");
         }
-        if (element->Name() == std::string("finalxform")) {
-            auto finalXFormDeserializer = XmlDeserializer(node);
-            flame.finalXForm = FinalXFormV();
-            flame.finalXForm->acceptDeserializer(finalXFormDeserializer);
-            node = node->NextSibling();
-        }
     }
+    element = node->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Child of flame node is not an XML element");
+    }
+    if (element->Name() == std::string("finalxform")) {
+        auto finalXFormDeserializer = XmlDeserializer(node);
+        flame.finalXForm = FinalXFormV();
+        flame.finalXForm->acceptDeserializer(finalXFormDeserializer);
+        node = node->NextSibling();
+    }
+    auto paletteDeserializer = XmlDeserializer(node);
+    flame.palette.acceptDeserializer(paletteDeserializer);
 }
 
 void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* element) {
@@ -243,11 +246,11 @@ void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* eleme
 
 void XmlDeserializer::deserialize(XFormV& xform) {
     if (parent == NULL) {
-        throw std::invalid_argument("Flame node is null");
+        throw std::invalid_argument("XForm node is null");
     }
     XMLElement* element = parent->ToElement();
     if (element == NULL) {
-        throw std::invalid_argument("Flame node is not an XML element");
+        throw std::invalid_argument("XForm node is not an XML element");
     }
     string name = element->Name();
     if (name != "xform") {
@@ -262,11 +265,11 @@ void XmlDeserializer::deserialize(XFormV& xform) {
 
 void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
     if (parent == NULL) {
-        throw std::invalid_argument("Flame node is null");
+        throw std::invalid_argument("Final XForm node is null");
     }
     XMLElement* element = parent->ToElement();
     if (element == NULL) {
-        throw std::invalid_argument("Flame node is not an XML element");
+        throw std::invalid_argument("Final XForm node is not an XML element");
     }
     string name = element->Name();
     if (name != "finalxform") {
@@ -276,7 +279,27 @@ void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
 }
 
 void XmlDeserializer::deserialize(PaletteV& palette) {
-
+    if (parent == NULL) {
+        throw std::invalid_argument("Palette node is null");
+    }
+    XMLElement* element = parent->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Palette node is not an XML element");
+    }
+    string name = element->Name();
+    if (name != "palette") {
+        throw std::invalid_argument("Palette node has incorrect tag: "+name);
+    }
+    element->QueryIntAttribute("count", &palette.count);
+    const char* buf;
+    element->QueryStringAttribute("format", &buf);
+    palette.format = buf;
+    auto text = element->GetText();
+    if (text == NULL) {
+        throw std::invalid_argument("Palette node has no text");
+    }
+    printf("\ntext: %s\n", text);
+    palette.colors.fromString(text);
 }
 
 }
