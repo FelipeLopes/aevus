@@ -13,8 +13,7 @@ public:
     std::ostream& SaveObject(std::ostream &stream) override;
     std::istream& LoadObject(std::istream &stream) override;
     bool flameHasXForms();
-    core::Flame flame;
-    core::FlameV flameV;
+    core::FlameV flame;
 private:
     long documentFlags;
 

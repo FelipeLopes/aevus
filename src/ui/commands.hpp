@@ -8,14 +8,13 @@ namespace ui {
 
 class XFormUpdateCommand: public wxCommand {
 public:
-    XFormUpdateCommand(FlameView* flameView, int xformIndex, 
-        std::shared_ptr<core::XForm> oldXForm, std::shared_ptr<core::XForm> newXForm);
+    XFormUpdateCommand(FlameView* flameView, int xformIndex, core::XFormV oldXForm, core::XFormV newXForm);
     virtual bool Do() override;
     virtual bool Undo() override;
 private:
     FlameView* flameView;
     int xformIndex;
-    std::shared_ptr<core::XForm> oldXform, newXform;
+    core::XFormV oldXform, newXform;
 };
 
 class XFormAddCommand: public wxCommand {
@@ -30,13 +29,13 @@ private:
 
 class XFormRemoveCommand: public wxCommand {
 public:
-    XFormRemoveCommand(FlameView* flameView, int xformIndex, std::shared_ptr<core::XForm> oldXForm);
+    XFormRemoveCommand(FlameView* flameView, int xformIndex, core::XFormV oldXForm);
     virtual bool Do() override;
     virtual bool Undo() override;
 private:
     FlameView* flameView;
     int xformIndex;
-    std::shared_ptr<core::XForm> oldXform;
+    core::XFormV oldXform;
 };
 
 class FrameUpdateCommand: public wxCommand {

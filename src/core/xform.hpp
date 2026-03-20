@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../serial/xml_attribute.hpp"
-#include "../serial/xml_element.hpp"
 #include "custom_coefs.hpp"
 #include "serializable.hpp"
 #include "variation.hpp"
@@ -13,28 +11,6 @@ struct XFormCL {
     float pa, pb, pc, pd, pe, pf;
     float color, colorSpeed;
     int varBegin, varEnd;
-};
-
-class BaseXForm: public serial::XMLElementClass {
-public:
-    BaseXForm(std::string tag);
-    serial::XMLAttributeDouble color;
-    serial::XMLMultiAttribute<VariationMap> variationMap;
-    serial::XMLAttribute<CoefsAffine> coefs;
-    serial::XMLAttribute<PostAffine> post;
-    serial::XMLAttribute<Chaos> chaos;
-    serial::XMLMultiAttribute<ColorSpeed> colorSpeed;
-};
-
-class XForm: public BaseXForm {
-public:
-    XForm();
-    serial::XMLAttributeDouble weight;
-};
-
-class FinalXForm: public BaseXForm {
-public:
-    FinalXForm();
 };
 
 class BaseXFormV: public SerializableV {

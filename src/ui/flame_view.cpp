@@ -3,7 +3,6 @@
 #include "commands.hpp"
 #include "flame_document.hpp"
 #include <cstddef>
-#include <memory>
 #include <wx/app.h>
 
 using core::ActiveXFormContent;
@@ -70,7 +69,7 @@ void FlameView::OnChangeFilename() {
     GetFrame()->SetLabel(title);
 }
 
-core::Flame* FlameView::getFlame() const
+core::FlameV* FlameView::getFlame() const
 {
     return &document->flame;
 }
@@ -97,10 +96,10 @@ void FlameView::setActiveXFormId(int id) {
 }
 
 void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
-    auto oldXForm = document->flame.xforms.get(activeXformId);
-    auto newXForm = std::make_shared<core::XForm>(*oldXForm);
+    auto oldXForm = document->flame.xforms[activeXformId];
+    auto newXForm = oldXForm;
     if (content.preCoefs.has_value()) {
-        auto ptr = newXForm->coefs.get();
+        auto ptr = &newXForm.coefs;
         ptr->ox = content.preCoefs->ox;
         ptr->oy = content.preCoefs->oy;
         ptr->xx = content.preCoefs->xx;
@@ -109,7 +108,7 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         ptr->yy = content.preCoefs->yy;
     }
     if (content.postCoefs.has_value()) {
-        auto ptr = newXForm->post.get();
+        auto ptr = &newXForm.post;
         ptr->ox = content.postCoefs->ox;
         ptr->oy = content.postCoefs->oy;
         ptr->xx = content.postCoefs->xx;
@@ -118,19 +117,19 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
         ptr->yy = content.postCoefs->yy;
     }
     if (content.weight.has_value()) {
-        newXForm->weight.setValue(content.weight.value());
+        newXForm.weight = content.weight.value();
     }
     if (content.variations.has_value()) {
-        newXForm->variationMap.get()->variations = content.variations.value();
+        newXForm.variationMap.variations = content.variations.value();
     }
     if (content.color.has_value()) {
-        newXForm->color.setValue(content.color.value());
+        newXForm.color = content.color.value();
     }
     if (content.colorSpeed.has_value()) {
-        newXForm->colorSpeed.get()->colorSpeed = content.colorSpeed.value();
+        newXForm.colorSpeed = content.colorSpeed.value();
     }
-    if (xFormBeforeExplore != nullptr) {
-        document->flame.xforms.set(activeXformId, newXForm);
+    if (xFormBeforeExplore.has_value()) {
+        document->flame.xforms[activeXformId] = newXForm;
         sendUpdatedXFormContent();
     } else {
         document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, oldXForm, newXForm));
@@ -144,16 +143,16 @@ void FlameView::handleXFormAdded(int id) {
 }
 
 void FlameView::handleXFormRemoved(int id) {
-    auto oldXForm = document->flame.xforms.get(activeXformId);
+    auto oldXForm = document->flame.xforms[activeXformId];
     document->GetCommandProcessor()->Submit(new XFormRemoveCommand(this, activeXformId, oldXForm));
     document->Modify(true);
 }
 
 void FlameView::handleFrameContent(FrameContent content) {
     FrameContent oldContent;
-    oldContent.flameSize = *(document->flame.size.get());
-    oldContent.flameCenter = *(document->flame.center.get());
-    oldContent.flameScale =  document->flame.scale.value();
+    oldContent.flameSize = document->flame.size;
+    oldContent.flameCenter = document->flame.center;
+    oldContent.flameScale = document->flame.scale;
     document->GetCommandProcessor()->Submit(new FrameUpdateCommand(this, oldContent, content));
     document->Modify(true);
 }
@@ -161,28 +160,28 @@ void FlameView::handleFrameContent(FrameContent content) {
 void FlameView::sendFlameContent() {
     FlameContent content;
     // Frame params
-    content.frame.flameSize = document->flame.size.value();
-    content.frame.flameCenter = document->flame.center.value();
-    content.frame.flameScale = document->flame.scale.value();
+    content.frame.flameSize = document->flame.size;
+    content.frame.flameCenter = document->flame.center;
+    content.frame.flameScale = document->flame.scale;
     // Render params
-    content.render.quality = document->flame.quality.value();
-    content.render.brightness = document->flame.brightness.value();
-    content.render.contrast = document->flame.contrast.value();
-    content.render.gamma = document->flame.gamma.value();
-    content.render.vibrancy = document->flame.vibrancy.value();
-    content.render.background = document->flame.background.value();
-    content.render.clipping = document->flame.clipping.value().mode;
+    content.render.quality = document->flame.quality;
+    content.render.brightness = document->flame.brightness;
+    content.render.contrast = document->flame.contrast;
+    content.render.gamma = document->flame.gamma;
+    content.render.vibrancy = document->flame.vibrancy;
+    content.render.background = document->flame.background;
+    content.render.clipping = document->flame.clippingMode;
     // Palette
-    content.palette = document->flame.palette.colors.value();
+    content.palette = document->flame.palette.colors;
     // XForms
     content.xforms.resize(document->flame.xforms.size());
     for (int i=0; i<content.xforms.size(); i++) {
         content.xforms[i] = getXformContent(i).value();
     }
     // Final xform
-    if (document->flame.finalXForm.isSet()) {
+    if (document->flame.finalXForm.has_value()) {
         content.finalXForm = XFormContent();
-        auto finalPreCoefs = document->flame.finalXForm.get()->coefs.value();
+        auto finalPreCoefs = document->flame.finalXForm->coefs;
         content.finalXForm->preCoefs.ox = finalPreCoefs.ox;
         content.finalXForm->preCoefs.oy = finalPreCoefs.oy;
         content.finalXForm->preCoefs.xx = finalPreCoefs.xx;
@@ -190,7 +189,7 @@ void FlameView::sendFlameContent() {
         content.finalXForm->preCoefs.yx = finalPreCoefs.yx;
         content.finalXForm->preCoefs.yy = finalPreCoefs.yy;
 
-        auto finalPostCoefs = document->flame.finalXForm.get()->post.value();
+        auto finalPostCoefs = document->flame.finalXForm->post;
         content.finalXForm->postCoefs.ox = finalPostCoefs.ox;
         content.finalXForm->postCoefs.oy = finalPostCoefs.oy;
         content.finalXForm->postCoefs.xx = finalPostCoefs.xx;
@@ -198,19 +197,19 @@ void FlameView::sendFlameContent() {
         content.finalXForm->postCoefs.yx = finalPostCoefs.yx;
         content.finalXForm->postCoefs.yy = finalPostCoefs.yy;
 
-        content.finalXForm->variations = document->flame.finalXForm.get()->variationMap.get()->variations;
+        content.finalXForm->variations = document->flame.finalXForm->variationMap.variations;
 
-        content.finalXForm->color = document->flame.finalXForm.get()->color.value();
-        content.finalXForm->colorSpeed = document->flame.finalXForm.get()->colorSpeed.value().colorSpeed;
+        content.finalXForm->color = document->flame.finalXForm->color;
+        content.finalXForm->colorSpeed = document->flame.finalXForm->colorSpeed;
     }
     flameContent(std::make_optional(content));
 }
 
 void FlameView::sendFrameContent() {
     FrameContent content;
-    content.flameSize = document->flame.size.value();
-    content.flameCenter = document->flame.center.value();
-    content.flameScale = document->flame.scale.value();
+    content.flameSize = document->flame.size;
+    content.flameCenter = document->flame.center;
+    content.flameScale = document->flame.scale;
     frameContent(content);
 }
 
@@ -251,7 +250,7 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
         return std::nullopt;
     }
     XFormContent content;
-    auto preCoefs = document->flame.xforms.get(idx)->coefs.value();
+    auto preCoefs = document->flame.xforms[idx].coefs;
     content.preCoefs.ox = preCoefs.ox;
     content.preCoefs.oy = preCoefs.oy;
     content.preCoefs.xx = preCoefs.xx;
@@ -259,7 +258,7 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
     content.preCoefs.yx = preCoefs.yx;
     content.preCoefs.yy = preCoefs.yy;
 
-    auto postCoefs = document->flame.xforms.get(idx)->post.value();
+    auto postCoefs = document->flame.xforms[idx].post;
     content.postCoefs.ox = postCoefs.ox;
     content.postCoefs.oy = postCoefs.oy;
     content.postCoefs.xx = postCoefs.xx;
@@ -267,23 +266,23 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
     content.postCoefs.yx = postCoefs.yx;
     content.postCoefs.yy = postCoefs.yy;
 
-    content.weight = document->flame.xforms.get(idx)->weight.value();
+    content.weight = document->flame.xforms[idx].weight;
 
-    content.variations = document->flame.xforms.get(idx)->variationMap.get()->variations;
+    content.variations = document->flame.xforms[idx].variationMap.variations;
 
-    content.color = document->flame.xforms.get(idx)->color.value();
-    content.colorSpeed = document->flame.xforms.get(idx)->colorSpeed.value().colorSpeed;
+    content.color = document->flame.xforms[idx].color;
+    content.colorSpeed = document->flame.xforms[idx].colorSpeed;
     return content;
 }
 
 void FlameView::handleStartXFormExplore() {
-    xFormBeforeExplore = std::make_shared<core::XForm>(*document->flame.xforms.get(activeXformId));
+    xFormBeforeExplore = document->flame.xforms[activeXformId];
 }
 
 void FlameView::handleStopXFormExplore() {
-    auto newXForm = std::make_shared<core::XForm>(*document->flame.xforms.get(activeXformId));
-    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, xFormBeforeExplore, newXForm));
-    xFormBeforeExplore = nullptr;
+    core::XFormV newXForm = document->flame.xforms[activeXformId];
+    document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, xFormBeforeExplore.value(), newXForm));
+    xFormBeforeExplore.reset();
     document->Modify(true);
 }
 

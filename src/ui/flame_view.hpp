@@ -16,7 +16,7 @@ public:
     void OnDraw(wxDC *dc) override;
     bool OnClose(bool deleteWindow = true) override;
     void OnChangeFilename() override;
-    core::Flame* getFlame() const;
+    core::FlameV* getFlame() const;
     void documentLoaded();
     void handleXFormSelected(int i);
     void handleXFormUpdate(core::ActiveXFormUpdateContent content);
@@ -40,7 +40,7 @@ private:
     AevusFrame* aevusFrame;
     FlameDocument* document;
     int activeXformId;
-    std::shared_ptr<core::XForm> xFormBeforeExplore;
+    std::optional<core::XFormV> xFormBeforeExplore;
 
     void sendTriangleContent();
     void sendPreTransformContent();

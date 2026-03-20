@@ -1,4 +1,5 @@
 #include "flame_document.hpp"
+#include "flame_view.hpp"
 #include <tinyxml2.h>
 #include <wx/docview.h>
 
@@ -21,7 +22,7 @@ bool FlameDocument::isNew() {
 std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
     tinyxml2::XMLDocument xmlDoc;
     core::XmlSerializer serializer(&xmlDoc, &xmlDoc);
-    flameV.acceptSerializer(serializer);
+    flame.acceptSerializer(serializer);
     tinyxml2::XMLPrinter xmlPrinter;
     xmlDoc.Print(&xmlPrinter);
     stream << xmlPrinter.CStr();
@@ -41,11 +42,11 @@ std::istream& FlameDocument::LoadObject(std::istream& stream) {
     }
     tinyxml2::XMLNode* node = xmlDoc.FirstChild();
     core::XmlDeserializer deserializer(node);
-    flameV.acceptDeserializer(deserializer);
+    flame.acceptDeserializer(deserializer);
     // flame.deserialize(stream);
     // workaround for wxWidgets problem: https://github.com/wxWidgets/wxWidgets/issues/23479
     stream.clear();
-    //dynamic_cast<FlameView*>(GetFirstView())->documentLoaded();
+    dynamic_cast<FlameView*>(GetFirstView())->documentLoaded();
     return stream;
 }
 
