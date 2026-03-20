@@ -21,6 +21,11 @@ FlameView::FlameView() {
     SetFrame(aevusFrame);
 }
 
+FlameView::~FlameView() {
+    connection->disconnect();
+    connection.reset();
+}
+
 bool FlameView::OnCreate(wxDocument *doc, long flags) {
     if (!wxView::OnCreate(doc, flags)){
         return false;
@@ -28,9 +33,9 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
     document = dynamic_cast<FlameDocument*>(doc);
     aevusFrame->setupFlameView(this);
     FlameCommandProcessor* flameProcessor = dynamic_cast<FlameCommandProcessor*>(document->GetCommandProcessor());
-    connections.push_back(flameProcessor->flameModified.connect(
+    connection = flameProcessor->flameModified.connect(
         boost::bind(&FlameView::modifyDocument, this)
-    ));
+    );
     // KLUDGE: wxWidgets document initialization is very weird.
     // First, it creates the document, then it creates the view,
     // attaches the view to the document, and only after attaching,

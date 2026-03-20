@@ -12,6 +12,7 @@ class AevusFrame;
 class FlameView: public wxView {
 public:
     FlameView();
+    ~FlameView();
     bool OnCreate(wxDocument *doc, long flags) override;
     void OnDraw(wxDC *dc) override;
     bool OnClose(bool deleteWindow = true) override;
@@ -53,7 +54,7 @@ private:
     void sendSelectedXFormContent();
     std::optional<core::XFormContent> getXformContent(int idx);
 
-    std::vector<boost::signals2::connection> connections;
+    std::optional<boost::signals2::connection> connection;
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };
