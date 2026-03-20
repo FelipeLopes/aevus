@@ -7,6 +7,19 @@ using core::XForm;
 
 namespace ui {
 
+FlameCommandProcessor::FlameCommandProcessor(): wxCommandProcessor() { }
+
+// HACK: we are overriding this function in order to track document modifications.
+// We want to use the MarkAsSaved() and IsDirty() methods of the command processor
+// to tell us when the document is modified. However, the right time to call IsDirty()
+// is AFTER Do() and Undo() have been executed in the command. That's precisely when
+// SetMenuStrings() executes. So we override it calling the parent method first, and
+// execute our document modification hooks immediately after.
+void FlameCommandProcessor::SetMenuStrings() {
+    wxCommandProcessor::SetMenuStrings();
+    flameModified();
+}
+
 XFormUpdateCommand::XFormUpdateCommand(FlameView* flameView_, int xformIndex_, XForm oldXform_, XForm newXForm_): wxCommand(true),
     flameView(flameView_), xformIndex(xformIndex_), oldXform(oldXform_), newXform(newXForm_) { }
 

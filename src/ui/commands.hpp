@@ -6,6 +6,13 @@
 
 namespace ui {
 
+class FlameCommandProcessor: public wxCommandProcessor {
+public:
+    FlameCommandProcessor();
+    virtual void SetMenuStrings() override;
+    boost::signals2::signal<void ()> flameModified;
+};
+
 class XFormUpdateCommand: public wxCommand {
 public:
     XFormUpdateCommand(FlameView* flameView, int xformIndex, core::XForm oldXForm, core::XForm newXForm);

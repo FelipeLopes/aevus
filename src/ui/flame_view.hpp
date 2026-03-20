@@ -35,6 +35,7 @@ public:
     void sendRemovedXFormContent(int id);
     void setActiveXFormId(int id);
     void sendFlameContent();
+    void modifyDocument();
 
 private:
     AevusFrame* aevusFrame;
@@ -50,8 +51,9 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendSelectedXFormContent();
-
     std::optional<core::XFormContent> getXformContent(int idx);
+
+    std::vector<boost::signals2::connection> connections;
 
     wxDECLARE_DYNAMIC_CLASS(FlameView);
 };

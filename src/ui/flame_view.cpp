@@ -3,8 +3,7 @@
 #include "commands.hpp"
 #include "flame_document.hpp"
 #include <cstddef>
-#include <wx-3.2/wx/event.h>
-#include <wx-3.2/wx/graphics.h>
+#include <boost/bind.hpp>
 #include <wx/app.h>
 
 using core::ActiveXFormContent;
@@ -28,6 +27,10 @@ bool FlameView::OnCreate(wxDocument *doc, long flags) {
     }
     document = dynamic_cast<FlameDocument*>(doc);
     aevusFrame->setupFlameView(this);
+    FlameCommandProcessor* flameProcessor = dynamic_cast<FlameCommandProcessor*>(document->GetCommandProcessor());
+    connections.push_back(flameProcessor->flameModified.connect(
+        boost::bind(&FlameView::modifyDocument, this)
+    ));
     // KLUDGE: wxWidgets document initialization is very weird.
     // First, it creates the document, then it creates the view,
     // attaches the view to the document, and only after attaching,
@@ -136,18 +139,15 @@ void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {
     } else {
         document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, oldXForm, newXForm));
     }
-    document->Modify(true);
 }
 
 void FlameView::handleXFormAdded(int id) {
     document->GetCommandProcessor()->Submit(new XFormAddCommand(this, activeXformId));
-    document->Modify(true);
 }
 
 void FlameView::handleXFormRemoved(int id) {
     auto oldXForm = document->flame.xforms[activeXformId];
     document->GetCommandProcessor()->Submit(new XFormRemoveCommand(this, activeXformId, oldXForm));
-    document->Modify(true);
 }
 
 void FlameView::handleFrameContent(FrameContent content) {
@@ -156,7 +156,6 @@ void FlameView::handleFrameContent(FrameContent content) {
     oldContent.flameCenter = document->flame.center;
     oldContent.flameScale = document->flame.scale;
     document->GetCommandProcessor()->Submit(new FrameUpdateCommand(this, oldContent, content));
-    document->Modify(true);
 }
 
 void FlameView::sendFlameContent() {
@@ -290,7 +289,10 @@ void FlameView::handleStopXFormExplore() {
     xFormBeforeExplore.reset();
     aevusFrame->GetMenuBar()->FindItem(wxID_UNDO)->Enable(true);
     aevusFrame->GetMenuBar()->FindItem(wxID_REDO)->Enable(true);
-    document->Modify(true);
+}
+
+void FlameView::modifyDocument() {
+    document->Modify(document->GetCommandProcessor()->IsDirty());
 }
 
 }

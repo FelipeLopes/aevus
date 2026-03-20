@@ -12,6 +12,7 @@ public:
     bool isNew();
     std::ostream& SaveObject(std::ostream &stream) override;
     std::istream& LoadObject(std::istream &stream) override;
+    virtual wxCommandProcessor* OnCreateCommandProcessor() override;
     bool flameHasXForms();
     core::Flame flame;
 private:

@@ -1,4 +1,5 @@
 #include "flame_document.hpp"
+#include "commands.hpp"
 #include "flame_view.hpp"
 #include <tinyxml2.h>
 #include <wx/docview.h>
@@ -27,6 +28,8 @@ std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
     xmlDoc.Print(&xmlPrinter);
     stream << xmlPrinter.CStr();
     stream.clear();
+    GetCommandProcessor()->MarkAsSaved();
+    Modify(false);
     return stream;
 }
 
@@ -48,6 +51,10 @@ std::istream& FlameDocument::LoadObject(std::istream& stream) {
     stream.clear();
     dynamic_cast<FlameView*>(GetFirstView())->documentLoaded();
     return stream;
+}
+
+wxCommandProcessor* FlameDocument::OnCreateCommandProcessor() {
+    return new FlameCommandProcessor();
 }
 
 bool FlameDocument::flameHasXForms() {

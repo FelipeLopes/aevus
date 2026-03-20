@@ -2,7 +2,6 @@
 
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
-#include <wx-3.2/wx/event.h>
 #include <wxfb_frame.h>
 #include "color_model.hpp"
 #include "flame_model.hpp"
