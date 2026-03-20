@@ -227,7 +227,7 @@ void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* eleme
         throw std::invalid_argument("Could not read xform coefs");
     }
     xform.coefs.fromString(buf);
-    err = element->QueryStringAttribute("coefs", &buf);
+    err = element->QueryStringAttribute("post", &buf);
     if (err == tinyxml2::XML_SUCCESS) {
         xform.post.fromString(buf);
     }
