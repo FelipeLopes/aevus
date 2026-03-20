@@ -19,7 +19,12 @@ bool FlameDocument::isNew() {
 }
 
 std::ostream& FlameDocument::SaveObject(std::ostream& stream) {
-    flame.serialize(stream);
+    tinyxml2::XMLDocument xmlDoc;
+    core::XmlSerializer serializer(&xmlDoc, &xmlDoc);
+    flameV.acceptSerializer(serializer);
+    tinyxml2::XMLPrinter xmlPrinter;
+    xmlDoc.Print(&xmlPrinter);
+    stream << xmlPrinter.CStr();
     stream.clear();
     return stream;
 }
@@ -40,18 +45,7 @@ std::istream& FlameDocument::LoadObject(std::istream& stream) {
     // flame.deserialize(stream);
     // workaround for wxWidgets problem: https://github.com/wxWidgets/wxWidgets/issues/23479
     stream.clear();
-    printf("%lf %lf\n", flameV.center.x, flameV.center.y);
-    printf("%d %d\n", flameV.size.width, flameV.size.height);
-    printf("%lf\n", flameV.scale);
-    printf("%s\n",flameV.name.c_str());
     //dynamic_cast<FlameView*>(GetFirstView())->documentLoaded();
-    printf("%zu\n", flameV.xforms.size());
-    printf("%lf %lf\n", flameV.xforms[0].coefs.ox, flameV.xforms[0].coefs.oy);
-    printf("%lf\n",flameV.xforms[0].variationMap.variations[core::Variation::VariationID::LINEAR].weight);
-    printf("%lf\n",flameV.finalXForm->color);
-    printf("%d\n", flameV.palette.count);
-    printf("%s\n",flameV.palette.format.c_str());
-    printf("%s\n", flameV.palette.colors.hexAt(127).c_str());
     return stream;
 }
 

@@ -43,9 +43,7 @@ void XmlSerializer::serialize(FlameV& flame) {
     if (flame.finalXForm.has_value()) {
         childSerializer.serialize(flame.finalXForm.value());
     }
-    if (parent != NULL) {
-        parent->InsertEndChild(element);
-    }
+    parent->InsertEndChild(element);
 }
 
 void XmlSerializer::serializeBaseXForm(BaseXFormV& xform, XMLElement* element) {
@@ -73,17 +71,13 @@ void XmlSerializer::serialize(XFormV& xform) {
     XMLElement* element = xmlDoc->NewElement("xform");
     serializeBaseXForm(xform, element);
     element->SetAttribute("weight", xform.weight);
-    if (parent != NULL) {
-        parent->InsertEndChild(element);
-    }
+    parent->InsertEndChild(element);
 }
 
 void XmlSerializer::serialize(FinalXFormV& finalXform) {
     XMLElement* element = xmlDoc->NewElement("finalxform");
     serializeBaseXForm(finalXform, element);
-    if (parent != NULL) {
-        parent->InsertEndChild(element);
-    }
+    parent->InsertEndChild(element);
 }
 
 void XmlSerializer::serialize(PaletteV& palette) {
@@ -92,9 +86,7 @@ void XmlSerializer::serialize(PaletteV& palette) {
     element->SetAttribute("format", palette.format.c_str());
     // TODO: change return type to string instead of optional
     element->SetText(palette.colors.toString()->c_str());
-    if (parent != NULL) {
-        parent->InsertEndChild(element);
-    }
+    parent->InsertEndChild(element);
 }
 
 XmlDeserializer::XmlDeserializer(XMLNode* parent_): parent(parent_) {
@@ -298,7 +290,6 @@ void XmlDeserializer::deserialize(PaletteV& palette) {
     if (text == NULL) {
         throw std::invalid_argument("Palette node has no text");
     }
-    printf("\ntext: %s\n", text);
     palette.colors.fromString(text);
 }
 
