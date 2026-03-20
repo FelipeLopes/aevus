@@ -14,6 +14,7 @@ public:
     std::istream& LoadObject(std::istream &stream) override;
     bool flameHasXForms();
     core::Flame flame;
+    core::FlameV flameV;
 private:
     long documentFlags;
 

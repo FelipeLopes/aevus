@@ -103,4 +103,17 @@ void Palette::readColorCLArray(vector<ColorCL>& arr) const {
     colors.value().readColorCLArray(arr);
 }
 
+PaletteV::PaletteV() {
+    count = 256;
+    format = "RGB";
+}
+
+void PaletteV::acceptSerializer(Serializer& serializer) {
+    serializer.serialize(*this);
+}
+
+void PaletteV::acceptDeserializer(Deserializer& deserializer) {
+    deserializer.deserialize(*this);
+}
+
 }

@@ -69,6 +69,19 @@ tinyxml2::XMLNode* Flame::nodeDeserialize(tinyxml2::XMLNode* node) {
     return serial::XMLElementClass::nodeDeserialize(node);
 }
 
+FlameV::FlameV() {
+    center.x = 0;
+    center.y = 0;
+    scale = 100;
+    size.width = 732;
+    size.height = 640;
+    quality = 5;
+    brightness = 4;
+    contrast = 1;
+    gamma = 4;
+    vibrancy = 1;
+}
+
 void FlameV::acceptSerializer(Serializer& serializer) {
     serializer.serialize(*this);
 }

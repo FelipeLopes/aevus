@@ -24,12 +24,34 @@ BaseXForm::BaseXForm(std::string tag): XMLElementClass(tag),
     colorSpeed.get()->colorSpeed = 0.5;
 }
 
+BaseXFormV::~BaseXFormV() { }
+
 XForm::XForm(): BaseXForm("xform"),
     weight(*this, "weight")
 {
     weight.setValue(0.5);
 }
 
+XFormV::~XFormV() { }
+
 FinalXForm::FinalXForm(): BaseXForm("finalxform") { }
+
+FinalXFormV::~FinalXFormV() { }
+
+void XFormV::acceptSerializer(Serializer& serializer) {
+    serializer.serialize(*this);
+}
+
+void XFormV::acceptDeserializer(Deserializer& deserializer) {
+    deserializer.deserialize(*this);
+}
+
+void FinalXFormV::acceptSerializer(Serializer& serializer) {
+    serializer.serialize(*this);
+}
+
+void FinalXFormV::acceptDeserializer(Deserializer& deserializer) {
+    deserializer.deserialize(*this);
+}
 
 }

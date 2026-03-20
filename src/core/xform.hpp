@@ -40,6 +40,7 @@ public:
 class BaseXFormV: public SerializableV {
 public:
     BaseXFormV();
+    virtual ~BaseXFormV();
     double color, colorSpeed;
     VariationMap variationMap;
     CoefsAffine coefs;
@@ -50,6 +51,7 @@ public:
 class XFormV: public BaseXFormV {
 public:
     XFormV();
+    ~XFormV();
     double weight;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
@@ -58,6 +60,7 @@ public:
 class FinalXFormV: public BaseXFormV {
 public:
     FinalXFormV();
+    ~FinalXFormV();
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
 };

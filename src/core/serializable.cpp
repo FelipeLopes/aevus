@@ -115,25 +115,21 @@ void XmlDeserializer::deserialize(FlameV& flame) {
     auto err = element->QueryStringAttribute("version", &buf);
     if (err == tinyxml2::XML_SUCCESS) {
         flame.version = buf;
-        free((void*)buf);
     }
     err = element->QueryStringAttribute("name", &buf);
     if (err == tinyxml2::XML_SUCCESS) {
         flame.name = buf;
-        free((void*)buf);
     }
     err = element->QueryStringAttribute("size", &buf);
     if (err != tinyxml2::XML_SUCCESS) {
         throw std::invalid_argument("Could not read flame size");
     }
     flame.size.fromString(buf);
-    free((void*)buf);
     err = element->QueryStringAttribute("center", &buf);
     if (err != tinyxml2::XML_SUCCESS) {
         throw std::invalid_argument("Could not read flame center");
     }
     flame.center.fromString(buf);
-    free((void*)buf);
     err = element->QueryDoubleAttribute("scale", &flame.scale);
     if (err != tinyxml2::XML_SUCCESS) {
         throw std::invalid_argument("Could not read flame scale");
@@ -147,7 +143,6 @@ void XmlDeserializer::deserialize(FlameV& flame) {
         throw std::invalid_argument("Could not read flame background");
     }
     flame.background.fromString(buf);
-    free((void*)buf);
     flame.brightness = element->DoubleAttribute("brightness", 4.0);
     flame.quality = element->DoubleAttribute("quality", 5.0);
     flame.contrast = element->DoubleAttribute("contrast", 1.0);
@@ -165,8 +160,19 @@ void XmlDeserializer::deserialize(FlameV& flame) {
         } else {
             flame.clippingMode = WHITE;
         }
-        free((void*)buf);
     }
+}
+
+void XmlDeserializer::deserialize(XFormV& xform) {
+
+}
+
+void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
+
+}
+
+void XmlDeserializer::deserialize(PaletteV& palette) {
+
 }
 
 }
