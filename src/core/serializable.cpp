@@ -43,6 +43,7 @@ void XmlSerializer::serialize(FlameV& flame) {
     if (flame.finalXForm.has_value()) {
         childSerializer.serialize(flame.finalXForm.value());
     }
+    childSerializer.serialize(flame.palette);
     parent->InsertEndChild(element);
 }
 
