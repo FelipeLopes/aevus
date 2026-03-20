@@ -1,6 +1,7 @@
 #include "palette.hpp"
 #include <algorithm>
 #include <optional>
+#include <stdexcept>
 
 using std::optional;
 using std::string;
@@ -90,29 +91,16 @@ void PaletteColors::fromString(optional<string> text) {
     }
 }
 
-Palette::Palette(XMLElementClass& el): XMLElementClass(el, "palette"),
-    count(*this, "count"),
-    format(*this, "format"),
-    colors(*this)
-{
-    count.setValue(256);
-    format.setValue("RGB");
-}
-
-void Palette::readColorCLArray(vector<ColorCL>& arr) const {
-    colors.value().readColorCLArray(arr);
-}
-
-PaletteV::PaletteV() {
+Palette::Palette() {
     count = 256;
     format = "RGB";
 }
 
-void PaletteV::acceptSerializer(Serializer& serializer) {
+void Palette::acceptSerializer(Serializer& serializer) {
     serializer.serialize(*this);
 }
 
-void PaletteV::acceptDeserializer(Deserializer& deserializer) {
+void Palette::acceptDeserializer(Deserializer& deserializer) {
     deserializer.deserialize(*this);
 }
 

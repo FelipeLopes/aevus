@@ -3,11 +3,11 @@
 #include <wx-3.2/wx/cmdproc.h>
 
 using core::FrameContent;
-using core::XFormV;
+using core::XForm;
 
 namespace ui {
 
-XFormUpdateCommand::XFormUpdateCommand(FlameView* flameView_, int xformIndex_, XFormV oldXform_, XFormV newXForm_): wxCommand(true),
+XFormUpdateCommand::XFormUpdateCommand(FlameView* flameView_, int xformIndex_, XForm oldXform_, XForm newXForm_): wxCommand(true),
     flameView(flameView_), xformIndex(xformIndex_), oldXform(oldXform_), newXform(newXForm_) { }
 
 bool XFormUpdateCommand::Do() {
@@ -27,7 +27,7 @@ XFormAddCommand::XFormAddCommand(FlameView* flameView_, int xformIndex_): wxComm
 
 bool XFormAddCommand::Do() {
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
-    flameView->getFlame()->xforms.insert(pos, XFormV());
+    flameView->getFlame()->xforms.insert(pos, XForm());
     flameView->setActiveXFormId(xformIndex);
     flameView->sendAddedXFormContent();
     return true;
@@ -41,7 +41,7 @@ bool XFormAddCommand::Undo() {
     return true;
 }
 
-XFormRemoveCommand::XFormRemoveCommand(FlameView* flameView_, int xformIndex_, XFormV oldXform_): wxCommand(true),
+XFormRemoveCommand::XFormRemoveCommand(FlameView* flameView_, int xformIndex_, XForm oldXform_): wxCommand(true),
     flameView(flameView_), xformIndex(xformIndex_), oldXform(oldXform_) { }
 
 bool XFormRemoveCommand::Do() {
@@ -54,7 +54,7 @@ bool XFormRemoveCommand::Do() {
 
 bool XFormRemoveCommand::Undo() {
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
-    flameView->getFlame()->xforms.insert(pos, XFormV());
+    flameView->getFlame()->xforms.insert(pos, XForm());
     flameView->getFlame()->xforms[xformIndex] = oldXform;
     flameView->setActiveXFormId(xformIndex);
     flameView->sendAddedXFormContent();

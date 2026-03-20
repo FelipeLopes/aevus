@@ -29,7 +29,7 @@ void Clipping::fromString(std::optional<std::string> text) {
     }
 }
 
-FlameV::FlameV() {
+Flame::Flame() {
     center.x = 0;
     center.y = 0;
     scale = 100;
@@ -42,11 +42,11 @@ FlameV::FlameV() {
     vibrancy = 1;
 }
 
-void FlameV::acceptSerializer(Serializer& serializer) {
+void Flame::acceptSerializer(Serializer& serializer) {
     serializer.serialize(*this);
 }
 
-void FlameV::acceptDeserializer(Deserializer& deserializer) {
+void Flame::acceptDeserializer(Deserializer& deserializer) {
     deserializer.deserialize(*this);
 }
 

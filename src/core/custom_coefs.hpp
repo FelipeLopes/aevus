@@ -1,33 +1,35 @@
 #pragma once
 
+#include <optional>
+#include <string>
+#include <map>
 #include <vector>
-#include "../serial/serializable.hpp"
 
 namespace core {
 
-class SizeParams: public serial::StringSerializable {
+class SizeParams {
 public:
     SizeParams();
     SizeParams(int width, int height);
     int width, height;
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
+    std::optional<std::string> toString();
+    void fromString(std::optional<std::string> text);
 };
 
-class CenterParams: public serial::StringSerializable {
+class CenterParams {
 public:
     CenterParams();
     CenterParams(double x, double y);
     double x, y;
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
+    std::optional<std::string> toString();
+    void fromString(std::optional<std::string> text);
 };
 
-class Affine: public serial::StringSerializable {
+class Affine {
 public:
     Affine(bool serializeIdentity);
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
+    std::optional<std::string> toString();
+    void fromString(std::optional<std::string> text);
     double xx, xy, yx, yy, ox, oy;
 private:
     bool serializeIdentity;
@@ -43,17 +45,17 @@ public:
     PostAffine();
 };
 
-class Chaos: public serial::StringSerializable {
+class Chaos {
 public:
     Chaos();
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
+    std::optional<std::string> toString();
+    void fromString(std::optional<std::string> text);
     double getXaos(int idx) const;
 private:
     std::vector<double> chaos;
 };
 
-class ColorSpeed: public serial::StringMapSerializable {
+class ColorSpeed {
 public:
     ColorSpeed();
     virtual std::map<std::string, std::string> toStringMap();

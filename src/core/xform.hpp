@@ -13,10 +13,10 @@ struct XFormCL {
     int varBegin, varEnd;
 };
 
-class BaseXFormV: public SerializableV {
+class BaseXForm: public SerializableV {
 public:
-    BaseXFormV();
-    virtual ~BaseXFormV();
+    BaseXForm();
+    virtual ~BaseXForm();
     double color, colorSpeed;
     VariationMap variationMap;
     CoefsAffine coefs;
@@ -24,19 +24,19 @@ public:
     Chaos chaos;
 };
 
-class XFormV: public BaseXFormV {
+class XForm: public BaseXForm {
 public:
-    XFormV();
-    ~XFormV();
+    XForm();
+    ~XForm();
     double weight;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
-class FinalXFormV: public BaseXFormV {
+class FinalXForm: public BaseXForm {
 public:
-    FinalXFormV();
-    ~FinalXFormV();
+    FinalXForm();
+    ~FinalXForm();
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
 };

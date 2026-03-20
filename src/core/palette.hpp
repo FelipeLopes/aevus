@@ -1,14 +1,12 @@
 #pragma once
 
 #include <vector>
-#include "../serial/xml_element.hpp"
-#include "../serial/serializable.hpp"
 #include "serializable.hpp"
 #include "color.hpp"
 
 namespace core {
 
-class PaletteColors: public serial::StringSerializable {
+class PaletteColors {
 public:
     PaletteColors();
     std::string hexAt(int pos) const;
@@ -25,24 +23,9 @@ private:
     std::vector<byte> paletteData;
 };
 
-class Palette: public serial::XMLElementClass {
+class Palette: public SerializableV {
 public:
-    Palette(XMLElementClass& el);
-    serial::XMLAttributeInt count;
-    serial::XMLAttributeString format;
-    serial::XMLContent<PaletteColors> colors;
-    void readColorCLArray(std::vector<ColorCL>& arr) const;
-private:
-    typedef unsigned char byte;
-    char hexHigh(byte b) const;
-    char hexLow(byte b) const;
-    byte hexValue(char high, char low) const;
-    std::vector<byte> paletteData;
-};
-
-class PaletteV: public SerializableV {
-public:
-    PaletteV();
+    Palette();
     int count;
     std::string format;
     PaletteColors colors;

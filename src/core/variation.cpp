@@ -1,4 +1,5 @@
 #include "variation.hpp"
+#include "serializable.hpp"
 #include <boost/assign.hpp>
 #include <boost/assign/list_of.hpp>
 #include <regex>
@@ -45,10 +46,10 @@ map<string, string> VariationMap::toStringMap() {
         if (it == Variation::variationNames.left.end()) {
             throw std::invalid_argument("Unknown variation ID");
         }
-        ans[it->second] = serial::formattedDouble(kv.second.weight);
+        ans[it->second] = formattedDouble(kv.second.weight);
         auto paramNames = Variation::variationParamNames.find(it->first)->second.paramNames;
         for (int i=0; i<kv.second.params.size(); i++) {
-            ans[it->second + "_" + paramNames[i]] = serial::formattedDouble(kv.second.params[i]);
+            ans[it->second + "_" + paramNames[i]] = formattedDouble(kv.second.params[i]);
         }
     }
     return ans;

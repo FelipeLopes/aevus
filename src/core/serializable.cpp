@@ -1,4 +1,5 @@
 #include "serializable.hpp"
+#include <iomanip>
 #include <stdexcept>
 #include <string>
 #include <stdlib.h>
@@ -13,24 +14,34 @@ using tinyxml2::XMLNode;
 
 namespace core {
 
+string formattedDouble(double x) {
+    std::stringstream buffer;
+    buffer<<std::setprecision(15)<<x;
+    auto ans = buffer.str();
+    if (ans == "-0") {
+        ans = "0";
+    }
+    return ans;
+}
+
 XmlSerializer::XmlSerializer(XMLDocument* xmlDoc_, XMLNode* parent_): xmlDoc(xmlDoc_), parent(parent_) { }
 
-void XmlSerializer::serialize(FlameV& flame) {
+void XmlSerializer::serialize(Flame& flame) {
     XMLElement* element = xmlDoc->NewElement("flame");
     element->SetAttribute("version", flame.version.c_str());
     element->SetAttribute("name", flame.name.c_str());
     string size = to_string(flame.size.width) + " " + to_string(flame.size.height);
     element->SetAttribute("size", size.c_str());
-    string center = serial::formattedDouble(flame.center.x) + " " + serial::formattedDouble(flame.center.y);
+    string center = formattedDouble(flame.center.x) + " " + formattedDouble(flame.center.y);
     element->SetAttribute("center", center.c_str());
-    element->SetAttribute("scale", serial::formattedDouble(flame.scale).c_str());
-    element->SetAttribute("quality", serial::formattedDouble(flame.quality).c_str());
+    element->SetAttribute("scale", formattedDouble(flame.scale).c_str());
+    element->SetAttribute("quality", formattedDouble(flame.quality).c_str());
     string color = to_string(flame.background.r) + " " + to_string(flame.background.g) + " " + to_string(flame.background.b);
     element->SetAttribute("background", color.c_str());
-    element->SetAttribute("brightness", serial::formattedDouble(flame.brightness).c_str());
-    element->SetAttribute("contrast", serial::formattedDouble(flame.contrast).c_str());
-    element->SetAttribute("gamma", serial::formattedDouble(flame.gamma).c_str());
-    element->SetAttribute("vibrancy", serial::formattedDouble(flame.vibrancy).c_str());
+    element->SetAttribute("brightness", formattedDouble(flame.brightness).c_str());
+    element->SetAttribute("contrast", formattedDouble(flame.contrast).c_str());
+    element->SetAttribute("gamma", formattedDouble(flame.gamma).c_str());
+    element->SetAttribute("vibrancy", formattedDouble(flame.vibrancy).c_str());
     switch (flame.clippingMode) {
         case ALPHA: element->SetAttribute("clipping", "alpha"); break;
         case CHANNEL: element->SetAttribute("clipping", "channel"); break;
@@ -47,7 +58,7 @@ void XmlSerializer::serialize(FlameV& flame) {
     parent->InsertEndChild(element);
 }
 
-void XmlSerializer::serializeBaseXForm(BaseXFormV& xform, XMLElement* element) {
+void XmlSerializer::serializeBaseXForm(BaseXForm& xform, XMLElement* element) {
     element->SetAttribute("color", xform.color);
     element->SetAttribute("color_speed", xform.colorSpeed);
     auto stringMap = xform.variationMap.toStringMap();
@@ -68,20 +79,20 @@ void XmlSerializer::serializeBaseXForm(BaseXFormV& xform, XMLElement* element) {
     }
 }
 
-void XmlSerializer::serialize(XFormV& xform) {
+void XmlSerializer::serialize(XForm& xform) {
     XMLElement* element = xmlDoc->NewElement("xform");
     serializeBaseXForm(xform, element);
     element->SetAttribute("weight", xform.weight);
     parent->InsertEndChild(element);
 }
 
-void XmlSerializer::serialize(FinalXFormV& finalXform) {
+void XmlSerializer::serialize(FinalXForm& finalXform) {
     XMLElement* element = xmlDoc->NewElement("finalxform");
     serializeBaseXForm(finalXform, element);
     parent->InsertEndChild(element);
 }
 
-void XmlSerializer::serialize(PaletteV& palette) {
+void XmlSerializer::serialize(Palette& palette) {
     XMLElement* element = xmlDoc->NewElement("palette");
     element->SetAttribute("count", palette.count);
     element->SetAttribute("format", palette.format.c_str());
@@ -100,7 +111,7 @@ XmlDeserializer::XmlDeserializer(XMLNode* parent_): parent(parent_) {
     }
 }
 
-void XmlDeserializer::deserialize(FlameV& flame) {
+void XmlDeserializer::deserialize(Flame& flame) {
     if (parent == NULL) {
         throw std::invalid_argument("Flame node is null");
     }
@@ -171,7 +182,7 @@ void XmlDeserializer::deserialize(FlameV& flame) {
         throw std::invalid_argument("Child of flame node is not an XML element");
     }
     while (element->Name() == std::string("xform")) {
-        flame.xforms.push_back(XFormV());
+        flame.xforms.push_back(XForm());
         int idx = flame.xforms.size() - 1;
         auto xformDeserializer = XmlDeserializer(node);
         flame.xforms[idx].acceptDeserializer(xformDeserializer);
@@ -187,7 +198,7 @@ void XmlDeserializer::deserialize(FlameV& flame) {
     }
     if (element->Name() == std::string("finalxform")) {
         auto finalXFormDeserializer = XmlDeserializer(node);
-        flame.finalXForm = FinalXFormV();
+        flame.finalXForm = FinalXForm();
         flame.finalXForm->acceptDeserializer(finalXFormDeserializer);
         node = node->NextSibling();
     }
@@ -195,7 +206,7 @@ void XmlDeserializer::deserialize(FlameV& flame) {
     flame.palette.acceptDeserializer(paletteDeserializer);
 }
 
-void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* element) {
+void XmlDeserializer::deserializeBaseXForm(BaseXForm& xform,  XMLElement* element) {
     auto err = element->QueryDoubleAttribute("color", &xform.color);
     if (err != tinyxml2::XML_SUCCESS) {
         throw std::invalid_argument("Could not read xform color");
@@ -237,7 +248,7 @@ void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* eleme
     }
 }
 
-void XmlDeserializer::deserialize(XFormV& xform) {
+void XmlDeserializer::deserialize(XForm& xform) {
     if (parent == NULL) {
         throw std::invalid_argument("XForm node is null");
     }
@@ -256,7 +267,7 @@ void XmlDeserializer::deserialize(XFormV& xform) {
     }
 }
 
-void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
+void XmlDeserializer::deserialize(FinalXForm& finalXform) {
     if (parent == NULL) {
         throw std::invalid_argument("Final XForm node is null");
     }
@@ -271,7 +282,7 @@ void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
     deserializeBaseXForm(finalXform, element);
 }
 
-void XmlDeserializer::deserialize(PaletteV& palette) {
+void XmlDeserializer::deserialize(Palette& palette) {
     if (parent == NULL) {
         throw std::invalid_argument("Palette node is null");
     }

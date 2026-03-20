@@ -6,28 +6,30 @@
 
 namespace core {
 
-class FlameV;
-class BaseXFormV;
-class XFormV;
-class FinalXFormV;
-class PaletteV;
+std::string formattedDouble(double x);
+
+class Flame;
+class BaseXForm;
+class XForm;
+class FinalXForm;
+class Palette;
 
 class SerializableV;
 
 class Serializer {
 public:
-    virtual void serialize(FlameV& flame) = 0;
-    virtual void serialize(XFormV& xform) = 0;
-    virtual void serialize(FinalXFormV& finalXform) = 0;
-    virtual void serialize(PaletteV& palette) = 0;
+    virtual void serialize(Flame& flame) = 0;
+    virtual void serialize(XForm& xform) = 0;
+    virtual void serialize(FinalXForm& finalXform) = 0;
+    virtual void serialize(Palette& palette) = 0;
 };
 
 class Deserializer {
 public:
-    virtual void deserialize(FlameV& flame) = 0;
-    virtual void deserialize(XFormV& xform) = 0;
-    virtual void deserialize(FinalXFormV& finalXform) = 0;
-    virtual void deserialize(PaletteV& palette) = 0;
+    virtual void deserialize(Flame& flame) = 0;
+    virtual void deserialize(XForm& xform) = 0;
+    virtual void deserialize(FinalXForm& finalXform) = 0;
+    virtual void deserialize(Palette& palette) = 0;
 };
 
 class SerializableV {
@@ -39,12 +41,12 @@ public:
 class XmlSerializer: public Serializer {
 public:
     XmlSerializer(tinyxml2::XMLDocument* xmlDoc, tinyxml2::XMLNode* parent);
-    void serialize(FlameV& flame) override;
-    void serialize(XFormV& xform) override;
-    void serialize(FinalXFormV& finalXform) override;
-    void serialize(PaletteV& palette) override;
+    void serialize(Flame& flame) override;
+    void serialize(XForm& xform) override;
+    void serialize(FinalXForm& finalXform) override;
+    void serialize(Palette& palette) override;
 private:
-    void serializeBaseXForm(BaseXFormV& xform, tinyxml2::XMLElement* element);
+    void serializeBaseXForm(BaseXForm& xform, tinyxml2::XMLElement* element);
     tinyxml2::XMLDocument* xmlDoc;
     tinyxml2::XMLNode* parent;
 };
@@ -52,12 +54,12 @@ private:
 class XmlDeserializer: public Deserializer {
 public:
     XmlDeserializer(tinyxml2::XMLNode* parent);
-    void deserialize(FlameV& flame) override;
-    void deserialize(XFormV& xform) override;
-    void deserialize(FinalXFormV& finalXform) override;
-    void deserialize(PaletteV& palette) override;
+    void deserialize(Flame& flame) override;
+    void deserialize(XForm& xform) override;
+    void deserialize(FinalXForm& finalXform) override;
+    void deserialize(Palette& palette) override;
 private:
-    void deserializeBaseXForm(BaseXFormV& xform, tinyxml2::XMLElement* element);
+    void deserializeBaseXForm(BaseXForm& xform, tinyxml2::XMLElement* element);
     tinyxml2::XMLNode* parent;
     std::set<std::string> variationAttributeNames;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
+#include <map>
 #include <boost/bimap.hpp>
-#include "../serial/serializable.hpp"
 
 namespace core {
 
@@ -45,11 +45,11 @@ struct VariationData {
         weight(weight_), params(params_) { }
 };
 
-class VariationMap: public serial::StringMapSerializable {
+class VariationMap {
 public:
     VariationMap();
-    virtual std::map<std::string, std::string> toStringMap();
-    virtual void fromStringMap(std::map<std::string, std::string> stringMap);
+    std::map<std::string, std::string> toStringMap();
+    void fromStringMap(std::map<std::string, std::string> stringMap);
     std::map<Variation::VariationID, VariationData> variations;
 };
 

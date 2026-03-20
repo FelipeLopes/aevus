@@ -71,7 +71,7 @@ void FlameView::OnChangeFilename() {
     GetFrame()->SetLabel(title);
 }
 
-core::FlameV* FlameView::getFlame() const
+core::Flame* FlameView::getFlame() const
 {
     return &document->flame;
 }
@@ -285,7 +285,7 @@ void FlameView::handleStartXFormExplore() {
 }
 
 void FlameView::handleStopXFormExplore() {
-    core::XFormV newXForm = document->flame.xforms[activeXformId];
+    core::XForm newXForm = document->flame.xforms[activeXformId];
     document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, xFormBeforeExplore.value(), newXForm));
     xFormBeforeExplore.reset();
     aevusFrame->GetMenuBar()->FindItem(wxID_UNDO)->Enable(true);

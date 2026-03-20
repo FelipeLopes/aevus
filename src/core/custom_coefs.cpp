@@ -1,4 +1,5 @@
 #include "custom_coefs.hpp"
+#include "serializable.hpp"
 #include <boost/assign.hpp>
 #include <optional>
 #include <stdexcept>
@@ -17,7 +18,7 @@ SizeParams::SizeParams(int width_, int height_):
     width(width_), height(height_) { }
 
 optional<string> SizeParams::toString() {
-    string ans = serial::formattedDouble(width) + " " + serial::formattedDouble(height);
+    string ans = formattedDouble(width) + " " + formattedDouble(height);
     return ans;
 }
 
@@ -37,7 +38,7 @@ CenterParams::CenterParams(double x_, double y_):
     x(x_), y(y_) { }
 
 optional<string> CenterParams::toString() {
-    string ans = serial::formattedDouble(x) + " " + serial::formattedDouble(y);
+    string ans = formattedDouble(x) + " " + formattedDouble(y);
     return ans;
 }
 
@@ -57,12 +58,12 @@ Affine::Affine(bool serializeIdentity_): serializeIdentity(serializeIdentity_) {
 }
 
 optional<string> Affine::toString() {
-    string ans = serial::formattedDouble(xx) + " " +
-        serial::formattedDouble(-xy) + " " +
-        serial::formattedDouble(-yx) + " " +
-        serial::formattedDouble(yy) + " " +
-        serial::formattedDouble(ox) + " " +
-        serial::formattedDouble(-oy);
+    string ans = formattedDouble(xx) + " " +
+        formattedDouble(-xy) + " " +
+        formattedDouble(-yx) + " " +
+        formattedDouble(yy) + " " +
+        formattedDouble(ox) + " " +
+        formattedDouble(-oy);
     if (ans == "1 0 0 1 0 0" && !serializeIdentity) {
         return std::nullopt;
     }
@@ -104,7 +105,7 @@ optional<string> Chaos::toString() {
         if (i>0) {
             ans += " ";
         }
-        ans += serial::formattedDouble(chaos[i]);
+        ans += formattedDouble(chaos[i]);
     }
     if (ans == "") {
         return std::nullopt;
@@ -138,7 +139,7 @@ void ColorSpeed::fromStringMap(map<string, string> stringMap) {
 }
 
 map<string, string> ColorSpeed::toStringMap() {
-    return boost::assign::map_list_of("color_speed", serial::formattedDouble(colorSpeed));
+    return boost::assign::map_list_of("color_speed", formattedDouble(colorSpeed));
 }
 
 }

@@ -5,8 +5,8 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     srcs = glob(["*.cpp"]),
     deps = [
+        "//:tinyxml2",
         "//:boost",
-        "//src/serial:serial",
     ],
     visibility = ["//visibility:public"],
 )

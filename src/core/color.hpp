@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../serial/serializable.hpp"
 #include <inttypes.h>
+#include <optional>
+#include <string>
 
 namespace core {
 
@@ -13,14 +14,14 @@ struct ColorCL {
     }
 };
 
-class Color: public serial::StringSerializable {
+class Color {
 public:
     Color();
     Color(uint8_t r, uint8_t g, uint8_t b);
     uint8_t r, g, b;
     ColorCL toColorCL() const;
-    virtual std::optional<std::string> toString();
-    virtual void fromString(std::optional<std::string> text);
+    std::optional<std::string> toString();
+    void fromString(std::optional<std::string> text);
 };
 
 }

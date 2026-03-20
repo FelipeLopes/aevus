@@ -47,9 +47,9 @@ public:
     void fromString(std::optional<std::string> text);
 };
 
-class FlameV: public SerializableV {
+class Flame: public SerializableV {
 public:
-    FlameV();
+    Flame();
     std::string version, name;
     SizeParams size;
     CenterParams center;
@@ -57,9 +57,9 @@ public:
     Color background;
     double brightness, contrast, gamma, vibrancy;
     ClippingMode clippingMode;
-    std::vector<XFormV> xforms;
-    std::optional<FinalXFormV> finalXForm;
-    PaletteV palette;
+    std::vector<XForm> xforms;
+    std::optional<FinalXForm> finalXForm;
+    Palette palette;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
 };

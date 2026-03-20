@@ -3,37 +3,37 @@
 
 namespace core {
 
-BaseXFormV::BaseXFormV() {
+BaseXForm::BaseXForm() {
     variationMap.variations[Variation::VariationID::LINEAR] = VariationData(1.0, {});
     color = 0;
     colorSpeed = 0.5;
 }
 
-BaseXFormV::~BaseXFormV() { }
+BaseXForm::~BaseXForm() { }
 
-XFormV::XFormV() { 
+XForm::XForm() { 
     weight = 0.5;
 }
 
-XFormV::~XFormV() { }
+XForm::~XForm() { }
 
-FinalXFormV::FinalXFormV() { }
+FinalXForm::FinalXForm() { }
 
-FinalXFormV::~FinalXFormV() { }
+FinalXForm::~FinalXForm() { }
 
-void XFormV::acceptSerializer(Serializer& serializer) {
+void XForm::acceptSerializer(Serializer& serializer) {
     serializer.serialize(*this);
 }
 
-void XFormV::acceptDeserializer(Deserializer& deserializer) {
+void XForm::acceptDeserializer(Deserializer& deserializer) {
     deserializer.deserialize(*this);
 }
 
-void FinalXFormV::acceptSerializer(Serializer& serializer) {
+void FinalXForm::acceptSerializer(Serializer& serializer) {
     serializer.serialize(*this);
 }
 
-void FinalXFormV::acceptDeserializer(Deserializer& deserializer) {
+void FinalXForm::acceptDeserializer(Deserializer& deserializer) {
     deserializer.deserialize(*this);
 }
 

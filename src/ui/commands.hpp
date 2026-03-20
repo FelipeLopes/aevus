@@ -8,13 +8,13 @@ namespace ui {
 
 class XFormUpdateCommand: public wxCommand {
 public:
-    XFormUpdateCommand(FlameView* flameView, int xformIndex, core::XFormV oldXForm, core::XFormV newXForm);
+    XFormUpdateCommand(FlameView* flameView, int xformIndex, core::XForm oldXForm, core::XForm newXForm);
     virtual bool Do() override;
     virtual bool Undo() override;
 private:
     FlameView* flameView;
     int xformIndex;
-    core::XFormV oldXform, newXform;
+    core::XForm oldXform, newXform;
 };
 
 class XFormAddCommand: public wxCommand {
@@ -29,13 +29,13 @@ private:
 
 class XFormRemoveCommand: public wxCommand {
 public:
-    XFormRemoveCommand(FlameView* flameView, int xformIndex, core::XFormV oldXForm);
+    XFormRemoveCommand(FlameView* flameView, int xformIndex, core::XForm oldXForm);
     virtual bool Do() override;
     virtual bool Undo() override;
 private:
     FlameView* flameView;
     int xformIndex;
-    core::XFormV oldXform;
+    core::XForm oldXform;
 };
 
 class FrameUpdateCommand: public wxCommand {
