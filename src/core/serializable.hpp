@@ -1,6 +1,8 @@
 #pragma once
 
 #include <tinyxml2.h>
+#include <set>
+#include <string>
 
 namespace core {
 
@@ -55,7 +57,9 @@ public:
     void deserialize(FinalXFormV& finalXform) override;
     void deserialize(PaletteV& palette) override;
 private:
+    void deserializeBaseXForm(BaseXFormV& xform, tinyxml2::XMLElement* element);
     tinyxml2::XMLNode* parent;
+    std::set<std::string> variationAttributeNames;
 };
 
 }

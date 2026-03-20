@@ -97,7 +97,15 @@ void XmlSerializer::serialize(PaletteV& palette) {
     }
 }
 
-XmlDeserializer::XmlDeserializer(XMLNode* parent_): parent(parent_) { }
+XmlDeserializer::XmlDeserializer(XMLNode* parent_): parent(parent_) {
+    for (auto kv: Variation::variationNames.right) {
+        variationAttributeNames.insert(kv.first);
+        auto paramNames = Variation::variationParamNames.find(kv.second)->second.paramNames;
+        for (auto param: paramNames) {
+            variationAttributeNames.insert(kv.first + "_" + param);
+        }
+    }
+}
 
 void XmlDeserializer::deserialize(FlameV& flame) {
     if (parent == NULL) {
@@ -161,14 +169,110 @@ void XmlDeserializer::deserialize(FlameV& flame) {
             flame.clippingMode = WHITE;
         }
     }
+    auto node = parent->FirstChild();
+    if (node != NULL) {
+        XMLElement* element = node->ToElement();
+        if (element == NULL) {
+            throw std::invalid_argument("Child of flame node is not an XML element");
+        }
+        while (element->Name() == std::string("xform")) {
+            flame.xforms.push_back(XFormV());
+            int idx = flame.xforms.size() - 1;
+            auto xformDeserializer = XmlDeserializer(node);
+            flame.xforms[idx].acceptDeserializer(xformDeserializer);
+            node = node->NextSibling();
+            element = node->ToElement();
+            if (element == NULL) {
+                throw std::invalid_argument("Child of flame node is not an XML element");
+            }
+        }
+        element = node->ToElement();
+        if (element == NULL) {
+            throw std::invalid_argument("Child of flame node is not an XML element");
+        }
+        if (element->Name() == std::string("finalxform")) {
+            auto finalXFormDeserializer = XmlDeserializer(node);
+            flame.finalXForm = FinalXFormV();
+            flame.finalXForm->acceptDeserializer(finalXFormDeserializer);
+            node = node->NextSibling();
+        }
+    }
+}
+
+void XmlDeserializer::deserializeBaseXForm(BaseXFormV& xform,  XMLElement* element) {
+    auto err = element->QueryDoubleAttribute("color", &xform.color);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read xform color");
+    }
+    err = element->QueryDoubleAttribute("color_speed", &xform.colorSpeed);
+    if (err != tinyxml2::XML_SUCCESS) {
+        err = element->QueryDoubleAttribute("symmetry", &xform.colorSpeed);
+        if (err != tinyxml2::XML_SUCCESS) {
+            xform.colorSpeed = 0.5;
+        }
+    }
+    const char* buf;
+    std::map<std::string, std::string> stringMap;
+    for (auto name: variationAttributeNames) {
+        auto err = element->QueryStringAttribute(name.c_str(), &buf);
+        if (err == tinyxml2::XML_NO_ATTRIBUTE) {
+            continue;
+        }
+        if (err != tinyxml2::XML_SUCCESS) {
+            auto ec = std::error_code(err, std::generic_category());
+            std::string msg("Could not load string attribute with name ");
+            throw std::system_error(ec, msg + name);
+        }
+        stringMap[name] = buf;
+    }
+    xform.variationMap.fromStringMap(stringMap);
+    err = element->QueryStringAttribute("coefs", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read xform coefs");
+    }
+    xform.coefs.fromString(buf);
+    err = element->QueryStringAttribute("coefs", &buf);
+    if (err == tinyxml2::XML_SUCCESS) {
+        xform.post.fromString(buf);
+    }
+    err = element->QueryStringAttribute("chaos", &buf);
+    if (err == tinyxml2::XML_SUCCESS) {
+        xform.chaos.fromString(buf);
+    }
 }
 
 void XmlDeserializer::deserialize(XFormV& xform) {
-
+    if (parent == NULL) {
+        throw std::invalid_argument("Flame node is null");
+    }
+    XMLElement* element = parent->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Flame node is not an XML element");
+    }
+    string name = element->Name();
+    if (name != "xform") {
+        throw std::invalid_argument("XForm node has incorrect tag: "+name);
+    }
+    deserializeBaseXForm(xform, element);
+    auto err = element->QueryDoubleAttribute("weight", &xform.weight);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Could not read xform weight");
+    }
 }
 
 void XmlDeserializer::deserialize(FinalXFormV& finalXform) {
-
+    if (parent == NULL) {
+        throw std::invalid_argument("Flame node is null");
+    }
+    XMLElement* element = parent->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Flame node is not an XML element");
+    }
+    string name = element->Name();
+    if (name != "finalxform") {
+        throw std::invalid_argument("Final XForm node has incorrect tag: "+name);
+    }
+    deserializeBaseXForm(finalXform, element);
 }
 
 void XmlDeserializer::deserialize(PaletteV& palette) {

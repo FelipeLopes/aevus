@@ -24,6 +24,12 @@ BaseXForm::BaseXForm(std::string tag): XMLElementClass(tag),
     colorSpeed.get()->colorSpeed = 0.5;
 }
 
+BaseXFormV::BaseXFormV() {
+    variationMap.variations[Variation::VariationID::LINEAR] = VariationData(1.0, {});
+    color = 0;
+    colorSpeed = 0.5;
+}
+
 BaseXFormV::~BaseXFormV() { }
 
 XForm::XForm(): BaseXForm("xform"),
@@ -32,9 +38,15 @@ XForm::XForm(): BaseXForm("xform"),
     weight.setValue(0.5);
 }
 
+XFormV::XFormV() { 
+    weight = 0.5;
+}
+
 XFormV::~XFormV() { }
 
 FinalXForm::FinalXForm(): BaseXForm("finalxform") { }
+
+FinalXFormV::FinalXFormV() { }
 
 FinalXFormV::~FinalXFormV() { }
 
