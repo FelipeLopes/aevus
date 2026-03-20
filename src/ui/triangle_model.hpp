@@ -17,7 +17,7 @@ public:
     void handlePaint();
     void handleResize(wxSizeEvent& event);
     void handleMouseWheel(wxMouseEvent& event);
-    void handleMouseUp(wxMouseEvent& event);
+    void handleMouseUp();
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
     void handleFlameContent(std::optional<core::FlameContent> content);

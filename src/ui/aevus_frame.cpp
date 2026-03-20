@@ -1,5 +1,4 @@
 #include "aevus_frame.hpp"
-#include <wx-3.2/wx/docview.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
@@ -245,10 +244,17 @@ void AevusFrame::onMouseDown(wxMouseEvent& event) {
     }
 }
 
+void AevusFrame::onActivate(wxActivateEvent& event) {
+    if (!event.GetActive()) {
+        colorModel.handleMouseUp();
+        triangleModel.handleMouseUp();
+    }
+}
+
 void AevusFrame::onMouseUp(wxMouseEvent& event) {
     switch (event.GetId()) {
-        case ID_PALETTE_PANEL: colorModel.handleMouseUp(event); break;
-        case ID_TRIANGLE_PANEL: triangleModel.handleMouseUp(event); break;
+        case ID_PALETTE_PANEL: colorModel.handleMouseUp(); break;
+        case ID_TRIANGLE_PANEL: triangleModel.handleMouseUp(); break;
     }
 }
 

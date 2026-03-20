@@ -175,8 +175,8 @@ void ColorModel::setValue(const wxVariant& val, int row, int col) {
     update();
 }
 
-void ColorModel::handleMouseUp(wxMouseEvent& event) {
-    if (content.has_value()) {
+void ColorModel::handleMouseUp() {
+    if (content.has_value() && dragging) {
         dragging = false;
         stopXFormExplore();
     }

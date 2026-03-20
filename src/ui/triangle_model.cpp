@@ -65,7 +65,7 @@ void TriangleModel::handleMouseWheel(wxMouseEvent &event) {
     trianglePanel->Refresh();
 }
 
-void TriangleModel::handleMouseUp(wxMouseEvent& event) {
+void TriangleModel::handleMouseUp() {
     auto state = triangleUpdater.getUpdateState();
     if (state != NO_UPDATE && state != DRAGGING_GRID) {
         stopXFormExplore();

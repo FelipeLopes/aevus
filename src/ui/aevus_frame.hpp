@@ -2,6 +2,7 @@
 
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
+#include <wx-3.2/wx/event.h>
 #include <wxfb_frame.h>
 #include "color_model.hpp"
 #include "flame_model.hpp"
@@ -66,6 +67,7 @@ private:
     void onMouseUp(wxMouseEvent& event) override;
     void onMouseMove(wxMouseEvent& event) override;
     void onMouseWheel(wxMouseEvent& event) override;
+    void onActivate(wxActivateEvent& event) override;
 
     wxBitmap loadEmbeddedPNG(char* start, char* end);
 };

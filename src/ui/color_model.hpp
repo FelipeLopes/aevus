@@ -14,7 +14,7 @@ public:
     void handleFlameContent(std::optional<core::FlameContent> flameContent);
     void handleActiveXformContent(core::ActiveXFormContent xformContent);
     void handlePaint();
-    void handleMouseUp(wxMouseEvent& event);
+    void handleMouseUp();
     void handleMouseDown(wxMouseEvent& event);
     void handleMouseMove(wxMouseEvent& event);
 

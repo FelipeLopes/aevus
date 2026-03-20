@@ -3,6 +3,8 @@
 #include "commands.hpp"
 #include "flame_document.hpp"
 #include <cstddef>
+#include <wx-3.2/wx/event.h>
+#include <wx-3.2/wx/graphics.h>
 #include <wx/app.h>
 
 using core::ActiveXFormContent;
@@ -277,12 +279,17 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
 
 void FlameView::handleStartXFormExplore() {
     xFormBeforeExplore = document->flame.xforms[activeXformId];
+    // We need to disable undo/redo when exploring. the best way to do this is to disable the menu items
+    aevusFrame->GetMenuBar()->FindItem(wxID_UNDO)->Enable(false);
+    aevusFrame->GetMenuBar()->FindItem(wxID_REDO)->Enable(false);
 }
 
 void FlameView::handleStopXFormExplore() {
     core::XFormV newXForm = document->flame.xforms[activeXformId];
     document->GetCommandProcessor()->Submit(new XFormUpdateCommand(this, activeXformId, xFormBeforeExplore.value(), newXForm));
     xFormBeforeExplore.reset();
+    aevusFrame->GetMenuBar()->FindItem(wxID_UNDO)->Enable(true);
+    aevusFrame->GetMenuBar()->FindItem(wxID_REDO)->Enable(true);
     document->Modify(true);
 }
 
