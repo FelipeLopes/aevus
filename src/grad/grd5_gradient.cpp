@@ -33,7 +33,7 @@ Grd5Stream::Grd5Stream(const char* filename) {
 
 Grd5GradientList Grd5Stream::readGradientList() {
     auto ans = Grd5GradientList();
-    int n = readGradientListLength();
+    int n = readVllLength("GrdL");
     for (int i=0; i<std::min(1,n); i++) {
         ans.gradients.push_back(readGradient());
     }
@@ -46,7 +46,7 @@ Grd5Gradient Grd5Stream::readGradient() {
         throw std::invalid_argument("Gradient outer object not found");
     }
     readObject();
-    parseGrad();
+    parseNamedType("Grad", TYPE_OBJECT);
     int ncomp = readObject().value;
     ans.title = readGradientTitle();
     auto gradType = readGradientType();
@@ -54,16 +54,46 @@ Grd5Gradient Grd5Stream::readGradient() {
         if (ncomp != 5) {
             throw std::invalid_argument("Solid gradient has invalid number of components");
         } else {
-            Grd5SolidGradient ans;
-            printf("reached here\n");
-            return ans;
+            return readSolidGradient();
         }
     } else if (gradType == GRADIENT_NOISE) {
-        Grd5NoiseGradient ans;
-        return ans;
+        return readNoiseGradient();
     } else {
         throw std::invalid_argument("Unknown gradient type");
     }
+}
+
+Grd5SolidGradient Grd5Stream::readSolidGradient() {
+    Grd5SolidGradient ans;
+    ans.smoothness = readNamedDouble("Intr");
+    ans.colorStops.resize(readVllLength("Clrs"));
+    for (int i=0; i<1; i++) {
+        ans.colorStops[i] = readColorStop();
+    }
+    return ans;
+}
+
+Grd5ColorStop Grd5Stream::readColorStop() {
+    auto type = readType();
+    if (type != TYPE_OBJECT) {
+        raiseTypeIdMismatch();
+    }
+    int ncomp = readObject().value;
+    bool hasUserColor;
+    switch (ncomp) {
+        case 3: hasUserColor = false; break;
+        case 4: hasUserColor = true; break;
+        default:
+            throw std::invalid_argument("Invalid number of components in color stop");
+    }
+    if (hasUserColor) {
+        printf("color stop with user color\n");
+    }
+    return Grd5ColorStop();
+}
+
+Grd5NoiseGradient Grd5Stream::readNoiseGradient() {
+    return Grd5NoiseGradient();
 }
 
 Grd5Ucs2String Grd5Stream::readGradientTitle() {
@@ -107,6 +137,14 @@ uint32_t Grd5Stream::readUint32() {
     return be32toh(val);
 }
 
+double Grd5Stream::readDouble() {
+    uint64_t val;
+    if (fread(&val, 8, 1, file) != 1) {
+        raiseFileStreamError();
+    }
+    return *(double*)(&val);
+}
+
 Grd5Stream::Grd5Type Grd5Stream::readType() {
     char buf[5];
     if (fread(&buf, 4, 1, file) != 1) {
@@ -136,6 +174,10 @@ void Grd5Stream::raiseTypeNameMismatch() {
     throw std::invalid_argument("Typename mismatch");
 }
 
+void Grd5Stream::raiseTypeIdMismatch() {
+    throw std::invalid_argument("Type ID mismatch");
+}
+
 void Grd5Stream::readBytes(uint32_t len, char* arr) {
     if (fread(arr, 1, len, file) != len) {
         raiseFileStreamError();
@@ -151,8 +193,13 @@ void Grd5Stream::parseNamedType(std::string expectedName, Grd5Type expectedType)
     if (grd5Type == TYPE_UNKNOWN) {
         throw std::invalid_argument("Read unknown type");
     } else if (grd5Type != expectedType) {
-        throw std::invalid_argument("Type keyword mismatch");
+        raiseTypeIdMismatch();
     }
+}
+
+double Grd5Stream::readNamedDouble(std::string expectedName) {
+    parseNamedType(expectedName, TYPE_DOUBLE);
+    return readDouble();
 }
 
 void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) {
@@ -199,20 +246,12 @@ uint32_t Grd5Stream::readVllLength(std::string expectedName) {
     return readUint32();
 }
 
-uint32_t Grd5Stream::readGradientListLength() {
-    return readVllLength("GrdL");
-}
-
 Grd5Object Grd5Stream::readObject() {
     Grd5Object obj;
     obj.displayName = readUcs2String();
     obj.typeName = readTypeNameString();
     obj.value = readUint32();
     return obj;
-}
-
-void Grd5Stream::parseGrad() {
-    parseNamedType("Grad", TYPE_OBJECT);
 }
 
 Grd5Ucs2String Grd5Stream::readText(std::string expectedName) {

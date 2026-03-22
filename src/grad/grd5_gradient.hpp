@@ -121,23 +121,27 @@ private:
 
     void raiseFileStreamError();
     void raiseTypeNameMismatch();
+    void raiseTypeIdMismatch();
     void readBytes(uint32_t len, char* arr);
     uint16_t readUint16();
     uint32_t readUint32();
+    double readDouble();
     Grd5Type readType();
     void readString(Grd5StringType type, uint32_t len, Grd5String& str);
     Grd5TypeNameString readTypeNameString();
     Grd5Ucs2String readUcs2String();
     void parseNamedType(std::string expectedName, Grd5Type expectedType);
     uint32_t readVllLength(std::string expectedName);
-    uint32_t readGradientListLength();
+    double readNamedDouble(std::string expectedName);
     Grd5Gradient readGradient();
     Grd5Ucs2String readGradientTitle();
     Grd5GradientType readGradientType();
+    Grd5SolidGradient readSolidGradient();
+    Grd5ColorStop readColorStop();
+    Grd5NoiseGradient readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
     Grd5Object readObject();
     Grd5Ucs2String readText(std::string expectedName);
-    void parseGrad();
 
     FILE* file;
     const std::map<std::string, Grd5Type> keywordMap = {
