@@ -48,7 +48,46 @@ Grd5Gradient Grd5Stream::readGradient() {
     readObject();
     parseGrad();
     int ncomp = readObject().value;
-    printf("%d\n",ncomp);
+    ans.title = readGradientTitle();
+    auto gradType = readGradientType();
+    if (gradType == GRADIENT_SOLID) {
+        if (ncomp != 5) {
+            throw std::invalid_argument("Solid gradient has invalid number of components");
+        } else {
+            Grd5SolidGradient ans;
+            printf("reached here\n");
+            return ans;
+        }
+    } else if (gradType == GRADIENT_NOISE) {
+        Grd5NoiseGradient ans;
+        return ans;
+    } else {
+        throw std::invalid_argument("Unknown gradient type");
+    }
+}
+
+Grd5Ucs2String Grd5Stream::readGradientTitle() {
+    return readText("Nm  ");
+}
+
+Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
+    auto enumVar = readEnum("GrdF");
+    if (enumVar.name.content != "GrdF") {
+        raiseTypeNameMismatch();
+    }
+    auto it = gradientTypeMap.find(enumVar.subname.content);
+    if (it == gradientTypeMap.end()) {
+        return GRADIENT_UNKNOWN;
+    } else {
+        return it->second;
+    }
+}
+
+Grd5Enum Grd5Stream::readEnum(std::string expectedName) {
+    Grd5Enum ans;
+    parseNamedType(expectedName, TYPE_ENUM);
+    ans.name = readTypeNameString();
+    ans.subname = readTypeNameString();
     return ans;
 }
 
@@ -174,6 +213,11 @@ Grd5Object Grd5Stream::readObject() {
 
 void Grd5Stream::parseGrad() {
     parseNamedType("Grad", TYPE_OBJECT);
+}
+
+Grd5Ucs2String Grd5Stream::readText(std::string expectedName) {
+    parseNamedType(expectedName, TYPE_TEXT);
+    return readUcs2String();
 }
 
 }

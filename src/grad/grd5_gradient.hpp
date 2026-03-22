@@ -8,6 +8,23 @@
 
 namespace grad {
 
+class Grd5String {
+public:
+    std::string content;
+};
+
+class Grd5TypeNameString: public Grd5String {
+
+};
+
+class Grd5Ucs2String: public Grd5String {
+
+};
+
+class Grd5TdtaString: public Grd5String {
+
+};
+
 class Grd5Extremum {
 public:
     int type;
@@ -34,7 +51,7 @@ class Grd5ColorStop: public Grd5GradientStop {
 
 class Grd5Gradient {
 public:
-    std::string title;
+    Grd5Ucs2String title;
 };
 
 class Grd5SolidGradient: public Grd5Gradient {
@@ -57,28 +74,16 @@ public:
     std::vector<Grd5Gradient> gradients;
 };
 
-class Grd5String {
-public:
-    std::string content;
-};
-
-class Grd5TypeNameString: public Grd5String {
-
-};
-
-class Grd5Ucs2String: public Grd5String {
-
-};
-
-class Grd5TdtaString: public Grd5String {
-
-};
-
 class Grd5Object {
 public:
     Grd5Ucs2String displayName;
     Grd5TypeNameString typeName;
     uint32_t value;
+};
+
+class Grd5Enum {
+public:
+    Grd5TypeNameString name, subname;
 };
 
 class Grd5Stream {
@@ -108,6 +113,12 @@ private:
         STRING_TDTA
     };
 
+    enum Grd5GradientType {
+        GRADIENT_SOLID,
+        GRADIENT_NOISE,
+        GRADIENT_UNKNOWN
+    };
+
     void raiseFileStreamError();
     void raiseTypeNameMismatch();
     void readBytes(uint32_t len, char* arr);
@@ -121,7 +132,11 @@ private:
     uint32_t readVllLength(std::string expectedName);
     uint32_t readGradientListLength();
     Grd5Gradient readGradient();
+    Grd5Ucs2String readGradientTitle();
+    Grd5GradientType readGradientType();
+    Grd5Enum readEnum(std::string expectedName);
     Grd5Object readObject();
+    Grd5Ucs2String readText(std::string expectedName);
     void parseGrad();
 
     FILE* file;
@@ -136,6 +151,10 @@ private:
         {"patt", TYPE_PATTERN},
         {"UntF", TYPE_UNTF},
         {"VlLs", TYPE_VAR_LEN_LIST}
+    };
+    const std::map<std::string, Grd5GradientType> gradientTypeMap = {
+        {"CstS", GRADIENT_SOLID},
+        {"ClNs", GRADIENT_NOISE}
     };
 };
 
