@@ -5,6 +5,7 @@
 #include <wx/imagpnm.h>
 #include <wx/wfstream.h>
 #include "clwrap/opencl.hpp"
+#include "grad/grd5_gradient.hpp"
 #include "ui/aevus_frame.hpp"
 #include "ui/flame_document.hpp"
 #include "ui/flame_view.hpp"
@@ -40,6 +41,8 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
+    grad::Grd5Stream grd5Stream("/home/felipe/pack.grd");
+    auto gradList = grd5Stream.readGradientList();
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
     wxTheApp->OnRun();
