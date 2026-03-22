@@ -1,11 +1,11 @@
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 cc_library(
-    name = "aevus",
-    srcs = ["aevus.cpp"],
+    name = "grad",
+    hdrs = glob(["*.hpp"]),
+    srcs = glob(["*.cpp"]),
     deps = [
-        "//src/grad:grad",
-        "//src/ui:ui",
+        "//:boost",
     ],
     visibility = ["//visibility:public"],
 )
