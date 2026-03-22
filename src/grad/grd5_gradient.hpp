@@ -8,21 +8,6 @@
 
 namespace grad {
 
-enum Grd5Type {
-    TYPE_UNKNOWN,
-    TYPE_PATTERN,
-    TYPE_DESCRIPTION,
-    TYPE_VAR_LEN_LIST,
-    TYPE_TEXT,
-    TYPE_OBJECT,
-    TYPE_UNTF,
-    TYPE_BOOL,
-    TYPE_LONG,
-    TYPE_DOUBLE,
-    TYPE_ENUM,
-    TYPE_TDTA
-};
-
 class Grd5Extremum {
 public:
     int type;
@@ -89,21 +74,55 @@ class Grd5TdtaString: public Grd5String {
 
 };
 
+class Grd5Object {
+public:
+    Grd5Ucs2String displayName;
+    Grd5TypeNameString typeName;
+    uint32_t value;
+};
+
 class Grd5Stream {
 public:
     Grd5Stream(const char* filename);
     Grd5GradientList readGradientList();
 private:
+
+    enum Grd5Type {
+        TYPE_UNKNOWN,
+        TYPE_PATTERN,
+        TYPE_DESCRIPTION,
+        TYPE_VAR_LEN_LIST,
+        TYPE_TEXT,
+        TYPE_OBJECT,
+        TYPE_UNTF,
+        TYPE_BOOL,
+        TYPE_LONG,
+        TYPE_DOUBLE,
+        TYPE_ENUM,
+        TYPE_TDTA
+    };
+
+    enum Grd5StringType {
+        STRING_TYPENAME,
+        STRING_UCS2,
+        STRING_TDTA
+    };
+
     void raiseFileStreamError();
     void raiseTypeNameMismatch();
     void readBytes(uint32_t len, char* arr);
     uint16_t readUint16();
     uint32_t readUint32();
     Grd5Type readType();
-    Grd5TypeNameString readGrd5TypeNameString();
+    void readString(Grd5StringType type, uint32_t len, Grd5String& str);
+    Grd5TypeNameString readTypeNameString();
+    Grd5Ucs2String readUcs2String();
     void parseNamedType(std::string expectedName, Grd5Type expectedType);
     uint32_t readVllLength(std::string expectedName);
     uint32_t readGradientListLength();
+    Grd5Gradient readGradient();
+    Grd5Object readObject();
+    void parseGrad();
 
     FILE* file;
     const std::map<std::string, Grd5Type> keywordMap = {

@@ -32,8 +32,24 @@ Grd5Stream::Grd5Stream(const char* filename) {
 }
 
 Grd5GradientList Grd5Stream::readGradientList() {
-    printf("%d\n",readGradientListLength());
-    return Grd5GradientList();
+    auto ans = Grd5GradientList();
+    int n = readGradientListLength();
+    for (int i=0; i<std::min(1,n); i++) {
+        ans.gradients.push_back(readGradient());
+    }
+    return ans;
+}
+
+Grd5Gradient Grd5Stream::readGradient() {
+    Grd5Gradient ans;
+    if (readType() != TYPE_OBJECT) {
+        throw std::invalid_argument("Gradient outer object not found");
+    }
+    readObject();
+    parseGrad();
+    int ncomp = readObject().value;
+    printf("%d\n",ncomp);
+    return ans;
 }
 
 uint16_t Grd5Stream::readUint16() {
@@ -52,7 +68,7 @@ uint32_t Grd5Stream::readUint32() {
     return be32toh(val);
 }
 
-Grd5Type Grd5Stream::readType() {
+Grd5Stream::Grd5Type Grd5Stream::readType() {
     char buf[5];
     if (fread(&buf, 4, 1, file) != 1) {
         raiseFileStreamError();
@@ -88,7 +104,7 @@ void Grd5Stream::readBytes(uint32_t len, char* arr) {
 }
 
 void Grd5Stream::parseNamedType(std::string expectedName, Grd5Type expectedType) {
-    auto typeName = readGrd5TypeNameString();
+    auto typeName = readTypeNameString();
     if (typeName.content != expectedName) {
         raiseTypeNameMismatch();
     }
@@ -100,11 +116,18 @@ void Grd5Stream::parseNamedType(std::string expectedName, Grd5Type expectedType)
     }
 }
 
-Grd5TypeNameString Grd5Stream::readGrd5TypeNameString() {
-    uint32_t len = readUint32();
-    Grd5TypeNameString ans;
-    if (len == 0) {
-        len = 4;
+void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) {
+    switch (type) {
+        case STRING_TDTA: break;
+        case STRING_TYPENAME: {
+            if (len == 0) {
+                len = 4;
+            }
+            break;
+        }
+        case STRING_UCS2: len *= 2; break;
+        default:
+            throw std::invalid_argument("Bad string type");
     }
     char* content;
     if ((content = (char*)malloc(len+1)) == NULL) {
@@ -113,9 +136,22 @@ Grd5TypeNameString Grd5Stream::readGrd5TypeNameString() {
     } else {
         readBytes(len, content);
         content[len] = '\0';
-        ans.content = content;
+        str.content = content;
         free(content);
     }
+}
+
+Grd5TypeNameString Grd5Stream::readTypeNameString() {
+    uint32_t len = readUint32();
+    Grd5TypeNameString ans;
+    readString(STRING_TYPENAME, len, ans);
+    return ans;
+}
+
+Grd5Ucs2String Grd5Stream::readUcs2String() {
+    uint32_t len = readUint32();
+    Grd5Ucs2String ans;
+    readString(STRING_UCS2, len, ans);
     return ans;
 }
 
@@ -126,6 +162,18 @@ uint32_t Grd5Stream::readVllLength(std::string expectedName) {
 
 uint32_t Grd5Stream::readGradientListLength() {
     return readVllLength("GrdL");
+}
+
+Grd5Object Grd5Stream::readObject() {
+    Grd5Object obj;
+    obj.displayName = readUcs2String();
+    obj.typeName = readTypeNameString();
+    obj.value = readUint32();
+    return obj;
+}
+
+void Grd5Stream::parseGrad() {
+    parseNamedType("Grad", TYPE_OBJECT);
 }
 
 }
