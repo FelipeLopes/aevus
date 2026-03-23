@@ -49,7 +49,7 @@ Grd5Stream::Grd5Stream(const char* filename) {
 Grd5GradientList Grd5Stream::readGradientList() {
     auto ans = Grd5GradientList();
     int n = readVllLength("GrdL");
-    for (int i=0; i<std::min(1,n); i++) {
+    for (int i=0; i<n; i++) {
         ans.gradients.push_back(readGradient());
     }
     return ans;
@@ -85,7 +85,10 @@ Grd5SolidGradient Grd5Stream::readSolidGradient() {
     ans.colorStops.resize(readVllLength("Clrs"));
     for (int i=0; i<ans.colorStops.size(); i++) {
         ans.colorStops[i] = readColorStop();
-        printf("read color stop\n");
+    }
+    ans.opacityStops.resize(readVllLength("Trns"));
+    for (int i=0; i<ans.opacityStops.size(); i++) {
+        ans.opacityStops[i] = readOpacityStop();
     }
     return ans;
 }
@@ -265,6 +268,26 @@ Grd5Stream::Grd5ColorModelType Grd5Stream::getColorModelType(std::string typeNam
     } else {
         return it->second;
     }
+}
+
+Grd5OpacityStop Grd5Stream::readOpacityStop() {
+    Grd5OpacityStop ans;
+    auto type = readType();
+    if (type != TYPE_OBJECT) {
+        raiseTypeIdMismatch();
+    }
+    auto obj = readObject();
+    int ncomp = obj.value;
+    if (ncomp != 3) {
+        raiseComponentMismatch();
+    }
+    if (obj.typeName.content != "TrnS") {
+        raiseTypeNameMismatch();
+    }
+    ans.Opct = readUnitDouble("Opct", "#Prc");
+    ans.Lctn = readNamedLong("Lctn");
+    ans.Mdpn = readNamedLong("Mdpn");
+    return ans;
 }
 
 Grd5NoiseGradient Grd5Stream::readNoiseGradient() {

@@ -40,7 +40,11 @@ public:
     std::vector<Grd5Extremum> extremumList;
 };
 
-class Grd5OpacityStop { };
+class Grd5OpacityStop { 
+public:
+    double Opct;
+    uint32_t Lctn, Mdpn;
+};
 
 class Grd5Color { };
 
@@ -204,6 +208,7 @@ private:
     Grd5GradientType readGradientType();
     Grd5SolidGradient readSolidGradient();
     Grd5ColorStop readColorStop();
+    Grd5OpacityStop readOpacityStop();
     Grd5Color readColor();
     bool readRgbColorStandard(Grd5RgbColor& rgbColor);
     bool readRgbColorFloat(Grd5RgbColor& rgbColor);
