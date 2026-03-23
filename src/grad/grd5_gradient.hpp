@@ -39,15 +39,58 @@ public:
     std::vector<Grd5Extremum> extremumList;
 };
 
-class Grd5GradientStop { };
+class Grd5OpacityStop { };
 
-class Grd5OpacityStop: public Grd5GradientStop {
+class Grd5Color { };
+
+class Grd5RgbColor: public Grd5Color {
+public:
+    Grd5RgbColor();
+    Grd5RgbColor(double r, double g, double b);
+    double Rd, Grn, Bl;
+};
+
+class Grd5HsvColor: public Grd5Color {
 
 };
 
-class Grd5ColorStop: public Grd5GradientStop {
+class Grd5LabColor: public Grd5Color {
 
 };
+
+class Grd5CmykColor: public Grd5Color {
+
+};
+
+class Grd5GrayScaleColor: public Grd5Color {
+public:
+    Grd5GrayScaleColor(double val);
+    double val;
+};
+
+class Grd5ForegroundColor: public Grd5Color {
+
+};
+
+class Grd5BackgroundColor: public Grd5Color {
+
+};
+
+class Grd5BookColor: public Grd5Color {
+public:
+    Grd5BookColor(Grd5Ucs2String Bk, Grd5Ucs2String Nm, uint32_t bookId, Grd5TdtaString bookKey);
+    Grd5Ucs2String Bk, Nm;
+    uint32_t bookId;
+    Grd5TdtaString bookKey;
+};
+
+class Grd5UnspecifiedColor: public Grd5Color { };
+
+class Grd5ColorStop {
+public:
+    Grd5Color color;
+};
+
 
 class Grd5Gradient {
 public:
@@ -107,6 +150,19 @@ private:
         TYPE_TDTA
     };
 
+    enum Grd5ColorModelType {
+        COLOR_MODEL_UNKNOWN,
+        COLOR_MODEL_RGB,
+        COLOR_MODEL_HSV,
+        COLOR_MODEL_LAB,
+        COLOR_MODEL_CMYK,
+        COLOR_MODEL_GRAYSCALE,
+        COLOR_MODEL_FOREGROUND,
+        COLOR_MODEL_BACKGROUND,
+        COLOR_MODEL_BOOK,
+        COLOR_MODEL_UNSPECIFIED
+    };
+
     enum Grd5StringType {
         STRING_TYPENAME,
         STRING_UCS2,
@@ -122,6 +178,7 @@ private:
     void raiseFileStreamError();
     void raiseTypeNameMismatch();
     void raiseTypeIdMismatch();
+    void raiseComponentMismatch();
     void readBytes(uint32_t len, char* arr);
     uint16_t readUint16();
     uint32_t readUint32();
@@ -134,10 +191,13 @@ private:
     uint32_t readVllLength(std::string expectedName);
     double readNamedDouble(std::string expectedName);
     Grd5Gradient readGradient();
-    Grd5Ucs2String readGradientTitle();
     Grd5GradientType readGradientType();
     Grd5SolidGradient readSolidGradient();
     Grd5ColorStop readColorStop();
+    Grd5Color readColor();
+    bool readRgbColorStandard(Grd5RgbColor& rgbColor);
+    bool readRgbColorFloat(Grd5RgbColor& rgbColor);
+    Grd5ColorModelType getColorModelType(std::string typeName);
     Grd5NoiseGradient readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
     Grd5Object readObject();
@@ -159,6 +219,18 @@ private:
     const std::map<std::string, Grd5GradientType> gradientTypeMap = {
         {"CstS", GRADIENT_SOLID},
         {"ClNs", GRADIENT_NOISE}
+    };
+    const std::map<std::string, Grd5ColorModelType> colorModelTypeMap = {
+        {"RGBC", COLOR_MODEL_RGB},
+        {"HSBC", COLOR_MODEL_HSV},
+        {"HSBl", COLOR_MODEL_HSV},
+        {"LbCl", COLOR_MODEL_LAB},
+        {"CMYC", COLOR_MODEL_CMYK},
+        {"GrsC", COLOR_MODEL_GRAYSCALE},
+        {"FrgC", COLOR_MODEL_FOREGROUND},
+        {"BckC", COLOR_MODEL_BACKGROUND},
+        {"BkCl", COLOR_MODEL_BOOK},
+        {"UnsC", COLOR_MODEL_UNSPECIFIED}
     };
 };
 

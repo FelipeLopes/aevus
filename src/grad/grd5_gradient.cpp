@@ -8,6 +8,15 @@
 
 namespace grad {
 
+Grd5RgbColor::Grd5RgbColor(): Grd5RgbColor(0, 0, 0) { }
+
+Grd5RgbColor::Grd5RgbColor(double r, double g, double b): Rd(r), Grn(g), Bl(b) { }
+
+Grd5GrayScaleColor::Grd5GrayScaleColor(double val_): val(val_) { }
+
+Grd5BookColor::Grd5BookColor(Grd5Ucs2String Bk_, Grd5Ucs2String Nm_, uint32_t bookId_, Grd5TdtaString bookKey_):
+    Bk(Bk_), Nm(Nm_), bookId(bookId_), bookKey(bookKey_) { }
+
 Grd5Stream::Grd5Stream(const char* filename) {
     file = fopen(filename, "rb");
     if (file == NULL) {
@@ -48,11 +57,11 @@ Grd5Gradient Grd5Stream::readGradient() {
     readObject();
     parseNamedType("Grad", TYPE_OBJECT);
     int ncomp = readObject().value;
-    ans.title = readGradientTitle();
+    ans.title = readText("Nm  ");
     auto gradType = readGradientType();
     if (gradType == GRADIENT_SOLID) {
         if (ncomp != 5) {
-            throw std::invalid_argument("Solid gradient has invalid number of components");
+            raiseComponentMismatch();
         } else {
             return readSolidGradient();
         }
@@ -61,6 +70,7 @@ Grd5Gradient Grd5Stream::readGradient() {
     } else {
         throw std::invalid_argument("Unknown gradient type");
     }
+    return ans;
 }
 
 Grd5SolidGradient Grd5Stream::readSolidGradient() {
@@ -74,30 +84,119 @@ Grd5SolidGradient Grd5Stream::readSolidGradient() {
 }
 
 Grd5ColorStop Grd5Stream::readColorStop() {
+    Grd5ColorStop ans;
     auto type = readType();
     if (type != TYPE_OBJECT) {
         raiseTypeIdMismatch();
     }
     int ncomp = readObject().value;
-    bool hasUserColor;
+    bool hasUserColor = false;
     switch (ncomp) {
-        case 3: hasUserColor = false; break;
+        case 3: break;
         case 4: hasUserColor = true; break;
-        default:
-            throw std::invalid_argument("Invalid number of components in color stop");
+        default: raiseComponentMismatch();
     }
     if (hasUserColor) {
-        printf("color stop with user color\n");
+        ans.color = readColor();
     }
-    return Grd5ColorStop();
+    return ans;
+}
+
+Grd5Color Grd5Stream::readColor() {
+    parseNamedType("Clr ", TYPE_OBJECT);
+    auto obj = readObject();
+    int ncomp = obj.value;
+    auto type = getColorModelType(obj.typeName.content);
+    if (type == COLOR_MODEL_UNKNOWN) {
+        throw std::invalid_argument("Unknown color model type");
+    }
+    switch (ncomp) {
+        case 0: return Grd5UnspecifiedColor();
+        case 1: {
+            if (type != COLOR_MODEL_GRAYSCALE) {
+                raiseComponentMismatch();
+            }
+            return Grd5GrayScaleColor(readNamedDouble("Gry "));
+        }
+        case 2: {
+            if (type != COLOR_MODEL_BOOK) {
+                raiseComponentMismatch();
+            }
+            auto Bk = readText("Bk  ");
+            auto Nm = readText("Nm  ");
+            return Grd5BookColor(Bk, Nm, 0, Grd5TdtaString());
+        }
+        case 3: {
+            switch(type) {
+                case COLOR_MODEL_RGB: {
+                    Grd5RgbColor ans;
+                    if (!readRgbColorStandard(ans) && !readRgbColorFloat(ans)) {
+                        throw std::invalid_argument("Could not read RGB color");
+                    }
+                    printf("successfully read RGB\n");
+                    return ans;
+                }
+                case COLOR_MODEL_HSV: break;
+                case COLOR_MODEL_LAB: break;
+                default:
+                    raiseComponentMismatch();
+            }
+        }
+    }
+    return Grd5Color();
+}
+
+bool Grd5Stream::readRgbColorStandard(Grd5RgbColor& rgbColor) {
+    fpos_t pos;
+    if (fgetpos(file, &pos) != 0) {
+        auto ec = std::error_code(errno, std::generic_category());
+        throw std::system_error(ec, "Failed to get stream position");
+    }
+    try {
+        rgbColor.Rd  = readNamedDouble("Rd  ");
+        rgbColor.Grn = readNamedDouble("Grn ");
+        rgbColor.Bl  = readNamedDouble("Bl  ");
+        return true;
+    } catch (std::invalid_argument e) {
+        if (fsetpos(file, &pos) != 0) {
+            auto ec = std::error_code(errno, std::generic_category());
+            throw std::system_error(ec, "Failed to set stream position");
+        }
+        return false;
+    }
+}
+
+bool Grd5Stream::readRgbColorFloat(Grd5RgbColor& rgbColor) {
+    fpos_t pos;
+    if (fgetpos(file, &pos) != 0) {
+        auto ec = std::error_code(errno, std::generic_category());
+        throw std::system_error(ec, "Failed to get stream position");
+    }
+    try {
+        rgbColor.Rd  = readNamedDouble("redFloat");
+        rgbColor.Grn = readNamedDouble("greenFloat");
+        rgbColor.Bl  = readNamedDouble("blueFloat");
+        return true;
+    } catch (std::invalid_argument e) {
+        if (fsetpos(file, &pos) != 0) {
+            auto ec = std::error_code(errno, std::generic_category());
+            throw std::system_error(ec, "Failed to set stream position");
+        }
+        return false;
+    }
+}
+
+Grd5Stream::Grd5ColorModelType Grd5Stream::getColorModelType(std::string typeName) {
+    auto it = colorModelTypeMap.find(typeName);
+    if (it == colorModelTypeMap.end()) {
+        return COLOR_MODEL_UNKNOWN;
+    } else {
+        return it->second;
+    }
 }
 
 Grd5NoiseGradient Grd5Stream::readNoiseGradient() {
     return Grd5NoiseGradient();
-}
-
-Grd5Ucs2String Grd5Stream::readGradientTitle() {
-    return readText("Nm  ");
 }
 
 Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
@@ -176,6 +275,10 @@ void Grd5Stream::raiseTypeNameMismatch() {
 
 void Grd5Stream::raiseTypeIdMismatch() {
     throw std::invalid_argument("Type ID mismatch");
+}
+
+void Grd5Stream::raiseComponentMismatch() {
+    throw std::invalid_argument("Number of components mismatch");
 }
 
 void Grd5Stream::readBytes(uint32_t len, char* arr) {
