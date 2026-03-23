@@ -1,3 +1,4 @@
+#include <memory>
 #include <optional>
 #include <wx/app.h>
 #include <wx/docview.h>
@@ -41,8 +42,15 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
-    grad::Grd5Stream grd5Stream("/home/felipe/pack.grd");
+    grad::Grd5Stream grd5Stream(argv[1]);
     auto gradList = grd5Stream.readGradientList();
+    printf("%zu\n",gradList.gradients.size());
+    for (auto g: gradList.gradients) {
+        printf("%s\n",g->title.content.c_str());
+        if (auto solidGrad = std::dynamic_pointer_cast<grad::Grd5SolidGradient>(g)) {
+            printf("%d\n",solidGrad->colorStops[0].Lctn);
+        }
+    }
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
     wxTheApp->OnRun();

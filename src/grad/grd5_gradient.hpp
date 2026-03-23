@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <inttypes.h>
+#include <memory>
 #include <string>
 #include <map>
 #include <vector>
@@ -107,6 +108,7 @@ public:
 class Grd5Gradient {
 public:
     Grd5Ucs2String title;
+    virtual ~Grd5Gradient() = default;
 };
 
 class Grd5SolidGradient: public Grd5Gradient {
@@ -126,7 +128,7 @@ public:
 
 class Grd5GradientList {
 public:
-    std::vector<Grd5Gradient> gradients;
+    std::vector<std::shared_ptr<Grd5Gradient>> gradients;
 };
 
 class Grd5Object {
@@ -204,9 +206,9 @@ private:
     uint32_t readVllLength(std::string expectedName);
     double readNamedDouble(std::string expectedName);
     double readUnitDouble(std::string expectedName, std::string expectedUnit);
-    Grd5Gradient readGradient();
+    std::shared_ptr<Grd5Gradient> readGradient();
     Grd5GradientType readGradientType();
-    Grd5SolidGradient readSolidGradient();
+    std::shared_ptr<Grd5SolidGradient> readSolidGradient();
     Grd5ColorStop readColorStop();
     Grd5OpacityStop readOpacityStop();
     Grd5Color readColor();
@@ -216,7 +218,7 @@ private:
     Grd5LabColor readLabColor();
     Grd5CmykColor readCmykColor();
     Grd5ColorModelType getColorModelType(std::string typeName);
-    Grd5NoiseGradient readNoiseGradient();
+    std::shared_ptr<Grd5NoiseGradient> readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
     uint32_t readNamedLong(std::string expectedName);
     Grd5Object readObject();

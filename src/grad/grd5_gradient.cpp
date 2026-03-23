@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
+#include <memory>
 #include <stdexcept>
 #include <system_error>
 
@@ -49,46 +50,49 @@ Grd5Stream::Grd5Stream(const char* filename) {
 Grd5GradientList Grd5Stream::readGradientList() {
     auto ans = Grd5GradientList();
     int n = readVllLength("GrdL");
+    ans.gradients.reserve(n);
     for (int i=0; i<n; i++) {
-        ans.gradients.push_back(readGradient());
+        auto grad = readGradient();
+        ans.gradients.push_back(grad);
     }
     return ans;
 }
 
-Grd5Gradient Grd5Stream::readGradient() {
-    Grd5Gradient ans;
+std::shared_ptr<Grd5Gradient> Grd5Stream::readGradient() {
     if (readType() != TYPE_OBJECT) {
         throw std::invalid_argument("Gradient outer object not found");
     }
     readObject();
     parseNamedType("Grad", TYPE_OBJECT);
     int ncomp = readObject().value;
-    ans.title = readText("Nm  ");
+    auto title = readText("Nm  ");
     auto gradType = readGradientType();
     if (gradType == GRADIENT_SOLID) {
         if (ncomp != 5) {
             raiseComponentMismatch();
         } else {
-            return readSolidGradient();
+            auto solid = readSolidGradient();
+            solid->title = title;
+            return solid;
         }
     } else if (gradType == GRADIENT_NOISE) {
         return readNoiseGradient();
     } else {
         throw std::invalid_argument("Unknown gradient type");
     }
-    return ans;
+    return NULL;
 }
 
-Grd5SolidGradient Grd5Stream::readSolidGradient() {
-    Grd5SolidGradient ans;
-    ans.smoothness = readNamedDouble("Intr");
-    ans.colorStops.resize(readVllLength("Clrs"));
-    for (int i=0; i<ans.colorStops.size(); i++) {
-        ans.colorStops[i] = readColorStop();
+std::shared_ptr<Grd5SolidGradient> Grd5Stream::readSolidGradient() {
+    auto ans = std::make_shared<Grd5SolidGradient>();
+    ans->smoothness = readNamedDouble("Intr");
+    ans->colorStops.resize(readVllLength("Clrs"));
+    for (int i=0; i<ans->colorStops.size(); i++) {
+        ans->colorStops[i] = readColorStop();
     }
-    ans.opacityStops.resize(readVllLength("Trns"));
-    for (int i=0; i<ans.opacityStops.size(); i++) {
-        ans.opacityStops[i] = readOpacityStop();
+    ans->opacityStops.resize(readVllLength("Trns"));
+    for (int i=0; i<ans->opacityStops.size(); i++) {
+        ans->opacityStops[i] = readOpacityStop();
     }
     return ans;
 }
@@ -290,8 +294,8 @@ Grd5OpacityStop Grd5Stream::readOpacityStop() {
     return ans;
 }
 
-Grd5NoiseGradient Grd5Stream::readNoiseGradient() {
-    return Grd5NoiseGradient();
+std::shared_ptr<Grd5NoiseGradient> Grd5Stream::readNoiseGradient() {
+    return NULL;
 }
 
 Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
