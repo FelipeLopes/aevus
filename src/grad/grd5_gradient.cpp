@@ -47,6 +47,10 @@ Grd5Stream::Grd5Stream(const char* filename) {
     }
 }
 
+Grd5Stream::~Grd5Stream() {
+    fclose(file);
+}
+
 Grd5GradientList Grd5Stream::readGradientList() {
     auto ans = Grd5GradientList();
     int n = readVllLength("GrdL");
@@ -76,9 +80,13 @@ std::shared_ptr<Grd5Gradient> Grd5Stream::readGradient() {
             return solid;
         }
     } else if (gradType == GRADIENT_NOISE) {
-        auto noise = readNoiseGradient();
-        noise->title = title;
-        return noise;
+        if (ncomp != 9) {
+            raiseComponentMismatch();
+        } else {
+            auto noise = readNoiseGradient();
+            noise->title = title;
+            return noise;
+        }
     } else {
         throw std::invalid_argument("Unknown gradient type");
     }
@@ -267,7 +275,7 @@ std::shared_ptr<Grd5CmykColor> Grd5Stream::readCmykColor() {
     return ans;
 }
 
-Grd5Stream::Grd5ColorModelType Grd5Stream::getColorModelType(std::string typeName) {
+Grd5ColorModelType Grd5Stream::getColorModelType(std::string typeName) {
     auto it = colorModelTypeMap.find(typeName);
     if (it == colorModelTypeMap.end()) {
         return COLOR_MODEL_UNKNOWN;
@@ -297,7 +305,22 @@ Grd5OpacityStop Grd5Stream::readOpacityStop() {
 }
 
 std::shared_ptr<Grd5NoiseGradient> Grd5Stream::readNoiseGradient() {
-    return std::make_shared<Grd5NoiseGradient>();
+    auto ans = std::make_shared<Grd5NoiseGradient>();
+    ans->showTransparency = readNamedBool("ShTr");
+    ans->vectorColor = readNamedBool("VctC");
+    auto enumVar = readEnum("ClrS");
+    if (enumVar.name.content != "ClrS") {
+        raiseTypeNameMismatch();
+    }
+    ans->model = getColorModelType(enumVar.subname.content);
+    if (ans->model == COLOR_MODEL_UNKNOWN) {
+        throw std::invalid_argument("Unknown color model type");
+    }
+    ans->seed = readNamedLong("RndS");
+    ans->smoothness = readNamedLong("Smth");
+    ans->min = readExtrema("Mnm ");
+    ans->max = readExtrema("Mxm ");
+    return ans;
 }
 
 Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
@@ -351,7 +374,15 @@ double Grd5Stream::readDouble() {
     return *(double*)(&val);
 }
 
-Grd5Stream::Grd5Type Grd5Stream::readType() {
+bool Grd5Stream::readBool() {
+    unsigned char c;
+    if (fread(&c, 1, 1, file) != 1) {
+        raiseFileStreamError();
+    }
+    return (c != 0);
+}
+
+Grd5Type Grd5Stream::readType() {
     char buf[5];
     if (fread(&buf, 4, 1, file) != 1) {
         raiseFileStreamError();
@@ -423,6 +454,11 @@ double Grd5Stream::readUnitDouble(std::string expectedName, std::string expected
     return readDouble();
 }
 
+bool Grd5Stream::readNamedBool(std::string expectedName) {
+    parseNamedType(expectedName, TYPE_BOOL);
+    return readBool();
+}
+
 void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) {
     switch (type) {
         case STRING_TDTA: break;
@@ -485,6 +521,26 @@ Grd5Object Grd5Stream::readObject() {
 Grd5Ucs2String Grd5Stream::readText(std::string expectedName) {
     parseNamedType(expectedName, TYPE_TEXT);
     return readUcs2String();
+}
+
+Grd5Extrema Grd5Stream::readExtrema(std::string expectedName) {
+    Grd5Extrema ans;
+    uint32_t len = readVllLength(expectedName);
+    ans.extremumList.resize(len);
+    for (int i=0; i<len; i++) {
+        ans.extremumList[i].type = readType();
+        switch (ans.extremumList[i].type) {
+            case TYPE_LONG:
+                ans.extremumList[i].u = readUint32();
+                break;
+            case TYPE_DOUBLE:
+                ans.extremumList[i].d = readDouble();
+                break;
+            default:
+                raiseTypeIdMismatch();
+        }
+    }
+    return ans;
 }
 
 }

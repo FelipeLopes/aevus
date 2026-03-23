@@ -53,6 +53,10 @@ int main(int argc, char* argv[]) {
                 printf("%lf\n",rgbColor->Rd);
             }
         }
+        if (auto noiseGrad = std::dynamic_pointer_cast<grad::Grd5NoiseGradient>(g)) {
+            printf("%u\n",noiseGrad->seed);
+            printf("%d\n",noiseGrad->model);
+        }
     }
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();

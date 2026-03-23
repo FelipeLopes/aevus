@@ -10,6 +10,21 @@
 
 namespace grad {
 
+enum Grd5Type {
+    TYPE_UNKNOWN,
+    TYPE_PATTERN,
+    TYPE_DESCRIPTION,
+    TYPE_VAR_LEN_LIST,
+    TYPE_TEXT,
+    TYPE_OBJECT,
+    TYPE_UNTF,
+    TYPE_BOOL,
+    TYPE_LONG,
+    TYPE_DOUBLE,
+    TYPE_ENUM,
+    TYPE_TDTA
+};
+
 class Grd5String {
 public:
     std::string content;
@@ -121,11 +136,24 @@ public:
     std::vector<Grd5ColorStop> colorStops;
 };
 
+enum Grd5ColorModelType {
+    COLOR_MODEL_UNKNOWN,
+    COLOR_MODEL_RGB,
+    COLOR_MODEL_HSV,
+    COLOR_MODEL_LAB,
+    COLOR_MODEL_CMYK,
+    COLOR_MODEL_GRAYSCALE,
+    COLOR_MODEL_FOREGROUND,
+    COLOR_MODEL_BACKGROUND,
+    COLOR_MODEL_BOOK,
+    COLOR_MODEL_UNSPECIFIED
+};
+
 class Grd5NoiseGradient: public Grd5Gradient {
 public:
     bool showTransparency, vectorColor;
     uint32_t seed, smoothness;
-    int model;
+    Grd5ColorModelType model;
     Grd5Extrema min, max;
 };
 
@@ -149,36 +177,9 @@ public:
 class Grd5Stream {
 public:
     Grd5Stream(const char* filename);
+    ~Grd5Stream();
     Grd5GradientList readGradientList();
 private:
-
-    enum Grd5Type {
-        TYPE_UNKNOWN,
-        TYPE_PATTERN,
-        TYPE_DESCRIPTION,
-        TYPE_VAR_LEN_LIST,
-        TYPE_TEXT,
-        TYPE_OBJECT,
-        TYPE_UNTF,
-        TYPE_BOOL,
-        TYPE_LONG,
-        TYPE_DOUBLE,
-        TYPE_ENUM,
-        TYPE_TDTA
-    };
-
-    enum Grd5ColorModelType {
-        COLOR_MODEL_UNKNOWN,
-        COLOR_MODEL_RGB,
-        COLOR_MODEL_HSV,
-        COLOR_MODEL_LAB,
-        COLOR_MODEL_CMYK,
-        COLOR_MODEL_GRAYSCALE,
-        COLOR_MODEL_FOREGROUND,
-        COLOR_MODEL_BACKGROUND,
-        COLOR_MODEL_BOOK,
-        COLOR_MODEL_UNSPECIFIED
-    };
 
     enum Grd5StringType {
         STRING_TYPENAME,
@@ -200,6 +201,7 @@ private:
     uint16_t readUint16();
     uint32_t readUint32();
     double readDouble();
+    bool readBool();
     Grd5Type readType();
     void readString(Grd5StringType type, uint32_t len, Grd5String& str);
     Grd5TypeNameString readTypeNameString();
@@ -224,8 +226,10 @@ private:
     std::shared_ptr<Grd5NoiseGradient> readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
     uint32_t readNamedLong(std::string expectedName);
+    bool readNamedBool(std::string expectedName);
     Grd5Object readObject();
     Grd5Ucs2String readText(std::string expectedName);
+    Grd5Extrema readExtrema(std::string expectedName);
 
     FILE* file;
     const std::map<std::string, Grd5Type> keywordMap = {
