@@ -12,6 +12,12 @@ Grd5RgbColor::Grd5RgbColor(): Grd5RgbColor(0, 0, 0) { }
 
 Grd5RgbColor::Grd5RgbColor(double r, double g, double b): Rd(r), Grn(g), Bl(b) { }
 
+Grd5HsvColor::Grd5HsvColor() { }
+
+Grd5LabColor::Grd5LabColor() { }
+
+Grd5CmykColor::Grd5CmykColor() { }
+
 Grd5GrayScaleColor::Grd5GrayScaleColor(double val_): val(val_) { }
 
 Grd5BookColor::Grd5BookColor(Grd5Ucs2String Bk_, Grd5Ucs2String Nm_, uint32_t bookId_, Grd5TdtaString bookKey_):
@@ -77,8 +83,9 @@ Grd5SolidGradient Grd5Stream::readSolidGradient() {
     Grd5SolidGradient ans;
     ans.smoothness = readNamedDouble("Intr");
     ans.colorStops.resize(readVllLength("Clrs"));
-    for (int i=0; i<1; i++) {
+    for (int i=0; i<ans.colorStops.size(); i++) {
         ans.colorStops[i] = readColorStop();
+        printf("read color stop\n");
     }
     return ans;
 }
@@ -99,6 +106,24 @@ Grd5ColorStop Grd5Stream::readColorStop() {
     if (hasUserColor) {
         ans.color = readColor();
     }
+    auto enumVal = readEnum("Type");
+    if (enumVal.name.content != "Clry") {
+        raiseTypeNameMismatch();
+    }
+    if (hasUserColor && enumVal.subname.content != "UsrS") {
+        raiseTypeNameMismatch();
+    }
+    if (!hasUserColor) {
+        if (enumVal.subname.content == "BckC") {
+            ans.color = Grd5BackgroundColor();
+        } else if (enumVal.subname.content == "FrgC") {
+            ans.color = Grd5ForegroundColor();
+        } else {
+            raiseTypeNameMismatch();
+        }
+    }
+    ans.Lctn = readNamedLong("Lctn");
+    ans.Mdpn = readNamedLong("Mdpn");
     return ans;
 }
 
@@ -133,15 +158,37 @@ Grd5Color Grd5Stream::readColor() {
                     if (!readRgbColorStandard(ans) && !readRgbColorFloat(ans)) {
                         throw std::invalid_argument("Could not read RGB color");
                     }
-                    printf("successfully read RGB\n");
                     return ans;
                 }
-                case COLOR_MODEL_HSV: break;
-                case COLOR_MODEL_LAB: break;
+                case COLOR_MODEL_HSV: {
+                    return readHsvColor();
+                }
+                case COLOR_MODEL_LAB: {
+                    return readLabColor();
+                }
                 default:
                     raiseComponentMismatch();
             }
         }
+        case 4: {
+            switch(type) {
+                case COLOR_MODEL_CMYK: {
+                    return readCmykColor();
+                }
+                case COLOR_MODEL_BOOK: {
+                    auto Bk = readText("Bk  ");
+                    auto Nm = readText("Nm  ");
+                    auto bookID = readNamedLong("bookID");
+                    parseNamedType("bookKey", TYPE_TDTA);
+                    auto bookKey = readTdtaString();
+                    return Grd5BookColor(Bk, Nm, bookID, bookKey);
+                }
+                default:
+                    raiseComponentMismatch();
+            }
+        }
+        default:
+            raiseComponentMismatch();
     }
     return Grd5Color();
 }
@@ -186,6 +233,31 @@ bool Grd5Stream::readRgbColorFloat(Grd5RgbColor& rgbColor) {
     }
 }
 
+Grd5HsvColor Grd5Stream::readHsvColor() {
+    Grd5HsvColor ans;
+    ans.H    = readUnitDouble("H   ", "#Ang");
+    ans.Strt = readNamedDouble("Strt");
+    ans.Brgh = readNamedDouble("Brgh");
+    return ans;
+}
+
+Grd5LabColor Grd5Stream::readLabColor() {
+    Grd5LabColor ans;
+    ans.Lmnc = readNamedDouble("Lmnc");
+    ans.A    = readNamedDouble("A   ");
+    ans.B    = readNamedDouble("B   ");
+    return ans;
+}
+
+Grd5CmykColor Grd5Stream::readCmykColor() {
+    Grd5CmykColor ans;
+    ans.Cyn  = readNamedDouble("Cyn ");
+    ans.Mgnt = readNamedDouble("Mgnt");
+    ans.Ylw  = readNamedDouble("Ylw ");
+    ans.Blck = readNamedDouble("Blck");
+    return ans;
+}
+
 Grd5Stream::Grd5ColorModelType Grd5Stream::getColorModelType(std::string typeName) {
     auto it = colorModelTypeMap.find(typeName);
     if (it == colorModelTypeMap.end()) {
@@ -218,6 +290,11 @@ Grd5Enum Grd5Stream::readEnum(std::string expectedName) {
     ans.name = readTypeNameString();
     ans.subname = readTypeNameString();
     return ans;
+}
+
+uint32_t Grd5Stream::readNamedLong(std::string expectedName) {
+    parseNamedType(expectedName, TYPE_LONG);
+    return readUint32();
 }
 
 uint16_t Grd5Stream::readUint16() {
@@ -305,6 +382,17 @@ double Grd5Stream::readNamedDouble(std::string expectedName) {
     return readDouble();
 }
 
+double Grd5Stream::readUnitDouble(std::string expectedName, std::string expectedUnit) {
+    parseNamedType(expectedName, TYPE_UNTF);
+    char unit[5];
+    readBytes(4, unit);
+    unit[4] = '\0';
+    if (expectedUnit != unit) {
+        throw std::invalid_argument("Unit mismatch in unit double");
+    }
+    return readDouble();
+}
+
 void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) {
     switch (type) {
         case STRING_TDTA: break;
@@ -341,6 +429,13 @@ Grd5Ucs2String Grd5Stream::readUcs2String() {
     uint32_t len = readUint32();
     Grd5Ucs2String ans;
     readString(STRING_UCS2, len, ans);
+    return ans;
+}
+
+Grd5TdtaString Grd5Stream::readTdtaString() {
+    uint32_t len = readUint32();
+    Grd5TdtaString ans;
+    readString(STRING_TDTA, len, ans);
     return ans;
 }
 

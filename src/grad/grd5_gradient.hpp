@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <cstdio>
 #include <inttypes.h>
 #include <string>
@@ -51,15 +52,21 @@ public:
 };
 
 class Grd5HsvColor: public Grd5Color {
-
+public:
+    Grd5HsvColor();
+    double H, Strt, Brgh;
 };
 
 class Grd5LabColor: public Grd5Color {
-
+public:
+    Grd5LabColor();
+    double Lmnc, A, B;
 };
 
 class Grd5CmykColor: public Grd5Color {
-
+public:
+    Grd5CmykColor();
+    double Cyn, Mgnt, Ylw, Blck;
 };
 
 class Grd5GrayScaleColor: public Grd5Color {
@@ -89,6 +96,7 @@ class Grd5UnspecifiedColor: public Grd5Color { };
 class Grd5ColorStop {
 public:
     Grd5Color color;
+    uint32_t Lctn, Mdpn;
 };
 
 
@@ -187,9 +195,11 @@ private:
     void readString(Grd5StringType type, uint32_t len, Grd5String& str);
     Grd5TypeNameString readTypeNameString();
     Grd5Ucs2String readUcs2String();
+    Grd5TdtaString readTdtaString();
     void parseNamedType(std::string expectedName, Grd5Type expectedType);
     uint32_t readVllLength(std::string expectedName);
     double readNamedDouble(std::string expectedName);
+    double readUnitDouble(std::string expectedName, std::string expectedUnit);
     Grd5Gradient readGradient();
     Grd5GradientType readGradientType();
     Grd5SolidGradient readSolidGradient();
@@ -197,9 +207,13 @@ private:
     Grd5Color readColor();
     bool readRgbColorStandard(Grd5RgbColor& rgbColor);
     bool readRgbColorFloat(Grd5RgbColor& rgbColor);
+    Grd5HsvColor readHsvColor();
+    Grd5LabColor readLabColor();
+    Grd5CmykColor readCmykColor();
     Grd5ColorModelType getColorModelType(std::string typeName);
     Grd5NoiseGradient readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
+    uint32_t readNamedLong(std::string expectedName);
     Grd5Object readObject();
     Grd5Ucs2String readText(std::string expectedName);
 
