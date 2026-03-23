@@ -49,6 +49,9 @@ int main(int argc, char* argv[]) {
         printf("%s\n",g->title.content.c_str());
         if (auto solidGrad = std::dynamic_pointer_cast<grad::Grd5SolidGradient>(g)) {
             printf("%d\n",solidGrad->colorStops[0].Lctn);
+            if (auto rgbColor = std::dynamic_pointer_cast<grad::Grd5RgbColor>(solidGrad->colorStops[0].color)) {
+                printf("%lf\n",rgbColor->Rd);
+            }
         }
     }
     wxEntryStart(argc, argv);

@@ -76,7 +76,9 @@ std::shared_ptr<Grd5Gradient> Grd5Stream::readGradient() {
             return solid;
         }
     } else if (gradType == GRADIENT_NOISE) {
-        return readNoiseGradient();
+        auto noise = readNoiseGradient();
+        noise->title = title;
+        return noise;
     } else {
         throw std::invalid_argument("Unknown gradient type");
     }
@@ -122,9 +124,9 @@ Grd5ColorStop Grd5Stream::readColorStop() {
     }
     if (!hasUserColor) {
         if (enumVal.subname.content == "BckC") {
-            ans.color = Grd5BackgroundColor();
+            ans.color = std::make_shared<Grd5BackgroundColor>();
         } else if (enumVal.subname.content == "FrgC") {
-            ans.color = Grd5ForegroundColor();
+            ans.color = std::make_shared<Grd5ForegroundColor>();
         } else {
             raiseTypeNameMismatch();
         }
@@ -134,7 +136,7 @@ Grd5ColorStop Grd5Stream::readColorStop() {
     return ans;
 }
 
-Grd5Color Grd5Stream::readColor() {
+std::shared_ptr<Grd5Color> Grd5Stream::readColor() {
     parseNamedType("Clr ", TYPE_OBJECT);
     auto obj = readObject();
     int ncomp = obj.value;
@@ -143,12 +145,12 @@ Grd5Color Grd5Stream::readColor() {
         throw std::invalid_argument("Unknown color model type");
     }
     switch (ncomp) {
-        case 0: return Grd5UnspecifiedColor();
+        case 0: return std::make_shared<Grd5UnspecifiedColor>();
         case 1: {
             if (type != COLOR_MODEL_GRAYSCALE) {
                 raiseComponentMismatch();
             }
-            return Grd5GrayScaleColor(readNamedDouble("Gry "));
+            return std::make_shared<Grd5GrayScaleColor>(readNamedDouble("Gry "));
         }
         case 2: {
             if (type != COLOR_MODEL_BOOK) {
@@ -156,12 +158,12 @@ Grd5Color Grd5Stream::readColor() {
             }
             auto Bk = readText("Bk  ");
             auto Nm = readText("Nm  ");
-            return Grd5BookColor(Bk, Nm, 0, Grd5TdtaString());
+            return std::make_shared<Grd5BookColor>(Bk, Nm, 0, Grd5TdtaString());
         }
         case 3: {
             switch(type) {
                 case COLOR_MODEL_RGB: {
-                    Grd5RgbColor ans;
+                    auto ans = std::make_shared<Grd5RgbColor>();
                     if (!readRgbColorStandard(ans) && !readRgbColorFloat(ans)) {
                         throw std::invalid_argument("Could not read RGB color");
                     }
@@ -188,7 +190,7 @@ Grd5Color Grd5Stream::readColor() {
                     auto bookID = readNamedLong("bookID");
                     parseNamedType("bookKey", TYPE_TDTA);
                     auto bookKey = readTdtaString();
-                    return Grd5BookColor(Bk, Nm, bookID, bookKey);
+                    return std::make_shared<Grd5BookColor>(Bk, Nm, bookID, bookKey);
                 }
                 default:
                     raiseComponentMismatch();
@@ -197,19 +199,19 @@ Grd5Color Grd5Stream::readColor() {
         default:
             raiseComponentMismatch();
     }
-    return Grd5Color();
+    return NULL;
 }
 
-bool Grd5Stream::readRgbColorStandard(Grd5RgbColor& rgbColor) {
+bool Grd5Stream::readRgbColorStandard(std::shared_ptr<Grd5RgbColor> rgbColor) {
     fpos_t pos;
     if (fgetpos(file, &pos) != 0) {
         auto ec = std::error_code(errno, std::generic_category());
         throw std::system_error(ec, "Failed to get stream position");
     }
     try {
-        rgbColor.Rd  = readNamedDouble("Rd  ");
-        rgbColor.Grn = readNamedDouble("Grn ");
-        rgbColor.Bl  = readNamedDouble("Bl  ");
+        rgbColor->Rd  = readNamedDouble("Rd  ");
+        rgbColor->Grn = readNamedDouble("Grn ");
+        rgbColor->Bl  = readNamedDouble("Bl  ");
         return true;
     } catch (std::invalid_argument e) {
         if (fsetpos(file, &pos) != 0) {
@@ -220,16 +222,16 @@ bool Grd5Stream::readRgbColorStandard(Grd5RgbColor& rgbColor) {
     }
 }
 
-bool Grd5Stream::readRgbColorFloat(Grd5RgbColor& rgbColor) {
+bool Grd5Stream::readRgbColorFloat(std::shared_ptr<Grd5RgbColor> rgbColor) {
     fpos_t pos;
     if (fgetpos(file, &pos) != 0) {
         auto ec = std::error_code(errno, std::generic_category());
         throw std::system_error(ec, "Failed to get stream position");
     }
     try {
-        rgbColor.Rd  = readNamedDouble("redFloat");
-        rgbColor.Grn = readNamedDouble("greenFloat");
-        rgbColor.Bl  = readNamedDouble("blueFloat");
+        rgbColor->Rd  = readNamedDouble("redFloat");
+        rgbColor->Grn = readNamedDouble("greenFloat");
+        rgbColor->Bl  = readNamedDouble("blueFloat");
         return true;
     } catch (std::invalid_argument e) {
         if (fsetpos(file, &pos) != 0) {
@@ -240,28 +242,28 @@ bool Grd5Stream::readRgbColorFloat(Grd5RgbColor& rgbColor) {
     }
 }
 
-Grd5HsvColor Grd5Stream::readHsvColor() {
-    Grd5HsvColor ans;
-    ans.H    = readUnitDouble("H   ", "#Ang");
-    ans.Strt = readNamedDouble("Strt");
-    ans.Brgh = readNamedDouble("Brgh");
+std::shared_ptr<Grd5HsvColor> Grd5Stream::readHsvColor() {
+    auto ans = std::make_shared<Grd5HsvColor>();
+    ans->H    = readUnitDouble("H   ", "#Ang");
+    ans->Strt = readNamedDouble("Strt");
+    ans->Brgh = readNamedDouble("Brgh");
     return ans;
 }
 
-Grd5LabColor Grd5Stream::readLabColor() {
-    Grd5LabColor ans;
-    ans.Lmnc = readNamedDouble("Lmnc");
-    ans.A    = readNamedDouble("A   ");
-    ans.B    = readNamedDouble("B   ");
+std::shared_ptr<Grd5LabColor> Grd5Stream::readLabColor() {
+    auto ans = std::make_shared<Grd5LabColor>();
+    ans->Lmnc = readNamedDouble("Lmnc");
+    ans->A    = readNamedDouble("A   ");
+    ans->B    = readNamedDouble("B   ");
     return ans;
 }
 
-Grd5CmykColor Grd5Stream::readCmykColor() {
-    Grd5CmykColor ans;
-    ans.Cyn  = readNamedDouble("Cyn ");
-    ans.Mgnt = readNamedDouble("Mgnt");
-    ans.Ylw  = readNamedDouble("Ylw ");
-    ans.Blck = readNamedDouble("Blck");
+std::shared_ptr<Grd5CmykColor> Grd5Stream::readCmykColor() {
+    auto ans = std::make_shared<Grd5CmykColor>();
+    ans->Cyn  = readNamedDouble("Cyn ");
+    ans->Mgnt = readNamedDouble("Mgnt");
+    ans->Ylw  = readNamedDouble("Ylw ");
+    ans->Blck = readNamedDouble("Blck");
     return ans;
 }
 
@@ -295,7 +297,7 @@ Grd5OpacityStop Grd5Stream::readOpacityStop() {
 }
 
 std::shared_ptr<Grd5NoiseGradient> Grd5Stream::readNoiseGradient() {
-    return NULL;
+    return std::make_shared<Grd5NoiseGradient>();
 }
 
 Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
@@ -345,6 +347,7 @@ double Grd5Stream::readDouble() {
     if (fread(&val, 8, 1, file) != 1) {
         raiseFileStreamError();
     }
+    val = be64toh(val);
     return *(double*)(&val);
 }
 

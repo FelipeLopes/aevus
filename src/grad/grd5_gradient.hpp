@@ -47,7 +47,10 @@ public:
     uint32_t Lctn, Mdpn;
 };
 
-class Grd5Color { };
+class Grd5Color {
+public:
+    virtual ~Grd5Color() = default;
+};
 
 class Grd5RgbColor: public Grd5Color {
 public:
@@ -100,7 +103,7 @@ class Grd5UnspecifiedColor: public Grd5Color { };
 
 class Grd5ColorStop {
 public:
-    Grd5Color color;
+    std::shared_ptr<Grd5Color> color;
     uint32_t Lctn, Mdpn;
 };
 
@@ -211,12 +214,12 @@ private:
     std::shared_ptr<Grd5SolidGradient> readSolidGradient();
     Grd5ColorStop readColorStop();
     Grd5OpacityStop readOpacityStop();
-    Grd5Color readColor();
-    bool readRgbColorStandard(Grd5RgbColor& rgbColor);
-    bool readRgbColorFloat(Grd5RgbColor& rgbColor);
-    Grd5HsvColor readHsvColor();
-    Grd5LabColor readLabColor();
-    Grd5CmykColor readCmykColor();
+    std::shared_ptr<Grd5Color> readColor();
+    bool readRgbColorStandard(std::shared_ptr<Grd5RgbColor> rgbColor);
+    bool readRgbColorFloat(std::shared_ptr<Grd5RgbColor> rgbColor);
+    std::shared_ptr<Grd5HsvColor> readHsvColor();
+    std::shared_ptr<Grd5LabColor> readLabColor();
+    std::shared_ptr<Grd5CmykColor> readCmykColor();
     Grd5ColorModelType getColorModelType(std::string typeName);
     std::shared_ptr<Grd5NoiseGradient> readNoiseGradient();
     Grd5Enum readEnum(std::string expectedName);
