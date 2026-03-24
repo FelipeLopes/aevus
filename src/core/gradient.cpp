@@ -3,8 +3,12 @@
 #include <algorithm>
 #include <cmath>
 #include <memory>
+#include <tinyxml2.h>
 
 using grad::Grd5SolidGradient;
+using std::to_string;
+using tinyxml2::XMLElement;
+using tinyxml2::XMLNode;
 
 namespace core {
 
@@ -257,7 +261,13 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(c->val));
         }
     }
+    opacityStops.reserve(grd5Gradient.opacityStops.size());
+    for (auto opacityStop: grd5Gradient.opacityStops) {
+        opacityStops.emplace_back(opacityStop.Lctn, opacityStop.Opct);
+    }
 }
+
+
 
 void Gradient::acceptSerializer(Serializer& serializer) {
     // TODO
@@ -265,6 +275,45 @@ void Gradient::acceptSerializer(Serializer& serializer) {
 
 void Gradient::acceptDeserializer(Deserializer& deserializer) {
     // TODO
+}
+
+void Gradient::exportToSvg(SvgDocument& svgDocument) {
+    auto linearGrad = svgDocument.newLinearGradientElement();
+    for (auto colorStop: colorStops) {
+        auto stop = svgDocument.newStopElement();
+        stop->SetAttribute("offset", colorStop.location);
+
+        uint8_t r = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
+        uint8_t g = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
+        uint8_t b = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
+
+        std::string colorString = "rgb("+to_string(r)+ ", " + std::to_string(g) + ", "
+            + std::to_string(b) + ")";
+
+        stop->SetAttribute("stop-color", colorString.c_str());
+        stop->SetAttribute("stop-opacity", 1.0);
+        linearGrad->InsertEndChild(stop);
+    }
+    svgDocument.addLinearGradient(linearGrad);
+}
+
+SvgDocument::SvgDocument() {
+    svgRoot = xmlDoc.NewElement("svg");
+    svgRoot->SetAttribute("version", "1.1");
+    svgRoot->SetAttribute("xmlns", "http://www.w3.org/2000/svg");
+    xmlDoc.InsertEndChild(svgRoot);
+}
+
+void SvgDocument::addLinearGradient(XMLNode* node) {
+    svgRoot->InsertEndChild(node);
+}
+
+XMLElement* SvgDocument::newLinearGradientElement() {
+    return xmlDoc.NewElement("linearGradient");
+}
+
+XMLElement* SvgDocument::newStopElement() {
+    return xmlDoc.NewElement("stop");
 }
 
 
