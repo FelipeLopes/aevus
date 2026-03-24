@@ -4,7 +4,6 @@ cc_library(
     name = "aevus",
     srcs = ["aevus.cpp"],
     deps = [
-        "//src/grad:grad",
         "//src/ui:ui",
     ],
     visibility = ["//visibility:public"],

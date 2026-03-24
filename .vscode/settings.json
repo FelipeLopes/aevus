@@ -1,0 +1,5 @@
+{
+  "bazel-cpp-tools.compileCommands.targets": [
+    "aevus"
+  ]
+}

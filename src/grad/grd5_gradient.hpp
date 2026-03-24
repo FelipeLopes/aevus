@@ -32,17 +32,17 @@ public:
 
 class Grd5TypeNameString: public Grd5String {
 public:
-    std::string toString();
+    std::string toString() const;
 };
 
 class Grd5Ucs2String: public Grd5String {
 public:
-    std::string toString();
+    std::string toString() const;
 };
 
 class Grd5TdtaString: public Grd5String {
 public:
-    std::string toString();
+    std::string toString() const;
 };
 
 class Grd5Extremum {

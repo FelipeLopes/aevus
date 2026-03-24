@@ -14,7 +14,7 @@ class XForm;
 class FinalXForm;
 class Palette;
 
-class SerializableV;
+class Serializable;
 
 class Serializer {
 public:
@@ -32,7 +32,7 @@ public:
     virtual void deserialize(Palette& palette) = 0;
 };
 
-class SerializableV {
+class Serializable {
 public:
     virtual void acceptSerializer(Serializer& serializer) = 0;
     virtual void acceptDeserializer(Deserializer& deserializer) = 0;

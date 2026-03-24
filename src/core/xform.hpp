@@ -13,7 +13,7 @@ struct XFormCL {
     int varBegin, varEnd;
 };
 
-class BaseXForm: public SerializableV {
+class BaseXForm: public Serializable {
 public:
     BaseXForm();
     virtual ~BaseXForm();

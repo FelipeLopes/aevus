@@ -11,15 +11,15 @@
 
 namespace grad {
 
-std::string Grd5TypeNameString::toString() {
+std::string Grd5TypeNameString::toString() const {
     return std::string(content.begin(), content.end());
 }
 
-std::string Grd5TdtaString::toString() {
+std::string Grd5TdtaString::toString() const {
     return std::string(content.begin(), content.end());
 }
 
-std::string Grd5Ucs2String::toString() {
+std::string Grd5Ucs2String::toString() const {
     return Utf8Ucs2Converter::ucs2ToUtf8(std::wstring(content.begin(), content.end()));
 }
 

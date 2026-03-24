@@ -23,7 +23,7 @@ private:
     std::vector<byte> paletteData;
 };
 
-class Palette: public SerializableV {
+class Palette: public Serializable {
 public:
     Palette();
     int count;

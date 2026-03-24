@@ -42,14 +42,16 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
-    grad::Grd5Stream grd5Stream(argv[1]);
-    auto gradList = grd5Stream.readGradientList();
-    printf("%zu\n",gradList.gradients.size());
-    for (auto g: gradList.gradients) {
-        printf("%s\n",g->title.toString().c_str());
+    if (argc > 1) {
+        grad::Grd5Stream grd5Stream(argv[1]);
+        auto gradList = grd5Stream.readGradientList();
+        printf("%zu\n",gradList.gradients.size());
+        for (auto g: gradList.gradients) {
+            printf("%s\n",g->title.toString().c_str());
+        }
     }
-    /*wxEntryStart(argc, argv);
+    wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
-    wxTheApp->OnRun();*/
+    wxTheApp->OnRun();
     return 0;
 }

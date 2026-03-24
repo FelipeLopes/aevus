@@ -47,7 +47,7 @@ public:
     void fromString(std::optional<std::string> text);
 };
 
-class Flame: public SerializableV {
+class Flame: public Serializable {
 public:
     Flame();
     std::string version, name;
