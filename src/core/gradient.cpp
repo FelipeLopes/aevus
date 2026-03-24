@@ -1,5 +1,6 @@
 #include "gradient.hpp"
 #include "serializable.hpp"
+#include <algorithm>
 #include <cmath>
 #include <memory>
 
@@ -122,6 +123,32 @@ GradientColor GradientColor::fromHsv(double h, double s, double v) {
     return fromHsv(HsvCoordinates(h, s, v));
 }
 
+GradientColor::CmykCoordinates GradientColor::toCmyk() {
+    double k = 1-std::max(std::max(r, g), b);
+    if (fabs(k-1) < 0.00001) {
+        return CmykCoordinates(0, 0, 0, 100);
+    }
+    double c = (1-r-k)/(1-k);
+    double m = (1-g-k)/(1-k);
+    double y = (1-b-k)/(1-k);
+    return CmykCoordinates(c*100, m*100, y*100, k*100);
+}
+
+GradientColor GradientColor::fromCmyk(GradientColor::CmykCoordinates cmyk) {
+    GradientColor color;
+    cmyk.c /= 100;
+    cmyk.m /= 100;
+    cmyk.y /= 100;
+    color.r = (1-cmyk.c)*(1-cmyk.k);
+    color.g = (1-cmyk.m)*(1-cmyk.k);
+    color.b = (1-cmyk.y)*(1-cmyk.k);
+    return color;
+}
+
+GradientColor GradientColor::fromCmyk(double c, double m, double y, double k) {
+    return fromCmyk(CmykCoordinates(c,m,y,k));
+}
+
 OpacityStop::OpacityStop(double location_, double opacity_): location(location_), opacity(opacity_) { }
 
 ColorStop::ColorStop(double location_, GradientColor color_): location(location_), color(color_) { }
@@ -135,6 +162,8 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
             colorStops.emplace_back(colorStop.Lctn, GradientColor(c->Rd, c->Grn, c->Bl));
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5HsvColor>(colorStop.color)) {
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromHsv(c->H, c->Strt, c->Brgh));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5CmykColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromCmyk(c->Cyn, c->Mgnt, c->Ylw, c->Blck));
         }
     }
 }

@@ -19,6 +19,14 @@ struct GradientColor {
     HsvCoordinates toHsv();
     static GradientColor fromHsv(HsvCoordinates hsv);
     static GradientColor fromHsv(double h, double s, double v);
+    struct CmykCoordinates {
+        double c, m, y, k;
+        CmykCoordinates();
+        CmykCoordinates(double c_, double m_, double y_, double k_): c(c_), m(m_), y(y_), k(k_) { }
+    };
+    CmykCoordinates toCmyk();
+    static GradientColor fromCmyk(CmykCoordinates cmyk);
+    static GradientColor fromCmyk(double c, double m, double y, double k);
 };
 
 struct OpacityStop {
