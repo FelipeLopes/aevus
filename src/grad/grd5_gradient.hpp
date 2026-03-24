@@ -254,7 +254,7 @@ private:
         {"HSBl", COLOR_MODEL_HSV},
         {"LbCl", COLOR_MODEL_LAB},
         {"CMYC", COLOR_MODEL_CMYK},
-        {"GrsC", COLOR_MODEL_GRAYSCALE},
+        {"Grsc", COLOR_MODEL_GRAYSCALE},
         {"FrgC", COLOR_MODEL_FOREGROUND},
         {"BckC", COLOR_MODEL_BACKGROUND},
         {"BkCl", COLOR_MODEL_BOOK},
