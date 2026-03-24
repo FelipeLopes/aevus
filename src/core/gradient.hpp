@@ -27,6 +27,20 @@ struct GradientColor {
     CmykCoordinates toCmyk();
     static GradientColor fromCmyk(CmykCoordinates cmyk);
     static GradientColor fromCmyk(double c, double m, double y, double k);
+    struct LabCoordinates {
+        double l, a, b;
+        LabCoordinates();
+        LabCoordinates(double l_, double a_, double b_): l(l_), a(a_), b(b_) { }
+    };
+    LabCoordinates toLab();
+    static GradientColor fromLab(LabCoordinates lab);
+    static GradientColor fromLab(double l, double a, double b);
+    static GradientColor fromGrayscale(double gs);
+private:
+    static double rgbXyzFunction(double v);
+    static double xyzLabFunction(double v);
+    static double labXyzFunction(double v);
+    static double xyzRgbFunction(double v);
 };
 
 struct OpacityStop {

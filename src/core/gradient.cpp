@@ -149,6 +149,93 @@ GradientColor GradientColor::fromCmyk(double c, double m, double y, double k) {
     return fromCmyk(CmykCoordinates(c,m,y,k));
 }
 
+/* Converting to/from LAB colorspace accurately requires information about the device
+ * display. We use an approximation from https://web.archive.org/web/20111111073514/http://www.easyrgb.com/index.php?X=MATH&H=08#text8
+ */
+GradientColor::LabCoordinates GradientColor::toLab() {
+    LabCoordinates lab;
+
+    double nr = rgbXyzFunction(r);
+    double ng = rgbXyzFunction(g);
+    double nb = rgbXyzFunction(b);
+
+    double x = nr * 0.4142 + ng * 0.3576 + nb * 0.1805;
+    double y = nr * 0.2126 + ng * 0.7152 + nb * 0.0722;
+    double z = nr * 0.0193 + ng * 0.1192 + nb * 0.9505;
+
+    double nx = xyzLabFunction(x / 0.95047);
+    double ny = xyzLabFunction(y / 1.00000);
+    double nz = xyzLabFunction(z / 1.08883);
+
+    lab.l = 116 * ny - 16;
+    lab.a = 500 * (nx - ny);
+    lab.b = 200 * (ny - nz);
+
+    return lab;
+}
+
+double GradientColor::rgbXyzFunction(double v) {
+    if (v > 0.04045) {
+        return pow((v + 0.055)/1.055, 2.4);
+    } else {
+        return v / 12.92;
+    }
+}
+
+double GradientColor::xyzLabFunction(double v) {
+    if (v > 0.008856) {
+        return pow(7.787*v, 1.0/3.0);
+    } else {
+        return 7.787 * v + (16.0 / 116.0);
+    }
+}
+
+GradientColor GradientColor::fromLab(GradientColor::LabCoordinates lab) {
+    GradientColor color;
+
+    double y = (lab.l + 16.0) / 116.0;
+    double x = (lab.a / 500.0) + y;
+    double z = y - (lab.b / 200.0);
+
+    double nx = 0.95047 * labXyzFunction(x);
+    double ny = 1.00000 * labXyzFunction(y);
+    double nz = 1.08883 * labXyzFunction(z);
+
+    double r =  3.2406 * nx - 1.5372 * ny - 0.4986 * nz;
+    double g = -0.9689 * nx + 1.8758 * ny + 0.0415 * nz;
+    double b =  0.0557 * nx - 0.2040 * ny + 1.0570 * nz;
+
+    color.r = xyzRgbFunction(r);
+    color.g = xyzRgbFunction(g);
+    color.b = xyzRgbFunction(b);
+
+    return color;
+}
+
+GradientColor GradientColor::fromLab(double l, double a, double b) {
+    return fromLab(LabCoordinates(l, a, b));
+}
+
+double GradientColor::labXyzFunction(double v) {
+    if (v > 0.206893) {
+        return pow(v, 3.0);
+    } else {
+        return (v - 16.0 / 116.0) / 7.787;
+    }
+}
+
+double GradientColor::xyzRgbFunction(double v) {
+    if (v > 0.0031308) {
+        return 1.055 * pow(v, 1.0 / 2.4) - 0.055;
+    } else {
+        return 12.92 * v;
+    }
+}
+
+GradientColor GradientColor::fromGrayscale(double gs) {
+    return GradientColor(gs, gs, gs);
+}
+
 OpacityStop::OpacityStop(double location_, double opacity_): location(location_), opacity(opacity_) { }
 
 ColorStop::ColorStop(double location_, GradientColor color_): location(location_), color(color_) { }
@@ -164,6 +251,10 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromHsv(c->H, c->Strt, c->Brgh));
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5CmykColor>(colorStop.color)) {
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromCmyk(c->Cyn, c->Mgnt, c->Ylw, c->Blck));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5LabColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromLab(c->Lmnc, c->A, c->B));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5GrayScaleColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(c->val));
         }
     }
 }
