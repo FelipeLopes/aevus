@@ -46,11 +46,7 @@ int main(int argc, char* argv[]) {
     auto gradList = grd5Stream.readGradientList();
     printf("%zu\n",gradList.gradients.size());
     for (auto g: gradList.gradients) {
-        printf("%zu: ",g->title.content.size());
-        for (int i=0; i<g->title.content.size(); i++) {
-            printf("%c",g->title.content[i]);
-        }
-        printf("\n");
+        printf("%s\n",g->title.toString().c_str());
     }
     /*wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();

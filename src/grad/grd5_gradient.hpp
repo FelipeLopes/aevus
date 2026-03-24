@@ -36,11 +36,13 @@ public:
 };
 
 class Grd5Ucs2String: public Grd5String {
-
+public:
+    std::string toString();
 };
 
 class Grd5TdtaString: public Grd5String {
-
+public:
+    std::string toString();
 };
 
 class Grd5Extremum {

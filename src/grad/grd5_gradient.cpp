@@ -1,16 +1,26 @@
 #include "grd5_gradient.hpp"
+#include "string_encoding.hpp"
 #include <cstdlib>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include <string>
 #include <system_error>
 
 namespace grad {
 
 std::string Grd5TypeNameString::toString() {
     return std::string(content.begin(), content.end());
+}
+
+std::string Grd5TdtaString::toString() {
+    return std::string(content.begin(), content.end());
+}
+
+std::string Grd5Ucs2String::toString() {
+    return Utf8Ucs2Converter::ucs2ToUtf8(std::wstring(content.begin(), content.end()));
 }
 
 Grd5RgbColor::Grd5RgbColor(): Grd5RgbColor(0, 0, 0) { }
