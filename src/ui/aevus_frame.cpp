@@ -1,4 +1,5 @@
 #include "aevus_frame.hpp"
+#include <memory>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
@@ -53,8 +54,15 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 
     trianglePanel->SetFocus();
 
-    if (filename.has_value()) {
-        // TODO: implement CLI load file
+    if (filename.has_value()) {   
+        grad::Grd5Stream grd5Stream(filename->c_str());
+        auto gradList = grd5Stream.readGradientList();
+        for (auto g: gradList.gradients) {
+            if (auto solidGrad = std::dynamic_pointer_cast<grad::Grd5SolidGradient>(g)) {
+                presetLibrary.addGrd5Gradient(*solidGrad);
+            }
+        }
+        printf("%zu\n",presetLibrary.gradients.size());
     }
 }
 

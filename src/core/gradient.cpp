@@ -59,7 +59,7 @@ GradientColor::HsvCoordinates GradientColor::toHsv() {
 }
 
 // Code adapted from https://stackoverflow.com/a/6930407
-GradientColor fromHsv(GradientColor::HsvCoordinates in) {
+GradientColor GradientColor::fromHsv(GradientColor::HsvCoordinates in) {
     double      hh, p, q, t, ff, r, g ,b;
     long        i;
 
