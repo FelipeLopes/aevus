@@ -477,12 +477,11 @@ void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) 
             throw std::invalid_argument("Bad string type");
     }
     char* content;
-    if ((content = (char*)malloc(len+1)) == NULL) {
+    if ((content = (char*)malloc(len)) == NULL) {
         auto ec = std::error_code(errno, std::generic_category());
         throw std::system_error(ec, "Could not allocate memory");
     } else {
         readBytes(len, content);
-        content[len] = '\0';
         str.content.reserve(len);
         for (int i=0; i<len; i++) {
             str.content.push_back(content[i]);
