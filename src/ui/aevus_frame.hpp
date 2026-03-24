@@ -12,6 +12,7 @@
 #include "variation_model.hpp"
 #include "weights_model.hpp"
 #include "../clwrap/opencl.hpp"
+#include "../core/preset_library.hpp"
 #include "../render/renderer.hpp"
 
 extern char _binary_res_plus_default_png_start[];
@@ -44,6 +45,8 @@ private:
     ColorModel colorModel;
     FrameModel frameModel;
     TriangleModel triangleModel;
+
+    core::PresetLibrary presetLibrary;
 
     std::vector<boost::signals2::connection> connections;
 

@@ -13,9 +13,12 @@ struct GradientColor {
     double r, g, b;
     struct HsvCoordinates {
         double h, s, v;
+        HsvCoordinates();
+        HsvCoordinates(double h_, double s_, double v_): h(h_), s(s_), v(v_) { }
     };
     HsvCoordinates toHsv();
     static GradientColor fromHsv(HsvCoordinates hsv);
+    static GradientColor fromHsv(double h, double s, double v);
 };
 
 struct OpacityStop {
@@ -32,10 +35,13 @@ struct ColorStop {
 class Gradient: public Serializable {
 public:
     Gradient();
+    virtual ~Gradient() = default;
     Gradient(const grad::Grd5SolidGradient& grd5Gradient);
     std::string title;
     std::vector<OpacityStop> opacityStops;
     std::vector<ColorStop> colorStops;
+    virtual void acceptSerializer(Serializer& serializer);
+    virtual void acceptDeserializer(Deserializer& deserializer);
 };
 
 }

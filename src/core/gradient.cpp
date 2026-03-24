@@ -1,5 +1,7 @@
 #include "gradient.hpp"
+#include "serializable.hpp"
 #include <cmath>
+#include <memory>
 
 using grad::Grd5SolidGradient;
 
@@ -116,6 +118,10 @@ GradientColor fromHsv(GradientColor::HsvCoordinates in) {
     return GradientColor(r,g,b);     
 }
 
+GradientColor GradientColor::fromHsv(double h, double s, double v) {
+    return fromHsv(HsvCoordinates(h, s, v));
+}
+
 OpacityStop::OpacityStop(double location_, double opacity_): location(location_), opacity(opacity_) { }
 
 ColorStop::ColorStop(double location_, GradientColor color_): location(location_), color(color_) { }
@@ -125,8 +131,20 @@ Gradient::Gradient() { }
 Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.title.toString()) {
     colorStops.reserve(grd5Gradient.colorStops.size());
     for (auto colorStop: grd5Gradient.colorStops) {
-        //TODO: parse
+        if (auto c = std::dynamic_pointer_cast<grad::Grd5RgbColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor(c->Rd, c->Grn, c->Bl));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5HsvColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromHsv(c->H, c->Strt, c->Brgh));
+        }
     }
+}
+
+void Gradient::acceptSerializer(Serializer& serializer) {
+    // TODO
+}
+
+void Gradient::acceptDeserializer(Deserializer& deserializer) {
+    // TODO
 }
 
 

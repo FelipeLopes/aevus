@@ -38,6 +38,15 @@ Grd5GrayScaleColor::Grd5GrayScaleColor(double val_): val(val_) { }
 Grd5BookColor::Grd5BookColor(Grd5Ucs2String Bk_, Grd5Ucs2String Nm_, uint32_t bookId_, Grd5TdtaString bookKey_):
     Bk(Bk_), Nm(Nm_), bookId(bookId_), bookKey(bookKey_) { }
 
+bool Grd5SolidGradient::usesBookColor() const {
+    for (auto colorStop: colorStops) {
+        if (auto bookColor = std::dynamic_pointer_cast<Grd5BookColor>(colorStop.color)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 Grd5Stream::Grd5Stream(const char* filename) {
     file = fopen(filename, "rb");
     if (file == NULL) {
