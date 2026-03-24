@@ -44,8 +44,16 @@ wxIMPLEMENT_APP_NO_MAIN(Aevus);
 int main(int argc, char* argv[]) {
     grad::Grd5Stream grd5Stream(argv[1]);
     auto gradList = grd5Stream.readGradientList();
-    wxEntryStart(argc, argv);
+    printf("%zu\n",gradList.gradients.size());
+    for (auto g: gradList.gradients) {
+        printf("%zu: ",g->title.content.size());
+        for (int i=0; i<g->title.content.size(); i++) {
+            printf("%c",g->title.content[i]);
+        }
+        printf("\n");
+    }
+    /*wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
-    wxTheApp->OnRun();
+    wxTheApp->OnRun();*/
     return 0;
 }

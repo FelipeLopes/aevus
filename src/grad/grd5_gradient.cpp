@@ -9,6 +9,10 @@
 
 namespace grad {
 
+std::string Grd5TypeNameString::toString() {
+    return std::string(content.begin(), content.end());
+}
+
 Grd5RgbColor::Grd5RgbColor(): Grd5RgbColor(0, 0, 0) { }
 
 Grd5RgbColor::Grd5RgbColor(double r, double g, double b): Rd(r), Grn(g), Bl(b) { }
@@ -124,16 +128,16 @@ Grd5ColorStop Grd5Stream::readColorStop() {
         ans.color = readColor();
     }
     auto enumVal = readEnum("Type");
-    if (enumVal.name.content != "Clry") {
+    if (enumVal.name.toString() != "Clry") {
         raiseTypeNameMismatch();
     }
-    if (hasUserColor && enumVal.subname.content != "UsrS") {
+    if (hasUserColor && enumVal.subname.toString() != "UsrS") {
         raiseTypeNameMismatch();
     }
     if (!hasUserColor) {
-        if (enumVal.subname.content == "BckC") {
+        if (enumVal.subname.toString() == "BckC") {
             ans.color = std::make_shared<Grd5BackgroundColor>();
-        } else if (enumVal.subname.content == "FrgC") {
+        } else if (enumVal.subname.toString() == "FrgC") {
             ans.color = std::make_shared<Grd5ForegroundColor>();
         } else {
             raiseTypeNameMismatch();
@@ -148,7 +152,7 @@ std::shared_ptr<Grd5Color> Grd5Stream::readColor() {
     parseNamedType("Clr ", TYPE_OBJECT);
     auto obj = readObject();
     int ncomp = obj.value;
-    auto type = getColorModelType(obj.typeName.content);
+    auto type = getColorModelType(obj.typeName.toString());
     if (type == COLOR_MODEL_UNKNOWN) {
         throw std::invalid_argument("Unknown color model type");
     }
@@ -295,7 +299,7 @@ Grd5OpacityStop Grd5Stream::readOpacityStop() {
     if (ncomp != 3) {
         raiseComponentMismatch();
     }
-    if (obj.typeName.content != "TrnS") {
+    if (obj.typeName.toString() != "TrnS") {
         raiseTypeNameMismatch();
     }
     ans.Opct = readUnitDouble("Opct", "#Prc");
@@ -309,10 +313,10 @@ std::shared_ptr<Grd5NoiseGradient> Grd5Stream::readNoiseGradient() {
     ans->showTransparency = readNamedBool("ShTr");
     ans->vectorColor = readNamedBool("VctC");
     auto enumVar = readEnum("ClrS");
-    if (enumVar.name.content != "ClrS") {
+    if (enumVar.name.toString() != "ClrS") {
         raiseTypeNameMismatch();
     }
-    ans->model = getColorModelType(enumVar.subname.content);
+    ans->model = getColorModelType(enumVar.subname.toString());
     if (ans->model == COLOR_MODEL_UNKNOWN) {
         throw std::invalid_argument("Unknown color model type");
     }
@@ -325,10 +329,10 @@ std::shared_ptr<Grd5NoiseGradient> Grd5Stream::readNoiseGradient() {
 
 Grd5Stream::Grd5GradientType Grd5Stream::readGradientType() {
     auto enumVar = readEnum("GrdF");
-    if (enumVar.name.content != "GrdF") {
+    if (enumVar.name.toString() != "GrdF") {
         raiseTypeNameMismatch();
     }
-    auto it = gradientTypeMap.find(enumVar.subname.content);
+    auto it = gradientTypeMap.find(enumVar.subname.toString());
     if (it == gradientTypeMap.end()) {
         return GRADIENT_UNKNOWN;
     } else {
@@ -427,7 +431,7 @@ void Grd5Stream::readBytes(uint32_t len, char* arr) {
 
 void Grd5Stream::parseNamedType(std::string expectedName, Grd5Type expectedType) {
     auto typeName = readTypeNameString();
-    if (typeName.content != expectedName) {
+    if (typeName.toString() != expectedName) {
         raiseTypeNameMismatch();
     }
     auto grd5Type = readType();
@@ -479,7 +483,10 @@ void Grd5Stream::readString(Grd5StringType type, uint32_t len, Grd5String& str) 
     } else {
         readBytes(len, content);
         content[len] = '\0';
-        str.content = content;
+        str.content.reserve(len);
+        for (int i=0; i<len; i++) {
+            str.content.push_back(content[i]);
+        }
         free(content);
     }
 }

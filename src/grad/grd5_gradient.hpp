@@ -27,11 +27,12 @@ enum Grd5Type {
 
 class Grd5String {
 public:
-    std::string content;
+    std::vector<char> content;
 };
 
 class Grd5TypeNameString: public Grd5String {
-
+public:
+    std::string toString();
 };
 
 class Grd5Ucs2String: public Grd5String {
