@@ -74,10 +74,11 @@ public:
 private:
     tinyxml2::XMLDocument xmlDoc;
     tinyxml2::XMLElement* svgRoot;
+    tinyxml2::XMLElement* defsRoot;
     std::multimap<std::string, tinyxml2::XMLElement*> gradientMap;
     std::vector<tinyxml2::XMLElement*> gradientVector;
     std::string idForName(std::string name);
-    void populateRoot();
+    void populateDefs();
 };
 
 class Gradient: public Serializable {

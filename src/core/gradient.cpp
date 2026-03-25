@@ -505,6 +505,8 @@ SvgDocument::SvgDocument() {
     svgRoot->SetAttribute("version", "1.1");
     svgRoot->SetAttribute("xmlns", "http://www.w3.org/2000/svg");
     xmlDoc.InsertEndChild(svgRoot);
+    defsRoot = xmlDoc.NewElement("defs");
+    svgRoot->InsertEndChild(defsRoot);
 }
 
 std::string SvgDocument::percentageString(double p) {
@@ -550,8 +552,8 @@ XMLElement* SvgDocument::newStopElement() {
 }
 
 void SvgDocument::flushAndWriteToFile(std::string filename) {
-    svgRoot->DeleteChildren();
-    populateRoot();
+    defsRoot->DeleteChildren();
+    populateDefs();
     tinyxml2::XMLPrinter xmlPrinter;
     xmlDoc.Print(&xmlPrinter);
     std::ofstream fs(filename);
@@ -566,7 +568,7 @@ std::string SvgDocument::idForName(std::string name) {
     return std::string("id_") + std::regex_replace(name, invalidChars, "_");
 }
 
-void SvgDocument::populateRoot() {
+void SvgDocument::populateDefs() {
     if (gradientMap.empty()) {
         return;
     }
@@ -586,7 +588,7 @@ void SvgDocument::populateRoot() {
         it2++;
     }
     for (auto g: gradientVector) {
-        svgRoot->InsertEndChild(g);
+        defsRoot->InsertEndChild(g);
     }
 }
 
