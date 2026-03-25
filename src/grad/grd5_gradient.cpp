@@ -38,13 +38,24 @@ Grd5GrayScaleColor::Grd5GrayScaleColor(double val_): val(val_) { }
 Grd5BookColor::Grd5BookColor(Grd5Ucs2String Bk_, Grd5Ucs2String Nm_, uint32_t bookId_, Grd5TdtaString bookKey_):
     Bk(Bk_), Nm(Nm_), bookId(bookId_), bookKey(bookKey_) { }
 
-bool Grd5SolidGradient::usesBookColor() const {
+bool Grd5SolidGradient::canBeImported() const {
+    int usableStops = 0;
+    int lastUsableLoc = 0;
     for (auto colorStop: colorStops) {
         if (auto bookColor = std::dynamic_pointer_cast<Grd5BookColor>(colorStop.color)) {
-            return true;
+            return false;
         }
+        usableStops++;
+        if (auto unspecifiedColor = std::dynamic_pointer_cast<Grd5UnspecifiedColor>(colorStop.color)) {
+            usableStops--;
+            continue;
+        }
+        if (colorStop.Lctn < lastUsableLoc) {
+            return false;
+        }
+        lastUsableLoc = colorStop.Lctn;
     }
-    return false;
+    return usableStops >= 2;
 }
 
 Grd5Stream::Grd5Stream(const char* filename) {

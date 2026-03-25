@@ -262,7 +262,11 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5LabColor>(colorStop.color)) {
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromLab(c->Lmnc, c->A, c->B));
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5GrayScaleColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(c->val));
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(c->val / 255.0));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5ForegroundColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(1.0));
+        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5BackgroundColor>(colorStop.color)) {
+            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(0.0));
         }
     }
     opacityStops.reserve(grd5Gradient.opacityStops.size());

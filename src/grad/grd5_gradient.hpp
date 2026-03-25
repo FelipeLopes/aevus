@@ -137,7 +137,7 @@ public:
     double smoothness;
     std::vector<Grd5OpacityStop> opacityStops;
     std::vector<Grd5ColorStop> colorStops;
-    bool usesBookColor() const;
+    bool canBeImported() const;
 };
 
 enum Grd5ColorModelType {
