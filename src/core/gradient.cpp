@@ -333,7 +333,8 @@ void SvgDocument::addLinearGradient(XMLNode* node) {
     if (err != tinyxml2::XML_SUCCESS) {
         throw std::invalid_argument("Invalid gradient node");
     }
-    gradients.insert({idForName(buf), element});
+    gradientMap.insert({idForName(buf), element});
+    gradientVector.push_back(element);
 }
 
 XMLElement* SvgDocument::newLinearGradientElement() {
@@ -344,7 +345,7 @@ XMLElement* SvgDocument::newStopElement() {
     return xmlDoc.NewElement("stop");
 }
 
-void SvgDocument::writeToFile(std::string filename) {
+void SvgDocument::flushAndWriteToFile(std::string filename) {
     svgRoot->DeleteChildren();
     populateRoot();
     tinyxml2::XMLPrinter xmlPrinter;
@@ -352,6 +353,8 @@ void SvgDocument::writeToFile(std::string filename) {
     std::ofstream fs(filename);
     fs << xmlPrinter.CStr();
     fs.clear();
+    gradientMap.clear();
+    gradientVector.clear();
 }
 
 std::string SvgDocument::idForName(std::string name) {
@@ -360,15 +363,14 @@ std::string SvgDocument::idForName(std::string name) {
 }
 
 void SvgDocument::populateRoot() {
-    if (gradients.empty()) {
+    if (gradientMap.empty()) {
         return;
     }
-    auto it1 = gradients.begin();
+    auto it1 = gradientMap.begin();
     it1->second->SetAttribute("id", it1->first.c_str());
-    svgRoot->InsertEndChild(it1->second);
     auto it2 = std::next(it1);
     int idx = 0;
-    while (it2 != gradients.end()) {
+    while (it2 != gradientMap.end()) {
         if (it2->first == it1->first) {
             idx++;
         } else {
@@ -376,9 +378,11 @@ void SvgDocument::populateRoot() {
         }
         auto idStr = it2->first + (idx > 0 ? (std::string("_") + std::to_string(idx)) : "");
         it2->second->SetAttribute("id", idStr.c_str());
-        svgRoot->InsertEndChild(it2->second);
         it1++;
         it2++;
+    }
+    for (auto g: gradientVector) {
+        svgRoot->InsertEndChild(g);
     }
 }
 

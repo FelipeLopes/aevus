@@ -62,11 +62,12 @@ public:
     void addLinearGradient(tinyxml2::XMLNode* node);
     tinyxml2::XMLElement* newLinearGradientElement();
     tinyxml2::XMLElement* newStopElement();
-    void writeToFile(std::string filename);
+    void flushAndWriteToFile(std::string filename);
 private:
     tinyxml2::XMLDocument xmlDoc;
     tinyxml2::XMLElement* svgRoot;
-    std::multimap<std::string, tinyxml2::XMLElement*> gradients;
+    std::multimap<std::string, tinyxml2::XMLElement*> gradientMap;
+    std::vector<tinyxml2::XMLElement*> gradientVector;
     std::string idForName(std::string name);
     void populateRoot();
 };
