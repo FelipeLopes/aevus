@@ -58,7 +58,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         grad::Grd5Stream grd5Stream(filename->c_str());
         auto gradList = grd5Stream.readGradientList();
         for (auto g: gradList.gradients) {
-            printf("%s\n",g->title.toString().c_str());
             if (auto solidGrad = std::dynamic_pointer_cast<grad::Grd5SolidGradient>(g)) {
                 presetLibrary.addGrd5Gradient(*solidGrad);
             }

@@ -264,7 +264,7 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
         auto color = getGradientColor(colorStop.color);
         if (midpoint != 50) {
             auto prevColor = getGradientColor(prevStop.color);
-            double offset = (midpoint*prevStop.Lctn + (100-midpoint)*colorStop.Lctn) / 100.0;
+            double offset = ((100-midpoint)*prevStop.Lctn + midpoint*colorStop.Lctn) / 100.0;
             auto midpointColor = GradientColor(0.5*(prevColor.r+color.r),0.5*(prevColor.g+color.g),0.5*(prevColor.b+color.b));
             colorStops.emplace_back(offset / 4096.0, midpointColor);
         }
@@ -272,8 +272,18 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
         prevStop = colorStop;
     }
     opacityStops.reserve(grd5Gradient.opacityStops.size());
-    for (auto opacityStop: grd5Gradient.opacityStops) {
-        opacityStops.emplace_back(opacityStop.Lctn / 4096.0, opacityStop.Opct);
+    auto prevOp = grd5Gradient.opacityStops.at(0);
+    opacityStops.emplace_back(prevOp.Lctn / 4096.0, prevOp.Opct / 100.0);
+    for (int i=1; i<grd5Gradient.opacityStops.size(); i++) {
+        auto opStop = grd5Gradient.opacityStops.at(i);
+        auto midpoint = opStop.Mdpn;
+        if (midpoint != 50) {
+            double offset = ((100-midpoint)*prevOp.Lctn + midpoint*opStop.Lctn) / 100.0;
+            double midpointOp = 0.5*(prevOp.Opct+opStop.Opct);
+            opacityStops.emplace_back(offset / 4096.0, midpointOp / 100.0);
+        }
+        opacityStops.emplace_back(opStop.Lctn / 4096.0, opStop.Opct / 100.0);
+        prevOp = opStop;
     }
 }
 
@@ -323,32 +333,45 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
     linearGrad->SetAttribute("y1", "0%");
     linearGrad->SetAttribute("y2", "0%");
 
-    struct compareStops {
-        bool operator()(GradientStop* a, GradientStop* b) const {
-            return (a->location == b->location) ? a < b : (a->location < b->location);
-        }
-    };
-    std::set<GradientStop*, compareStops> stops;
+    std::set<double> stopLocations;
     for (int i=0; i<colorStops.size(); i++) {
-        stops.insert(&colorStops[i]);
+        stopLocations.insert(colorStops[i].location);
     }
     for (int i=0; i<opacityStops.size(); i++) {
-        stops.insert(&opacityStops[i]);
+        stopLocations.insert(opacityStops[i].location);
     }
 
-    auto it = stops.begin();
-    auto prevColor = colorStops[0].color;
-    auto prevOp = opacityStops[0].opacity;
+    auto it = stopLocations.begin();
 
-    if (fabs((*it)->location) > EPS) {
-        auto stop = getStopNode(0.0, prevColor, prevOp, svgDoc);
+    if (fabs((*it)) > EPS) {
+        auto firstColor = colorStops[0].color;
+        auto firstOp = opacityStops[0].opacity;
+        auto stop = getStopNode(0.0, firstColor, firstOp, svgDoc);
         linearGrad->InsertEndChild(stop);
     }
 
-    for (auto colorStop: colorStops) {
-        auto stop = getStopNode(colorStop.location, colorStop.color, 1.0, svgDoc);
+    for(; it != stopLocations.end(); it++) {
+        double x = (*it);
+        auto color = colorAtLeft(x);
+        double opacity = opacityAtLeft(x);
+        auto stop = getStopNode(x, color, opacity, svgDoc);
+        linearGrad->InsertEndChild(stop);
+        if (hasMultipleStops(x)) {
+            color = colorAtRight(x);
+            opacity = opacityAtRight(x);
+            stop = getStopNode(x, color, opacity, svgDoc);
+            linearGrad->InsertEndChild(stop);
+        }
+    }
+
+    it = std::prev(it);
+    if (fabs((*it)-1) > EPS) {
+        auto lastColor = colorStops[0].color;
+        auto lastOp = opacityStops[0].opacity;
+        auto stop = getStopNode(1.0, lastColor, lastOp, svgDoc);
         linearGrad->InsertEndChild(stop);
     }
+
     svgDoc.addLinearGradient(linearGrad);
 }
 
@@ -365,7 +388,7 @@ tinyxml2::XMLNode* Gradient::getStopNode(double location, GradientColor color, d
         + std::to_string(b) + ")";
 
     stop->SetAttribute("stop-color", colorString.c_str());
-    stop->SetAttribute("stop-opacity", SvgDocument::formattedDouble(1.0).c_str());
+    stop->SetAttribute("stop-opacity", SvgDocument::formattedDouble(opacity).c_str());
 
     return stop;
 }
@@ -428,7 +451,53 @@ GradientColor Gradient::colorAtSegment(double x, int begin) {
     double xt = colorStops[begin+1].location - colorStops[begin].location;
     double x1 = (x- colorStops[begin].location)/xt;
     double x2 = (colorStops[begin+1].location-x)/xt;
-    return GradientColor(x1*c1.r+x2*c2.r, x1*c1.g+x2*c2.g, x1*c1.b+x2*c2.b);
+    return GradientColor(x2*c1.r+x1*c2.r, x2*c1.g+x1*c2.g, x2*c1.b+x1*c2.b);
+}
+
+double Gradient::opacityAtLeft(double x) {
+    size_t n = opacityStops.size();
+    auto cmpStops = [](OpacityStop a, OpacityStop b) { return a.location < b.location; };
+    auto it = std::distance(opacityStops.begin(),
+        std::lower_bound(opacityStops.begin(), opacityStops.end(), OpacityStop(x, 0.0), cmpStops));
+
+    if (it == 0) {
+        return opacityStops[0].opacity;
+    }
+    if (it == n) {
+        return opacityStops[n-1].opacity;
+    }
+
+    return opacityAtSegment(x, it-1);
+}
+
+double Gradient::opacityAtRight(double x) {
+    size_t n = opacityStops.size();
+    auto cmpStops = [](OpacityStop a, OpacityStop b) { return a.location < b.location; };
+    auto it = std::distance(opacityStops.begin(),
+        std::upper_bound(opacityStops.begin(), opacityStops.end(), OpacityStop(x, 0.0), cmpStops));
+
+    if (it == 0) {
+        return opacityStops[0].opacity;
+    }
+    if (it == n) {
+        return opacityStops[n-1].opacity;
+    }
+
+    return opacityAtSegment(x, it-1);
+}
+
+double Gradient::opacityAtSegment(double x, int begin) {
+    double loc1 = opacityStops[begin].location;
+    double loc2 = opacityStops[begin+1].location;
+    if (fabs(loc2-loc1) < EPS) {
+        return opacityStops[begin].opacity;
+    }
+    auto c1 = opacityStops[begin].opacity;
+    auto c2 = opacityStops[begin+1].opacity;
+    double xt = opacityStops[begin+1].location - opacityStops[begin].location;
+    double x1 = (x- opacityStops[begin].location)/xt;
+    double x2 = (opacityStops[begin+1].location-x)/xt;
+    return c1*x2 + c2*x1;
 }
 
 SvgDocument::SvgDocument() {

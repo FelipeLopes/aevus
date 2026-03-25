@@ -97,6 +97,9 @@ private:
     GradientColor colorAtLeft(double x);
     GradientColor colorAtRight(double x);
     GradientColor colorAtSegment(double x, int begin);
+    double opacityAtLeft(double x);
+    double opacityAtRight(double x);
+    double opacityAtSegment(double x, int begin);
     tinyxml2::XMLNode* getStopNode(double location, GradientColor color, double opacity, SvgDocument& svgDoc);
     const double EPS = 1e-5;
 };
