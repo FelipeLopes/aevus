@@ -46,14 +46,19 @@ private:
     static double xyzRgbFunction(double v);
 };
 
-struct OpacityStop {
-    OpacityStop(double location, double opacity);
-    double location, opacity;
+struct GradientStop {
+    GradientStop(double location);
+    virtual ~GradientStop() = default;
+    double location;
 };
 
-struct ColorStop {
+struct OpacityStop: public GradientStop {
+    OpacityStop(double location, double opacity);
+    double opacity;
+};
+
+struct ColorStop: public GradientStop {
     ColorStop(double location, GradientColor color);
-    double location;
     GradientColor color;
 };
 

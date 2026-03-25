@@ -246,9 +246,11 @@ GradientColor GradientColor::fromGrayscale(double gs) {
     return GradientColor(gs, gs, gs);
 }
 
-OpacityStop::OpacityStop(double location_, double opacity_): location(location_), opacity(opacity_) { }
+GradientStop::GradientStop(double location_): location(location_) { }
 
-ColorStop::ColorStop(double location_, GradientColor color_): location(location_), color(color_) { }
+OpacityStop::OpacityStop(double location, double opacity_): GradientStop(location), opacity(opacity_) { }
+
+ColorStop::ColorStop(double location, GradientColor color_): GradientStop(location), color(color_) { }
 
 Gradient::Gradient() { }
 
@@ -271,9 +273,10 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
     }
     opacityStops.reserve(grd5Gradient.opacityStops.size());
     for (auto opacityStop: grd5Gradient.opacityStops) {
-        opacityStops.emplace_back(opacityStop.Lctn, opacityStop.Opct);
+        opacityStops.emplace_back(opacityStop.Lctn / 4096.0, opacityStop.Opct);
     }
 }
+
 GradientColor Gradient::getGradientColor(std::shared_ptr<grad::Grd5Color> color) {
     if (auto c = std::dynamic_pointer_cast<grad::Grd5RgbColor>(color)) {
         return GradientColor(c->Rd / 255.0, c->Grn / 255.0, c->Bl / 255.0);
@@ -319,6 +322,23 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
     linearGrad->SetAttribute("x2", "100%");
     linearGrad->SetAttribute("y1", "0%");
     linearGrad->SetAttribute("y2", "0%");
+
+    struct compareStops {
+        bool operator()(GradientStop* a, GradientStop* b) const {
+            return (a->location == b->location) ? a < b : (a->location < b->location);
+        }
+    };
+    std::set<GradientStop*, compareStops> stops;
+    for (int i=0; i<colorStops.size(); i++) {
+        stops.insert(&colorStops[i]);
+    }
+    for (int i=0; i<opacityStops.size(); i++) {
+        stops.insert(&opacityStops[i]);
+    }
+    for (auto stop: stops) {
+        printf("%lf\n",stop->location);
+    }
+
     for (auto colorStop: colorStops) {
         auto stop = svgDoc.newStopElement();
         stop->SetAttribute("offset", SvgDocument::percentageString(colorStop.location).c_str());
