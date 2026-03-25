@@ -55,7 +55,10 @@ bool Grd5SolidGradient::canBeImported() const {
         }
         lastUsableLoc = colorStop.Lctn;
     }
-    return usableStops >= 2;
+    if (usableStops < 2) {
+        return false;
+    }
+    return opacityStops.size() >= 2;
 }
 
 Grd5Stream::Grd5Stream(const char* filename) {

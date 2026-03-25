@@ -93,6 +93,12 @@ public:
     void exportToSvg(SvgDocument& svgDoc);
 private:
     GradientColor getGradientColor(std::shared_ptr<grad::Grd5Color> color);
+    bool hasMultipleStops(double x);
+    GradientColor colorAtLeft(double x);
+    GradientColor colorAtRight(double x);
+    GradientColor colorAtSegment(double x, int begin);
+    tinyxml2::XMLNode* getStopNode(double location, GradientColor color, double opacity, SvgDocument& svgDoc);
+    const double EPS = 1e-5;
 };
 
 }
