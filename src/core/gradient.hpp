@@ -2,6 +2,7 @@
 
 #include "../grad/grd5_gradient.hpp"
 #include "serializable.hpp"
+#include <map>
 #include <tinyxml2.h>
 
 namespace core {
@@ -61,9 +62,13 @@ public:
     void addLinearGradient(tinyxml2::XMLNode* node);
     tinyxml2::XMLElement* newLinearGradientElement();
     tinyxml2::XMLElement* newStopElement();
+    void writeToFile(std::string filename);
 private:
     tinyxml2::XMLDocument xmlDoc;
     tinyxml2::XMLElement* svgRoot;
+    std::multimap<std::string, tinyxml2::XMLElement*> gradients;
+    std::string idForName(std::string name);
+    void populateRoot();
 };
 
 class Gradient: public Serializable {
@@ -76,7 +81,7 @@ public:
     std::vector<ColorStop> colorStops;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
-    void exportToSvg(SvgDocument& xmlDoc);
+    void exportToSvg(SvgDocument& svgDoc);
 };
 
 }

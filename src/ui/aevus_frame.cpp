@@ -54,7 +54,7 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
 
     trianglePanel->SetFocus();
 
-    if (filename.has_value()) {   
+    if (filename.has_value()) {
         grad::Grd5Stream grd5Stream(filename->c_str());
         auto gradList = grd5Stream.readGradientList();
         for (auto g: gradList.gradients) {
@@ -62,7 +62,11 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
                 presetLibrary.addGrd5Gradient(*solidGrad);
             }
         }
-        printf("%zu\n",presetLibrary.gradients.size());
+        core::SvgDocument svgDocument;
+        for (auto g: presetLibrary.gradients) {
+            g.exportToSvg(svgDocument);
+        }
+        svgDocument.writeToFile("out.svg");
     }
 }
 

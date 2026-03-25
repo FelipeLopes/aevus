@@ -2,7 +2,10 @@
 #include "serializable.hpp"
 #include <algorithm>
 #include <cmath>
+#include <fstream>
 #include <memory>
+#include <regex>
+#include <stdexcept>
 #include <tinyxml2.h>
 
 using grad::Grd5SolidGradient;
@@ -277,10 +280,26 @@ void Gradient::acceptDeserializer(Deserializer& deserializer) {
     // TODO
 }
 
-void Gradient::exportToSvg(SvgDocument& svgDocument) {
-    auto linearGrad = svgDocument.newLinearGradientElement();
+void Gradient::exportToSvg(SvgDocument& svgDoc) {
+    auto linearGrad = svgDoc.newLinearGradientElement();
+    // HACK: tinyxml2 writes the attirbutes in the order they were set,
+    // meaning that if we write the id first, it will be written as the
+    // leftmost attribute in the final XML file. Although the order
+    // does not matter for functionalities, having ID's at the beginning
+    // is more readable. This id attribute will be overwritten by
+    // SvgDocument when it writes the XML, but setting it now
+    // avoids having the id attribute all the way to the right.
+    linearGrad->SetAttribute("id", "");
+
+    linearGrad->SetAttribute("data-name", title.c_str());
+    linearGrad->SetAttribute("gradientUnits", "objectBoundingBox");
+    linearGrad->SetAttribute("spreadMethod", "pad");
+    linearGrad->SetAttribute("x1", "0%");
+    linearGrad->SetAttribute("x2", "100%");
+    linearGrad->SetAttribute("y1", "0%");
+    linearGrad->SetAttribute("y2", "0%");
     for (auto colorStop: colorStops) {
-        auto stop = svgDocument.newStopElement();
+        auto stop = svgDoc.newStopElement();
         stop->SetAttribute("offset", colorStop.location);
 
         uint8_t r = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
@@ -294,7 +313,7 @@ void Gradient::exportToSvg(SvgDocument& svgDocument) {
         stop->SetAttribute("stop-opacity", 1.0);
         linearGrad->InsertEndChild(stop);
     }
-    svgDocument.addLinearGradient(linearGrad);
+    svgDoc.addLinearGradient(linearGrad);
 }
 
 SvgDocument::SvgDocument() {
@@ -305,7 +324,16 @@ SvgDocument::SvgDocument() {
 }
 
 void SvgDocument::addLinearGradient(XMLNode* node) {
-    svgRoot->InsertEndChild(node);
+    const char* buf = NULL;
+    auto element = node->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Invalid gradient node");
+    }
+    auto err = element->QueryStringAttribute("data-name", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Invalid gradient node");
+    }
+    gradients.insert({idForName(buf), element});
 }
 
 XMLElement* SvgDocument::newLinearGradientElement() {
@@ -316,5 +344,42 @@ XMLElement* SvgDocument::newStopElement() {
     return xmlDoc.NewElement("stop");
 }
 
+void SvgDocument::writeToFile(std::string filename) {
+    svgRoot->DeleteChildren();
+    populateRoot();
+    tinyxml2::XMLPrinter xmlPrinter;
+    xmlDoc.Print(&xmlPrinter);
+    std::ofstream fs(filename);
+    fs << xmlPrinter.CStr();
+    fs.clear();
+}
+
+std::string SvgDocument::idForName(std::string name) {
+    std::regex invalidChars("[^a-zA-Z0-9\\.-_]+");
+    return std::string("id_") + std::regex_replace(name, invalidChars, "_");
+}
+
+void SvgDocument::populateRoot() {
+    if (gradients.empty()) {
+        return;
+    }
+    auto it1 = gradients.begin();
+    it1->second->SetAttribute("id", it1->first.c_str());
+    svgRoot->InsertEndChild(it1->second);
+    auto it2 = std::next(it1);
+    int idx = 0;
+    while (it2 != gradients.end()) {
+        if (it2->first == it1->first) {
+            idx++;
+        } else {
+            idx = 0;
+        }
+        auto idStr = it2->first + (idx > 0 ? (std::string("_") + std::to_string(idx)) : "");
+        it2->second->SetAttribute("id", idStr.c_str());
+        svgRoot->InsertEndChild(it2->second);
+        it1++;
+        it2++;
+    }
+}
 
 }
