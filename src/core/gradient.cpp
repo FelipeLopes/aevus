@@ -3,9 +3,11 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <iomanip>
 #include <memory>
 #include <regex>
 #include <stdexcept>
+#include <string>
 #include <tinyxml2.h>
 
 using grad::Grd5SolidGradient;
@@ -252,30 +254,44 @@ Gradient::Gradient() { }
 
 Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.title.toString()) {
     colorStops.reserve(grd5Gradient.colorStops.size());
-    for (auto colorStop: grd5Gradient.colorStops) {
-        if (auto c = std::dynamic_pointer_cast<grad::Grd5RgbColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor(c->Rd / 255.0, c->Grn / 255.0, c->Bl / 255.0));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5HsvColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromHsv(c->H, c->Strt, c->Brgh));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5CmykColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromCmyk(c->Cyn, c->Mgnt, c->Ylw, c->Blck));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5LabColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromLab(c->Lmnc, c->A, c->B));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5GrayScaleColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(c->val / 255.0));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5ForegroundColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(1.0));
-        } else if (auto c = std::dynamic_pointer_cast<grad::Grd5BackgroundColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor::fromGrayscale(0.0));
+    auto prevStop = grd5Gradient.colorStops.at(0);
+    colorStops.emplace_back(prevStop.Lctn / 4096.0, getGradientColor(prevStop.color));
+    for (int i=1; i<grd5Gradient.colorStops.size(); i++) {
+        auto colorStop = grd5Gradient.colorStops.at(i);
+        auto midpoint = colorStop.Mdpn;
+        auto color = getGradientColor(colorStop.color);
+        if (midpoint != 50) {
+            auto prevColor = getGradientColor(prevStop.color);
+            double offset = (midpoint*prevStop.Lctn + (100-midpoint)*colorStop.Lctn) / 100.0;
+            auto midpointColor = GradientColor(0.5*(prevColor.r+color.r),0.5*(prevColor.g+color.g),0.5*(prevColor.b+color.b));
+            colorStops.emplace_back(offset / 4096.0, midpointColor);
         }
+        colorStops.emplace_back(colorStop.Lctn / 4096.0, color);
+        prevStop = colorStop;
     }
     opacityStops.reserve(grd5Gradient.opacityStops.size());
     for (auto opacityStop: grd5Gradient.opacityStops) {
         opacityStops.emplace_back(opacityStop.Lctn, opacityStop.Opct);
     }
 }
-
-
+GradientColor Gradient::getGradientColor(std::shared_ptr<grad::Grd5Color> color) {
+    if (auto c = std::dynamic_pointer_cast<grad::Grd5RgbColor>(color)) {
+        return GradientColor(c->Rd / 255.0, c->Grn / 255.0, c->Bl / 255.0);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5HsvColor>(color)) {
+        return GradientColor::fromHsv(c->H, c->Strt, c->Brgh);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5CmykColor>(color)) {
+        return GradientColor::fromCmyk(c->Cyn, c->Mgnt, c->Ylw, c->Blck);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5LabColor>(color)) {
+        return GradientColor::fromLab(c->Lmnc, c->A, c->B);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5GrayScaleColor>(color)) {
+        return GradientColor::fromGrayscale(c->val / 255.0);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5ForegroundColor>(color)) {
+        return GradientColor::fromGrayscale(1.0);
+    } else if (auto c = std::dynamic_pointer_cast<grad::Grd5BackgroundColor>(color)) {
+        return GradientColor::fromGrayscale(0.0);
+    }
+    throw std::invalid_argument("unknown GRD5 color");
+}
 
 void Gradient::acceptSerializer(Serializer& serializer) {
     // TODO
@@ -305,7 +321,7 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
     linearGrad->SetAttribute("y2", "0%");
     for (auto colorStop: colorStops) {
         auto stop = svgDoc.newStopElement();
-        stop->SetAttribute("offset", colorStop.location);
+        stop->SetAttribute("offset", SvgDocument::percentageString(colorStop.location).c_str());
 
         uint8_t r = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
         uint8_t g = lround(std::clamp(colorStop.color.g, 0.0, 1.0) * 255.0);
@@ -315,7 +331,7 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
             + std::to_string(b) + ")";
 
         stop->SetAttribute("stop-color", colorString.c_str());
-        stop->SetAttribute("stop-opacity", 1.0);
+        stop->SetAttribute("stop-opacity", SvgDocument::formattedDouble(1.0).c_str());
         linearGrad->InsertEndChild(stop);
     }
     svgDoc.addLinearGradient(linearGrad);
@@ -326,6 +342,26 @@ SvgDocument::SvgDocument() {
     svgRoot->SetAttribute("version", "1.1");
     svgRoot->SetAttribute("xmlns", "http://www.w3.org/2000/svg");
     xmlDoc.InsertEndChild(svgRoot);
+}
+
+std::string SvgDocument::percentageString(double p) {
+    std::stringstream buffer;
+    buffer<<std::setprecision(4)<<std::fixed<<(100.0*p)<<"%";
+    auto ans = buffer.str();
+    if (ans == "-0.0000%") {
+        ans = "0.0000%";
+    }
+    return ans;
+}
+
+std::string SvgDocument::formattedDouble(double d) {
+    std::stringstream buffer;
+    buffer<<std::setprecision(4)<<std::fixed<<d;
+    auto ans = buffer.str();
+    if (ans == "-0.0000") {
+        ans = "0.0000";
+    }
+    return ans;
 }
 
 void SvgDocument::addLinearGradient(XMLNode* node) {

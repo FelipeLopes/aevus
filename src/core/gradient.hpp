@@ -3,6 +3,7 @@
 #include "../grad/grd5_gradient.hpp"
 #include "serializable.hpp"
 #include <map>
+#include <memory>
 #include <tinyxml2.h>
 
 namespace core {
@@ -63,6 +64,8 @@ public:
     tinyxml2::XMLElement* newLinearGradientElement();
     tinyxml2::XMLElement* newStopElement();
     void flushAndWriteToFile(std::string filename);
+    static std::string percentageString(double p);
+    static std::string formattedDouble(double d);
 private:
     tinyxml2::XMLDocument xmlDoc;
     tinyxml2::XMLElement* svgRoot;
@@ -83,6 +86,8 @@ public:
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
     void exportToSvg(SvgDocument& svgDoc);
+private:
+    GradientColor getGradientColor(std::shared_ptr<grad::Grd5Color> color);
 };
 
 }
