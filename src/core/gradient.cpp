@@ -146,6 +146,7 @@ GradientColor GradientColor::fromCmyk(GradientColor::CmykCoordinates cmyk) {
     cmyk.c /= 100;
     cmyk.m /= 100;
     cmyk.y /= 100;
+    cmyk.k /= 100;
     color.r = (1-cmyk.c)*(1-cmyk.k);
     color.g = (1-cmyk.m)*(1-cmyk.k);
     color.b = (1-cmyk.y)*(1-cmyk.k);
