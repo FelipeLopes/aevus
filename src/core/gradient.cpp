@@ -253,7 +253,7 @@ Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.ti
     colorStops.reserve(grd5Gradient.colorStops.size());
     for (auto colorStop: grd5Gradient.colorStops) {
         if (auto c = std::dynamic_pointer_cast<grad::Grd5RgbColor>(colorStop.color)) {
-            colorStops.emplace_back(colorStop.Lctn, GradientColor(c->Rd, c->Grn, c->Bl));
+            colorStops.emplace_back(colorStop.Lctn, GradientColor(c->Rd / 255.0, c->Grn / 255.0, c->Bl / 255.0));
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5HsvColor>(colorStop.color)) {
             colorStops.emplace_back(colorStop.Lctn, GradientColor::fromHsv(c->H, c->Strt, c->Brgh));
         } else if (auto c = std::dynamic_pointer_cast<grad::Grd5CmykColor>(colorStop.color)) {
@@ -303,8 +303,8 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
         stop->SetAttribute("offset", colorStop.location);
 
         uint8_t r = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
-        uint8_t g = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
-        uint8_t b = lround(std::clamp(colorStop.color.r, 0.0, 1.0) * 255.0);
+        uint8_t g = lround(std::clamp(colorStop.color.g, 0.0, 1.0) * 255.0);
+        uint8_t b = lround(std::clamp(colorStop.color.b, 0.0, 1.0) * 255.0);
 
         std::string colorString = "rgb("+to_string(r)+ ", " + std::to_string(g) + ", "
             + std::to_string(b) + ")";
