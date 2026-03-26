@@ -2,6 +2,7 @@
 
 #include <boost/signals2.hpp>
 #include <boost/bind.hpp>
+#include <wx-3.2/wx/persist.h>
 #include <wxfb_frame.h>
 #include "color_model.hpp"
 #include "flame_model.hpp"
@@ -77,6 +78,13 @@ private:
     void onPaletteEditorSelected(wxCommandEvent& event) override;
 
     wxBitmap loadEmbeddedPNG(char* start, char* end);
+};
+
+class MyPersistenceManager: public wxPersistenceManager {
+public:
+    MyPersistenceManager() {
+        printf("config path: %s\n",GetConfig()->GetPath().ToStdString().c_str());
+    }
 };
 
 }

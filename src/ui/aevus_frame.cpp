@@ -1,6 +1,5 @@
 #include "aevus_frame.hpp"
 #include <memory>
-#include <wx-3.2/wx/event.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>

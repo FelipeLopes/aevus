@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <memory>
 #include <optional>
 #include <wx/app.h>
@@ -41,6 +42,7 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
+    setenv("GDK_BACKEND", "x11", true);
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();
     wxTheApp->OnRun();
