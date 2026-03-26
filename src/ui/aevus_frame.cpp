@@ -70,8 +70,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         }
         svgDocument.flushAndWriteToFile("out.svg");
     }
-
-    paletteFrame = new PaletteFrame(this, wxDefaultPosition, wxDefaultSize);
 }
 
 void AevusFrame::setupFlameView(FlameView *flameView) {
@@ -177,7 +175,12 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
 }
 
 void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
-    paletteFrame->Show(menuBar->IsChecked(ID_PALETTE_EDITOR));
+    if (menuBar->IsChecked(ID_PALETTE_EDITOR)) {
+        paletteFrame = new PaletteFrame(this, wxDefaultPosition, wxDefaultSize);
+        paletteFrame->Show(true);
+    } else {
+        paletteFrame->Close(true);
+    }
 }
  
 void AevusFrame::onPaletteEditorClosed() {

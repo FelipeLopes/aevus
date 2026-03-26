@@ -1,12 +1,14 @@
 #include "palette_frame.hpp"
 #include "aevus_frame.hpp"
+#include <wx/persist/toplevel.h>
 
 namespace ui {
 
 PaletteFrame::PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& size):
-    wxFrame(parent, wxID_ANY, "Gradient Editor", pos, size)
+    wxFrame(parent, wxID_ANY, "Palette Editor", pos, size)
 {
     this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( PaletteFrame::onClose ) );
+    wxPersistentRegisterAndRestore(this, "palette_editor");
 }
 
 PaletteFrame::~PaletteFrame() {
@@ -15,7 +17,7 @@ PaletteFrame::~PaletteFrame() {
 
 void PaletteFrame::onClose(wxCloseEvent& event) {
     dynamic_cast<AevusFrame*>(GetParent())->onPaletteEditorClosed();
-    Show(false);
+    event.Skip();
 }
 
 }
