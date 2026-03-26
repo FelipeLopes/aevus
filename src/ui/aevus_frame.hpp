@@ -7,6 +7,7 @@
 #include "flame_model.hpp"
 #include "flame_view.hpp"
 #include "frame_model.hpp"
+#include "palette_frame.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"
 #include "variation_model.hpp"
@@ -31,11 +32,14 @@ public:
     AevusFrame(wxDocManager* manager, clwrap::OpenCL* openCL, std::optional<std::string> filename);
     void setupFlameView(FlameView* flameView);
     wxCommandProcessor* getCommandProcessor();
+    void onPaletteEditorClosed();
 private:
     wxDocManager* docManager;
     clwrap::CLQueuedContext context;
     std::stringstream flameStream;
     render::Renderer renderer;
+
+    PaletteFrame* paletteFrame;
 
     FlameModel flameModel;
     TransformModel preTransformModel;
@@ -70,6 +74,7 @@ private:
     void onMouseMove(wxMouseEvent& event) override;
     void onMouseWheel(wxMouseEvent& event) override;
     void onActivate(wxActivateEvent& event) override;
+    void onPaletteEditorSelected(wxCommandEvent& event) override;
 
     wxBitmap loadEmbeddedPNG(char* start, char* end);
 };

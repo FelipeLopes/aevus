@@ -1,5 +1,6 @@
 #include "aevus_frame.hpp"
 #include <memory>
+#include <wx-3.2/wx/event.h>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
@@ -9,6 +10,7 @@
 #include "flame_view.hpp"
 #include "transform_model.hpp"
 #include "triangle_model.hpp"
+#include "wxfb_frame.h"
 
 using namespace boost::signals2;
 using boost::bind;
@@ -68,6 +70,8 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         }
         svgDocument.flushAndWriteToFile("out.svg");
     }
+
+    paletteFrame = new PaletteFrame(this, wxDefaultPosition, wxDefaultSize);
 }
 
 void AevusFrame::setupFlameView(FlameView *flameView) {
@@ -170,6 +174,14 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
             bind(&FlameView::handleFrameContent, flameView, _1)
         ));
     }
+}
+
+void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
+    paletteFrame->Show(menuBar->IsChecked(ID_PALETTE_EDITOR));
+}
+ 
+void AevusFrame::onPaletteEditorClosed() {
+    menuBar->Check(ID_PALETTE_EDITOR, false);
 }
 
 void AevusFrame::onUndo(wxCommandEvent& event) {
