@@ -1,5 +1,6 @@
 #pragma once
 
+#include "gradient_model.hpp"
 #include <wx/frame.h>
 
 namespace ui {
@@ -10,6 +11,7 @@ public:
     ~PaletteFrame();
 private:
     void onClose(wxCloseEvent& event);
+    wxObjectDataPtr<GradientModel> gradientModel;
 };
 
 }
