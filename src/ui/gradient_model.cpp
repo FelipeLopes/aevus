@@ -7,41 +7,12 @@
 
 namespace ui {
 
-GradientModel::GradientModel() {
-    mapping = {
-        {
-            "A", {
-                {"January", 31},
-                {"February", 28},
-                {"March", 31}
-            }
-        },
-        {
-            "B", {
-                {"April", 30},
-                {"May", 31},
-                {"June", 30}
-            }
-        },
-        {
-            "C", {
-                {"July", 31},
-                {"August", 31},
-                {"September", 30}
-            }
-        },
-        {
-            "D", {
-                {"October", 31},
-                {"November", 30},
-                {"December", 31}
-            }
-        }
-    };
+GradientModel::GradientModel(core::PresetLibrary* presetLibrary) {
+    mapping["Presets"] = presetLibrary;
     for (auto it=mapping.begin(); it != mapping.end(); it++) {
         folders.emplace_back(std::make_unique<GradientContainerNode>(nullptr, it->first));
-        for (int i=0; i<it->second.size(); i++) {
-            folders.back()->addEntityChild(&it->second[i]);
+        for (int i=0; i<it->second->gradients.size(); i++) {
+            folders.back()->addLeaf(&it->second->gradients[i]);
         }
     }
 }
@@ -85,10 +56,10 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
             case 1: /* do nothing */ break;
             default: wxLogError("GradientModel::GetValue wrong column %d", col);
         }
-    } else if (auto leaf = dynamic_cast<GradientEntityNode*>(node)) {
+    } else if (auto leaf = dynamic_cast<GradientLeafNode*>(node)) {
         switch (col) {
-            case 0: variant << wxDataViewIconText(leaf->entity->title); break;
-            case 1: variant = (long)leaf->entity->value; break;
+            case 0: variant << wxDataViewIconText(leaf->gradient->title); break;
+            case 1: variant = 67L; break;
             default: wxLogError("GradientModel::GetValue wrong column %d", col);
         }
     } else {
@@ -113,17 +84,17 @@ bool GradientModel::SetValue(const wxVariant& variant, const wxDataViewItem& ite
                 wxLogError("GradientModel::SetValue wrong column %d", col);
                 return false;
         }
-    } else if (auto leaf = dynamic_cast<GradientEntityNode*>(node)) {
+    } else if (auto leaf = dynamic_cast<GradientLeafNode*>(node)) {
         switch (col) {
             case 0: {
                 wxDataViewIconText iconText;
                 iconText << variant;
-                leaf->entity->title = iconText.GetText();
+                leaf->gradient->title = iconText.GetText();
                 return true;
             }
             case 1:
-                leaf->entity->value = variant.GetLong();
-                return true;
+                // leaf->entity->value = variant.GetLong();
+                return false;
             default:
                 wxLogError("GradientModel::SetValue wrong column %d", col);
                 return false;

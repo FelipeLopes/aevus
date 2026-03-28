@@ -173,7 +173,7 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
 
 void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
     if (menuBar->IsChecked(ID_PALETTE_EDITOR)) {
-        paletteFrame = new PaletteFrame(this, wxDefaultPosition, wxDefaultSize);
+        paletteFrame = new PaletteFrame(this, &presetLibrary);
         paletteFrame->Show(true);
     } else {
         paletteFrame->Close(true);

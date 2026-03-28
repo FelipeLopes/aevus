@@ -3,13 +3,10 @@
 #include <map>
 #include <memory>
 #include <wx/dataview.h>
+#include "../core/gradient.hpp"
+#include "../core/preset_library.hpp"
 
 namespace ui {
-
-struct Entity {
-    std::string title;
-    int value;
-};
 
 struct GradientModelNode {
     GradientModelNode(GradientModelNode* parent_): parent(parent_){ }
@@ -20,32 +17,32 @@ struct GradientModelNode {
     GradientModelNode* parent;
 };
 
-struct GradientEntityNode : public GradientModelNode {
-    GradientEntityNode(GradientModelNode* parent, Entity* entity_): GradientModelNode(parent), entity(entity_) { }
+struct GradientLeafNode : public GradientModelNode {
+    GradientLeafNode(GradientModelNode* parent, core::Gradient* gradient_): GradientModelNode(parent), gradient(gradient_) { }
     virtual bool isContainer() const override { return false; }
-    Entity* entity;
+    core::Gradient* gradient;
 };
 
 struct GradientContainerNode: public GradientModelNode {
     GradientContainerNode(GradientModelNode* parent, std::string name_): GradientModelNode(parent), name(name_) { }
     std::string name;
-    std::vector<std::unique_ptr<GradientEntityNode>> children;
+    std::vector<std::unique_ptr<GradientLeafNode>> children;
     virtual bool isContainer() const override { return true; }
-    void addEntityChild(Entity* e) {
-        children.emplace_back(std::make_unique<GradientEntityNode>(this, e));
+    void addLeaf(core::Gradient* g) {
+        children.emplace_back(std::make_unique<GradientLeafNode>(this, g));
     }
 };
 
 class GradientModel: public wxDataViewModel {
 public:
-    GradientModel();
+    GradientModel(core::PresetLibrary* presetLibrary);
     bool IsContainer(const wxDataViewItem& item) const override;
     wxDataViewItem GetParent(const wxDataViewItem& item) const override;
     unsigned GetChildren(const wxDataViewItem& item, wxDataViewItemArray& children) const override;
     void GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const override;
     bool SetValue(const wxVariant& variant, const wxDataViewItem& item, unsigned col) override;
 private:
-    std::map<std::string, std::vector<Entity>> mapping;
+    std::map<std::string, core::PresetLibrary*> mapping;
     std::vector<std::unique_ptr<GradientContainerNode>> folders;
 };
 

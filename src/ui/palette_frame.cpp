@@ -1,6 +1,7 @@
 #include "palette_frame.hpp"
 #include "aevus_frame.hpp"
 #include "gradient_model.hpp"
+#include <wx-3.2/wx/gdicmn.h>
 #include <wx/string.h>
 #include <wx/dataview.h>
 #include <wx/persist/toplevel.h>
@@ -8,8 +9,8 @@
 
 namespace ui {
 
-PaletteFrame::PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& size):
-    wxFrame(parent, wxID_ANY, "Palette Editor", pos, size)
+PaletteFrame::PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary):
+    wxFrame(parent, wxID_ANY, "Palette Editor", wxDefaultPosition, wxDefaultSize)
 {
     this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( PaletteFrame::onClose ) );
     wxPersistentRegisterAndRestore(this, "palette_editor");
@@ -19,7 +20,7 @@ PaletteFrame::PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& s
 
     SetSizer(paletteSizer);
 
-    gradientModel = new GradientModel();
+    gradientModel = new GradientModel(presetLibrary);
 
     gradientDataViewCtrl->AssociateModel(gradientModel.get());
     gradientDataViewCtrl->AppendColumn(

@@ -7,7 +7,7 @@ namespace ui {
 
 class PaletteFrame: public wxFrame {
 public:
-    PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& size);
+    PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary);
     ~PaletteFrame();
 private:
     void onClose(wxCloseEvent& event);
