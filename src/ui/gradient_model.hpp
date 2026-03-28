@@ -16,6 +16,7 @@ struct GradientModelNode {
     GradientModelNode(): parent(NULL){ }
     virtual ~GradientModelNode() = default;
     virtual bool isContainer() const = 0;
+    bool expanded = false;
     GradientModelNode* parent;
 };
 
@@ -46,6 +47,15 @@ public:
 private:
     std::map<std::string, std::vector<Entity>> mapping;
     std::vector<std::unique_ptr<GradientContainerNode>> folders;
+};
+
+class GradientDataViewCtrl: public wxDataViewCtrl {
+public:
+    GradientDataViewCtrl(wxWindow* parent);
+    ~GradientDataViewCtrl();
+private:
+    void onExpanded(wxDataViewEvent& event);
+    void onCollapsed(wxDataViewEvent& event);
 };
 
 }

@@ -14,7 +14,7 @@ PaletteFrame::PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& s
     this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( PaletteFrame::onClose ) );
     wxPersistentRegisterAndRestore(this, "palette_editor");
     wxBoxSizer* paletteSizer = new wxBoxSizer(wxHORIZONTAL);
-    wxDataViewCtrl* gradientDataViewCtrl = new wxDataViewCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
+    auto gradientDataViewCtrl = new GradientDataViewCtrl(this);
     paletteSizer->Add(gradientDataViewCtrl, 1, wxALL | wxEXPAND, 5);
 
     SetSizer(paletteSizer);
@@ -25,7 +25,7 @@ PaletteFrame::PaletteFrame(wxWindow* parent, const wxPoint& pos, const wxSize& s
     gradientDataViewCtrl->AppendColumn(
         new wxDataViewColumn(
             "title",
-            new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE),
+            new wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE),
             0,
             FromDIP(200),
             wxALIGN_LEFT,
