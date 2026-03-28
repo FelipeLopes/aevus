@@ -1,10 +1,14 @@
 #include "gradient_model.hpp"
+#include <wx/mstream.h>
 #include <wx/artprov.h>
 #include <wx/dataview.h>
 #include <wx/variant.h>
 #include <wx/debug.h>
 #include <wx/log.h>
 #include <sstream>
+#include <lunasvg.h>
+
+using lunasvg::Document;
 
 namespace ui {
 
@@ -47,6 +51,11 @@ unsigned GradientModel::GetChildren(const wxDataViewItem& item, wxDataViewItemAr
     return 0;
 }
 
+static void pngCallback(void* closure, void* data, int size) {
+    GradientModel* gradientModel = static_cast<GradientModel*>(closure);
+    gradientModel->auxBitmap = wxBitmap::NewFromPNGData(data, size);
+}
+
 void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const {
     wxASSERT(item.IsOk());
     GradientModelNode* node = static_cast<GradientModelNode*>(item.GetID());
@@ -65,9 +74,9 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
                 core::SvgDocument svgDoc;
                 leaf->gradient->generateDisplayImage(svgDoc);
                 svgDoc.writeToStream(buf);
-                auto bundle = wxBitmapBundle::FromSVG(buf.str().c_str(), wxSize(1000,1000));
-                //auto bitMap = bundle.GetBitmap(wxSize(1000,1000));
-                //printf("%d\n",bundle.IsOk());
+                auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(300, 150);
+                bitmap.writeToPng(pngCallback, (void*)this);
+                auto bundle = wxBitmapBundle(auxBitmap);
                 variant << bundle;
                 break;
             }

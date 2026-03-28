@@ -1,5 +1,6 @@
 #pragma once
 
+#include <lunasvg/lunasvg.h>
 #include <map>
 #include <memory>
 #include <wx/dataview.h>
@@ -41,6 +42,7 @@ public:
     unsigned GetChildren(const wxDataViewItem& item, wxDataViewItemArray& children) const override;
     void GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const override;
     bool SetValue(const wxVariant& variant, const wxDataViewItem& item, unsigned col) override;
+    wxBitmap auxBitmap;
 private:
     std::map<std::string, core::PresetLibrary*> mapping;
     std::vector<std::unique_ptr<GradientContainerNode>> folders;
