@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <memory>
+#include <optional>
 #include <regex>
 #include <stdexcept>
 #include <string>
@@ -314,7 +315,7 @@ void Gradient::acceptDeserializer(Deserializer& deserializer) {
     // TODO
 }
 
-void Gradient::exportToSvg(SvgDocument& svgDoc) {
+XMLElement* Gradient::getSvgElementWithoutId(SvgDocument& svgDoc) {
     auto linearGrad = svgDoc.newLinearGradientElement();
     // HACK: tinyxml2 writes the attirbutes in the order they were set,
     // meaning that if we write the id first, it will be written as the
@@ -341,16 +342,7 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
         stopLocations.insert(opacityStops[i].location);
     }
 
-    auto it = stopLocations.begin();
-
-    if (fabs((*it)) > EPS) {
-        auto firstColor = colorStops[0].color;
-        auto firstOp = opacityStops[0].opacity;
-        auto stop = getStopNode(0.0, firstColor, firstOp, svgDoc);
-        linearGrad->InsertEndChild(stop);
-    }
-
-    for(; it != stopLocations.end(); it++) {
+    for(auto it = stopLocations.begin(); it != stopLocations.end(); it++) {
         double x = (*it);
         auto color = colorAtLeft(x);
         double opacity = opacityAtLeft(x);
@@ -364,15 +356,7 @@ void Gradient::exportToSvg(SvgDocument& svgDoc) {
         }
     }
 
-    it = std::prev(it);
-    if (fabs((*it)-1) > EPS) {
-        auto lastColor = colorStops[0].color;
-        auto lastOp = opacityStops[0].opacity;
-        auto stop = getStopNode(1.0, lastColor, lastOp, svgDoc);
-        linearGrad->InsertEndChild(stop);
-    }
-
-    svgDoc.addLinearGradient(linearGrad);
+    return linearGrad;
 }
 
 tinyxml2::XMLNode* Gradient::getStopNode(double location, GradientColor color, double opacity, SvgDocument& svgDoc) {
@@ -500,6 +484,14 @@ double Gradient::opacityAtSegment(double x, int begin) {
     return c1*x2 + c2*x1;
 }
 
+void Gradient::generateDisplayImage(SvgDocument& svgDoc) {
+    auto el = getSvgElementWithoutId(svgDoc);
+    svgDoc.addLinearGradient(el);
+    svgDoc.fillGradientIds();
+    std::string id = svgDoc.getGradientId(0).value();
+    svgDoc.addRect(id);
+}
+
 SvgDocument::SvgDocument() {
     svgRoot = xmlDoc.NewElement("svg");
     svgRoot->SetAttribute("version", "1.1");
@@ -543,6 +535,14 @@ void SvgDocument::addLinearGradient(XMLNode* node) {
     gradientVector.push_back(element);
 }
 
+void SvgDocument::addRect(std::string fillId) {
+    auto el = xmlDoc.NewElement("rect");
+    el->SetAttribute("fill", (std::string("url('#")+fillId+"')").c_str());
+    el->SetAttribute("width", "100%");
+    el->SetAttribute("height", "100%");
+    svgRoot->InsertEndChild(el);
+}
+
 XMLElement* SvgDocument::newLinearGradientElement() {
     return xmlDoc.NewElement("linearGradient");
 }
@@ -551,16 +551,22 @@ XMLElement* SvgDocument::newStopElement() {
     return xmlDoc.NewElement("stop");
 }
 
-void SvgDocument::flushAndWriteToFile(std::string filename) {
-    defsRoot->DeleteChildren();
-    populateDefs();
+void SvgDocument::writeToFile(std::string filename) {
     tinyxml2::XMLPrinter xmlPrinter;
     xmlDoc.Print(&xmlPrinter);
     std::ofstream fs(filename);
     fs << xmlPrinter.CStr();
     fs.clear();
-    gradientMap.clear();
+}
+
+void SvgDocument::clear() {
+    defsRoot->DeleteChildren();
     gradientVector.clear();
+    gradientMap.clear();
+    auto rectNode = defsRoot->NextSibling();
+    if (rectNode != NULL) {
+        svgRoot->DeleteChild(rectNode);
+    }
 }
 
 std::string SvgDocument::idForName(std::string name) {
@@ -568,7 +574,7 @@ std::string SvgDocument::idForName(std::string name) {
     return std::string("id_") + std::regex_replace(name, invalidChars, "_");
 }
 
-void SvgDocument::populateDefs() {
+void SvgDocument::fillGradientIds() {
     if (gradientMap.empty()) {
         return;
     }
@@ -590,6 +596,31 @@ void SvgDocument::populateDefs() {
     for (auto g: gradientVector) {
         defsRoot->InsertEndChild(g);
     }
+}
+
+std::optional<std::string> SvgDocument::getGradientId(int idx) {
+    if (idx < 0) {
+        return std::nullopt;
+    }
+    int i = 0;
+    XMLNode* node = defsRoot->FirstChild();
+    while (i < idx && node != NULL) {
+        i++;
+        node = node->NextSibling();
+    }
+    if (node == NULL) {
+        return std::nullopt;
+    }
+    XMLElement* element = node->ToElement();
+    if (element == NULL) {
+        throw std::invalid_argument("Invalid gradient node");
+    }
+    const char* buf = NULL;
+    auto err = element->QueryStringAttribute("id", &buf);
+    if (err != tinyxml2::XML_SUCCESS) {
+        throw std::invalid_argument("Invalid gradient node");
+    }
+    return buf;
 }
 
 }

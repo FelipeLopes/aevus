@@ -13,4 +13,12 @@ bool PresetLibrary::addGrd5Gradient(const Grd5SolidGradient& grd5Gradient) {
     return true;
 }
 
+void PresetLibrary::exportToSvg(SvgDocument& svgDoc) {
+    for (auto grad: gradients) {
+        auto el = grad.getSvgElementWithoutId(svgDoc);
+        svgDoc.addLinearGradient(el);
+    }
+    svgDoc.fillGradientIds();
+}
+
 }

@@ -9,6 +9,7 @@ public:
     PresetLibrary();
     std::vector<Gradient> gradients;
     bool addGrd5Gradient(const grad::Grd5SolidGradient& grd5Gradient);
+    void exportToSvg(SvgDocument& svgDoc);
 };
 
 }

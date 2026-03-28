@@ -4,6 +4,7 @@
 #include "serializable.hpp"
 #include <map>
 #include <memory>
+#include <optional>
 #include <tinyxml2.h>
 
 namespace core {
@@ -68,7 +69,11 @@ public:
     void addLinearGradient(tinyxml2::XMLNode* node);
     tinyxml2::XMLElement* newLinearGradientElement();
     tinyxml2::XMLElement* newStopElement();
-    void flushAndWriteToFile(std::string filename);
+    void fillGradientIds();
+    void addRect(std::string fillId);
+    void clear();
+    std::optional<std::string> getGradientId(int idx);
+    void writeToFile(std::string filename);
     static std::string percentageString(double p);
     static std::string formattedDouble(double d);
 private:
@@ -78,7 +83,6 @@ private:
     std::multimap<std::string, tinyxml2::XMLElement*> gradientMap;
     std::vector<tinyxml2::XMLElement*> gradientVector;
     std::string idForName(std::string name);
-    void populateDefs();
 };
 
 class Gradient: public Serializable {
@@ -91,7 +95,8 @@ public:
     std::vector<ColorStop> colorStops;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
-    void exportToSvg(SvgDocument& svgDoc);
+    tinyxml2::XMLElement* getSvgElementWithoutId(SvgDocument& svgDoc);
+    void generateDisplayImage(SvgDocument& svgDoc);
 private:
     GradientColor getGradientColor(std::shared_ptr<grad::Grd5Color> color);
     bool hasMultipleStops(double x);

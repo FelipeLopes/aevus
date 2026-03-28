@@ -64,10 +64,8 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
             }
         }
         core::SvgDocument svgDocument;
-        for (auto g: presetLibrary.gradients) {
-            g.exportToSvg(svgDocument);
-        }
-        svgDocument.flushAndWriteToFile("out.svg");
+        presetLibrary.gradients[0].generateDisplayImage(svgDocument);
+        svgDocument.writeToFile("out.svg");
     }
 }
 
