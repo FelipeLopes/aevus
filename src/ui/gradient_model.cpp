@@ -4,6 +4,7 @@
 #include <wx/variant.h>
 #include <wx/debug.h>
 #include <wx/log.h>
+#include <sstream>
 
 namespace ui {
 
@@ -59,7 +60,17 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
     } else if (auto leaf = dynamic_cast<GradientLeafNode*>(node)) {
         switch (col) {
             case 0: variant << wxDataViewIconText(leaf->gradient->title); break;
-            case 1: variant = 67L; break;
+            case 1: {
+                std::stringstream buf;
+                core::SvgDocument svgDoc;
+                leaf->gradient->generateDisplayImage(svgDoc);
+                svgDoc.writeToStream(buf);
+                auto bundle = wxBitmapBundle::FromSVG(buf.str().c_str(), wxSize(1000,1000));
+                //auto bitMap = bundle.GetBitmap(wxSize(1000,1000));
+                //printf("%d\n",bundle.IsOk());
+                variant << bundle;
+                break;
+            }
             default: wxLogError("GradientModel::GetValue wrong column %d", col);
         }
     } else {

@@ -2,6 +2,15 @@ load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
 load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 cc_library(
+    name = "lunasvg",
+    deps = [
+        "@local_hdrs//:lunasvg",
+        "@local_libs//:lunasvg",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "tinyxml2",
     deps = [
         "@hdrs//:tinyxml2",

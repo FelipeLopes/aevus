@@ -4,6 +4,7 @@ cc_library(
     name = "aevus",
     srcs = ["aevus.cpp"],
     deps = [
+        "//:lunasvg",
         "//src/ui:ui",
     ],
     visibility = ["//visibility:public"],

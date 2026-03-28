@@ -36,7 +36,7 @@ PaletteFrame::PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary)
     gradientDataViewCtrl->AppendColumn(
         new wxDataViewColumn(
             "value",
-            new wxDataViewTextRenderer("long", wxDATAVIEW_CELL_EDITABLE ),
+            new wxDataViewBitmapRenderer("wxBitmapBundle", wxDATAVIEW_CELL_EDITABLE ),
             1,
             FromDIP(100),
             wxALIGN_LEFT,

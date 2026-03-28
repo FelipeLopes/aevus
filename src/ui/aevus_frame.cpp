@@ -1,4 +1,5 @@
 #include "aevus_frame.hpp"
+#include <fstream>
 #include <memory>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
@@ -65,7 +66,8 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
         }
         core::SvgDocument svgDocument;
         presetLibrary.gradients[0].generateDisplayImage(svgDocument);
-        svgDocument.writeToFile("out.svg");
+        std::ofstream fs("out.svg");
+        svgDocument.writeToStream(fs);
     }
 }
 

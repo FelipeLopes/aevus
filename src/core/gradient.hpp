@@ -73,7 +73,8 @@ public:
     void addRect(std::string fillId);
     void clear();
     std::optional<std::string> getGradientId(int idx);
-    void writeToFile(std::string filename);
+    void writeToStream(std::ostream& stream);
+    void setSize(int width, int height);
     static std::string percentageString(double p);
     static std::string formattedDouble(double d);
 private:

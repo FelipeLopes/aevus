@@ -10,9 +10,12 @@
 #include "ui/aevus_frame.hpp"
 #include "ui/flame_document.hpp"
 #include "ui/flame_view.hpp"
+#include <lunasvg.h>
 
 using std::optional;
 using std::string;
+
+using namespace lunasvg;
 
 class Aevus: public wxApp {
 public:
@@ -42,6 +45,13 @@ bool Aevus::OnInit() {
 wxIMPLEMENT_APP_NO_MAIN(Aevus);
 
 int main(int argc, char* argv[]) {
+    auto document = Document::loadFromFile("out.svg");
+    if(document == nullptr)
+        return -1;
+    auto bitmap = document->renderToBitmap();
+    if(bitmap.isNull())
+        return -1;
+    bitmap.writeToPng("grad.png");
     setenv("GDK_BACKEND", "x11", true);
     wxEntryStart(argc, argv);
     wxTheApp->CallOnInit();

@@ -5,10 +5,9 @@ Aevus is a highly experimental fractal flame editor.
 At the moment it has basic custom libraries for XML serialization and OpenCL kernel execution.
 Aevus can read and write flames in an Apophysis compatible XML format, and pass the parameters
 to an OpenCL kernel, which performs the chaos game iterations and does tone mapping. It can also
-export the resulting image in PAM format.
+export the resulting image in PAM format. Current development is focused on palette UI.
 
-The code is currently very basic and has no support for advanced features like gamma correction
-and density filtering. However, Aevus uses a different technique for coloring which, unlike other
+The code currently does not support all transforms yet. However, Aevus uses a different technique for coloring which, unlike other
 renderers like Flam3, does not suffer from clipping issues in color channels. As a result, color information
 is preserved better, and flames are not colored close to white at lower values of saturation,
 as shown in the example below:
@@ -42,6 +41,8 @@ sudo apt install ocl-icd-opencl-dev libboost-all-dev libtinyxml2-dev libwxgtk3.2
 
 The version of wxWidgets must be 3.2, if your version of Ubuntu does not have that package available yet, you can download the DEB file from the newer repositories and install it directly with dpkg.
 Aevus uses wxformbuilder for code generation, and it requires an X server even when running in CLI mode, so we also use Xvfb instead of a real X server to provide more isolation for code generation.
+
+Aevus also depends on LunaSVG for rendering vector gradients in the UI. At the moment, there's no DEB package for Ubuntu. We recommend following the instructions on the repo https://github.com/sammycage/lunasvg to install from source in the /usr/local directory.
 
 On the aevus folder, run bazel to build the project:
 

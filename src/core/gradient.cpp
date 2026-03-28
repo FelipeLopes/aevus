@@ -2,7 +2,6 @@
 #include "serializable.hpp"
 #include <algorithm>
 #include <cmath>
-#include <fstream>
 #include <iomanip>
 #include <memory>
 #include <optional>
@@ -543,6 +542,11 @@ void SvgDocument::addRect(std::string fillId) {
     svgRoot->InsertEndChild(el);
 }
 
+void SvgDocument::setSize(int width, int height) {
+    svgRoot->SetAttribute("width", width);
+    svgRoot->SetAttribute("height", height);
+}
+
 XMLElement* SvgDocument::newLinearGradientElement() {
     return xmlDoc.NewElement("linearGradient");
 }
@@ -551,12 +555,11 @@ XMLElement* SvgDocument::newStopElement() {
     return xmlDoc.NewElement("stop");
 }
 
-void SvgDocument::writeToFile(std::string filename) {
+void SvgDocument::writeToStream(std::ostream& stream) {
     tinyxml2::XMLPrinter xmlPrinter;
     xmlDoc.Print(&xmlPrinter);
-    std::ofstream fs(filename);
-    fs << xmlPrinter.CStr();
-    fs.clear();
+    stream << xmlPrinter.CStr();
+    stream.clear();
 }
 
 void SvgDocument::clear() {
