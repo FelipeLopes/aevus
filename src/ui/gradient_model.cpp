@@ -1,4 +1,5 @@
 #include "gradient_model.hpp"
+#include <wx-3.2/wx/bmpbndl.h>
 #include <wx/mstream.h>
 #include <wx/artprov.h>
 #include <wx/dataview.h>
@@ -52,8 +53,8 @@ unsigned GradientModel::GetChildren(const wxDataViewItem& item, wxDataViewItemAr
 }
 
 static void pngCallback(void* closure, void* data, int size) {
-    GradientModel* gradientModel = static_cast<GradientModel*>(closure);
-    gradientModel->auxBitmap = wxBitmap::NewFromPNGData(data, size);
+    auto lunaSvgClosure = static_cast<GradientModel::LunaSvgClosure*>(closure);
+    lunaSvgClosure->gradientModel->nodeImage[lunaSvgClosure->renderNode] = wxBitmap::NewFromPNGData(data, size);
 }
 
 void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const {
@@ -74,10 +75,17 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
                 core::SvgDocument svgDoc;
                 leaf->gradient->generateDisplayImage(svgDoc);
                 svgDoc.writeToStream(buf);
-                auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(300, 150);
-                bitmap.writeToPng(pngCallback, (void*)this);
-                auto bundle = wxBitmapBundle(auxBitmap);
-                variant << bundle;
+                auto it = nodeImage.find(leaf);
+                if (it == nodeImage.end()) {
+                    auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(300, 150);
+                    LunaSvgClosure closure;
+                    closure.gradientModel = const_cast<GradientModel*>(this);
+                    closure.renderNode = leaf;
+                    bitmap.writeToPng(pngCallback, (void*)&closure);
+                    it = nodeImage.find(leaf);
+                    wxASSERT(it != nodeImage.end());
+                }
+                variant << wxBitmapBundle(it->second);
                 break;
             }
             default: wxLogError("GradientModel::GetValue wrong column %d", col);

@@ -42,7 +42,11 @@ public:
     unsigned GetChildren(const wxDataViewItem& item, wxDataViewItemArray& children) const override;
     void GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const override;
     bool SetValue(const wxVariant& variant, const wxDataViewItem& item, unsigned col) override;
-    wxBitmap auxBitmap;
+    std::map<void*, wxBitmap> nodeImage;
+    struct LunaSvgClosure {
+        GradientModel* gradientModel;
+        GradientModelNode* renderNode;
+    } closure;
 private:
     std::map<std::string, core::PresetLibrary*> mapping;
     std::vector<std::unique_ptr<GradientContainerNode>> folders;
