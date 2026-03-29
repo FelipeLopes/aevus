@@ -64,10 +64,6 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
                 presetLibrary.addGrd5Gradient(*solidGrad);
             }
         }
-        core::SvgDocument svgDocument;
-        presetLibrary.gradients[0].generateDisplayImage(svgDocument);
-        std::ofstream fs("out.svg");
-        svgDocument.writeToStream(fs);
     }
 }
 
