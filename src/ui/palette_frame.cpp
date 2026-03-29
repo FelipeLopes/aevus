@@ -20,9 +20,6 @@ PaletteFrame::PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary)
 
     SetSizer(paletteSizer);
 
-    gradientModel = new GradientModel(presetLibrary);
-
-    gradientDataViewCtrl->AssociateModel(gradientModel.get());
     gradientDataViewCtrl->AppendColumn(
         new wxDataViewColumn(
             "title",
@@ -33,16 +30,18 @@ PaletteFrame::PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary)
             wxDATAVIEW_COL_RESIZABLE
         )
     );
-    gradientDataViewCtrl->AppendColumn(
-        new wxDataViewColumn(
-            "value",
-            new wxDataViewBitmapRenderer("wxBitmapBundle", wxDATAVIEW_CELL_EDITABLE ),
-            1,
-            FromDIP(100),
-            wxALIGN_LEFT,
-            wxDATAVIEW_COL_RESIZABLE
-        )
+    auto bitmapColumn = new wxDataViewColumn(
+        "value",
+        new wxDataViewBitmapRenderer("wxBitmapBundle", wxDATAVIEW_CELL_EDITABLE ),
+        1,
+        FromDIP(100),
+        wxALIGN_LEFT,
+        wxDATAVIEW_COL_RESIZABLE
     );
+    gradientDataViewCtrl->AppendColumn(bitmapColumn);
+
+    gradientModel = new GradientModel(presetLibrary, bitmapColumn);
+    gradientDataViewCtrl->AssociateModel(gradientModel.get());
 }
 
 PaletteFrame::~PaletteFrame() {

@@ -1,5 +1,5 @@
 #include "gradient_model.hpp"
-#include <wx-3.2/wx/bmpbndl.h>
+#include <wx/bmpbndl.h>
 #include <wx/mstream.h>
 #include <wx/artprov.h>
 #include <wx/dataview.h>
@@ -13,7 +13,9 @@ using lunasvg::Document;
 
 namespace ui {
 
-GradientModel::GradientModel(core::PresetLibrary* presetLibrary) {
+GradientModel::GradientModel(core::PresetLibrary* presetLibrary, wxDataViewColumn* bitmapColumn_):
+    bitmapColumn(bitmapColumn_)
+{
     mapping["Presets"] = presetLibrary;
     for (auto it=mapping.begin(); it != mapping.end(); it++) {
         folders.emplace_back(std::make_unique<GradientContainerNode>(nullptr, it->first));
@@ -75,9 +77,10 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
                 core::SvgDocument svgDoc;
                 leaf->gradient->generateDisplayImage(svgDoc);
                 svgDoc.writeToStream(buf);
+                auto imageWidth = std::max(bitmapColumn->GetWidth()-20, 256);
                 auto it = nodeImage.find(leaf);
-                if (it == nodeImage.end()) {
-                    auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(300, 150);
+                if (it == nodeImage.end() || it->second.GetSize().GetWidth() != imageWidth) {
+                    auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(imageWidth, 20);
                     LunaSvgClosure closure;
                     closure.gradientModel = const_cast<GradientModel*>(this);
                     closure.renderNode = leaf;

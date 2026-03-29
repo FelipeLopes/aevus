@@ -36,7 +36,7 @@ struct GradientContainerNode: public GradientModelNode {
 
 class GradientModel: public wxDataViewModel {
 public:
-    GradientModel(core::PresetLibrary* presetLibrary);
+    GradientModel(core::PresetLibrary* presetLibrary, wxDataViewColumn* bitmapColumn);
     bool IsContainer(const wxDataViewItem& item) const override;
     wxDataViewItem GetParent(const wxDataViewItem& item) const override;
     unsigned GetChildren(const wxDataViewItem& item, wxDataViewItemArray& children) const override;
@@ -48,6 +48,7 @@ public:
         GradientModelNode* renderNode;
     } closure;
 private:
+    wxDataViewColumn* bitmapColumn;
     std::map<std::string, core::PresetLibrary*> mapping;
     std::vector<std::unique_ptr<GradientContainerNode>> folders;
 };
