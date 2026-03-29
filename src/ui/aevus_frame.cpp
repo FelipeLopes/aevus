@@ -1,5 +1,4 @@
 #include "aevus_frame.hpp"
-#include <fstream>
 #include <memory>
 #include <wx/gdicmn.h>
 #include <wx/filedlg.h>
