@@ -497,14 +497,7 @@ void Gradient::renderPNG(int width, int height, std::vector<uint8_t>& out) {
     core::SvgDocument svgDoc;
     generateDisplayImage(svgDoc);
     svgDoc.writeToStream(buf);
-    auto bitmap = lunasvg::Document::loadFromData(buf.str().c_str())->renderToBitmap(width, height);
-    LunaSvgClosure closure(&out);
-    bitmap.writeToPng(lunaSvgCallback, (void*)&closure);
-}
-
-void Gradient::lunaSvgCallback(void* closure, void* data, int size) {
-    uint8_t* bytesData = (uint8_t*)data;
-    static_cast<LunaSvgClosure*>(closure)->v->assign(bytesData, bytesData+size);
+    SvgDocument::renderStringToPNG(buf.str().c_str(), width, height, out);
 }
 
 SvgDocument::SvgDocument() {
@@ -640,6 +633,17 @@ std::optional<std::string> SvgDocument::getGradientId(int idx) {
         throw std::invalid_argument("Invalid gradient node");
     }
     return buf;
+}
+
+void SvgDocument::renderStringToPNG(const char* str, int width, int height, std::vector<uint8_t>& out) {
+    auto bitmap = lunasvg::Document::loadFromData(str)->renderToBitmap(width, height);
+    LunaSvgClosure closure(&out);
+    bitmap.writeToPng(lunaSvgCallback, (void*)&closure);
+}
+
+void SvgDocument::lunaSvgCallback(void* closure, void* data, int size) {
+    uint8_t* bytesData = (uint8_t*)data;
+    static_cast<LunaSvgClosure*>(closure)->v->assign(bytesData, bytesData+size);
 }
 
 }

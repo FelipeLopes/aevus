@@ -2,7 +2,6 @@
 
 #include <wx/variant.h>
 #include <wx/dataview.h>
-#include "../core/flame.hpp"
 
 namespace ui {
 

@@ -77,7 +77,13 @@ public:
     void setSize(int width, int height);
     static std::string percentageString(double p);
     static std::string formattedDouble(double d);
+    static void renderStringToPNG(const char* str, int width, int height, std::vector<uint8_t>& out);
 private:
+    static void lunaSvgCallback(void* closure, void* data, int size);
+    struct LunaSvgClosure {
+        LunaSvgClosure(std::vector<uint8_t>* v_): v(v_) { }
+        std::vector<uint8_t>* v;
+    };
     tinyxml2::XMLDocument xmlDoc;
     tinyxml2::XMLElement* svgRoot;
     tinyxml2::XMLElement* defsRoot;
@@ -100,11 +106,6 @@ public:
     void generateDisplayImage(SvgDocument& svgDoc);
     void renderPNG(int width, int height, std::vector<uint8_t>& out);
 private:
-    static void lunaSvgCallback(void* closure, void* data, int size);
-    struct LunaSvgClosure {
-        LunaSvgClosure(std::vector<uint8_t>* v_): v(v_) { }
-        std::vector<uint8_t>* v;
-    };
     GradientColor getGradientColor(std::shared_ptr<grad::Grd5Color> color);
     bool hasMultipleStops(double x);
     GradientColor colorAtLeft(double x);

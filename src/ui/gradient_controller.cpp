@@ -16,12 +16,25 @@ void GradientController::handlePaint() {
     wxAutoBufferedPaintDC dc(gradientPanel);
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
+    int padding = 10;
+    int height = (gradientPanel->GetSize().GetHeight()-2*padding)/2;
+    int width = std::max(300, gradientPanel->GetSize().GetWidth()-2*padding);
+    int thumbWidth = 30;
+    int thumbHeight = 30;
     if (gc) {
         if (content.has_value()) {
             vector<uint8_t> imageBytes;
-            content->renderPNG(150, 20, imageBytes);
+            content->renderPNG(width, height, imageBytes);
             auto bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
-            gc->DrawBitmap(bitmap, 0, 0, 150, 20);
+            gc->DrawBitmap(bitmap, padding, padding, width, height);
+            for (auto stop: content->colorStops) {
+                auto svg = getThumbSvgStringForColor(stop.color);
+                core::SvgDocument::renderStringToPNG(svg.c_str(), thumbWidth, thumbHeight, imageBytes);
+                bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
+                double offsetX = width*stop.location - 0.5*thumbWidth;
+                double offsetY = height - 0.45*thumbHeight;
+                gc->DrawBitmap(bitmap, padding+offsetX, padding+offsetY, thumbWidth, thumbHeight);
+            }
         }
         delete gc;
     }
@@ -33,8 +46,8 @@ std::string GradientController::getThumbSvgStringForColor(core::GradientColor co
             <defs> \
                 <polygon id=\"polygon\" points=\"25 30, 25 95, 75 95, 75 30, 50 5\" /> \
             </defs> \
-            <use href=\"#polygon\" fill=\"FILLCOLOR\" stroke=\"black\" stroke-width=\"4\" /> \
-            <use href=\"#polygon\" fill=\"none\" stroke=\"white\" stroke-width=\"2\" /> \
+            <use href=\"#polygon\" fill=\"FILLCOLOR\" stroke=\"black\" stroke-width=\"6\" /> \
+            <use href=\"#polygon\" fill=\"none\" stroke=\"white\" stroke-width=\"3\" /> \
         </svg>";
     std::string token = "FILLCOLOR";
     uint8_t r, g, b;
@@ -53,6 +66,7 @@ void GradientController::handleFlameContent(std::optional<core::FlameContent> fl
     } else {
         content = std::nullopt;
     }
+    gradientPanel->Refresh();
 }
 
 }
