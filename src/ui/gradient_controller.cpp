@@ -71,4 +71,9 @@ void GradientController::handleFlameContent(std::optional<core::FlameContent> fl
     gradientPanel->Refresh();
 }
 
+void GradientController::handleGradientContent(core::Gradient gradientContent) {
+    content = gradientContent;
+    gradientPanel->Refresh();
+}
+
 }

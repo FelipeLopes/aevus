@@ -78,6 +78,12 @@ void PaletteFrame::setupFlameView(FlameView* flameView_) {
         connections.push_back(flameView->flameContent.connect(
             bind(&GradientController::handleFlameContent, &gradientController, _1)
         ));
+        connections.push_back(flameView->gradientContent.connect(
+            bind(&GradientController::handleGradientContent, &gradientController, _1)
+        ));
+        connections.push_back(gradientUpdate.connect(
+            bind(&FlameView::handleGradientContent, flameView, _1)
+        ));
     }
 }
 
@@ -86,7 +92,7 @@ void PaletteFrame::onPresetsSelectionChanged(wxDataViewEvent& event) {
     if (item.IsOk()) {
         auto itemPtr = static_cast<GradientModelNode*>(item.GetID());
         if (auto leafNode = dynamic_cast<GradientLeafNode*>(itemPtr)) {
-            printf("%s\n",leafNode->gradient->title.c_str());
+            gradientUpdate(*leafNode->gradient);
         }
     }
 }

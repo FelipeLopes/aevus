@@ -11,6 +11,7 @@ public:
     GradientController(wxPanel* gradientPanel, std::optional<core::Gradient> flameGradient);
     void handlePaint();
     void handleFlameContent(std::optional<core::FlameContent> content);
+    void handleGradientContent(core::Gradient content);
     void handleMouseDown(wxMouseEvent& event);
 private:
     static std::string getThumbSvgStringForColor(core::GradientColor color, bool selected);
