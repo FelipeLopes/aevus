@@ -27,8 +27,9 @@ void GradientController::handlePaint() {
             content->renderPNG(width, height, imageBytes);
             auto bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
             gc->DrawBitmap(bitmap, padding, padding, width, height);
-            for (auto stop: content->colorStops) {
-                auto svg = getThumbSvgStringForColor(stop.color);
+            for (int i=0; i<content->colorStops.size(); i++) {
+                auto stop = content->colorStops[i];
+                auto svg = getThumbSvgStringForColor(stop.color, i == selectedStop);
                 core::SvgDocument::renderStringToPNG(svg.c_str(), thumbWidth, thumbHeight, imageBytes);
                 bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
                 double offsetX = width*stop.location - 0.5*thumbWidth;
@@ -40,15 +41,16 @@ void GradientController::handlePaint() {
     }
 }
 
-std::string GradientController::getThumbSvgStringForColor(core::GradientColor color) {
-    std::string templateStr =
+std::string GradientController::getThumbSvgStringForColor(core::GradientColor color, bool selected) {
+    auto templateStr = std::string(
         "<svg width=\"100\" height=\"100\" viewBox=\"0 0 100 100\" xmlns=\"http://www.w3.org/2000/svg\"> \
             <defs> \
                 <polygon id=\"polygon\" points=\"25 30, 25 95, 75 95, 75 30, 50 5\" /> \
             </defs> \
             <use href=\"#polygon\" fill=\"FILLCOLOR\" stroke=\"black\" stroke-width=\"6\" /> \
-            <use href=\"#polygon\" fill=\"none\" stroke=\"white\" stroke-width=\"3\" /> \
-        </svg>";
+            <use href=\"#polygon\" fill=\"none\" stroke=\"white\" stroke-width=\"3\" />") +
+             (selected ? "<circle cx=\"50\" cy=\"50\" r=\"10\" fill=\"black\" stroke=\"white\" stroke-width=\"3\"/>" : "") +
+        "</svg>";
     std::string token = "FILLCOLOR";
     uint8_t r, g, b;
     r = lround(color.r * 255.0);

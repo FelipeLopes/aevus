@@ -3,6 +3,7 @@
 #include "flame_view.hpp"
 #include "gradient_controller.hpp"
 #include "gradient_model.hpp"
+#include <wx-3.2/wx/dataview.h>
 #include <wx/panel.h>
 #include <wx/frame.h>
 
@@ -36,6 +37,7 @@ private:
     std::vector<boost::signals2::connection> connections;
     void onClose(wxCloseEvent& event) override;
     void onPaint(wxPaintEvent& event) override;
+    void onPresetsSelectionChanged(wxDataViewEvent& event);
 };
 
 }

@@ -60,11 +60,15 @@ PaletteFrame::PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetL
 {
     setupFlameView(flameView);
     gradientDataViewCtrl->AssociateModel(gradientModel.get());
+    gradientDataViewCtrl->Connect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED,
+        wxDataViewEventHandler( PaletteFrame::onPresetsSelectionChanged ), NULL, this );
     gradientPanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
 PaletteFrame::~PaletteFrame() {
     removeSignalConnections();
+    gradientDataViewCtrl->Disconnect(wxEVT_COMMAND_DATAVIEW_SELECTION_CHANGED,
+        wxDataViewEventHandler( PaletteFrame::onPresetsSelectionChanged ), NULL, this );
 }
 
 void PaletteFrame::setupFlameView(FlameView* flameView_) {
@@ -74,6 +78,16 @@ void PaletteFrame::setupFlameView(FlameView* flameView_) {
         connections.push_back(flameView->flameContent.connect(
             bind(&GradientController::handleFlameContent, &gradientController, _1)
         ));
+    }
+}
+
+void PaletteFrame::onPresetsSelectionChanged(wxDataViewEvent& event) {
+    auto item = event.GetItem();
+    if (item.IsOk()) {
+        auto itemPtr = static_cast<GradientModelNode*>(item.GetID());
+        if (auto leafNode = dynamic_cast<GradientLeafNode*>(itemPtr)) {
+            printf("%s\n",leafNode->gradient->title.c_str());
+        }
     }
 }
 

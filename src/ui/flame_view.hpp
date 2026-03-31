@@ -19,6 +19,7 @@ public:
     void OnChangeFilename() override;
     core::Flame* getFlame() const;
     void documentLoaded();
+    void handleGradientContent(core::Gradient content);
     void handleXFormSelected(int i);
     void handleXFormUpdate(core::ActiveXFormUpdateContent content);
     void handleXFormAdded(int id);
@@ -30,6 +31,7 @@ public:
     boost::signals2::signal<void (std::optional<core::FlameContent>)> flameContent;
     boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
     boost::signals2::signal<void (core::FrameContent)> frameContent;
+    boost::signals2::signal<void (core::Gradient)> gradientContent;
 
     void sendUpdatedXFormContent();
     void sendAddedXFormContent();
@@ -54,6 +56,7 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendSelectedXFormContent();
+    void sendGradientContent();
     std::optional<core::XFormContent> getXformContent(int idx);
 
     std::optional<boost::signals2::connection> connection;

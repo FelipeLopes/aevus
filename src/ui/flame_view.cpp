@@ -163,6 +163,11 @@ void FlameView::handleFrameContent(FrameContent content) {
     document->GetCommandProcessor()->Submit(new FrameUpdateCommand(this, oldContent, content));
 }
 
+void FlameView::handleGradientContent(core::Gradient content) {
+    document->flame.gradient = content;
+    sendGradientContent();
+}
+
 void FlameView::sendFlameContent() {
     FlameContent content;
     // Frame params
@@ -251,6 +256,10 @@ void FlameView::sendRemovedXFormContent(int id) {
     content.op = core::REMOVED;
     content.xform = getXformContent(activeXformId);
     activeXformContent(content);
+}
+
+void FlameView::sendGradientContent() {
+    gradientContent(document->flame.gradient);
 }
 
 std::optional<XFormContent> FlameView::getXformContent(int idx) {

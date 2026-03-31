@@ -187,6 +187,7 @@ void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
  
 void AevusFrame::onPaletteEditorClosed() {
     menuBar->Check(ID_PALETTE_EDITOR, false);
+    paletteFrame = NULL;
 }
 
 void AevusFrame::onUndo(wxCommandEvent& event) {
