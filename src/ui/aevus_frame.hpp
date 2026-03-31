@@ -40,7 +40,7 @@ private:
     std::stringstream flameStream;
     render::Renderer renderer;
 
-    PaletteFrame* paletteFrame;
+    PaletteFrame* paletteFrame = NULL;
 
     FlameModel flameModel;
     TransformModel preTransformModel;
@@ -51,6 +51,7 @@ private:
     FrameModel frameModel;
     TriangleModel triangleModel;
 
+    FlameView* flameView = NULL;
     core::PresetLibrary presetLibrary;
 
     std::vector<boost::signals2::connection> connections;

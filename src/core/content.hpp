@@ -54,6 +54,7 @@ struct FlameContent {
     std::vector<XFormContent> xforms;
     std::optional<XFormContent> finalXForm;
     core::PaletteColors palette;
+    core::Gradient gradient;
 };
 
 enum XFormOperation {

@@ -108,7 +108,7 @@ private:
     double opacityAtRight(double x);
     double opacityAtSegment(double x, int begin);
     tinyxml2::XMLNode* getStopNode(double location, GradientColor color, double opacity, SvgDocument& svgDoc);
-    const double EPS = 1e-5;
+    constexpr static const double EPS = 1e-5;
 };
 
 }

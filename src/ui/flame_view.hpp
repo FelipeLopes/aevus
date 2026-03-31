@@ -38,6 +38,8 @@ public:
     void sendFlameContent();
     void modifyDocument();
 
+    core::Gradient getGradient();
+
 private:
     AevusFrame* aevusFrame;
     FlameDocument* document;

@@ -1,5 +1,6 @@
 #include "palette_frame.hpp"
 #include "aevus_frame.hpp"
+#include "flame_view.hpp"
 #include "gradient_controller.hpp"
 #include "gradient_model.hpp"
 #include <wx/gdicmn.h>
@@ -52,13 +53,27 @@ PaletteFrameBase::~PaletteFrameBase() {
     gradientPanel->Disconnect(wxEVT_PAINT, wxPaintEventHandler(PaletteFrameBase::onPaint), NULL, this);
 }
 
-PaletteFrame::PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary):
+PaletteFrame::PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetLibrary* presetLibrary):
     PaletteFrameBase(parent),
     gradientModel(new GradientModel(presetLibrary, bitmapColumn)),
-    gradientController(gradientPanel)
+    gradientController(gradientPanel, flameView == NULL ? (std::optional<core::Gradient>)std::nullopt : flameView->getGradient())
 {
+    setupFlameView(flameView);
     gradientDataViewCtrl->AssociateModel(gradientModel.get());
     gradientPanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
+}
+
+void PaletteFrame::setupFlameView(FlameView* flameView_) {
+    for (int i=0; i<connections.size(); i++) {
+        connections[i].disconnect();
+    }
+    connections.clear();
+    flameView = flameView_;
+    if (flameView != NULL) {
+        connections.push_back(flameView->flameContent.connect(
+            bind(&GradientController::handleFlameContent, &gradientController, _1)
+        ));
+    }
 }
 
 void PaletteFrame::onClose(wxCloseEvent& event) {

@@ -66,11 +66,15 @@ AevusFrame::AevusFrame(wxDocManager* manager, OpenCL* openCL, optional<string> f
     }
 }
 
-void AevusFrame::setupFlameView(FlameView *flameView) {
+void AevusFrame::setupFlameView(FlameView *flameView_) {
     for (int i=0; i<connections.size(); i++) {
         connections[i].disconnect();
     }
     connections.clear();
+    flameView = flameView_;
+    if (paletteFrame != NULL) {
+        paletteFrame->setupFlameView(flameView);
+    }
     if (flameView != NULL) {
         connections.push_back(flameView->flameContent.connect(
             bind(&Renderer::handleFlameContent, &renderer, _1)
@@ -170,7 +174,11 @@ void AevusFrame::setupFlameView(FlameView *flameView) {
 
 void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
     if (menuBar->IsChecked(ID_PALETTE_EDITOR)) {
-        paletteFrame = new PaletteFrame(this, &presetLibrary);
+        std::optional<core::Gradient> flameGradient = std::nullopt;
+        if (flameView != NULL) {
+            flameGradient = flameView->getGradient();
+        }
+        paletteFrame = new PaletteFrame(this, flameView, &presetLibrary);
         paletteFrame->Show(true);
     } else {
         paletteFrame->Close(true);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "flame_view.hpp"
 #include "gradient_controller.hpp"
 #include "gradient_model.hpp"
 #include <wx/panel.h>
@@ -24,10 +25,13 @@ protected:
 
 class PaletteFrame: public PaletteFrameBase {
 public:
-    PaletteFrame(wxWindow* parent, core::PresetLibrary* presetLibrary);
+    PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetLibrary* presetLibrary);
+    void setupFlameView(FlameView* flameView);
 private:
+    FlameView* flameView = NULL;
     wxObjectDataPtr<GradientModel> gradientModel;
     GradientController gradientController;
+    std::vector<boost::signals2::connection> connections;
     void onClose(wxCloseEvent& event) override;
     void onPaint(wxPaintEvent& event) override;
 };

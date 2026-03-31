@@ -5,6 +5,7 @@
 #include <optional>
 #include "color.hpp"
 #include "custom_coefs.hpp"
+#include "gradient.hpp"
 #include "palette.hpp"
 #include "xform.hpp"
 #include "serializable.hpp"
@@ -60,6 +61,7 @@ public:
     std::vector<XForm> xforms;
     std::optional<FinalXForm> finalXForm;
     Palette palette;
+    Gradient gradient;
     virtual void acceptSerializer(Serializer& serializer);
     virtual void acceptDeserializer(Deserializer& deserializer);
 };

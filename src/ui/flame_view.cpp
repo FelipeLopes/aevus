@@ -179,6 +179,8 @@ void FlameView::sendFlameContent() {
     content.render.clipping = document->flame.clippingMode;
     // Palette
     content.palette = document->flame.palette.colors;
+    // Gradient
+    content.gradient = document->flame.gradient;
     // XForms
     content.xforms.resize(document->flame.xforms.size());
     for (int i=0; i<content.xforms.size(); i++) {
@@ -279,6 +281,10 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
     content.color = document->flame.xforms[idx].color;
     content.colorSpeed = document->flame.xforms[idx].colorSpeed;
     return content;
+}
+
+core::Gradient FlameView::getGradient() {
+    return document->flame.gradient;
 }
 
 void FlameView::handleStartXFormExplore() {
