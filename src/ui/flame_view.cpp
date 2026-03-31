@@ -11,6 +11,7 @@ using core::ActiveXFormUpdateContent;
 using core::FlameContent;
 using core::XFormContent;
 using core::FrameContent;
+using core::ColormapContent;
 
 namespace ui {
 
@@ -158,7 +159,7 @@ void FlameView::handleFrameContent(FrameContent content) {
 
 void FlameView::handleGradientContent(core::Gradient content) {
     document->flame.gradient = content;
-    sendGradientContent();
+    sendColormapContent();
 }
 
 void FlameView::sendFlameContent() {
@@ -175,10 +176,10 @@ void FlameView::sendFlameContent() {
     content.render.vibrancy = document->flame.vibrancy;
     content.render.background = document->flame.background;
     content.render.clipping = document->flame.clippingMode;
-    // Palette
-    content.palette = document->flame.palette.colors;
-    // Gradient
-    content.gradient = document->flame.gradient;
+    // Colormap
+    content.colormap.vectorWeight = document->flame.vectorWeight;
+    content.colormap.palette = document->flame.palette.colors;
+    content.colormap.gradient = document->flame.gradient;
     // XForms
     content.xforms.resize(document->flame.xforms.size());
     for (int i=0; i<content.xforms.size(); i++) {
@@ -251,8 +252,8 @@ void FlameView::sendRemovedXFormContent(int id) {
     activeXformContent(content);
 }
 
-void FlameView::sendGradientContent() {
-    gradientContent(document->flame.gradient);
+void FlameView::sendColormapContent() {
+    colormapContent(getColormapContent());
 }
 
 std::optional<XFormContent> FlameView::getXformContent(int idx) {
@@ -285,8 +286,12 @@ std::optional<XFormContent> FlameView::getXformContent(int idx) {
     return content;
 }
 
-core::Gradient FlameView::getGradient() {
-    return document->flame.gradient;
+core::ColormapContent FlameView::getColormapContent() {
+    ColormapContent content;
+    content.vectorWeight = document->flame.vectorWeight;
+    content.palette = document->flame.palette.colors;
+    content.gradient = document->flame.gradient;
+    return content;
 }
 
 void FlameView::handleStartXFormExplore() {

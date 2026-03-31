@@ -174,10 +174,6 @@ void AevusFrame::setupFlameView(FlameView *flameView_) {
 
 void AevusFrame::onPaletteEditorSelected(wxCommandEvent& event) {
     if (menuBar->IsChecked(ID_PALETTE_EDITOR)) {
-        std::optional<core::Gradient> flameGradient = std::nullopt;
-        if (flameView != NULL) {
-            flameGradient = flameView->getGradient();
-        }
         paletteFrame = new PaletteFrame(this, flameView, &presetLibrary);
         paletteFrame->Show(true);
     } else {

@@ -31,7 +31,7 @@ public:
     boost::signals2::signal<void (std::optional<core::FlameContent>)> flameContent;
     boost::signals2::signal<void (core::ActiveXFormContent)> activeXformContent;
     boost::signals2::signal<void (core::FrameContent)> frameContent;
-    boost::signals2::signal<void (core::Gradient)> gradientContent;
+    boost::signals2::signal<void (core::ColormapContent)> colormapContent;
 
     void sendUpdatedXFormContent();
     void sendAddedXFormContent();
@@ -40,7 +40,7 @@ public:
     void sendFlameContent();
     void modifyDocument();
 
-    core::Gradient getGradient();
+    core::ColormapContent getColormapContent();
 
 private:
     AevusFrame* aevusFrame;
@@ -56,7 +56,7 @@ private:
     void sendColorContent();
     void sendFrameContent();
     void sendSelectedXFormContent();
-    void sendGradientContent();
+    void sendColormapContent();
     std::optional<core::XFormContent> getXformContent(int idx);
 
     std::optional<boost::signals2::connection> connection;

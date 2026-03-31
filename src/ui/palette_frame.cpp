@@ -56,7 +56,7 @@ PaletteFrameBase::~PaletteFrameBase() {
 PaletteFrame::PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetLibrary* presetLibrary):
     PaletteFrameBase(parent),
     gradientModel(new GradientModel(presetLibrary, bitmapColumn)),
-    gradientController(gradientPanel, flameView == NULL ? (std::optional<core::Gradient>)std::nullopt : flameView->getGradient())
+    gradientController(gradientPanel, flameView == NULL ? (std::optional<core::ColormapContent>)std::nullopt : flameView->getColormapContent())
 {
     setupFlameView(flameView);
     gradientDataViewCtrl->AssociateModel(gradientModel.get());
@@ -78,8 +78,8 @@ void PaletteFrame::setupFlameView(FlameView* flameView_) {
         connections.push_back(flameView->flameContent.connect(
             bind(&GradientController::handleFlameContent, &gradientController, _1)
         ));
-        connections.push_back(flameView->gradientContent.connect(
-            bind(&GradientController::handleGradientContent, &gradientController, _1)
+        connections.push_back(flameView->colormapContent.connect(
+            bind(&GradientController::handleColormapContent, &gradientController, _1)
         ));
         connections.push_back(gradientUpdate.connect(
             bind(&FlameView::handleGradientContent, flameView, _1)

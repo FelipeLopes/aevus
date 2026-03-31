@@ -9,8 +9,8 @@ using std::vector;
 
 namespace ui {
 
-GradientController::GradientController(wxPanel* gradientPanel_, std::optional<core::Gradient> flameGradient_):
-    content(flameGradient_), gradientPanel(gradientPanel_) { }
+GradientController::GradientController(wxPanel* gradientPanel_, std::optional<core::ColormapContent> content_):
+    content(content_), gradientPanel(gradientPanel_) { }
 
 void GradientController::handlePaint() {
     wxAutoBufferedPaintDC dc(gradientPanel);
@@ -24,11 +24,11 @@ void GradientController::handlePaint() {
     if (gc) {
         if (content.has_value()) {
             vector<uint8_t> imageBytes;
-            content->renderPNG(width, height, imageBytes);
+            content->gradient.renderPNG(width, height, imageBytes);
             auto bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
             gc->DrawBitmap(bitmap, padding, padding, width, height);
-            for (int i=0; i<content->colorStops.size(); i++) {
-                auto stop = content->colorStops[i];
+            for (int i=0; i<content->gradient.colorStops.size(); i++) {
+                auto stop = content->gradient.colorStops[i];
                 auto svg = getThumbSvgStringForColor(stop.color, i == selectedStop);
                 core::SvgDocument::renderStringToPNG(svg.c_str(), thumbWidth, thumbHeight, imageBytes);
                 bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
@@ -64,15 +64,15 @@ std::string GradientController::getThumbSvgStringForColor(core::GradientColor co
 
 void GradientController::handleFlameContent(std::optional<core::FlameContent> flameContent) {
     if (flameContent.has_value()) {
-        content = flameContent->gradient;
+        content = flameContent->colormap;
     } else {
         content = std::nullopt;
     }
     gradientPanel->Refresh();
 }
 
-void GradientController::handleGradientContent(core::Gradient gradientContent) {
-    content = gradientContent;
+void GradientController::handleColormapContent(core::ColormapContent content_) {
+    content = content_;
     gradientPanel->Refresh();
 }
 

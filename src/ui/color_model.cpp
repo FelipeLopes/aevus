@@ -74,7 +74,7 @@ void ColorModel::handleFlameContent(std::optional<FlameContent> flameContent_) {
     }
     content = ColorContent();
     auto flameContent = flameContent_.value();
-    content->palette = flameContent.palette;
+    content->palette = flameContent.colormap.palette;
     auto sz = flameContent.xforms.size();
     if (sz > 0) {
         content->color = flameContent.xforms[0].color;

@@ -38,7 +38,7 @@ void Iterator::extractParams(const FlameContent& flame, IteratorParams& params) 
     readInitialStateArray(flame, params.stateVec, GLOBAL_WORK_SIZE);
     readXFormData(flame, params.xformVec, params.varVec, params.paramVec);
     readXFormDistribution(flame, params.xformDistVec);
-    flame.palette.readColorCLArray(params.paletteVec);
+    flame.colormap.palette.readColorCLArray(params.paletteVec);
     params.posFinalXForm = readFinalXFormPosition(flame);
     double samples = flame.render.quality*params.frame.width*params.frame.height;
     params.iters = ceil(samples/GLOBAL_WORK_SIZE);

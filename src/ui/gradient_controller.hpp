@@ -8,14 +8,14 @@ namespace ui {
 
 class GradientController {
 public:
-    GradientController(wxPanel* gradientPanel, std::optional<core::Gradient> flameGradient);
+    GradientController(wxPanel* gradientPanel, std::optional<core::ColormapContent> content);
     void handlePaint();
     void handleFlameContent(std::optional<core::FlameContent> content);
-    void handleGradientContent(core::Gradient content);
+    void handleColormapContent(core::ColormapContent content);
     void handleMouseDown(wxMouseEvent& event);
 private:
     static std::string getThumbSvgStringForColor(core::GradientColor color, bool selected);
-    std::optional<core::Gradient> content;
+    std::optional<core::ColormapContent> content;
     wxPanel* gradientPanel;
     int selectedStop = -1;
 };

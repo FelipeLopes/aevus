@@ -40,6 +40,7 @@ Flame::Flame() {
     contrast = 1;
     gamma = 4;
     vibrancy = 1;
+    vectorWeight = 0;
 }
 
 void Flame::acceptSerializer(Serializer& serializer) {

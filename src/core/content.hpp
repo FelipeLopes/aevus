@@ -48,13 +48,18 @@ struct XFormContent {
     Chaos chaos;
 };
 
+struct ColormapContent {
+    double vectorWeight;
+    core::PaletteColors palette;
+    core::Gradient gradient;
+};
+
 struct FlameContent {
     FrameContent frame;
     RenderContent render;
     std::vector<XFormContent> xforms;
     std::optional<XFormContent> finalXForm;
-    core::PaletteColors palette;
-    core::Gradient gradient;
+    ColormapContent colormap;
 };
 
 enum XFormOperation {

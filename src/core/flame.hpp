@@ -57,6 +57,7 @@ public:
     double scale, quality;
     Color background;
     double brightness, contrast, gamma, vibrancy;
+    double vectorWeight;
     ClippingMode clippingMode;
     std::vector<XForm> xforms;
     std::optional<FinalXForm> finalXForm;

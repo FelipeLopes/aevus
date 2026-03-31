@@ -253,7 +253,13 @@ OpacityStop::OpacityStop(double location, double opacity_): GradientStop(locatio
 
 ColorStop::ColorStop(double location, GradientColor color_): GradientStop(location), color(color_) { }
 
-Gradient::Gradient() { }
+Gradient::Gradient() {
+    opacityStops.emplace_back(0, 0);
+    opacityStops.emplace_back(1, 0);
+
+    colorStops.emplace_back(0, GradientColor(1.0, 1.0, 1.0));
+    colorStops.emplace_back(1, GradientColor(1.0, 1.0, 1.0));
+ }
 
 Gradient::Gradient(const Grd5SolidGradient& grd5Gradient): title(grd5Gradient.title.toString()) {
     colorStops.reserve(grd5Gradient.colorStops.size());
