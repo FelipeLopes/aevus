@@ -2,7 +2,6 @@
 
 #include "../core/content.hpp"
 #include "selection_view_model.hpp"
-#include <memory>
 #include <boost/signals2.hpp>
 #include <wx/bmpbuttn.h>
 

@@ -5,7 +5,6 @@
 #include <CL/cl.h>
 #include <functional>
 #include <memory>
-#include <stdexcept>
 #include <vector>
 
 namespace clwrap {

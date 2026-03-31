@@ -49,9 +49,6 @@ std::shared_ptr<clwrap::CLEvent> Iterator::runAsync(IteratorParams& params) {
         GLOBAL_WORK_SIZE;
     histogramVec.resize(histSize);
     std::fill(histogramVec.begin(), histogramVec.end(), 0.0f);
-    if (params.xformVec.size() == 0) {
-        return NULL;
-    }
     frameArg.set(params.frame);
     stateArg.lazy(params.stateVec);
     xformArg.lazy(params.xformVec);

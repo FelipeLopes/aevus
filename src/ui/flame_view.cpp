@@ -95,14 +95,7 @@ void FlameView::handleXFormSelected(int i) {
 }
 
 void FlameView::setActiveXFormId(int id) {
-    int sz = document->flame.xforms.size();
-    if (id < 0) {
-        activeXformId = 0;
-    } else if (id >= sz) {
-        activeXformId = sz;
-    } else {
-        activeXformId = id;
-    }
+    activeXformId = id;
 }
 
 void FlameView::handleXFormUpdate(ActiveXFormUpdateContent content) {

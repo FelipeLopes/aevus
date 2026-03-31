@@ -249,6 +249,9 @@ __kernel void iterate(
     int iters)
 {
     int i = get_global_id(0);
+    if (xformDist == NULL) {
+        return;
+    }
     for (int j=0; j<iters; j++) {
         int rand = mwc64x(&state[i].seed) & XFORM_DISTRIBUTION_GRAINS_M1;
         int xfIdx = xformDist[state[i].xf*XFORM_DISTRIBUTION_GRAINS+rand];

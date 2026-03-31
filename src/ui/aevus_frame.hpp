@@ -81,11 +81,4 @@ private:
     wxBitmap loadEmbeddedPNG(char* start, char* end);
 };
 
-class MyPersistenceManager: public wxPersistenceManager {
-public:
-    MyPersistenceManager() {
-        printf("config path: %s\n",GetConfig()->GetPath().ToStdString().c_str());
-    }
-};
-
 }

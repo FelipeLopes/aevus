@@ -39,6 +39,9 @@ XFormAddCommand::XFormAddCommand(FlameView* flameView_, int xformIndex_): wxComm
     flameView(flameView_), xformIndex(xformIndex_) { }
 
 bool XFormAddCommand::Do() {
+    if (xformIndex == -1) {
+        xformIndex = 0;
+    }
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
     flameView->getFlame()->xforms.insert(pos, XForm());
     flameView->setActiveXFormId(xformIndex);
@@ -47,10 +50,13 @@ bool XFormAddCommand::Do() {
 }
 
 bool XFormAddCommand::Undo() {
+    flameView->sendRemovedXFormContent(xformIndex);
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
     flameView->getFlame()->xforms.erase(pos);
+    if (xformIndex >= flameView->getFlame()->xforms.size()) {
+        xformIndex--;
+    }
     flameView->setActiveXFormId(xformIndex);
-    flameView->sendRemovedXFormContent(xformIndex);
     return true;
 }
 
@@ -58,14 +64,20 @@ XFormRemoveCommand::XFormRemoveCommand(FlameView* flameView_, int xformIndex_, X
     flameView(flameView_), xformIndex(xformIndex_), oldXform(oldXform_) { }
 
 bool XFormRemoveCommand::Do() {
+    flameView->sendRemovedXFormContent(xformIndex);
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
     flameView->getFlame()->xforms.erase(pos);
+    if (xformIndex >= flameView->getFlame()->xforms.size()) {
+        xformIndex--;
+    }
     flameView->setActiveXFormId(xformIndex);
-    flameView->sendRemovedXFormContent(xformIndex);
     return true;
 }
 
 bool XFormRemoveCommand::Undo() {
+    if (xformIndex == -1) {
+        xformIndex = 0;
+    }
     auto pos = flameView->getFlame()->xforms.begin() + xformIndex;
     flameView->getFlame()->xforms.insert(pos, XForm());
     flameView->getFlame()->xforms[xformIndex] = oldXform;
