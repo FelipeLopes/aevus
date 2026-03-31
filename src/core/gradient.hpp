@@ -98,7 +98,13 @@ public:
     virtual void acceptDeserializer(Deserializer& deserializer);
     tinyxml2::XMLElement* getSvgElementWithoutId(SvgDocument& svgDoc);
     void generateDisplayImage(SvgDocument& svgDoc);
+    void renderPNG(int width, int height, std::vector<uint8_t>& out);
 private:
+    static void lunaSvgCallback(void* closure, void* data, int size);
+    struct LunaSvgClosure {
+        LunaSvgClosure(std::vector<uint8_t>* v_): v(v_) { }
+        std::vector<uint8_t>* v;
+    };
     GradientColor getGradientColor(std::shared_ptr<grad::Grd5Color> color);
     bool hasMultipleStops(double x);
     GradientColor colorAtLeft(double x);

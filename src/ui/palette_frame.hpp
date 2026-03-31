@@ -26,11 +26,13 @@ protected:
 class PaletteFrame: public PaletteFrameBase {
 public:
     PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetLibrary* presetLibrary);
+    ~PaletteFrame();
     void setupFlameView(FlameView* flameView);
 private:
     FlameView* flameView = NULL;
     wxObjectDataPtr<GradientModel> gradientModel;
     GradientController gradientController;
+    void removeSignalConnections();
     std::vector<boost::signals2::connection> connections;
     void onClose(wxCloseEvent& event) override;
     void onPaint(wxPaintEvent& event) override;

@@ -5,6 +5,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     srcs = glob(["*.cpp"]),
     deps = [
+        "//:lunasvg",
         "//src/grad:grad",
         "//:tinyxml2",
         "//:boost",

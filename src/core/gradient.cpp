@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <string>
 #include <tinyxml2.h>
+#include <lunasvg.h>
 
 using grad::Grd5SolidGradient;
 using std::to_string;
@@ -478,7 +479,7 @@ double Gradient::opacityAtSegment(double x, int begin) {
     auto c1 = opacityStops[begin].opacity;
     auto c2 = opacityStops[begin+1].opacity;
     double xt = opacityStops[begin+1].location - opacityStops[begin].location;
-    double x1 = (x- opacityStops[begin].location)/xt;
+    double x1 = (x-opacityStops[begin].location)/xt;
     double x2 = (opacityStops[begin+1].location-x)/xt;
     return c1*x2 + c2*x1;
 }
@@ -489,6 +490,21 @@ void Gradient::generateDisplayImage(SvgDocument& svgDoc) {
     svgDoc.fillGradientIds();
     std::string id = svgDoc.getGradientId(0).value();
     svgDoc.addRect(id);
+}
+
+void Gradient::renderPNG(int width, int height, std::vector<uint8_t>& out) {
+    std::stringstream buf;
+    core::SvgDocument svgDoc;
+    generateDisplayImage(svgDoc);
+    svgDoc.writeToStream(buf);
+    auto bitmap = lunasvg::Document::loadFromData(buf.str().c_str())->renderToBitmap(width, height);
+    LunaSvgClosure closure(&out);
+    bitmap.writeToPng(lunaSvgCallback, (void*)&closure);
+}
+
+void Gradient::lunaSvgCallback(void* closure, void* data, int size) {
+    uint8_t* bytesData = (uint8_t*)data;
+    static_cast<LunaSvgClosure*>(closure)->v->assign(bytesData, bytesData+size);
 }
 
 SvgDocument::SvgDocument() {

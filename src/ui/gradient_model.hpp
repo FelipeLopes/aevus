@@ -43,10 +43,6 @@ public:
     void GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const override;
     bool SetValue(const wxVariant& variant, const wxDataViewItem& item, unsigned col) override;
     std::map<void*, wxBitmap> nodeImage;
-    struct LunaSvgClosure {
-        GradientModel* gradientModel;
-        GradientModelNode* renderNode;
-    } closure;
 private:
     wxDataViewColumn* bitmapColumn;
     std::map<std::string, core::PresetLibrary*> mapping;

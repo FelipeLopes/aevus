@@ -6,10 +6,8 @@
 #include <wx/variant.h>
 #include <wx/debug.h>
 #include <wx/log.h>
-#include <sstream>
 #include <lunasvg.h>
 
-using lunasvg::Document;
 
 namespace ui {
 
@@ -54,11 +52,6 @@ unsigned GradientModel::GetChildren(const wxDataViewItem& item, wxDataViewItemAr
     return 0;
 }
 
-static void pngCallback(void* closure, void* data, int size) {
-    auto lunaSvgClosure = static_cast<GradientModel::LunaSvgClosure*>(closure);
-    lunaSvgClosure->gradientModel->nodeImage[lunaSvgClosure->renderNode] = wxBitmap::NewFromPNGData(data, size);
-}
-
 void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned col) const {
     wxASSERT(item.IsOk());
     GradientModelNode* node = static_cast<GradientModelNode*>(item.GetID());
@@ -73,18 +66,13 @@ void GradientModel::GetValue(wxVariant& variant, const wxDataViewItem& item, uns
         switch (col) {
             case 0: variant << wxDataViewIconText(leaf->gradient->title); break;
             case 1: {
-                std::stringstream buf;
-                core::SvgDocument svgDoc;
-                leaf->gradient->generateDisplayImage(svgDoc);
-                svgDoc.writeToStream(buf);
                 auto imageWidth = std::max(bitmapColumn->GetWidth()-20, 256);
                 auto it = nodeImage.find(leaf);
                 if (it == nodeImage.end() || it->second.GetSize().GetWidth() != imageWidth) {
-                    auto bitmap = Document::loadFromData(buf.str().c_str())->renderToBitmap(imageWidth, 20);
-                    LunaSvgClosure closure;
-                    closure.gradientModel = const_cast<GradientModel*>(this);
-                    closure.renderNode = leaf;
-                    bitmap.writeToPng(pngCallback, (void*)&closure);
+                    std::vector<uint8_t> pngBytes;
+                    leaf->gradient->renderPNG(imageWidth, 20, pngBytes);
+                    auto bitmap =  wxBitmap::NewFromPNGData(pngBytes.data(), pngBytes.size());
+                    const_cast<GradientModel*>(this)->nodeImage[leaf] = bitmap;
                     it = nodeImage.find(leaf);
                     wxASSERT(it != nodeImage.end());
                 }

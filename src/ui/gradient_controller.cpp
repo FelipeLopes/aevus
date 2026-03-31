@@ -1,20 +1,28 @@
 #include "gradient_controller.hpp"
 #include <cmath>
+#include <optional>
 #include <wx/dcbuffer.h>
 #include <wx/graphics.h>
 
 using std::to_string;
+using std::vector;
 
 namespace ui {
 
 GradientController::GradientController(wxPanel* gradientPanel_, std::optional<core::Gradient> flameGradient_):
-    flameGradient(flameGradient_), gradientPanel(gradientPanel_) { }
+    content(flameGradient_), gradientPanel(gradientPanel_) { }
 
 void GradientController::handlePaint() {
     wxAutoBufferedPaintDC dc(gradientPanel);
     dc.Clear();
     wxGraphicsContext* gc = wxGraphicsContext::Create(dc);
     if (gc) {
+        if (content.has_value()) {
+            vector<uint8_t> imageBytes;
+            content->renderPNG(150, 20, imageBytes);
+            auto bitmap = wxBitmap::NewFromPNGData(imageBytes.data(), imageBytes.size());
+            gc->DrawBitmap(bitmap, 0, 0, 150, 20);
+        }
         delete gc;
     }
 }
@@ -39,9 +47,11 @@ std::string GradientController::getThumbSvgStringForColor(core::GradientColor co
     return templateStr;
 }
 
-void GradientController::handleFlameContent(std::optional<core::FlameContent> content) {
-    if (content.has_value()) {
-        printf("gradient controller: %zu\n", content.value().gradient.colorStops.size());
+void GradientController::handleFlameContent(std::optional<core::FlameContent> flameContent) {
+    if (flameContent.has_value()) {
+        content = flameContent->gradient;
+    } else {
+        content = std::nullopt;
     }
 }
 

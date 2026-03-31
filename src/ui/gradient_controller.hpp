@@ -13,7 +13,7 @@ public:
     void handleFlameContent(std::optional<core::FlameContent> content);
 private:
     static std::string getThumbSvgStringForColor(core::GradientColor color);
-    std::optional<core::Gradient> flameGradient;
+    std::optional<core::Gradient> content;
     wxPanel* gradientPanel;
 };
 

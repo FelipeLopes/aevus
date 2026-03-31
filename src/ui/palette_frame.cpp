@@ -63,11 +63,12 @@ PaletteFrame::PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetL
     gradientPanel->SetBackgroundStyle(wxBG_STYLE_PAINT);
 }
 
+PaletteFrame::~PaletteFrame() {
+    removeSignalConnections();
+}
+
 void PaletteFrame::setupFlameView(FlameView* flameView_) {
-    for (int i=0; i<connections.size(); i++) {
-        connections[i].disconnect();
-    }
-    connections.clear();
+    removeSignalConnections();
     flameView = flameView_;
     if (flameView != NULL) {
         connections.push_back(flameView->flameContent.connect(
@@ -87,6 +88,13 @@ void PaletteFrame::onPaint(wxPaintEvent& event) {
     if (event.GetId() == ID_GRADIENT_PANEL) {
         gradientController.handlePaint();
     }
+}
+
+void PaletteFrame::removeSignalConnections() {
+    for (int i=0; i<connections.size(); i++) {
+        connections[i].disconnect();
+    }
+    connections.clear();
 }
 
 }
