@@ -81,8 +81,8 @@ void PaletteFrame::setupFlameView(FlameView* flameView_) {
         connections.push_back(flameView->colormapContent.connect(
             bind(&GradientController::handleColormapContent, &gradientController, _1)
         ));
-        connections.push_back(gradientUpdate.connect(
-            bind(&FlameView::handleGradientContent, flameView, _1)
+        connections.push_back(colormapUpdate.connect(
+            bind(&FlameView::handleColormapContent, flameView, _1)
         ));
     }
 }
@@ -92,7 +92,12 @@ void PaletteFrame::onPresetsSelectionChanged(wxDataViewEvent& event) {
     if (item.IsOk()) {
         auto itemPtr = static_cast<GradientModelNode*>(item.GetID());
         if (auto leafNode = dynamic_cast<GradientLeafNode*>(itemPtr)) {
-            gradientUpdate(*leafNode->gradient);
+            auto content = gradientController.getContent();
+            if (content.has_value()) {
+                content->vectorWeight = 1.0;
+                content->gradient = *(leafNode->gradient);
+                colormapUpdate(content.value());
+            }
         }
     }
 }

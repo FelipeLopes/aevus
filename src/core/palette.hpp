@@ -14,13 +14,13 @@ public:
     void readColorCLArray(std::vector<ColorCL>& arr) const;
     virtual std::optional<std::string> toString();
     virtual void fromString(std::optional<std::string> text);
-    static const unsigned PALETTE_WIDTH = 256;
-private:
     typedef unsigned char byte;
+    static const unsigned PALETTE_WIDTH = 256;
+    std::vector<byte> paletteData;
+private:
     char hexHigh(byte b) const;
     char hexLow(byte b) const;
     byte hexValue(char high, char low) const;
-    std::vector<byte> paletteData;
 };
 
 class Palette: public Serializable {

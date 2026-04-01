@@ -5,6 +5,7 @@
 #include <wx/msgdlg.h>
 #include <wx/mstream.h>
 #include <wx/wfstream.h>
+#include "color_model.hpp"
 #include "flame_model.hpp"
 #include "flame_view.hpp"
 #include "transform_model.hpp"
@@ -123,6 +124,12 @@ void AevusFrame::setupFlameView(FlameView *flameView_) {
         ));
         connections.push_back(flameView->activeXformContent.connect(
             bind(&ColorModel::handleActiveXformContent, &colorModel, _1)
+        ));
+        connections.push_back(flameView->colormapContent.connect(
+            bind(&Renderer::handleColormapContent, &renderer, _1)
+        ));
+        connections.push_back(flameView->colormapContent.connect(
+            bind(&ColorModel::handleColormapContent, &colorModel, _1)
         ));
         connections.push_back(triangleModel.xformSelected.connect(
             bind(&FlameView::handleXFormSelected, flameView, _1)

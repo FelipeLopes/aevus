@@ -13,6 +13,7 @@ public:
     void handleFlameContent(std::optional<core::FlameContent> content);
     void handleColormapContent(core::ColormapContent content);
     void handleMouseDown(wxMouseEvent& event);
+    std::optional<core::ColormapContent> getContent();
 private:
     static std::string getThumbSvgStringForColor(core::GradientColor color, bool selected);
     std::optional<core::ColormapContent> content;

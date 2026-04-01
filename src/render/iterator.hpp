@@ -49,6 +49,7 @@ private:
 
     static const int GLOBAL_WORK_SIZE = 4096;
     static const int LOCAL_WORK_SIZE = 256;
+    static const int PALETTE_WIDTH = 256;
 
     core::FrameCL getFrame(core::FrameContent frame);
     core::XFormCL getXFormCL(core::XFormContent xform, int varBegin) const;

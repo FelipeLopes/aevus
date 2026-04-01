@@ -30,6 +30,7 @@ public:
     void handleFlameContent(std::optional<core::FlameContent> content);
     void handleActiveXformContent(core::ActiveXFormContent xformContent);
     void handleFrameContent(core::FrameContent frameContent);
+    void handleColormapContent(core::ColormapContent colormapContent);
     ~Renderer();
     boost::signals2::signal<void ()> imageRendered;
 private:

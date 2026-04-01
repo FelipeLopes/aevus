@@ -157,8 +157,10 @@ void FlameView::handleFrameContent(FrameContent content) {
     document->GetCommandProcessor()->Submit(new FrameUpdateCommand(this, oldContent, content));
 }
 
-void FlameView::handleGradientContent(core::Gradient content) {
-    document->flame.gradient = content;
+void FlameView::handleColormapContent(core::ColormapContent content) {
+    document->flame.vectorWeight = content.vectorWeight;
+    document->flame.palette.colors = content.palette;
+    document->flame.gradient = content.gradient;
     sendColormapContent();
 }
 

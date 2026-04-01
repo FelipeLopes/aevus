@@ -76,4 +76,8 @@ void GradientController::handleColormapContent(core::ColormapContent content_) {
     gradientPanel->Refresh();
 }
 
+std::optional<core::ColormapContent> GradientController::getContent() {
+    return content;
+}
+
 }

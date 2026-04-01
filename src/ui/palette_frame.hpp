@@ -29,7 +29,7 @@ public:
     PaletteFrame(wxWindow* parent, FlameView* flameView, core::PresetLibrary* presetLibrary);
     ~PaletteFrame();
     void setupFlameView(FlameView* flameView);
-    boost::signals2::signal<void (core::Gradient)> gradientUpdate;
+    boost::signals2::signal<void (core::ColormapContent)> colormapUpdate;
 private:
     FlameView* flameView = NULL;
     wxObjectDataPtr<GradientModel> gradientModel;

@@ -7,6 +7,7 @@
 
 using clwrap::CLQueuedContext;
 using core::ActiveXFormContent;
+using core::ColormapContent;
 using std::stringstream;
 using std::vector;
 
@@ -66,6 +67,14 @@ void Renderer::handleActiveXformContent(ActiveXFormContent xformContent) {
         state = FLAME_MODIFIED;
         extractParams();
     }
+    lock.unlock();
+}
+
+void Renderer::handleColormapContent(ColormapContent colormapContent) {
+    lock.lock();
+    content->colormap = colormapContent;
+    state = FLAME_MODIFIED;
+    extractParams();
     lock.unlock();
 }
 

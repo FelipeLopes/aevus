@@ -19,7 +19,7 @@ public:
     void OnChangeFilename() override;
     core::Flame* getFlame() const;
     void documentLoaded();
-    void handleGradientContent(core::Gradient content);
+    void handleColormapContent(core::ColormapContent content);
     void handleXFormSelected(int i);
     void handleXFormUpdate(core::ActiveXFormUpdateContent content);
     void handleXFormAdded(int id);

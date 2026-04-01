@@ -12,6 +12,7 @@ class ColorModel: public ViewModel {
 public:
     ColorModel(wxDataViewListCtrl* colorListCtrl, wxPanel* palettePanel);
     void handleFlameContent(std::optional<core::FlameContent> flameContent);
+    void handleColormapContent(core::ColormapContent colormapContent);
     void handleActiveXformContent(core::ActiveXFormContent xformContent);
     void handlePaint();
     void handleMouseUp();
@@ -32,7 +33,9 @@ private:
     wxBitmap paletteBitmap;
     wxBitmap blackLineBitmap;
     wxBitmap whiteLineBitmap;
-    std::optional<core::ColorContent> content;
+    std::optional<core::XFormColorContent> xformColorContent;
+    std::optional<core::ColormapContent> colormapContent;
+    std::vector<core::ColorCL> colormapCL;
     bool dragging;
 
     constexpr static const float BUCKET_FACTOR = (1.0f-FLT_EPSILON);
